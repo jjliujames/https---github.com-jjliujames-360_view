@@ -298,7 +298,7 @@
             <div class="flex justify-between items-start mb-3">
               <h4 class="text-sm font-medium text-gray-900 capitalize">{{ key.replace(/([A-Z])/g, ' $1').trim() }}</h4>
               <span class="text-lg font-bold" :class="getPenetrationColor(product.penetration)">{{ product.penetration
-                }}%</span>
+              }}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div class="bg-td-green h-2 rounded-full" :style="{ width: product.penetration + '%' }"></div>
@@ -464,7 +464,7 @@
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-td-green flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{metro.name.split(' ').map(n => n[0]).join('')
-                      }}</span>
+                        }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
