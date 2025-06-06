@@ -13,7 +13,7 @@
               clip-rule="evenodd" />
           </svg>
           <router-link :to="`/metro/${metroId}`" class="text-gray-500 hover:text-td-green">{{ metro?.name
-          }}</router-link>
+            }}</router-link>
         </li>
         <li class="flex items-center">
           <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
@@ -178,6 +178,205 @@
       </div>
     </div>
 
+    <!-- Risk Management Workflow (Risk Manager Focus) -->
+    <div class="card mb-8">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">🔍 Risk Investigation Workflow</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Case management and investigation tracking for risk managers
+            </p>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700">
+              Create Case
+            </button>
+            <button class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-blue-700">
+              Export Report
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="p-6">
+        <!-- Investigation Status Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div class="investigation-status">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Open Cases</span>
+              <span class="text-2xl font-bold text-red-600">23</span>
+            </div>
+            <div class="space-y-1">
+              <div class="text-xs text-gray-600">• 5 High Priority</div>
+              <div class="text-xs text-gray-600">• 12 Medium Priority</div>
+              <div class="text-xs text-gray-600">• 6 Low Priority</div>
+            </div>
+          </div>
+
+          <div class="investigation-status">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">SLA Performance</span>
+              <span class="text-2xl font-bold text-orange-600">84%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+              <div class="bg-orange-500 h-2 rounded-full" style="width: 84%"></div>
+            </div>
+            <p class="text-xs text-gray-500">Target: >90%</p>
+          </div>
+
+          <div class="investigation-status">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Avg Resolution Time</span>
+              <span class="text-2xl font-bold text-blue-600">4.2</span>
+            </div>
+            <p class="text-xs text-gray-500 mb-1">days</p>
+            <p class="text-xs text-green-600">↓ 12% vs last month</p>
+          </div>
+
+          <div class="investigation-status">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Cases This Month</span>
+              <span class="text-2xl font-bold text-purple-600">47</span>
+            </div>
+            <div class="space-y-1">
+              <div class="text-xs text-gray-600">• 31 Closed</div>
+              <div class="text-xs text-gray-600">• 16 Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Investigations -->
+        <div class="mb-6">
+          <h4 class="text-sm font-medium text-gray-700 mb-3">High Priority Active Investigations</h4>
+          <div class="space-y-3">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                  <span class="bg-red-600 text-white text-xs px-2 py-1 rounded-full">URGENT</span>
+                  <span class="font-medium text-gray-900">Global Tech Industries</span>
+                  <span class="text-sm text-gray-600">Case #INV-2024-1203</span>
+                </div>
+                <span class="text-sm text-red-600 font-medium">2 days overdue</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span class="text-gray-500">Type:</span>
+                  <span class="ml-1 text-gray-900">Crypto + Structuring</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Risk Score:</span>
+                  <span class="ml-1 text-red-600 font-medium">9.2/10</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Assigned:</span>
+                  <span class="ml-1 text-gray-900">Sarah Chen</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Due:</span>
+                  <span class="ml-1 text-red-600">Dec 1, 2024</span>
+                </div>
+              </div>
+              <div class="mt-3 flex space-x-2">
+                <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">Escalate</button>
+                <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">View Details</button>
+                <button class="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700">Add Note</button>
+              </div>
+            </div>
+
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                  <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded-full">HIGH</span>
+                  <span class="font-medium text-gray-900">Alpha Manufacturing Corp</span>
+                  <span class="text-sm text-gray-600">Case #INV-2024-1198</span>
+                </div>
+                <span class="text-sm text-orange-600 font-medium">Due in 1 day</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span class="text-gray-500">Type:</span>
+                  <span class="ml-1 text-gray-900">High Cash Volume</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Risk Score:</span>
+                  <span class="ml-1 text-orange-600 font-medium">7.8/10</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Assigned:</span>
+                  <span class="ml-1 text-gray-900">Mike Rodriguez</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Due:</span>
+                  <span class="ml-1 text-orange-600">Dec 4, 2024</span>
+                </div>
+              </div>
+              <div class="mt-3 flex space-x-2">
+                <button class="bg-orange-600 text-white px-3 py-1 rounded text-xs hover:bg-orange-700">Review</button>
+                <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">View Details</button>
+                <button class="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700">Add Note</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Regulatory Compliance Tracking -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h5 class="text-sm font-medium text-blue-800 mb-3">🏛️ Regulatory Status</h5>
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-blue-700">BSA/AML Compliance</span>
+                <span class="font-medium text-green-600">94%</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-blue-700">SAR Filing Rate</span>
+                <span class="font-medium text-green-600">98%</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-blue-700">Next Exam</span>
+                <span class="font-medium text-orange-600">Q2 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h5 class="text-sm font-medium text-green-800 mb-3">📊 Performance Metrics</h5>
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-green-700">False Positive Rate</span>
+                <span class="font-medium text-green-600">12%</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-green-700">Model Accuracy</span>
+                <span class="font-medium text-green-600">91%</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-green-700">Auto-Close Rate</span>
+                <span class="font-medium text-blue-600">67%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <h5 class="text-sm font-medium text-purple-800 mb-3">⚠️ Risk Alerts</h5>
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-purple-700">High-Risk Alerts</span>
+                <span class="font-medium text-red-600">8 today</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-purple-700">Medium-Risk Alerts</span>
+                <span class="font-medium text-orange-600">23 today</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-purple-700">Trend</span>
+                <span class="font-medium text-green-600">↓ 15% vs avg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Flagged Clients Summary -->
     <div class="card mb-8">
       <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
@@ -249,7 +448,7 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <span class="text-sm font-bold" :class="getRiskScoreColor(client.riskScore)">{{ client.riskScore
-                  }}</span>
+                    }}</span>
                   <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
                     <div class="bg-red-500 h-2 rounded-full" :style="{ width: (client.riskScore / 10 * 100) + '%' }">
                     </div>
@@ -364,7 +563,7 @@
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{region.name.split(' ').map(n => n[0]).join('')
-                      }}</span>
+                        }}</span>
                     </div>
                   </div>
                   <div class="ml-4">

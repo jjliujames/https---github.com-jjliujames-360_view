@@ -9,11 +9,8 @@
               <h1 class="text-2xl font-bold text-td-green">TD Bank</h1>
             </div>
             <div class="ml-10 flex items-baseline space-x-4">
-              <router-link 
-                to="/executive" 
-                class="px-3 py-2 rounded-md text-sm font-medium hover:text-td-green"
-                :class="{ 'text-td-green border-b-2 border-td-green': $route.name === 'Executive' }"
-              >
+              <router-link to="/executive" class="px-3 py-2 rounded-md text-sm font-medium hover:text-td-green"
+                :class="{ 'text-td-green border-b-2 border-td-green': $route.name === 'Executive' }">
                 Executive Dashboard
               </router-link>
             </div>
@@ -29,11 +26,19 @@
     <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <router-view />
     </main>
+
+    <!-- AI Chat Assistant - Available across all views -->
+    <AIChat />
   </div>
 </template>
 
 <script>
+import AIChat from './components/AIChat.vue'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    AIChat
+  }
 }
-</script> 
+</script>

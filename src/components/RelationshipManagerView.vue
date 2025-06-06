@@ -13,7 +13,7 @@
               clip-rule="evenodd" />
           </svg>
           <router-link :to="`/metro/${metroId}`" class="text-gray-500 hover:text-td-green">{{ metro?.name
-          }}</router-link>
+            }}</router-link>
         </li>
         <li class="flex items-center">
           <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
@@ -341,6 +341,153 @@
       </div>
     </div>
 
+    <!-- RM Coaching Analytics (RM Manager View) -->
+    <div class="card mb-8">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">👨‍🏫 RM Coaching Analytics</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Performance insights and development opportunities for {{
+              rm?.name }}</p>
+          </div>
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            Performance Score: 87/100
+          </span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <!-- Client Touch Frequency -->
+          <div class="coaching-metric">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Client Touch Rate</span>
+              <span class="text-lg font-bold text-green-600">2.3x/mo</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Target: 2.0x/mo | Top Performer: 3.1x</p>
+          </div>
+
+          <!-- Cross-Selling Success -->
+          <div class="coaching-metric">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Cross-Sell Rate</span>
+              <span class="text-lg font-bold text-blue-600">34%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Target: 50% | Peer Avg: 42%</p>
+          </div>
+
+          <!-- Revenue per Client -->
+          <div class="coaching-metric">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Revenue/Client</span>
+              <span class="text-lg font-bold text-purple-600">$180K</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-purple-500 h-2 rounded-full" style="width: 72%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Peer Avg: $165K | Top: $250K</p>
+          </div>
+
+          <!-- Risk Management -->
+          <div class="coaching-metric">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-600">Risk Flag Resolution</span>
+              <span class="text-lg font-bold text-orange-600">3.2 days</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-orange-500 h-2 rounded-full" style="width: 80%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Target: <3 days | Avg: 4.1 days</p>
+          </div>
+        </div>
+
+        <!-- Development Focus Areas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Strengths -->
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-green-800 mb-3">🎯 Strengths</h4>
+            <div class="space-y-2">
+              <div class="text-xs text-green-700">• Excellent client retention (98%)</div>
+              <div class="text-xs text-green-700">• Strong deposit growth (+15% YoY)</div>
+              <div class="text-xs text-green-700">• Timely risk flag resolution</div>
+              <div class="text-xs text-green-700">• High client satisfaction (4.8/5)</div>
+            </div>
+          </div>
+
+          <!-- Areas for Development -->
+          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-orange-800 mb-3">📈 Development Areas</h4>
+            <div class="space-y-2">
+              <div class="text-xs text-orange-700">• Cross-selling opportunities (-16% vs target)</div>
+              <div class="text-xs text-orange-700">• Lending product knowledge gap</div>
+              <div class="text-xs text-orange-700">• New client acquisition below goal</div>
+              <div class="text-xs text-orange-700">• Digital platform utilization low</div>
+            </div>
+          </div>
+
+          <!-- Action Plan -->
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-blue-800 mb-3">🎓 Recommended Training</h4>
+            <div class="space-y-2">
+              <div class="text-xs text-blue-700">• Treasury Mgmt Solutions cert (Q1)</div>
+              <div class="text-xs text-blue-700">• Lending conversations workshop</div>
+              <div class="text-xs text-blue-700">• Digital banking platform training</div>
+              <div class="text-xs text-blue-700">• Prospecting techniques course</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goal Tracking -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <h4 class="text-sm font-medium text-gray-700 mb-4">2024 Goal Progress</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="goal-tracker">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">New Revenue</span>
+                <span class="font-medium">$2.8M / $3.2M</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 87.5%"></div>
+              </div>
+            </div>
+            <div class="goal-tracker">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">New Clients</span>
+                <span class="font-medium">18 / 25</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="goal-tracker">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Cross-Sell Products</span>
+                <span class="font-medium">42 / 60</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-purple-600 h-2 rounded-full" style="width: 70%"></div>
+              </div>
+            </div>
+            <div class="goal-tracker">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Training Hours</span>
+                <span class="font-medium">28 / 40</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-orange-600 h-2 rounded-full" style="width: 70%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Enhanced Analytics Dashboard -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
@@ -526,7 +673,7 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <span class="text-sm font-bold" :class="getRiskScoreColor(client.riskScore)">{{ client.riskScore
-                  }}</span>
+                    }}</span>
                   <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
                     <div :class="['h-2 rounded-full', getRiskScoreBarColor(client.riskScore)]"
                       :style="{ width: (client.riskScore / 10 * 100) + '%' }"></div>
