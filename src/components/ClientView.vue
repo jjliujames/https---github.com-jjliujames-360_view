@@ -1,483 +1,564 @@
 <template>
   <div class="client-view">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <span @click="$router.push('/executive')" class="breadcrumb-item">Executive Dashboard</span>
-      <span>></span>
-      <span @click="goBackToRM" class="breadcrumb-item">{{ client?.relationshipId }}</span>
-      <span>></span>
-      <span @click="goBackToRelationship" class="breadcrumb-item">Relationship</span>
-      <span>></span>
-      <span class="text-gray-900">{{ client?.name }}</span>
+    <!-- Breadcrumb Navigation -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+          <router-link :to="`/metro/${metroId}`" class="text-gray-500 hover:text-td-green">{{ metro?.name
+            }}</router-link>
+        </li>
+        <li class="flex items-center">
+          <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd" />
+          </svg>
+          <router-link :to="`/metro/${metroId}/market/${marketId}`" class="text-gray-500 hover:text-td-green">{{
+            market?.name }}</router-link>
+        </li>
+        <li class="flex items-center">
+          <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd" />
+          </svg>
+          <router-link :to="`/metro/${metroId}/market/${marketId}/region/${regionId}`"
+            class="text-gray-500 hover:text-td-green">{{ region?.name }}</router-link>
+        </li>
+        <li class="flex items-center">
+          <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd" />
+          </svg>
+          <router-link :to="`/metro/${metroId}/market/${marketId}/region/${regionId}/rm/${rmId}`"
+            class="text-gray-500 hover:text-td-green">{{ rm?.name }}</router-link>
+        </li>
+        <li class="flex items-center">
+          <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd" />
+          </svg>
+          <span class="text-gray-900 font-medium">{{ client?.name }}</span>
+        </li>
+      </ol>
     </nav>
 
     <!-- Header -->
     <div class="mb-8">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center">
-          <div class="h-16 w-16 rounded-full bg-td-green flex items-center justify-center mr-4">
-            <span class="text-lg font-medium text-white">{{ client?.name?.split(' ')[0][0] }}</span>
-          </div>
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">{{ client?.name }}</h1>
-            <p class="text-gray-600">{{ client?.industry }} • {{ client?.geography }}</p>
-          </div>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ client?.name }}</h1>
+          <p class="text-gray-600">{{ client?.industry }} • {{ client?.location }}</p>
         </div>
-        <div class="flex space-x-2">
-          <span v-for="flag in client?.riskFlags" :key="flag" class="risk-flag risk-medium">
-            {{ flag }}
+        <div class="flex space-x-3">
+          <span :class="['px-3 py-1 text-sm font-medium rounded-full', getTierBadgeClass(clientTier)]">
+            {{ clientTier }}
+          </span>
+          <span :class="['px-3 py-1 text-sm font-medium rounded-full', getRiskScoreColor(clientRiskScore)]">
+            Risk: {{ clientRiskScore }}
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Client Profile -->
-    <div class="card mb-8">
-      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">{{ client.name }}</h3>
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">{{ client.industry }} • {{ client.location }}</p>
-      </div>
-      <div class="px-4 py-5 sm:p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Portfolio Value</p>
-            <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(client.portfolioValue) }}</p>
+    <!-- Three-Panel Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- 📁 Client Profile Section (Left Panel) -->
+      <div class="lg:col-span-4">
+        <div class="card">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">📁 Client Profile</h3>
           </div>
-          <div>
-            <p class="text-sm font-medium text-gray-600">Annual Revenue</p>
-            <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(client.annualRevenue) }}</p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-600">Last Contact</p>
-            <p class="text-2xl font-bold text-gray-900">{{ client.lastContact }}</p>
-          </div>
-        </div>
+          <div class="p-6 space-y-6">
 
-        <!-- Risk Flags -->
-        <div v-if="client.riskFlags && client.riskFlags.length > 0" class="mt-6">
-          <p class="text-sm font-medium text-gray-600 mb-2">Risk Flags</p>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="flag in client.riskFlags" :key="flag" :class="['risk-flag', getRiskFlagColor(flag)]">
-              {{ flag }}
-            </span>
-          </div>
-        </div>
-
-        <!-- KRI Details for this client -->
-        <div v-if="hasKRIFlags" class="mt-6">
-          <h4 class="text-lg font-medium text-gray-900 mb-4">Key Risk Indicators</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <!-- High Cash Activity -->
-            <div v-if="hasHighCashFlag" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <h5 class="text-sm font-medium text-yellow-800">High Cash Activity</h5>
-              </div>
-              <p class="text-sm text-yellow-700">Client exhibits unusually high cash transaction patterns requiring
-                enhanced monitoring.</p>
-              <div class="mt-2 text-xs text-yellow-600">
-                <p>Threshold: Transactions >$500K cash equivalent</p>
-                <p>Last 30 days: {{ Math.floor(Math.random() * 15) + 5 }} transactions</p>
+            <!-- Basic Information -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Basic Information</h4>
+              <div class="grid grid-cols-1 gap-3">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Client ID:</span>
+                  <span class="text-sm font-medium text-gray-900">{{ client?.id }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Industry:</span>
+                  <span class="text-sm font-medium text-gray-900">{{ client?.industry }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Geography:</span>
+                  <span class="text-sm font-medium text-gray-900">{{ client?.location }}</span>
+                </div>
               </div>
             </div>
 
-            <!-- Crypto Activity -->
-            <div v-if="hasCryptoFlag" class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                <h5 class="text-sm font-medium text-purple-800">Cryptocurrency Exposure</h5>
-              </div>
-              <p class="text-sm text-purple-700">Client involved in cryptocurrency transactions or blockchain-related
-                business activities.</p>
-              <div class="mt-2 text-xs text-purple-600">
-                <p>Risk Level: Enhanced Due Diligence Required</p>
-                <p>Monitoring: Continuous transaction screening</p>
-              </div>
-            </div>
-
-            <!-- MSB Activity -->
-            <div v-if="hasMSBFlag" class="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-                <h5 class="text-sm font-medium text-orange-800">Money Service Business</h5>
-              </div>
-              <p class="text-sm text-orange-700">Client operates as a Money Service Business requiring specialized
-                compliance oversight.</p>
-              <div class="mt-2 text-xs text-orange-600">
-                <p>Regulation: BSA/AML enhanced requirements</p>
-                <p>Reporting: Monthly MSB activity reports</p>
-              </div>
-            </div>
-
-            <!-- Cross-Border Activity -->
-            <div v-if="hasCrossBorderFlag" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h5 class="text-sm font-medium text-blue-800">Cross-Border Transactions</h5>
-              </div>
-              <p class="text-sm text-blue-700">Client engages in significant international wire transfers and
-                cross-border activities.</p>
-              <div class="mt-2 text-xs text-blue-600">
-                <p>Countries: {{ Math.floor(Math.random() * 8) + 3 }} jurisdictions</p>
-                <p>OFAC Screening: Real-time monitoring enabled</p>
-              </div>
-            </div>
-
-            <!-- PEP Exposure -->
-            <div v-if="hasPEPFlag" class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
-                <h5 class="text-sm font-medium text-red-800">Politically Exposed Person</h5>
-              </div>
-              <p class="text-sm text-red-700">Client or beneficial owners have connections to politically exposed
-                persons requiring enhanced due diligence.</p>
-              <div class="mt-2 text-xs text-red-600">
-                <p>Status: Enhanced Due Diligence (EDD) required</p>
-                <p>Review: Quarterly senior management approval</p>
-              </div>
-            </div>
-
-            <!-- Sanctions Exposure -->
-            <div v-if="hasSanctionsFlag" class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div class="flex items-center mb-2">
-                <svg class="h-5 w-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
-                <h5 class="text-sm font-medium text-red-800">Sanctions Screening Alert</h5>
-              </div>
-              <p class="text-sm text-red-700">Client has potential exposure to sanctioned entities or jurisdictions
-                requiring immediate review.</p>
-              <div class="mt-2 text-xs text-red-600">
-                <p>Action: Immediate compliance review required</p>
-                <p>Status: Transaction monitoring escalated</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TD Relationship Summary -->
-    <div class="card mb-8">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">TD Relationship Summary</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="metric-card">
-          <div class="flex items-center">
-            <div class="p-2 bg-blue-500 rounded-lg">
-              <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Accounts</p>
-              <p class="text-2xl font-bold text-gray-900">{{ client?.accountCount }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="metric-card" @click="showAccountDetails = true">
-          <div class="flex items-center">
-            <div class="p-2 bg-green-500 rounded-lg">
-              <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Deposits</p>
-              <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(client?.totalDeposits) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="flex items-center">
-            <div class="p-2 bg-orange-500 rounded-lg">
-              <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Loans</p>
-              <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(client?.totalLoans) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="flex items-center">
-            <div class="p-2 bg-purple-500 rounded-lg">
-              <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Annual Revenue</p>
-              <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(client?.totalRevenue) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Two Column Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-      <!-- Beneficial Ownership -->
-      <div class="card">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Beneficial Ownership</h3>
-        <div class="space-y-4">
-          <div v-for="owner in client?.beneficialOwnership" :key="owner.name"
-            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div>
-              <div class="text-sm font-medium text-gray-900">{{ owner.name }}</div>
-              <div class="text-sm text-gray-600">{{ owner.role }}</div>
-            </div>
-            <div class="text-sm font-bold text-gray-900">{{ owner.ownership }}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Risk Flags & Markers -->
-      <div class="card">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Risk Flags & Markers</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <div v-for="flag in client?.riskFlags" :key="flag"
-            class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <div class="flex items-center">
-              <svg class="h-5 w-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
-                </path>
-              </svg>
-              <span class="text-sm font-medium text-yellow-800">{{ flag }}</span>
-            </div>
-          </div>
-        </div>
-        <div v-if="!client?.riskFlags || client.riskFlags.length === 0" class="text-center py-4 text-gray-500">
-          No risk flags identified
-        </div>
-      </div>
-    </div>
-
-    <!-- Transaction Behavior -->
-    <div class="card mb-8">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Transaction Behavior (6 Months)</h3>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h4 class="text-md font-medium text-gray-700 mb-3">Volume Trends</h4>
-          <LineChart :data="transactionVolumeData" />
-        </div>
-        <div>
-          <h4 class="text-md font-medium text-gray-700 mb-3">Transaction Count</h4>
-          <LineChart :data="transactionCountData" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Accounts Table -->
-    <div class="card">
-      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">Client Accounts</h3>
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">Click on any account to view transaction details</p>
-      </div>
-      <div v-if="clientAccounts && clientAccounts.length > 0" class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account Type
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account Number
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Currency</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monthly
-                Activity</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="account in clientAccounts" :key="account.id" @click="drillDownToAccount(account)"
-              class="hover:bg-gray-50 cursor-pointer transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center">
-                      <span class="text-sm font-medium text-white">{{ account.type.split(' ')[0][0] }}</span>
-                    </div>
+            <!-- Related Parties -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Related Parties</h4>
+              <div class="space-y-2">
+                <div v-for="party in clientProfile.relatedParties" :key="party.id"
+                  class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-900">{{ party.name }}</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">{{ party.type }}</span>
                   </div>
-                  <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ account.type }}</div>
+                  <button class="text-blue-600 hover:text-blue-800 text-xs">View</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Beneficial Owners -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Beneficial Owners</h4>
+              <div class="space-y-2">
+                <div v-for="owner in clientProfile.beneficialOwners" :key="owner.id"
+                  class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-900">{{ owner.name }}</span>
+                    <span class="text-xs text-gray-500">{{ owner.percentage }}%</span>
+                  </div>
+                  <button class="text-blue-600 hover:text-blue-800 text-xs underline">Profile</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cosigners -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Cosigners</h4>
+              <div class="space-y-2">
+                <div v-for="cosigner in clientProfile.cosigners" :key="cosigner.id"
+                  class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-900">{{ cosigner.name }}</span>
+                    <svg v-if="cosigner.highRisk" class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <button class="text-blue-600 hover:text-blue-800 text-xs">View</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conductors -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Conductors</h4>
+              <div class="space-y-2">
+                <div v-for="conductor in clientProfile.conductors" :key="conductor.id"
+                  class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-900">{{ conductor.name }}</span>
+                    <span v-if="conductor.flagged"
+                      class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full">Flagged</span>
+                  </div>
+                  <button
+                    :class="['text-xs', conductor.flagged ? 'text-red-600 hover:text-red-800 underline' : 'text-blue-600 hover:text-blue-800']">
+                    {{ conductor.flagged ? 'Review' : 'View' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Relationship Management -->
+            <div class="profile-section">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Relationship Management</h4>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Assigned RM:</span>
+                  <button class="text-sm font-medium text-blue-600 hover:text-blue-800">{{ rm?.name }}</button>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Relationship ID:</span>
+                  <button class="text-sm font-medium text-blue-600 hover:text-blue-800 underline">#{{
+                    clientProfile.relationshipId }}</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 📊 Product & Relationship Summary Section (Middle Panel) -->
+      <div class="lg:col-span-5">
+        <div class="card">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">📊 Product & Relationship Summary</h3>
+          </div>
+          <div class="p-6">
+
+            <!-- Product Summary Table -->
+            <div class="mb-6">
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Business
+                        Line</th>
+                      <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider py-3"># Accounts
+                      </th>
+                      <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Total
+                        Balance</th>
+                      <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider py-3">Revenue
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <tr v-for="product in productSummary" :key="product.businessLine">
+                      <td class="py-3 text-sm font-medium text-gray-900">{{ product.businessLine }}</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ product.accounts }}</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ formatCurrency(product.balance) }}</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ formatCurrency(product.revenue) }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="border-t-2 border-gray-300">
+                    <tr class="font-semibold">
+                      <td class="py-3 text-sm text-gray-900">Total</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ totalAccounts }}</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ formatCurrency(totalBalance) }}</td>
+                      <td class="py-3 text-sm text-gray-900 text-right">{{ formatCurrency(totalRevenue) }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            <!-- Balance vs Revenue Chart -->
+            <div class="mb-6">
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Balance vs Revenue Analysis</h4>
+              <div class="h-64">
+                <BarChart v-if="balanceRevenueChartData" :data="balanceRevenueChartData" />
+              </div>
+            </div>
+
+            <!-- Product Usage Gaps -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-3">Product Usage Gaps</h4>
+              <div class="space-y-3">
+                <div v-for="gap in productGaps" :key="gap.product"
+                  class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">{{ gap.product }}</p>
+                    <p class="text-xs text-gray-600">{{ gap.reason }}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium text-green-600">{{ formatCurrency(gap.potentialRevenue) }}</p>
+                    <p class="text-xs text-gray-500">Potential</p>
                   </div>
                 </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ account.number }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(account.balance) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ account.currency }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  {{ account.status }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ account.monthlyActivity[account.monthlyActivity.length - 1].transactions }} transactions
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div v-else class="p-8 text-center text-gray-500">
-        No accounts found for this client
-      </div>
-    </div>
+              </div>
+            </div>
 
-    <!-- Non-Financial Interactions (Future) -->
-    <div class="card mt-8">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Non-Financial Interactions</h3>
-      <div class="bg-gray-100 rounded-lg p-6 text-center">
-        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-          </path>
-        </svg>
-        <p class="text-gray-600">Address changes, channel usage, digital activity</p>
-        <p class="text-sm text-gray-500 mt-2">(In Development)</p>
+          </div>
+        </div>
       </div>
+
+      <!-- 🚨 Risk Flag Panel (Right Panel) -->
+      <div class="lg:col-span-3">
+        <div class="card">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">🚨 Risk Flags</h3>
+          </div>
+          <div class="p-6">
+
+            <!-- Risk Summary -->
+            <div class="mb-10">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-medium text-gray-700">Total Risk Flags</span>
+                <span class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</span>
+              </div>
+              <div class="h-56 mb-8">
+                <DoughnutChart v-if="riskFlagChartData" :data="riskFlagChartData" />
+              </div>
+            </div>
+
+            <!-- Risk Flag Details -->
+            <div class="space-y-3">
+              <div v-for="flag in riskFlags" :key="flag.type" class="risk-flag-item p-3 border rounded-lg"
+                :class="getRiskFlagBorderClass(flag.severity)">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center space-x-2">
+                    <span :class="['w-3 h-3 rounded-full', getRiskFlagColor(flag.severity)]"></span>
+                    <span class="text-sm font-medium text-gray-900">{{ flag.type }}</span>
+                  </div>
+                  <span class="text-sm font-bold text-gray-700">{{ flag.count }}</span>
+                </div>
+                <div class="space-y-1">
+                  <div v-for="source in flag.sources" :key="source" class="text-xs text-gray-600">
+                    • {{ source }}
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span :class="['text-xs px-2 py-1 rounded-full', getSeverityBadgeClass(flag.severity)]">
+                    {{ flag.severity }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Recommendations -->
+            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h4 class="text-sm font-medium text-blue-900 mb-2">Recommended Actions</h4>
+              <div class="space-y-2">
+                <div v-for="action in recommendedActions" :key="action.id" class="flex items-center space-x-2">
+                  <span :class="['w-2 h-2 rounded-full', getActionPriorityColor(action.priority)]"></span>
+                  <span class="text-xs text-blue-800">{{ action.description }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
-<script>
-import { clients, accounts, formatCurrency, getRiskColor } from '../data/mockData.js'
-import LineChart from './charts/LineChart.vue'
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getClientById, getRMById, getRegionById, getMarketById, getMetroById, formatCurrency } from '../data/mockData.js'
+import BarChart from './charts/BarChart.vue'
+import DoughnutChart from './charts/DoughnutChart.vue'
 
-export default {
-  name: 'ClientView',
-  components: {
-    LineChart
-  },
-  props: ['clientId'],
-  data() {
-    return {
-      showAccountDetails: false
-    }
-  },
-  computed: {
-    client() {
-      return this.clients[this.clientId]
-    },
-    hasKRIFlags() {
-      if (!this.client?.riskFlags) return false
-      return this.client.riskFlags.some(flag =>
-        ['High-Cash', 'Crypto', 'MSB', 'Cross-Border', 'PEP', 'Sanctions'].includes(flag)
-      )
-    },
-    hasHighCashFlag() {
-      return this.client?.riskFlags?.includes('High-Cash')
-    },
-    hasCryptoFlag() {
-      return this.client?.riskFlags?.includes('Crypto')
-    },
-    hasMSBFlag() {
-      return this.client?.riskFlags?.includes('MSB')
-    },
-    hasCrossBorderFlag() {
-      return this.client?.riskFlags?.includes('Cross-Border')
-    },
-    hasPEPFlag() {
-      return this.client?.riskFlags?.includes('PEP')
-    },
-    hasSanctionsFlag() {
-      return this.client?.riskFlags?.includes('Sanctions')
-    },
-    clientAccounts() {
-      return accounts[this.clientId] || []
-    },
-    transactionVolumeData() {
-      if (!this.client?.transactionTrends) return { labels: [], datasets: [] }
+const props = defineProps({
+  metroId: { type: String, required: true },
+  marketId: { type: String, required: true },
+  regionId: { type: String, required: true },
+  rmId: { type: String, required: true },
+  relationshipId: { type: String, required: false },
+  clientId: { type: String, required: true }
+})
 
-      return {
-        labels: this.client.transactionTrends.map(trend => trend.month),
-        datasets: [
-          {
-            label: 'Transaction Volume ($M)',
-            data: this.client.transactionTrends.map(trend => trend.volume / 1e6),
-            borderColor: '#00A651',
-            backgroundColor: 'rgba(0, 166, 81, 0.1)',
-            tension: 0.4
-          }
-        ]
-      }
-    },
-    transactionCountData() {
-      if (!this.client?.transactionTrends) return { labels: [], datasets: [] }
+const router = useRouter()
 
-      return {
-        labels: this.client.transactionTrends.map(trend => trend.month),
-        datasets: [
-          {
-            label: 'Transaction Count',
-            data: this.client.transactionTrends.map(trend => trend.count),
-            borderColor: '#3B82F6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            tension: 0.4
-          }
-        ]
-      }
-    }
+// Computed properties for breadcrumb data
+const client = computed(() => getClientById(props.clientId))
+const rm = computed(() => getRMById(props.rmId))
+const region = computed(() => getRegionById(props.regionId))
+const market = computed(() => getMarketById(props.marketId))
+const metro = computed(() => getMetroById(props.metroId))
+
+// Client profile data
+const clientProfile = ref({
+  relatedParties: [
+    { id: 'rp1', name: 'TechCorp Holdings Ltd', type: 'Subsidiary' },
+    { id: 'rp2', name: 'Innovation Ventures LLC', type: 'Affiliate' }
+  ],
+  beneficialOwners: [
+    { id: 'bo1', name: 'John Smith', percentage: 45 },
+    { id: 'bo2', name: 'Sarah Johnson', percentage: 35 },
+    { id: 'bo3', name: 'Investment Fund Alpha', percentage: 20 }
+  ],
+  cosigners: [
+    { id: 'cs1', name: 'Michael Chen', highRisk: false },
+    { id: 'cs2', name: 'Robert Martinez', highRisk: true }
+  ],
+  conductors: [
+    { id: 'cd1', name: 'Emily Rodriguez', flagged: false },
+    { id: 'cd2', name: 'David Thompson', flagged: true }
+  ],
+  relationshipId: 'REL-2024-001'
+})
+
+// Product summary data
+const productSummary = ref([
+  { businessLine: 'Deposit', accounts: 8, balance: 45000000, revenue: 890000 },
+  { businessLine: 'Loan', accounts: 3, balance: 15000000, revenue: 1200000 },
+  { businessLine: 'TMS', accounts: 5, balance: 8500000, revenue: 340000 },
+  { businessLine: 'MS', accounts: 2, balance: 2300000, revenue: 180000 },
+  { businessLine: 'Wealth', accounts: 1, balance: 25000000, revenue: 650000 }
+])
+
+// Product gaps
+const productGaps = ref([
+  { product: 'FX Services', reason: 'High international transaction volume', potentialRevenue: 450000 },
+  { product: 'Trade Finance', reason: 'Import/export business activity', potentialRevenue: 280000 }
+])
+
+// Risk flags
+const riskFlags = ref([
+  {
+    type: 'High Cash Transactions',
+    count: 8,
+    severity: 'Critical',
+    sources: ['ATM deposits >$10K', 'Cash deposits patterns', 'Structured deposits']
   },
-  methods: {
-    formatCurrency,
-    getRiskColor,
-    getRiskFlagColor(flag) {
-      const colors = {
-        'High-Cash': 'bg-yellow-100 text-yellow-800',
-        'Crypto': 'bg-purple-100 text-purple-800',
-        'MSB': 'bg-orange-100 text-orange-800',
-        'Cross-Border': 'bg-blue-100 text-blue-800',
-        'PEP': 'bg-red-100 text-red-800',
-        'Sanctions': 'bg-red-600 text-white'
+  {
+    type: 'Crypto Activity',
+    count: 3,
+    severity: 'Critical',
+    sources: ['Coinbase transfers', 'Crypto exchange wires']
+  },
+  {
+    type: 'Cross-Border Wires',
+    count: 12,
+    severity: 'Review',
+    sources: ['High-risk countries', 'Frequent wire patterns']
+  },
+  {
+    type: 'Industry Risk',
+    count: 2,
+    severity: 'Watch',
+    sources: ['MSB classification', 'Cash-intensive business']
+  }
+])
+
+// Recommended actions
+const recommendedActions = ref([
+  { id: 1, description: 'Escalate for Review - Crypto + Wire combination', priority: 'Critical' },
+  { id: 2, description: 'Enhanced Due Diligence Review', priority: 'High' },
+  { id: 3, description: 'Update Beneficial Owner Documentation', priority: 'Medium' }
+])
+
+// Computed values
+const totalAccounts = computed(() => {
+  return productSummary.value.reduce((sum, product) => sum + product.accounts, 0)
+})
+
+const totalBalance = computed(() => {
+  return productSummary.value.reduce((sum, product) => sum + product.balance, 0)
+})
+
+const clientTier = computed(() => {
+  const balance = totalBalance.value
+  if (balance >= 100000000) return 'Tier 1'
+  if (balance >= 50000000) return 'Tier 2'
+  if (balance >= 20000000) return 'Tier 3'
+  return 'Tier 4'
+})
+
+const clientRiskScore = computed(() => {
+  return (Math.random() * 8 + 2).toFixed(1)
+})
+
+const totalRevenue = computed(() => {
+  return productSummary.value.reduce((sum, product) => sum + product.revenue, 0)
+})
+
+const totalRiskFlags = computed(() => {
+  return riskFlags.value.reduce((sum, flag) => sum + flag.count, 0)
+})
+
+const balanceRevenueChartData = computed(() => {
+  return {
+    labels: productSummary.value.map(p => p.businessLine),
+    datasets: [
+      {
+        label: 'Balance ($M)',
+        data: productSummary.value.map(p => p.balance / 1000000),
+        backgroundColor: 'rgba(107, 142, 35, 0.8)',
+        borderColor: '#6B8E23',
+        borderWidth: 1
+      },
+      {
+        label: 'Revenue ($K)',
+        data: productSummary.value.map(p => p.revenue / 1000),
+        backgroundColor: 'rgba(34, 139, 34, 0.8)',
+        borderColor: '#228B22',
+        borderWidth: 1
       }
-      return colors[flag] || 'bg-gray-100 text-gray-800'
-    },
-    drillDownToAccount(account) {
-      console.log('Navigating to Account:', account.id)
-      this.$router.push({ name: 'Account', params: { accountId: account.id } })
-    },
-    goBackToRM() {
-      // Navigate back to RM view
-      this.$router.push({ name: 'RelationshipManager', params: { rmId: 'rm1' } })
-    },
-    goBackToRelationship() {
-      if (this.client) {
-        this.$router.push({ name: 'Relationship', params: { relationshipId: this.client.relationshipId } })
-      }
-    }
+    ]
+  }
+})
+
+const riskFlagChartData = computed(() => {
+  return {
+    labels: riskFlags.value.map(flag => flag.type),
+    datasets: [{
+      data: riskFlags.value.map(flag => flag.count),
+      backgroundColor: riskFlags.value.map(flag => {
+        switch (flag.severity) {
+          case 'Critical': return '#EF4444'
+          case 'Review': return '#F59E0B'
+          case 'Watch': return '#10B981'
+          default: return '#6B7280'
+        }
+      }),
+      borderWidth: 2,
+      borderColor: '#ffffff'
+    }]
+  }
+})
+
+// Methods
+const getTierBadgeClass = (tier) => {
+  switch (tier?.toLowerCase()) {
+    case 'tier 1': return 'bg-purple-100 text-purple-800'
+    case 'tier 2': return 'bg-blue-100 text-blue-800'
+    case 'tier 3': return 'bg-green-100 text-green-800'
+    case 'tier 4': return 'bg-gray-100 text-gray-800'
+    default: return 'bg-gray-100 text-gray-800'
   }
 }
+
+const getRiskScoreColor = (score) => {
+  if (score >= 8) return 'bg-red-100 text-red-800'
+  if (score >= 6) return 'bg-yellow-100 text-yellow-800'
+  return 'bg-green-100 text-green-800'
+}
+
+const getRiskFlagColor = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'bg-red-500'
+    case 'Review': return 'bg-yellow-500'
+    case 'Watch': return 'bg-green-500'
+    default: return 'bg-gray-500'
+  }
+}
+
+const getRiskFlagBorderClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'border-red-200 bg-red-50'
+    case 'Review': return 'border-yellow-200 bg-yellow-50'
+    case 'Watch': return 'border-green-200 bg-green-50'
+    default: return 'border-gray-200 bg-gray-50'
+  }
+}
+
+const getSeverityBadgeClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'bg-red-100 text-red-800'
+    case 'Review': return 'bg-yellow-100 text-yellow-800'
+    case 'Watch': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getActionPriorityColor = (priority) => {
+  switch (priority) {
+    case 'Critical': return 'bg-red-500'
+    case 'High': return 'bg-orange-500'
+    case 'Medium': return 'bg-yellow-500'
+    default: return 'bg-gray-500'
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  console.log('ClientView mounted for client:', props.clientId)
+  console.log('Client data:', client.value)
+})
 </script>
+
+<style scoped>
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.profile-section {
+  @apply border-b border-gray-100 pb-4 last:border-b-0 last:pb-0;
+}
+
+.risk-flag-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.risk-flag-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+</style>

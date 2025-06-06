@@ -13,7 +13,7 @@
               clip-rule="evenodd" />
           </svg>
           <router-link :to="`/metro/${metroId}`" class="text-gray-500 hover:text-td-green">{{ metro?.name
-            }}</router-link>
+          }}</router-link>
         </li>
         <li class="flex items-center">
           <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
@@ -134,7 +134,7 @@
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-td-green flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{rm.name.split(' ').map(n => n[0]).join('')
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
@@ -156,59 +156,52 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { getRegionById, getMarketById, getMetroById, getRMsByRegion, formatCurrency, getRiskColor } from '../data/mockData.js'
 
-export default {
-  name: 'RegionView',
-  props: {
-    metroId: {
-      type: String,
-      required: true
-    },
-    marketId: {
-      type: String,
-      required: true
-    },
-    regionId: {
-      type: String,
-      required: true
-    }
+const props = defineProps({
+  metroId: {
+    type: String,
+    required: true
   },
-  computed: {
-    region() {
-      return getRegionById(this.regionId)
-    },
-    market() {
-      return getMarketById(this.marketId)
-    },
-    metro() {
-      return getMetroById(this.metroId)
-    },
-    regionRMs() {
-      return getRMsByRegion(this.regionId)
-    }
+  marketId: {
+    type: String,
+    required: true
   },
-  methods: {
-    formatCurrency,
-    getRiskColor,
-    drillDownToRM(rm) {
-      console.log('Navigating to RM:', rm.id)
-      this.$router.push({
-        name: 'RelationshipManager',
-        params: {
-          metroId: this.metroId,
-          marketId: this.marketId,
-          regionId: this.regionId,
-          rmId: rm.id
-        }
-      })
-    }
-  },
-  mounted() {
-    console.log('RegionView mounted for region:', this.regionId)
-    console.log('Region data:', this.region)
-    console.log('Region RMs:', this.regionRMs)
+  regionId: {
+    type: String,
+    required: true
   }
+})
+
+const router = useRouter()
+
+// Computed properties
+const region = computed(() => getRegionById(props.regionId))
+const market = computed(() => getMarketById(props.marketId))
+const metro = computed(() => getMetroById(props.metroId))
+const regionRMs = computed(() => getRMsByRegion(props.regionId))
+
+// Methods
+const drillDownToRM = (rm) => {
+  console.log('Navigating to RM:', rm.id)
+  router.push({
+    name: 'RelationshipManager',
+    params: {
+      metroId: props.metroId,
+      marketId: props.marketId,
+      regionId: props.regionId,
+      rmId: rm.id
+    }
+  })
 }
+
+// Lifecycle
+onMounted(() => {
+  console.log('RegionView mounted for region:', props.regionId)
+  console.log('Region data:', region.value)
+  console.log('Region RMs:', regionRMs.value)
+})
 </script>

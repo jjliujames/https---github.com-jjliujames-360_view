@@ -204,37 +204,33 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import { formatCurrency } from '../data/mockData.js'
 
-export default {
-    name: 'KRIPanel',
-    props: {
-        kri: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            isExpanded: false
-        }
-    },
-    methods: {
-        formatCurrency,
-        toggleExpanded() {
-            this.isExpanded = !this.isExpanded
-        },
-        getRiskLevelColor(level) {
-            const colors = {
-                'Extreme': 'bg-red-600 text-white',
-                'High': 'bg-red-100 text-red-800',
-                'Medium': 'bg-yellow-100 text-yellow-800',
-                'Low': 'bg-green-100 text-green-800'
-            }
-            return colors[level] || 'bg-gray-100 text-gray-800'
-        }
+const props = defineProps({
+    kri: {
+        type: Object,
+        required: true
     }
+})
+
+// Reactive data
+const isExpanded = ref(false)
+
+// Methods
+const toggleExpanded = () => {
+    isExpanded.value = !isExpanded.value
+}
+
+const getRiskLevelColor = (level) => {
+    const colors = {
+        'Extreme': 'bg-red-600 text-white',
+        'High': 'bg-red-100 text-red-800',
+        'Medium': 'bg-yellow-100 text-yellow-800',
+        'Low': 'bg-green-100 text-green-800'
+    }
+    return colors[level] || 'bg-gray-100 text-gray-800'
 }
 </script>
 

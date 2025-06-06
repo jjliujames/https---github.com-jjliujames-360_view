@@ -7,7 +7,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -18,74 +19,78 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend, DoughnutController)
 
-export default {
-  name: 'DoughnutChart',
-  props: {
-    data: {
-      type: Object,
-      required: true
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true
   },
-  computed: {
-    hasData() {
-      return this.data && this.data.datasets && this.data.datasets.length > 0
-    }
-  },
-  mounted() {
-    if (this.hasData) {
-      this.createChart()
-    }
-  },
-  beforeUnmount() {
-    if (this.chart) {
-      this.chart.destroy()
-    }
-  },
-  watch: {
-    data: {
-      handler(newData) {
-        if (this.chart) {
-          this.chart.destroy()
-        }
-        if (this.hasData) {
-          this.$nextTick(() => {
-            this.createChart()
-          })
-        }
-      },
-      deep: true
-    }
-  },
-  methods: {
-    createChart() {
-      try {
-        const ctx = this.$refs.chartCanvas?.getContext('2d')
-        if (!ctx) return
-        
-        this.chart = new ChartJS(ctx, {
-          type: 'doughnut',
-          data: this.data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom',
-              }
-            },
-            ...this.options
+  options: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
+const chartCanvas = ref(null)
+let chart = null
+
+// Computed
+const hasData = computed(() => {
+  return props.data && props.data.datasets && props.data.datasets.length > 0
+})
+
+// Methods
+const createChart = () => {
+  try {
+    const ctx = chartCanvas.value?.getContext('2d')
+    if (!ctx) return
+
+    chart = new ChartJS(ctx, {
+      type: 'doughnut',
+      data: props.data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            align: 'start',
+            labels: {
+              textAlign: 'left'
+            }
           }
-        })
-      } catch (error) {
-        console.error('Error creating chart:', error)
+        },
+        ...props.options
       }
-    }
+    })
+  } catch (error) {
+    console.error('Error creating chart:', error)
   }
 }
+
+// Watchers
+watch(() => props.data, () => {
+  if (chart) {
+    chart.destroy()
+  }
+  if (hasData.value) {
+    nextTick(() => {
+      createChart()
+    })
+  }
+}, { deep: true })
+
+// Lifecycle
+onMounted(() => {
+  if (hasData.value) {
+    createChart()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (chart) {
+    chart.destroy()
+  }
+})
 </script>
 
 <style scoped>
@@ -94,4 +99,4 @@ export default {
   height: 250px;
   width: 100%;
 }
-</style> 
+</style>

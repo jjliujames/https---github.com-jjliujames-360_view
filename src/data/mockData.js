@@ -1387,6 +1387,136 @@ export const clients = {
         riskFlags: ['Cross-Border', 'Crypto'],
         lastContact: '2024-01-12'
     },
+    'client-028': {
+        id: 'client-028',
+        name: 'European Auto Group',
+        industry: 'Automotive',
+        location: 'Berlin, Germany',
+        portfolioValue: 110000000,
+        annualRevenue: 8500000,
+        riskFlags: ['Cross-Border'],
+        lastContact: '2024-01-20'
+    },
+    'client-029': {
+        id: 'client-029',
+        name: 'Pharma Research Inc',
+        industry: 'Pharmaceuticals',
+        location: 'Zurich, Switzerland',
+        portfolioValue: 78000000,
+        annualRevenue: 5900000,
+        riskFlags: ['Cross-Border', 'High-Cash'],
+        lastContact: '2024-01-18'
+    },
+    'client-030': {
+        id: 'client-030',
+        name: 'Northeast Banking Corp',
+        industry: 'Financial Services',
+        location: 'Philadelphia, PA',
+        portfolioValue: 145000000,
+        annualRevenue: 11200000,
+        riskFlags: ['MSB', 'High-Cash'],
+        lastContact: '2024-01-22'
+    },
+    'client-031': {
+        id: 'client-031',
+        name: 'Liberty Manufacturing',
+        industry: 'Manufacturing',
+        location: 'Philadelphia, PA',
+        portfolioValue: 89000000,
+        annualRevenue: 6700000,
+        riskFlags: [],
+        lastContact: '2024-01-19'
+    },
+    'client-032': {
+        id: 'client-032',
+        name: 'Philadelphia Tech Solutions',
+        industry: 'Technology',
+        location: 'Philadelphia, PA',
+        portfolioValue: 92000000,
+        annualRevenue: 7100000,
+        riskFlags: ['Crypto'],
+        lastContact: '2024-01-21'
+    },
+    'client-033': {
+        id: 'client-033',
+        name: 'Regional Healthcare Group',
+        industry: 'Healthcare',
+        location: 'Philadelphia, PA',
+        portfolioValue: 67000000,
+        annualRevenue: 5100000,
+        riskFlags: ['High-Cash'],
+        lastContact: '2024-01-17'
+    },
+    'client-034': {
+        id: 'client-034',
+        name: 'Metro Construction LLC',
+        industry: 'Construction',
+        location: 'Philadelphia, PA',
+        portfolioValue: 54000000,
+        annualRevenue: 4200000,
+        riskFlags: ['High-Cash'],
+        lastContact: '2024-01-15'
+    },
+    'client-035': {
+        id: 'client-035',
+        name: 'Miami Trading Partners',
+        industry: 'Trading',
+        location: 'Miami, FL',
+        portfolioValue: 98000000,
+        annualRevenue: 7600000,
+        riskFlags: ['Cross-Border', 'MSB'],
+        lastContact: '2024-01-23'
+    },
+    'client-036': {
+        id: 'client-036',
+        name: 'Latin America Holdings',
+        industry: 'Investment',
+        location: 'Miami, FL',
+        portfolioValue: 134000000,
+        annualRevenue: 10100000,
+        riskFlags: ['Cross-Border', 'High-Cash', 'PEP'],
+        lastContact: '2024-01-20'
+    },
+    'client-037': {
+        id: 'client-037',
+        name: 'Caribbean Logistics',
+        industry: 'Logistics',
+        location: 'Miami, FL',
+        portfolioValue: 76000000,
+        annualRevenue: 5800000,
+        riskFlags: ['Cross-Border'],
+        lastContact: '2024-01-18'
+    },
+    'client-038': {
+        id: 'client-038',
+        name: 'Ontario Manufacturing Corp',
+        industry: 'Manufacturing',
+        location: 'Toronto, ON',
+        portfolioValue: 112000000,
+        annualRevenue: 8400000,
+        riskFlags: ['Cross-Border'],
+        lastContact: '2024-01-24'
+    },
+    'client-039': {
+        id: 'client-039',
+        name: 'Canadian Energy Solutions',
+        industry: 'Energy',
+        location: 'Toronto, ON',
+        portfolioValue: 156000000,
+        annualRevenue: 11800000,
+        riskFlags: ['Cross-Border', 'High-Cash'],
+        lastContact: '2024-01-22'
+    },
+    'client-040': {
+        id: 'client-040',
+        name: 'Montreal Financial Group',
+        industry: 'Financial Services',
+        location: 'Montreal, QC',
+        portfolioValue: 87000000,
+        annualRevenue: 6500000,
+        riskFlags: ['Cross-Border', 'MSB'],
+        lastContact: '2024-01-21'
+    },
     'rel1': [
         {
             id: 'client1',
@@ -1548,4 +1678,5 @@ export const getMarketById = (marketId) => markets.find(m => m.id === marketId)
 export const getRegionById = (regionId) => regions.find(r => r.id === regionId)
 export const getRMById = (rmId) => relationshipManagers.find(rm => rm.id === rmId)
 export const getRegionsByMarket = (marketId) => regions.filter(r => r.marketId === marketId)
-export const getRMsByRegion = (regionId) => relationshipManagers.filter(rm => rm.regionId === regionId) 
+export const getRMsByRegion = (regionId) => relationshipManagers.filter(rm => rm.regionId === regionId)
+export const getClientById = (clientId) => clients[clientId] 

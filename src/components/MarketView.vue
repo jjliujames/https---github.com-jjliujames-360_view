@@ -13,7 +13,7 @@
               clip-rule="evenodd" />
           </svg>
           <router-link :to="`/metro/${metroId}`" class="text-gray-500 hover:text-td-green">{{ metro?.name
-            }}</router-link>
+          }}</router-link>
         </li>
         <li class="flex items-center">
           <svg class="h-4 w-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
@@ -52,9 +52,9 @@
             </svg>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-red-800">Open SARs</p>
-            <p class="text-2xl font-bold text-red-900">{{ riskMetrics.openSARs }}</p>
-            <p class="text-xs text-red-600">{{ riskMetrics.newSARsThisWeek }} new this week</p>
+            <p class="text-sm font-medium text-red-800">Typologies Identified</p>
+            <p class="text-2xl font-bold text-red-900">{{ riskMetrics.typologiesIdentified }}</p>
+            <p class="text-xs text-red-600">{{ riskMetrics.newTypologiesThisWeek }} new this week</p>
           </div>
         </div>
       </div>
@@ -69,9 +69,9 @@
             </svg>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-orange-800">Active Investigations</p>
-            <p class="text-2xl font-bold text-orange-900">{{ riskMetrics.activeInvestigations }}</p>
-            <p class="text-xs text-orange-600">{{ riskMetrics.escalatedInvestigations }} escalated</p>
+            <p class="text-sm font-medium text-orange-800">High Volume Patterns</p>
+            <p class="text-2xl font-bold text-orange-900">{{ riskMetrics.highVolumePatterns }}</p>
+            <p class="text-xs text-orange-600">{{ riskMetrics.volumeAlertsToday }} alerts today</p>
           </div>
         </div>
       </div>
@@ -161,15 +161,15 @@
         </div>
       </div>
 
-      <!-- Investigation Status -->
+      <!-- Typology Patterns -->
       <div class="card">
         <div class="p-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Investigation Status</h3>
-          <p class="text-sm text-gray-500">Current case breakdown</p>
+          <h3 class="text-lg font-medium text-gray-900">Typology Patterns</h3>
+          <p class="text-sm text-gray-500">Risk pattern distribution</p>
         </div>
         <div class="p-4">
           <div class="h-48">
-            <DoughnutChart v-if="investigationStatusData" :data="investigationStatusData" />
+            <DoughnutChart v-if="typologyPatternData" :data="typologyPatternData" />
             <div v-else class="h-full bg-gray-100 rounded-lg flex items-center justify-center">
               <span class="text-gray-500">Loading chart...</span>
             </div>
@@ -196,9 +196,9 @@
               :class="['px-3 py-1 text-xs rounded-full', clientFilter === 'escalate' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700']">
               Escalate ({{ getClientsWithAction('Escalate for Review').length }})
             </button>
-            <button @click="filterClients('investigate')"
-              :class="['px-3 py-1 text-xs rounded-full', clientFilter === 'investigate' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700']">
-              Investigate ({{ getClientsWithAction('Auto Investigation').length }})
+            <button @click="filterClients('review')"
+              :class="['px-3 py-1 text-xs rounded-full', clientFilter === 'review' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700']">
+              Review Patterns ({{ getClientsWithAction('Pattern Review').length }})
             </button>
             <button @click="filterClients('upsell')"
               :class="['px-3 py-1 text-xs rounded-full', clientFilter === 'upsell' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700']">
@@ -249,7 +249,7 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <span class="text-sm font-bold" :class="getRiskScoreColor(client.riskScore)">{{ client.riskScore
-                    }}</span>
+                  }}</span>
                   <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
                     <div class="bg-red-500 h-2 rounded-full" :style="{ width: (client.riskScore / 10 * 100) + '%' }">
                     </div>
@@ -364,7 +364,7 @@
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{region.name.split(' ').map(n => n[0]).join('')
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
@@ -392,281 +392,285 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { getMarketById, getRegionsByMarket, formatCurrency, getRiskColor, getMetroById } from '../data/mockData.js'
 import BarChart from './charts/BarChart.vue'
 import LineChart from './charts/LineChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 
-export default {
-  name: 'MarketView',
-  components: {
-    BarChart,
-    LineChart,
-    DoughnutChart
+const props = defineProps({
+  metroId: {
+    type: String,
+    required: true
   },
-  props: {
-    metroId: {
-      type: String,
-      required: true
-    },
-    marketId: {
-      type: String,
-      required: true
-    }
-  },
-  data() {
-    return {
-      clientFilter: 'all',
-      riskMetrics: {
-        openSARs: 23,
-        newSARsThisWeek: 4,
-        activeInvestigations: 18,
-        escalatedInvestigations: 3,
-        alerts90Days: 156,
-        alertsToday: 8,
-        reviewsPending: 42,
-        overdue: 7,
-        avgRiskScore: 6.2,
-        highRiskClients: 15
-      },
-      flaggedClients: [
-        {
-          id: 'client-fl-001',
-          name: 'Global Trading LLC',
-          industry: 'Trading',
-          riskScore: 9.2,
-          riskTypes: ['Cross-Border', 'High-Cash', 'PEP'],
-          lastActivity: '2 days ago',
-          alerts90Days: 5,
-          recommendedAction: 'Escalate for Review'
-        },
-        {
-          id: 'client-fl-002',
-          name: 'Crypto Exchange Corp',
-          industry: 'Financial Services',
-          riskScore: 8.7,
-          riskTypes: ['Crypto', 'MSB', 'High-Volume'],
-          lastActivity: '1 week ago',
-          alerts90Days: 4,
-          recommendedAction: 'Auto Investigation'
-        },
-        {
-          id: 'client-fl-003',
-          name: 'Manufacturing Plus Inc',
-          industry: 'Manufacturing',
-          riskScore: 4.2,
-          riskTypes: ['Cross-Border'],
-          lastActivity: '3 days ago',
-          alerts90Days: 1,
-          recommendedAction: 'Upsell Opportunity'
-        },
-        {
-          id: 'client-fl-004',
-          name: 'Energy Dynamics LLC',
-          industry: 'Energy',
-          riskScore: 8.9,
-          riskTypes: ['Sanctions', 'High-Cash'],
-          lastActivity: '12 hours ago',
-          alerts90Days: 6,
-          recommendedAction: 'Escalate for Review'
-        },
-        {
-          id: 'client-fl-005',
-          name: 'Caribbean Holdings SA',
-          industry: 'Investment',
-          riskScore: 8.4,
-          riskTypes: ['Offshore', 'PEP', 'High-Cash'],
-          lastActivity: '4 days ago',
-          alerts90Days: 3,
-          recommendedAction: 'Auto Investigation'
-        },
-        {
-          id: 'client-fl-006',
-          name: 'Tech Solutions Corp',
-          industry: 'Technology',
-          riskScore: 3.8,
-          riskTypes: ['Cross-Border'],
-          lastActivity: '1 day ago',
-          alerts90Days: 0,
-          recommendedAction: 'Upsell Opportunity'
-        }
-      ],
-      productGaps: [
-        { name: 'Treasury Management', eligibleClients: 145, currentAdoption: 89, gapPercentage: 39, revenuePotential: 3400000, priority: 'High' },
-        { name: 'FX Services', eligibleClients: 178, currentAdoption: 134, gapPercentage: 25, revenuePotential: 2800000, priority: 'High' },
-        { name: 'Commercial Lending', eligibleClients: 120, currentAdoption: 98, gapPercentage: 18, revenuePotential: 4200000, priority: 'Medium' },
-        { name: 'Trade Finance', eligibleClients: 89, currentAdoption: 76, gapPercentage: 15, revenuePotential: 1800000, priority: 'Medium' },
-        { name: 'Investment Services', eligibleClients: 156, currentAdoption: 142, gapPercentage: 9, revenuePotential: 2100000, priority: 'Low' }
-      ]
-    }
-  },
-  computed: {
-    market() {
-      return getMarketById(this.marketId)
-    },
-    metro() {
-      return getMetroById(this.metroId)
-    },
-    marketRegions() {
-      return getRegionsByMarket(this.marketId)
-    },
-    filteredClients() {
-      if (this.clientFilter === 'all') return this.flaggedClients
-      return this.flaggedClients.filter(client => {
-        switch (this.clientFilter) {
-          case 'escalate': return client.recommendedAction === 'Escalate for Review'
-          case 'investigate': return client.recommendedAction === 'Auto Investigation'
-          case 'upsell': return client.recommendedAction === 'Upsell Opportunity'
-          default: return true
-        }
-      })
-    },
-    riskHistogramData() {
-      return {
-        labels: ['0-2', '2-4', '4-6', '6-8', '8-10'],
-        datasets: [{
-          label: 'Number of Clients',
-          data: [12, 45, 89, 67, 23],
-          backgroundColor: [
-            'rgba(34, 197, 94, 0.8)',
-            'rgba(59, 130, 246, 0.8)',
-            'rgba(245, 158, 11, 0.8)',
-            'rgba(239, 68, 68, 0.8)',
-            'rgba(127, 29, 29, 0.8)'
-          ],
-          borderColor: [
-            '#22C55E',
-            '#3B82F6',
-            '#F59E0B',
-            '#EF4444',
-            '#7F1D1D'
-          ],
-          borderWidth: 1
-        }]
-      }
-    },
-    alertTrendData() {
-      const months = ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024']
-      const alerts = [89, 124, 156, 142, 178, 156]
+  marketId: {
+    type: String,
+    required: true
+  }
+})
 
-      return {
-        labels: months,
-        datasets: [{
-          label: 'Total Alerts',
-          data: alerts,
-          borderColor: '#EF4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          tension: 0.4,
-          fill: true
-        }]
-      }
-    },
-    investigationStatusData() {
-      return {
-        labels: ['Open', 'In Progress', 'Under Review', 'Closed'],
-        datasets: [{
-          data: [8, 12, 6, 18],
-          backgroundColor: [
-            '#EF4444',
-            '#F59E0B',
-            '#3B82F6',
-            '#10B981'
-          ],
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }]
-      }
-    }
+const router = useRouter()
+
+// Reactive data
+const clientFilter = ref('all')
+const riskMetrics = reactive({
+  typologiesIdentified: 31,
+  newTypologiesThisWeek: 6,
+  highVolumePatterns: 24,
+  volumeAlertsToday: 5,
+  alerts90Days: 156,
+  alertsToday: 8,
+  reviewsPending: 42,
+  overdue: 7,
+  avgRiskScore: 6.2,
+  highRiskClients: 15
+})
+
+const flaggedClients = ref([
+  {
+    id: 'client-fl-001',
+    name: 'Global Trading LLC',
+    industry: 'Trading',
+    riskScore: 9.2,
+    riskTypes: ['Cross-Border', 'High-Cash', 'PEP'],
+    lastActivity: '2 days ago',
+    alerts90Days: 5,
+    recommendedAction: 'Escalate for Review'
   },
-  methods: {
-    formatCurrency,
-    getRiskColor,
-    drillDownToRegion(region) {
-      console.log('Navigating to Region:', region.id)
-      this.$router.push({
-        name: 'Region',
-        params: {
-          metroId: this.metroId,
-          marketId: this.marketId,
-          regionId: region.id
-        }
-      })
-    },
-    filterClients(filter) {
-      this.clientFilter = filter
-    },
-    getClientsWithAction(action) {
-      return this.flaggedClients.filter(client => client.recommendedAction === action)
-    },
-    getClientRowClass(action) {
-      switch (action) {
-        case 'Escalate for Review': return 'bg-red-50 border-l-4 border-red-500'
-        case 'Auto Investigation': return 'bg-orange-50 border-l-4 border-orange-500'
-        case 'Upsell Opportunity': return 'bg-green-50 border-l-4 border-green-500'
-        default: return ''
-      }
-    },
-    getActionIconClass(action) {
-      switch (action) {
-        case 'Escalate for Review': return 'bg-red-100 text-red-800'
-        case 'Auto Investigation': return 'bg-orange-100 text-orange-800'
-        case 'Upsell Opportunity': return 'bg-green-100 text-green-800'
-        default: return 'bg-gray-100 text-gray-800'
-      }
-    },
-    getActionIcon(action) {
-      switch (action) {
-        case 'Escalate for Review': return '!'
-        case 'Auto Investigation': return '?'
-        case 'Upsell Opportunity': return '$'
-        default: return 'i'
-      }
-    },
-    getRiskTypeClass(riskType) {
-      const classes = {
-        'Cross-Border': 'bg-blue-100 text-blue-800',
-        'High-Cash': 'bg-red-100 text-red-800',
-        'PEP': 'bg-purple-100 text-purple-800',
-        'Crypto': 'bg-yellow-100 text-yellow-800',
-        'MSB': 'bg-orange-100 text-orange-800',
-        'High-Volume': 'bg-indigo-100 text-indigo-800',
-        'Sanctions': 'bg-red-100 text-red-800',
-        'Offshore': 'bg-gray-100 text-gray-800'
-      }
-      return classes[riskType] || 'bg-gray-100 text-gray-800'
-    },
-    getRiskScoreColor(score) {
-      if (score >= 8) return 'text-red-600'
-      if (score >= 6) return 'text-yellow-600'
-      return 'text-green-600'
-    },
-    getRecommendedActionClass(action) {
-      switch (action) {
-        case 'Escalate for Review': return 'bg-red-100 text-red-800'
-        case 'Auto Investigation': return 'bg-orange-100 text-orange-800'
-        case 'Upsell Opportunity': return 'bg-green-100 text-green-800'
-        default: return 'bg-gray-100 text-gray-800'
-      }
-    },
-    getPriorityBadgeClass(priority) {
-      switch (priority?.toLowerCase()) {
-        case 'high': return 'bg-red-100 text-red-800'
-        case 'medium': return 'bg-yellow-100 text-yellow-800'
-        case 'low': return 'bg-green-100 text-green-800'
-        default: return 'bg-gray-100 text-gray-800'
-      }
-    },
-    getRandomAlertCount() {
-      return Math.floor(Math.random() * 15) + 1
-    }
+  {
+    id: 'client-fl-002',
+    name: 'Crypto Exchange Corp',
+    industry: 'Financial Services',
+    riskScore: 8.7,
+    riskTypes: ['Crypto', 'MSB', 'High-Volume'],
+    lastActivity: '1 week ago',
+    alerts90Days: 4,
+    recommendedAction: 'Pattern Review'
   },
-  mounted() {
-    console.log('MarketView mounted for market:', this.marketId)
-    console.log('Market data:', this.market)
-    console.log('Market regions:', this.marketRegions)
+  {
+    id: 'client-fl-003',
+    name: 'Manufacturing Plus Inc',
+    industry: 'Manufacturing',
+    riskScore: 4.2,
+    riskTypes: ['Cross-Border'],
+    lastActivity: '3 days ago',
+    alerts90Days: 1,
+    recommendedAction: 'Upsell Opportunity'
+  },
+  {
+    id: 'client-fl-004',
+    name: 'Energy Dynamics LLC',
+    industry: 'Energy',
+    riskScore: 8.9,
+    riskTypes: ['Sanctions', 'High-Cash'],
+    lastActivity: '12 hours ago',
+    alerts90Days: 6,
+    recommendedAction: 'Escalate for Review'
+  },
+  {
+    id: 'client-fl-005',
+    name: 'Caribbean Holdings SA',
+    industry: 'Investment',
+    riskScore: 8.4,
+    riskTypes: ['Offshore', 'PEP', 'High-Cash'],
+    lastActivity: '4 days ago',
+    alerts90Days: 3,
+    recommendedAction: 'Pattern Review'
+  },
+  {
+    id: 'client-fl-006',
+    name: 'Tech Solutions Corp',
+    industry: 'Technology',
+    riskScore: 3.8,
+    riskTypes: ['Cross-Border'],
+    lastActivity: '1 day ago',
+    alerts90Days: 0,
+    recommendedAction: 'Upsell Opportunity'
+  }
+])
+
+const productGaps = ref([
+  { name: 'Treasury Management', eligibleClients: 145, currentAdoption: 89, gapPercentage: 39, revenuePotential: 3400000, priority: 'High' },
+  { name: 'FX Services', eligibleClients: 178, currentAdoption: 134, gapPercentage: 25, revenuePotential: 2800000, priority: 'High' },
+  { name: 'Commercial Lending', eligibleClients: 120, currentAdoption: 98, gapPercentage: 18, revenuePotential: 4200000, priority: 'Medium' },
+  { name: 'Trade Finance', eligibleClients: 89, currentAdoption: 76, gapPercentage: 15, revenuePotential: 1800000, priority: 'Medium' },
+  { name: 'Investment Services', eligibleClients: 156, currentAdoption: 142, gapPercentage: 9, revenuePotential: 2100000, priority: 'Low' }
+])
+
+// Computed properties
+const market = computed(() => getMarketById(props.marketId))
+const metro = computed(() => getMetroById(props.metroId))
+const marketRegions = computed(() => getRegionsByMarket(props.marketId))
+
+const filteredClients = computed(() => {
+  if (clientFilter.value === 'all') return flaggedClients.value
+  return flaggedClients.value.filter(client => {
+    switch (clientFilter.value) {
+      case 'escalate': return client.recommendedAction === 'Escalate for Review'
+      case 'review': return client.recommendedAction === 'Pattern Review'
+      case 'upsell': return client.recommendedAction === 'Upsell Opportunity'
+      default: return true
+    }
+  })
+})
+
+const riskHistogramData = computed(() => {
+  return {
+    labels: ['0-2', '2-4', '4-6', '6-8', '8-10'],
+    datasets: [{
+      label: 'Number of Clients',
+      data: [12, 45, 89, 67, 23],
+      backgroundColor: [
+        'rgba(34, 197, 94, 0.8)',
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(127, 29, 29, 0.8)'
+      ],
+      borderColor: [
+        '#22C55E',
+        '#3B82F6',
+        '#F59E0B',
+        '#EF4444',
+        '#7F1D1D'
+      ],
+      borderWidth: 1
+    }]
+  }
+})
+
+const alertTrendData = computed(() => {
+  const months = ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024']
+  const alerts = [89, 124, 156, 142, 178, 156]
+
+  return {
+    labels: months,
+    datasets: [{
+      label: 'Total Alerts',
+      data: alerts,
+      borderColor: '#EF4444',
+      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+      tension: 0.4,
+      fill: true
+    }]
+  }
+})
+
+const typologyPatternData = computed(() => {
+  return {
+    labels: ['Structuring', 'Trade-Based ML', 'Cash Intensive', 'Digital Assets'],
+    datasets: [{
+      data: [12, 8, 15, 9],
+      backgroundColor: [
+        '#EF4444',
+        '#F59E0B',
+        '#3B82F6',
+        '#10B981'
+      ],
+      borderWidth: 2,
+      borderColor: '#ffffff'
+    }]
+  }
+})
+
+// Methods
+const drillDownToRegion = (region) => {
+  console.log('Navigating to Region:', region.id)
+  router.push({
+    name: 'Region',
+    params: {
+      metroId: props.metroId,
+      marketId: props.marketId,
+      regionId: region.id
+    }
+  })
+}
+
+const filterClients = (filter) => {
+  clientFilter.value = filter
+}
+
+const getClientsWithAction = (action) => {
+  return flaggedClients.value.filter(client => client.recommendedAction === action)
+}
+
+const getClientRowClass = (action) => {
+  switch (action) {
+    case 'Escalate for Review': return 'bg-red-50 border-l-4 border-red-500'
+    case 'Pattern Review': return 'bg-orange-50 border-l-4 border-orange-500'
+    case 'Upsell Opportunity': return 'bg-green-50 border-l-4 border-green-500'
+    default: return ''
   }
 }
+
+const getActionIconClass = (action) => {
+  switch (action) {
+    case 'Escalate for Review': return 'bg-red-100 text-red-800'
+    case 'Pattern Review': return 'bg-orange-100 text-orange-800'
+    case 'Upsell Opportunity': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getActionIcon = (action) => {
+  switch (action) {
+    case 'Escalate for Review': return '!'
+    case 'Pattern Review': return '🔍'
+    case 'Upsell Opportunity': return '$'
+    default: return 'i'
+  }
+}
+
+const getRiskTypeClass = (riskType) => {
+  const classes = {
+    'Cross-Border': 'bg-blue-100 text-blue-800',
+    'High-Cash': 'bg-red-100 text-red-800',
+    'PEP': 'bg-purple-100 text-purple-800',
+    'Crypto': 'bg-yellow-100 text-yellow-800',
+    'MSB': 'bg-orange-100 text-orange-800',
+    'High-Volume': 'bg-indigo-100 text-indigo-800',
+    'Sanctions': 'bg-red-100 text-red-800',
+    'Offshore': 'bg-gray-100 text-gray-800'
+  }
+  return classes[riskType] || 'bg-gray-100 text-gray-800'
+}
+
+const getRiskScoreColor = (score) => {
+  if (score >= 8) return 'text-red-600'
+  if (score >= 6) return 'text-yellow-600'
+  return 'text-green-600'
+}
+
+const getRecommendedActionClass = (action) => {
+  switch (action) {
+    case 'Escalate for Review': return 'bg-red-100 text-red-800'
+    case 'Pattern Review': return 'bg-orange-100 text-orange-800'
+    case 'Upsell Opportunity': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getPriorityBadgeClass = (priority) => {
+  switch (priority?.toLowerCase()) {
+    case 'high': return 'bg-red-100 text-red-800'
+    case 'medium': return 'bg-yellow-100 text-yellow-800'
+    case 'low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getRandomAlertCount = () => {
+  return Math.floor(Math.random() * 15) + 1
+}
+
+// Lifecycle
+onMounted(() => {
+  console.log('MarketView mounted for market:', props.marketId)
+  console.log('Market data:', market.value)
+  console.log('Market regions:', marketRegions.value)
+})
 </script>
 
 <style scoped>

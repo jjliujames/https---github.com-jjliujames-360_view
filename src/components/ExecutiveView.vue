@@ -298,7 +298,7 @@
             <div class="flex justify-between items-start mb-3">
               <h4 class="text-sm font-medium text-gray-900 capitalize">{{ key.replace(/([A-Z])/g, ' $1').trim() }}</h4>
               <span class="text-lg font-bold" :class="getPenetrationColor(product.penetration)">{{ product.penetration
-              }}%</span>
+                }}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div class="bg-td-green h-2 rounded-full" :style="{ width: product.penetration + '%' }"></div>
@@ -457,14 +457,14 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="metro in metros" :key="metro.id" @click="drillDownToMetro(metro)"
+            <tr v-for="metro in metrosList" :key="metro.id" @click="drillDownToMetro(metro)"
               class="hover:bg-gray-50 cursor-pointer transition-colors">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-td-green flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{metro.name.split(' ').map(n => n[0]).join('')
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
@@ -489,185 +489,191 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { executiveMetrics, metros, formatCurrency, getRiskColor } from '../data/mockData.js'
 import BarChart from './charts/BarChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 import KRIPanel from './KRIPanel.vue'
 
-export default {
-  name: 'ExecutiveView',
-  components: {
-    BarChart,
-    DoughnutChart,
-    KRIPanel
-  },
-  data() {
-    return {
-      metrics: executiveMetrics,
-      metros: metros,
-      filters: {
-        metro: '',
-        market: '',
-        region: '',
-        vertical: '',
-        rvp: '',
-        year: '2024',
-        monthRange: 'last-6'
-      },
-      metricViewType: 'yoy',
-      metricChanges: {
-        portfolio: {
-          yoy: 12.5,
-          mom: 2.3
-        },
-        clients: {
-          yoy: 8.7,
-          mom: 1.2
-        },
-        revenue: {
-          yoy: 15.2,
-          mom: 3.1
-        }
-      }
-    }
-  },
-  computed: {
-    revenueChartData() {
-      try {
-        if (!this.metrics?.monthlyTrends) return null
-        return {
-          labels: this.metrics.monthlyTrends.map(trend => trend.month),
-          datasets: [
-            {
-              label: 'Revenue ($M)',
-              data: this.metrics.monthlyTrends.map(trend => trend.revenue / 1e6),
-              backgroundColor: 'rgba(107, 142, 35, 0.8)',
-              borderColor: '#6B8E23',
-              borderWidth: 1
-            }
-          ]
-        }
-      } catch (error) {
-        console.error('Error creating revenue chart data:', error)
-        return null
-      }
-    },
-    portfolioTrendData() {
-      try {
-        if (!this.metrics?.portfolioTrend) return null
-        return {
-          labels: this.metrics.portfolioTrend.map(trend => trend.month),
-          datasets: [
-            {
-              label: 'Portfolio Value ($B)',
-              data: this.metrics.portfolioTrend.map(trend => trend.portfolioValue / 1e9),
-              backgroundColor: 'rgba(34, 139, 34, 0.8)',
-              borderColor: '#228B22',
-              borderWidth: 1
-            }
-          ]
-        }
-      } catch (error) {
-        console.error('Error creating portfolio trend data:', error)
-        return null
-      }
-    },
-    clientGrowthData() {
-      try {
-        if (!this.metrics?.clientGrowth) return null
-        return {
-          labels: this.metrics.clientGrowth.map(trend => trend.month),
-          datasets: [
-            {
-              label: 'Client Count',
-              data: this.metrics.clientGrowth.map(trend => trend.clientCount),
-              backgroundColor: 'rgba(50, 205, 50, 0.8)',
-              borderColor: '#32CD32',
-              borderWidth: 1
-            }
-          ]
-        }
-      } catch (error) {
-        console.error('Error creating client growth data:', error)
-        return null
-      }
-    }
-  },
-  methods: {
-    formatCurrency,
-    getRiskColor,
-    drillDownToMetro(metro) {
-      console.log('Navigating to Metro:', metro.id)
-      this.$router.push({ name: 'Metro', params: { metroId: metro.id } })
-    },
-    resetFilters() {
-      this.filters = {
-        metro: '',
-        market: '',
-        region: '',
-        vertical: '',
-        rvp: '',
-        year: '2024',
-        monthRange: 'last-6'
-      }
-    },
-    toggleMetricView(metric) {
-      this.metricViewType = this.metricViewType === 'yoy' ? 'mom' : 'yoy'
-    },
-    getChangeColor(change) {
-      if (change > 0) return 'text-green-600'
-      if (change < 0) return 'text-red-600'
-      return 'text-gray-500'
-    },
-    getMetricChange(metric) {
-      const change = this.metricChanges[metric]?.[this.metricViewType]
-      if (change === undefined) return 'N/A'
+const router = useRouter()
 
-      const sign = change > 0 ? '+' : ''
-      return `${sign}${change.toFixed(1)}%`
-    },
-    getPenetrationColor(penetration) {
-      if (penetration >= 80) return 'text-green-600'
-      if (penetration >= 60) return 'text-yellow-600'
-      if (penetration >= 40) return 'text-orange-600'
-      return 'text-red-600'
-    },
-    getOpportunityScoreClass(score) {
-      if (score >= 8.5) return 'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
-      if (score >= 7.5) return 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200'
-      if (score >= 6.5) return 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'
-      return 'bg-gradient-to-br from-green-50 to-green-100 border-green-200'
-    },
-    getScoreColor(score) {
-      if (score >= 8.5) return 'text-red-600'
-      if (score >= 7.5) return 'text-orange-600'
-      if (score >= 6.5) return 'text-yellow-600'
-      return 'text-green-600'
-    },
-    getPriorityClass(priority) {
-      switch (priority.toLowerCase()) {
-        case 'high': return 'bg-red-50 border-red-200'
-        case 'medium': return 'bg-yellow-50 border-yellow-200'
-        case 'low': return 'bg-green-50 border-green-200'
-        default: return 'bg-gray-50 border-gray-200'
-      }
-    },
-    getPriorityBadgeClass(priority) {
-      switch (priority.toLowerCase()) {
-        case 'high': return 'bg-red-100 text-red-800'
-        case 'medium': return 'bg-yellow-100 text-yellow-800'
-        case 'low': return 'bg-green-100 text-green-800'
-        default: return 'bg-gray-100 text-gray-800'
-      }
-    }
+// Reactive data
+const metrics = ref(executiveMetrics)
+const metrosList = ref(metros)
+const metricViewType = ref('yoy')
+
+const filters = reactive({
+  metro: '',
+  market: '',
+  region: '',
+  vertical: '',
+  rvp: '',
+  year: '2024',
+  monthRange: 'last-6'
+})
+
+const metricChanges = reactive({
+  portfolio: {
+    yoy: 12.5,
+    mom: 2.3
   },
-  mounted() {
-    console.log('ExecutiveView mounted')
-    console.log('Metrics:', this.metrics)
-    console.log('Metros:', this.metros)
+  clients: {
+    yoy: 8.7,
+    mom: 1.2
+  },
+  revenue: {
+    yoy: 15.2,
+    mom: 3.1
+  }
+})
+
+// Computed properties
+const revenueChartData = computed(() => {
+  try {
+    if (!metrics.value?.monthlyTrends) return null
+    return {
+      labels: metrics.value.monthlyTrends.map(trend => trend.month),
+      datasets: [
+        {
+          label: 'Revenue ($M)',
+          data: metrics.value.monthlyTrends.map(trend => trend.revenue / 1e6),
+          backgroundColor: 'rgba(107, 142, 35, 0.8)',
+          borderColor: '#6B8E23',
+          borderWidth: 1
+        }
+      ]
+    }
+  } catch (error) {
+    console.error('Error creating revenue chart data:', error)
+    return null
+  }
+})
+
+const portfolioTrendData = computed(() => {
+  try {
+    if (!metrics.value?.portfolioTrend) return null
+    return {
+      labels: metrics.value.portfolioTrend.map(trend => trend.month),
+      datasets: [
+        {
+          label: 'Portfolio Value ($B)',
+          data: metrics.value.portfolioTrend.map(trend => trend.portfolioValue / 1e9),
+          backgroundColor: 'rgba(34, 139, 34, 0.8)',
+          borderColor: '#228B22',
+          borderWidth: 1
+        }
+      ]
+    }
+  } catch (error) {
+    console.error('Error creating portfolio trend data:', error)
+    return null
+  }
+})
+
+const clientGrowthData = computed(() => {
+  try {
+    if (!metrics.value?.clientGrowth) return null
+    return {
+      labels: metrics.value.clientGrowth.map(trend => trend.month),
+      datasets: [
+        {
+          label: 'Client Count',
+          data: metrics.value.clientGrowth.map(trend => trend.clientCount),
+          backgroundColor: 'rgba(50, 205, 50, 0.8)',
+          borderColor: '#32CD32',
+          borderWidth: 1
+        }
+      ]
+    }
+  } catch (error) {
+    console.error('Error creating client growth data:', error)
+    return null
+  }
+})
+
+// Methods
+const drillDownToMetro = (metro) => {
+  console.log('Navigating to Metro:', metro.id)
+  router.push({ name: 'Metro', params: { metroId: metro.id } })
+}
+
+const resetFilters = () => {
+  Object.assign(filters, {
+    metro: '',
+    market: '',
+    region: '',
+    vertical: '',
+    rvp: '',
+    year: '2024',
+    monthRange: 'last-6'
+  })
+}
+
+const toggleMetricView = (metric) => {
+  metricViewType.value = metricViewType.value === 'yoy' ? 'mom' : 'yoy'
+}
+
+const getChangeColor = (change) => {
+  if (change > 0) return 'text-green-600'
+  if (change < 0) return 'text-red-600'
+  return 'text-gray-500'
+}
+
+const getMetricChange = (metric) => {
+  const change = metricChanges[metric]?.[metricViewType.value]
+  if (change === undefined) return 'N/A'
+
+  const sign = change > 0 ? '+' : ''
+  return `${sign}${change.toFixed(1)}%`
+}
+
+const getPenetrationColor = (penetration) => {
+  if (penetration >= 80) return 'text-green-600'
+  if (penetration >= 60) return 'text-yellow-600'
+  if (penetration >= 40) return 'text-orange-600'
+  return 'text-red-600'
+}
+
+const getOpportunityScoreClass = (score) => {
+  if (score >= 8.5) return 'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
+  if (score >= 7.5) return 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200'
+  if (score >= 6.5) return 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'
+  return 'bg-gradient-to-br from-green-50 to-green-100 border-green-200'
+}
+
+const getScoreColor = (score) => {
+  if (score >= 8.5) return 'text-red-600'
+  if (score >= 7.5) return 'text-orange-600'
+  if (score >= 6.5) return 'text-yellow-600'
+  return 'text-green-600'
+}
+
+const getPriorityClass = (priority) => {
+  switch (priority.toLowerCase()) {
+    case 'high': return 'bg-red-50 border-red-200'
+    case 'medium': return 'bg-yellow-50 border-yellow-200'
+    case 'low': return 'bg-green-50 border-green-200'
+    default: return 'bg-gray-50 border-gray-200'
   }
 }
+
+const getPriorityBadgeClass = (priority) => {
+  switch (priority.toLowerCase()) {
+    case 'high': return 'bg-red-100 text-red-800'
+    case 'medium': return 'bg-yellow-100 text-yellow-800'
+    case 'low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  console.log('ExecutiveView mounted')
+  console.log('Metrics:', metrics.value)
+  console.log('Metros:', metrosList.value)
+})
 </script>
 
 <style scoped>

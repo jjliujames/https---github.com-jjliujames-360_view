@@ -7,7 +7,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,90 +32,90 @@ ChartJS.register(
   LineController
 )
 
-export default {
-  name: 'LineChart',
-  props: {
-    data: {
-      type: Object,
-      required: true
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true
   },
-  computed: {
-    hasData() {
-      return this.data && this.data.labels && this.data.labels.length > 0
-    }
-  },
-  mounted() {
-    if (this.hasData) {
-      this.createChart()
-    }
-  },
-  beforeUnmount() {
-    if (this.chart) {
-      this.chart.destroy()
-    }
-  },
-  watch: {
-    data: {
-      handler(newData) {
-        if (this.chart) {
-          this.chart.destroy()
-        }
-        if (this.hasData) {
-          this.$nextTick(() => {
-            this.createChart()
-          })
-        }
-      },
-      deep: true
-    }
-  },
-  methods: {
-    createChart() {
-      try {
-        const ctx = this.$refs.chartCanvas?.getContext('2d')
-        if (!ctx) return
+  options: {
+    type: Object,
+    default: () => ({})
+  }
+})
 
-        this.chart = new ChartJS(ctx, {
-          type: 'line',
-          data: this.data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'top',
-              },
-              title: {
-                display: false
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                grid: {
-                  color: '#f3f4f6'
-                }
-              },
-              x: {
-                grid: {
-                  color: '#f3f4f6'
-                }
-              }
-            },
-            ...this.options
+const chartCanvas = ref(null)
+let chart = null
+
+// Computed
+const hasData = computed(() => {
+  return props.data && props.data.labels && props.data.labels.length > 0
+})
+
+// Methods
+const createChart = () => {
+  try {
+    const ctx = chartCanvas.value?.getContext('2d')
+    if (!ctx) return
+
+    chart = new ChartJS(ctx, {
+      type: 'line',
+      data: props.data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: false
           }
-        })
-      } catch (error) {
-        console.error('Error creating chart:', error)
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: '#f3f4f6'
+            }
+          },
+          x: {
+            grid: {
+              color: '#f3f4f6'
+            }
+          }
+        },
+        ...props.options
       }
-    }
+    })
+  } catch (error) {
+    console.error('Error creating chart:', error)
   }
 }
+
+// Watchers
+watch(() => props.data, () => {
+  if (chart) {
+    chart.destroy()
+  }
+  if (hasData.value) {
+    nextTick(() => {
+      createChart()
+    })
+  }
+}, { deep: true })
+
+// Lifecycle
+onMounted(() => {
+  if (hasData.value) {
+    createChart()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (chart) {
+    chart.destroy()
+  }
+})
 </script>
 
 <style scoped>
