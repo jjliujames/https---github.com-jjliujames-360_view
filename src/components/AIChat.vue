@@ -23,10 +23,10 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-semibold text-white">TD AI Assistant</h3>
-                        <p class="text-xs text-blue-100">{{ getContextMessage() }}</p>
+                        <p class="text-xs text-green-100">{{ getContextMessage() }}</p>
                     </div>
                 </div>
-                <button @click="toggleChat" class="text-blue-100 hover:text-white">
+                <button @click="toggleChat" class="text-green-100 hover:text-white">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -481,12 +481,12 @@ onMounted(() => {
 .floating-chat-btn {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #0066cc, #004499);
+    background: linear-gradient(135deg, #00A651, #008542);
     border-radius: 50%;
     color: white;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0, 102, 204, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 166, 81, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -496,7 +496,7 @@ onMounted(() => {
 
 .floating-chat-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 25px rgba(0, 102, 204, 0.4);
+    box-shadow: 0 6px 25px rgba(0, 166, 81, 0.4);
 }
 
 .floating-chat-btn.has-notification {
@@ -527,7 +527,7 @@ onMounted(() => {
 }
 
 .chat-header {
-    background: linear-gradient(135deg, #0066cc, #004499);
+    background: linear-gradient(135deg, #00A651, #008542);
     color: white;
     padding: 16px;
     display: flex;
@@ -548,7 +548,7 @@ onMounted(() => {
 .ai-avatar-small {
     width: 24px;
     height: 24px;
-    background: linear-gradient(135deg, #0066cc, #004499);
+    background: linear-gradient(135deg, #00A651, #008542);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -582,7 +582,7 @@ onMounted(() => {
 }
 
 .user-message .message-content {
-    background: #0066cc;
+    background: #00A651;
     color: white;
     margin-left: 40px;
 }
@@ -629,9 +629,9 @@ onMounted(() => {
 }
 
 .suggestion-btn:hover {
-    background: #0066cc;
+    background: #00A651;
     color: white;
-    border-color: #0066cc;
+    border-color: #00A651;
 }
 
 .action-buttons {
@@ -651,12 +651,12 @@ onMounted(() => {
 }
 
 .action-btn.primary {
-    background: #0066cc;
+    background: #00A651;
     color: white;
 }
 
 .action-btn.primary:hover {
-    background: #0052a3;
+    background: #008542;
 }
 
 .action-btn.secondary {
@@ -719,8 +719,8 @@ onMounted(() => {
 }
 
 .quick-action-btn:hover {
-    border-color: #0066cc;
-    background: #f0f7ff;
+    border-color: #00A651;
+    background: #f0f9f4;
 }
 
 .chat-input {
@@ -746,7 +746,7 @@ onMounted(() => {
 }
 
 .message-input:focus {
-    border-color: #0066cc;
+    border-color: #00A651;
 }
 
 .message-input:disabled {
@@ -757,7 +757,7 @@ onMounted(() => {
 .send-btn {
     width: 40px;
     height: 40px;
-    background: #0066cc;
+    background: #00A651;
     color: white;
     border: none;
     border-radius: 50%;
@@ -769,7 +769,7 @@ onMounted(() => {
 }
 
 .send-btn:hover:not(:disabled) {
-    background: #0052a3;
+    background: #008542;
 }
 
 .send-btn:disabled {
