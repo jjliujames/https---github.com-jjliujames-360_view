@@ -195,6 +195,158 @@
         <!-- Right Column - Charts and Analysis -->
         <div class="lg:col-span-3 space-y-8">
 
+          <!-- Account Portfolio Summary -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">💼 Account Portfolio Summary</h3>
+                  <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="accountViewType = 'cards'"
+                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Card View
+                  </button>
+                  <button @click="accountViewType = 'table'"
+                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Table View
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <!-- Account Cards View -->
+              <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div v-for="account in accountDetails" :key="account.id"
+                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer"
+                  :class="getAccountCardClass(account.type)" @click="drillDownToAccount(account)">
+                  <div class="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
+                      <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
+                    </div>
+                    <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
+                      {{ formatCurrency(account.balance) }}
+                    </span>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Last Transaction:</span>
+                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Monthly Volume:</span>
+                      <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Risk Level:</span>
+                      <span :class="getRiskLevelClass(account.riskLevel)">{{ account.riskLevel }}</span>
+                    </div>
+                  </div>
+                  <div class="mt-3 flex space-x-2">
+                    <button class="flex-1 text-center text-xs font-medium py-1 rounded-md transition-colors"
+                      :class="getAccountActionClass(account.type)">
+                      View Details
+                    </button>
+                    <button class="text-xs text-gray-500 hover:text-gray-700">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Account Table View -->
+              <div v-if="accountViewType === 'table'" class="overflow-x-auto mb-6">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
+                      </th>
+                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Balance</th>
+                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Monthly Volume</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk
+                        Level</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
+                        Activity</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
+                      @click="drillDownToAccount(account)">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
+                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          :class="getAccountTypeClass(account.type)">
+                          {{ account.type }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                        :class="getAccountBalanceColor(account.balance)">
+                        {{ formatCurrency(account.balance) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                        {{ formatCurrency(account.monthlyVolume) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          :class="getRiskLevelClass(account.riskLevel)">
+                          {{ account.riskLevel }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ formatDate(account.lastTransaction) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-800">View</button>
+                        <span class="mx-2 text-gray-300">|</span>
+                        <button class="text-gray-600 hover:text-gray-800">History</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Account Summary Metrics -->
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                  <p class="text-sm text-blue-600 font-medium">Total Accounts</p>
+                  <p class="text-2xl font-bold text-blue-900">{{ accountDetails.length }}</p>
+                  <p class="text-xs text-blue-600">{{ activeAccountsCount }} active</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                  <p class="text-sm text-green-600 font-medium">Total Deposits</p>
+                  <p class="text-2xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
+                  <p class="text-xs text-green-600">Across all accounts</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-lg">
+                  <p class="text-sm text-orange-600 font-medium">Monthly Volume</p>
+                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(totalMonthlyVolume) }}</p>
+                  <p class="text-xs text-orange-600">Total transaction volume</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg">
+                  <p class="text-sm text-red-600 font-medium">High Risk Accounts</p>
+                  <p class="text-2xl font-bold text-red-900">{{ highRiskAccountsCount }}</p>
+                  <p class="text-xs text-red-600">Require attention</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Transaction Volume Trends -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
@@ -535,6 +687,136 @@
       </div>
     </div>
   </div>
+
+  <!-- Account Drill-Down Modal -->
+  <div v-if="showAccountModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div class="bg-gray-50 px-6 py-4 border-b flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <button @click="showAccountModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h2 class="text-xl font-semibold text-gray-900">{{ selectedAccount?.name }} Details</h2>
+          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">{{ selectedAccount?.type
+            }}</span>
+        </div>
+        <div class="flex space-x-2">
+          <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Export Data</button>
+          <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">Generate
+            Report</button>
+        </div>
+      </div>
+
+      <div class="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+        <!-- Account Overview Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm text-blue-600 font-medium">Current Balance</p>
+            <p class="text-2xl font-bold text-blue-900">{{ formatCurrency(selectedAccount?.balance) }}</p>
+            <p class="text-xs text-blue-600">Available: {{ formatCurrency(selectedAccount?.availableBalance) }}</p>
+          </div>
+          <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+            <p class="text-sm text-green-600 font-medium">Monthly Inflows</p>
+            <p class="text-2xl font-bold text-green-900">{{ formatCurrency(selectedAccount?.monthlyInflows) }}</p>
+            <p class="text-xs text-green-600">{{ selectedAccount?.inflowCount }} transactions</p>
+          </div>
+          <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+            <p class="text-sm text-orange-600 font-medium">Monthly Outflows</p>
+            <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(selectedAccount?.monthlyOutflows) }}</p>
+            <p class="text-xs text-orange-600">{{ selectedAccount?.outflowCount }} transactions</p>
+          </div>
+          <div class="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-lg border border-red-200">
+            <p class="text-sm text-red-600 font-medium">Risk Score</p>
+            <p class="text-2xl font-bold text-red-900">{{ selectedAccount?.riskScore }}/100</p>
+            <p class="text-xs text-red-600">{{ selectedAccount?.riskLevel }} risk</p>
+          </div>
+        </div>
+
+        <!-- Account Transaction History & Analytics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Recent Transactions -->
+          <div class="bg-white border rounded-lg">
+            <div class="p-4 border-b">
+              <h3 class="font-medium text-gray-900">Recent Transactions</h3>
+              <p class="text-sm text-gray-500">Last 30 days</p>
+            </div>
+            <div class="p-4">
+              <div class="space-y-3">
+                <div v-for="transaction in selectedAccount?.recentTransactions || []" :key="transaction.id"
+                  class="flex items-center justify-between p-3 border rounded-lg">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                      :class="getTransactionIconClass(transaction.type)">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">{{ transaction.description }}</p>
+                      <p class="text-xs text-gray-500">{{ formatDate(transaction.date) }} • {{ transaction.type }}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium" :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
+                      {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(Math.abs(transaction.amount)) }}
+                    </p>
+                    <p class="text-xs text-gray-500">{{ transaction.status }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Performance Chart -->
+          <div class="bg-white border rounded-lg">
+            <div class="p-4 border-b">
+              <h3 class="font-medium text-gray-900">Balance History</h3>
+              <p class="text-sm text-gray-500">90-day trend</p>
+            </div>
+            <div class="p-4">
+              <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                <span class="text-gray-500">Balance trend chart would go here</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Risk Factors -->
+        <div class="mt-6 bg-white border rounded-lg">
+          <div class="p-4 border-b">
+            <h3 class="font-medium text-gray-900">Risk Factors & Alerts</h3>
+            <p class="text-sm text-gray-500">Current risk assessment for this account</p>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-for="riskFactor in selectedAccount?.riskFactors || []" :key="riskFactor.type"
+                class="flex items-center justify-between p-3 border rounded-lg"
+                :class="getRiskFactorClass(riskFactor.severity)">
+                <div class="flex items-center space-x-3">
+                  <div class="w-2 h-2 rounded-full" :class="getRiskIndicatorClass(riskFactor.severity)"></div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">{{ riskFactor.type }}</p>
+                    <p class="text-xs text-gray-500">{{ riskFactor.description }}</p>
+                  </div>
+                </div>
+                <span class="text-xs font-medium px-2 py-1 rounded-full"
+                  :class="getRiskSeverityClass(riskFactor.severity)">
+                  {{ riskFactor.severity }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 px-6 py-4 border-t flex justify-end space-x-3">
+        <button @click="showAccountModal = false" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -561,6 +843,11 @@ const showTransactionModal = ref(false)
 const currentPage = ref(1)
 const pageSize = 100
 const allTransactions = ref([])
+
+// Account Modal State
+const showAccountModal = ref(false)
+const selectedAccount = ref(null)
+const accountViewType = ref('cards')
 
 const transactionFilters = ref({
   startDate: '',
@@ -625,6 +912,67 @@ const riskScore = computed(() => {
   if (portfolioValue > 100000000) score += 0.5 // Large portfolios get slight bump
 
   return Math.min(10, Math.max(1, parseFloat(score.toFixed(1))))
+})
+
+// Account Details (Generated based on client portfolio)
+const accountDetails = computed(() => {
+  if (!clientData.value) return []
+
+  const portfolioValue = clientData.value.portfolioValue || 0
+  const accounts = []
+
+  // Generate different account types based on portfolio size
+  const accountTypes = [
+    { type: 'Business Checking', prefix: 'CHK', balance: 0.15 },
+    { type: 'Business Savings', prefix: 'SAV', balance: 0.25 },
+    { type: 'Money Market', prefix: 'MM', balance: 0.30 },
+    { type: 'Investment Account', prefix: 'INV', balance: 0.20 },
+    { type: 'Credit Line', prefix: 'LOC', balance: 0.10 }
+  ]
+
+  for (let i = 0; i < totalAccounts.value && i < accountTypes.length; i++) {
+    const accountType = accountTypes[i]
+    const baseBalance = portfolioValue * accountType.balance
+    const balance = baseBalance + (Math.random() - 0.5) * baseBalance * 0.3
+
+    accounts.push({
+      id: `acc_${i + 1}`,
+      name: `${accountType.type} - ${clientData.value.name}`,
+      type: accountType.type,
+      number: `${accountType.prefix}${Math.floor(Math.random() * 900000) + 100000}`,
+      balance: Math.max(0, balance),
+      availableBalance: balance * (0.8 + Math.random() * 0.2),
+      monthlyVolume: balance * (0.1 + Math.random() * 0.3),
+      monthlyInflows: balance * (0.05 + Math.random() * 0.15),
+      monthlyOutflows: balance * (0.03 + Math.random() * 0.12),
+      inflowCount: Math.floor(Math.random() * 30) + 10,
+      outflowCount: Math.floor(Math.random() * 25) + 8,
+      lastTransaction: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+      riskLevel: Math.random() > 0.7 ? 'High' : Math.random() > 0.4 ? 'Medium' : 'Low',
+      riskScore: Math.floor(Math.random() * 40) + 30,
+      recentTransactions: [],
+      riskFactors: []
+    })
+  }
+
+  return accounts
+})
+
+// Account Summary Computed Properties
+const activeAccountsCount = computed(() => {
+  return accountDetails.value.filter(acc => acc.balance > 1000).length
+})
+
+const totalDeposits = computed(() => {
+  return accountDetails.value.reduce((sum, acc) => sum + acc.balance, 0)
+})
+
+const totalMonthlyVolume = computed(() => {
+  return accountDetails.value.reduce((sum, acc) => sum + acc.monthlyVolume, 0)
+})
+
+const highRiskAccountsCount = computed(() => {
+  return accountDetails.value.filter(acc => acc.riskLevel === 'High').length
 })
 
 
@@ -1117,6 +1465,152 @@ onMounted(() => {
   // Initialize default date range for transactions (last 30 days)
   resetFilters()
 })
+
+// Account Helper Functions
+const drillDownToAccount = (account) => {
+  selectedAccount.value = {
+    ...account,
+    recentTransactions: generateAccountTransactions(),
+    riskFactors: generateAccountRiskFactors()
+  }
+  showAccountModal.value = true
+}
+
+const generateAccountTransactions = () => {
+  const transactions = []
+  const types = ['Deposit', 'Withdrawal', 'Transfer', 'Wire', 'ACH', 'Check']
+  const descriptions = {
+    'Deposit': ['Cash Deposit', 'Check Deposit', 'Direct Deposit'],
+    'Withdrawal': ['ATM Withdrawal', 'Cash Withdrawal'],
+    'Transfer': ['Internal Transfer', 'Wire Transfer'],
+    'Wire': ['Incoming Wire', 'Outgoing Wire'],
+    'ACH': ['ACH Credit', 'ACH Debit'],
+    'Check': ['Check Payment', 'Cashier Check']
+  }
+
+  for (let i = 0; i < 10; i++) {
+    const type = types[Math.floor(Math.random() * types.length)]
+    const isInflow = type === 'Deposit' || (type === 'Wire' && Math.random() > 0.5)
+    const amount = isInflow
+      ? Math.floor(Math.random() * 10000) + 500
+      : -(Math.floor(Math.random() * 5000) + 200)
+
+    const date = new Date()
+    date.setDate(date.getDate() - Math.floor(Math.random() * 30))
+
+    transactions.push({
+      id: `acc-txn-${i + 1}`,
+      type,
+      description: descriptions[type][Math.floor(Math.random() * descriptions[type].length)],
+      amount,
+      date: date.toISOString().split('T')[0],
+      status: ['Completed', 'Pending', 'Processed'][Math.floor(Math.random() * 3)]
+    })
+  }
+
+  return transactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+}
+
+const generateAccountRiskFactors = () => {
+  const riskTypes = [
+    { type: 'High Cash Volume', severity: 'Medium', description: 'Frequent large cash transactions' },
+    { type: 'Unusual Wire Activity', severity: 'High', description: 'Wires to high-risk countries' },
+    { type: 'Velocity Alerts', severity: 'Low', description: 'Transaction frequency above normal' },
+    { type: 'Geographic Risk', severity: 'Medium', description: 'Activity in high-risk locations' }
+  ]
+
+  // Return 1-3 random risk factors
+  const count = Math.floor(Math.random() * 3) + 1
+  return riskTypes.slice(0, count)
+}
+
+const getAccountCardClass = (type) => {
+  switch (type) {
+    case 'Business Checking': return 'from-blue-50 to-blue-100 border-blue-200'
+    case 'Business Savings': return 'from-green-50 to-green-100 border-green-200'
+    case 'Money Market': return 'from-purple-50 to-purple-100 border-purple-200'
+    case 'Investment Account': return 'from-orange-50 to-orange-100 border-orange-200'
+    case 'Credit Line': return 'from-red-50 to-red-100 border-red-200'
+    default: return 'from-gray-50 to-gray-100 border-gray-200'
+  }
+}
+
+const getAccountBalanceColor = (balance) => {
+  if (balance >= 1000000) return 'text-green-600'
+  if (balance >= 100000) return 'text-blue-600'
+  if (balance >= 10000) return 'text-gray-900'
+  return 'text-orange-600'
+}
+
+const getRiskLevelClass = (level) => {
+  switch (level) {
+    case 'High': return 'bg-red-100 text-red-800'
+    case 'Medium': return 'bg-yellow-100 text-yellow-800'
+    case 'Low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getAccountTypeClass = (type) => {
+  switch (type) {
+    case 'Business Checking': return 'bg-blue-100 text-blue-800'
+    case 'Business Savings': return 'bg-green-100 text-green-800'
+    case 'Money Market': return 'bg-purple-100 text-purple-800'
+    case 'Investment Account': return 'bg-orange-100 text-orange-800'
+    case 'Credit Line': return 'bg-red-100 text-red-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getAccountActionClass = (type) => {
+  switch (type) {
+    case 'Business Checking': return 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+    case 'Business Savings': return 'bg-green-100 text-green-700 hover:bg-green-200'
+    case 'Money Market': return 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+    case 'Investment Account': return 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+    case 'Credit Line': return 'bg-red-100 text-red-700 hover:bg-red-200'
+    default: return 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+  }
+}
+
+const getTransactionIconClass = (type) => {
+  switch (type.toLowerCase()) {
+    case 'deposit': return 'bg-green-100 text-green-600'
+    case 'withdrawal': return 'bg-red-100 text-red-600'
+    case 'transfer': return 'bg-blue-100 text-blue-600'
+    case 'wire': return 'bg-purple-100 text-purple-600'
+    case 'ach': return 'bg-indigo-100 text-indigo-600'
+    case 'check': return 'bg-orange-100 text-orange-600'
+    default: return 'bg-gray-100 text-gray-600'
+  }
+}
+
+const getRiskFactorClass = (severity) => {
+  switch (severity) {
+    case 'High': return 'border-red-200 bg-red-50'
+    case 'Medium': return 'border-yellow-200 bg-yellow-50'
+    case 'Low': return 'border-green-200 bg-green-50'
+    default: return 'border-gray-200 bg-gray-50'
+  }
+}
+
+const getRiskIndicatorClass = (severity) => {
+  switch (severity) {
+    case 'High': return 'bg-red-500'
+    case 'Medium': return 'bg-yellow-500'
+    case 'Low': return 'bg-green-500'
+    default: return 'bg-gray-500'
+  }
+}
+
+const getRiskSeverityClass = (severity) => {
+  switch (severity) {
+    case 'High': return 'bg-red-100 text-red-800'
+    case 'Medium': return 'bg-yellow-100 text-yellow-800'
+    case 'Low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
 </script>
 
 <style scoped>
