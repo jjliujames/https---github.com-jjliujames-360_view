@@ -17,18 +17,58 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex items-center space-x-3">
-            <button
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-td-green">
+          <div class="flex items-center space-x-2">
+            <!-- Bulk Actions -->
+            <div class="relative">
+              <button @click="showBulkActions = !showBulkActions"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                <span>Bulk Actions</span>
+                <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </button>
+              <div v-if="showBulkActions" @click.stop
+                class="absolute left-0 top-12 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-20">
+                <div class="py-2">
+                  <button @click="bulkAction('review-all')"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    🔍 Review All High-Risk Accounts
+                  </button>
+                  <button @click="bulkAction('generate-statements')"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    📄 Generate All Statements
+                  </button>
+                  <button @click="bulkAction('schedule-review')"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    📅 Schedule Relationship Review
+                  </button>
+                  <button @click="bulkAction('compliance-check')"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    ✅ Run Compliance Check
+                  </button>
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <button @click="bulkAction('freeze-all')"
+                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    ❄️ Freeze All Accounts
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- RM Actions -->
+            <button @click="clientAction('create-task')"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              Create Task
+            </button>
+            <button @click="clientAction('schedule-meeting')"
+              class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+              Schedule Meeting
+            </button>
+            <button @click="clientAction('generate-report')"
+              class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
               Generate Report
-            </button>
-            <button
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-td-green">
-              Schedule Review
-            </button>
-            <button
-              class="px-4 py-2 text-sm font-medium text-white bg-td-green rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-td-green">
-              Create Action Plan
             </button>
           </div>
         </div>
@@ -219,41 +259,94 @@
               <!-- Account Cards View -->
               <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div v-for="account in accountDetails" :key="account.id"
-                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer"
-                  :class="getAccountCardClass(account.type)" @click="drillDownToAccount(account)">
+                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all relative group"
+                  :class="getAccountCardClass(account.type)">
+                  <!-- Account Header -->
                   <div class="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2">
+                        <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
+                        <span v-if="account.riskLevel === 'High'"
+                          class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                      </div>
                       <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
                     </div>
-                    <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
-                      {{ formatCurrency(account.balance) }}
-                    </span>
-                  </div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Last Transaction:</span>
-                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
+                    <div class="text-right">
+                      <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
+                        {{ formatCurrency(account.balance) }}
+                      </span>
+                      <!-- Contextual Menu -->
+                      <div class="relative">
+                        <button @click="toggleAccountMenu(account.id)"
+                          class="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div v-if="openMenus[account.id]" @click.stop
+                          class="absolute right-0 top-6 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                          <div class="py-1">
+                            <button @click="quickAction('view-transactions', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              📊 View Transactions
+                            </button>
+                            <button @click="quickAction('generate-statement', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              📄 Generate Statement
+                            </button>
+                            <button @click="quickAction('flag-review', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              🚩 Flag for Review
+                            </button>
+                            <button @click="quickAction('create-task', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              ✅ Create Task
+                            </button>
+                            <button @click="quickAction('freeze-account', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                              ❄️ Freeze Account
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+
+                  <!-- Account Metrics -->
+                  <div class="space-y-2 mb-3">
                     <div class="flex justify-between text-sm">
                       <span class="text-gray-600">Monthly Volume:</span>
                       <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Last Activity:</span>
+                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
                       <span class="text-gray-600">Risk Level:</span>
-                      <span :class="getRiskLevelClass(account.riskLevel)">{{ account.riskLevel }}</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                        :class="getRiskLevelClass(account.riskLevel)">
+                        {{ account.riskLevel }}
+                        <span v-if="account.riskLevel === 'High'" class="ml-1">⚠️</span>
+                      </span>
                     </div>
                   </div>
-                  <div class="mt-3 flex space-x-2">
-                    <button class="flex-1 text-center text-xs font-medium py-1 rounded-md transition-colors"
-                      :class="getAccountActionClass(account.type)">
-                      View Details
+
+                  <!-- Quick Action Buttons -->
+                  <div class="grid grid-cols-3 gap-2">
+                    <button @click="quickAction('view-transactions', account)"
+                      class="text-xs py-1.5 px-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
+                      Trx
                     </button>
-                    <button class="text-xs text-gray-500 hover:text-gray-700">
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                      </svg>
+                    <button @click="quickAction('create-task', account)"
+                      class="text-xs py-1.5 px-2 bg-green-50 text-green-700 rounded-md hover:bg-green-100 transition-colors">
+                      Create Task
+                    </button>
+                    <button @click="quickAction('flag-review', account)"
+                      class="text-xs py-1.5 px-2 bg-orange-50 text-orange-700 rounded-md hover:bg-orange-100 transition-colors">
+                      Flag Review
                     </button>
                   </div>
                 </div>
@@ -359,7 +452,7 @@
                 <div class="flex space-x-2">
                   <button @click="showTransactionModal = true"
                     class="px-3 py-1 text-xs bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition-colors">View
-                    Transactions</button>
+                    Trx</button>
                   <button class="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Pattern Review</button>
                   <button class="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full">Normal Range</button>
                 </div>
@@ -688,133 +781,97 @@
     </div>
   </div>
 
-  <!-- Account Drill-Down Modal -->
-  <div v-if="showAccountModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+  <!-- Task Creation Modal -->
+  <div v-if="showTaskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
       <div class="bg-gray-50 px-6 py-4 border-b flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <button @click="showAccountModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          <h2 class="text-xl font-semibold text-gray-900">{{ selectedAccount?.name }} Details</h2>
-          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">{{ selectedAccount?.type
-            }}</span>
-        </div>
-        <div class="flex space-x-2">
-          <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Export Data</button>
-          <button class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">Generate
-            Report</button>
-        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Create New Task</h2>
+        <button @click="showTaskModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
-      <div class="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
-        <!-- Account Overview Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-            <p class="text-sm text-blue-600 font-medium">Current Balance</p>
-            <p class="text-2xl font-bold text-blue-900">{{ formatCurrency(selectedAccount?.balance) }}</p>
-            <p class="text-xs text-blue-600">Available: {{ formatCurrency(selectedAccount?.availableBalance) }}</p>
-          </div>
-          <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-            <p class="text-sm text-green-600 font-medium">Monthly Inflows</p>
-            <p class="text-2xl font-bold text-green-900">{{ formatCurrency(selectedAccount?.monthlyInflows) }}</p>
-            <p class="text-xs text-green-600">{{ selectedAccount?.inflowCount }} transactions</p>
-          </div>
-          <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
-            <p class="text-sm text-orange-600 font-medium">Monthly Outflows</p>
-            <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(selectedAccount?.monthlyOutflows) }}</p>
-            <p class="text-xs text-orange-600">{{ selectedAccount?.outflowCount }} transactions</p>
-          </div>
-          <div class="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-lg border border-red-200">
-            <p class="text-sm text-red-600 font-medium">Risk Score</p>
-            <p class="text-2xl font-bold text-red-900">{{ selectedAccount?.riskScore }}/100</p>
-            <p class="text-xs text-red-600">{{ selectedAccount?.riskLevel }} risk</p>
-          </div>
-        </div>
-
-        <!-- Account Transaction History & Analytics -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Recent Transactions -->
-          <div class="bg-white border rounded-lg">
-            <div class="p-4 border-b">
-              <h3 class="font-medium text-gray-900">Recent Transactions</h3>
-              <p class="text-sm text-gray-500">Last 30 days</p>
-            </div>
-            <div class="p-4">
-              <div class="space-y-3">
-                <div v-for="transaction in selectedAccount?.recentTransactions || []" :key="transaction.id"
-                  class="flex items-center justify-between p-3 border rounded-lg">
-                  <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                      :class="getTransactionIconClass(transaction.type)">
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">{{ transaction.description }}</p>
-                      <p class="text-xs text-gray-500">{{ formatDate(transaction.date) }} • {{ transaction.type }}</p>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-sm font-medium" :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(Math.abs(transaction.amount)) }}
-                    </p>
-                    <p class="text-xs text-gray-500">{{ transaction.status }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="p-6">
+        <form @submit.prevent="createTask" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
+            <select v-model="newTask.type"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="review">Account Review</option>
+              <option value="follow-up">Client Follow-up</option>
+              <option value="compliance">Compliance Check</option>
+              <option value="meeting">Schedule Meeting</option>
+              <option value="documentation">Update Documentation</option>
+              <option value="investigation">Risk Investigation</option>
+            </select>
           </div>
 
-          <!-- Account Performance Chart -->
-          <div class="bg-white border rounded-lg">
-            <div class="p-4 border-b">
-              <h3 class="font-medium text-gray-900">Balance History</h3>
-              <p class="text-sm text-gray-500">90-day trend</p>
-            </div>
-            <div class="p-4">
-              <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center">
-                <span class="text-gray-500">Balance trend chart would go here</span>
-              </div>
-            </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+            <select v-model="newTask.priority"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
           </div>
-        </div>
 
-        <!-- Account Risk Factors -->
-        <div class="mt-6 bg-white border rounded-lg">
-          <div class="p-4 border-b">
-            <h3 class="font-medium text-gray-900">Risk Factors & Alerts</h3>
-            <p class="text-sm text-gray-500">Current risk assessment for this account</p>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+            <input v-model="newTask.title" type="text"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter task title" required>
           </div>
-          <div class="p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div v-for="riskFactor in selectedAccount?.riskFactors || []" :key="riskFactor.type"
-                class="flex items-center justify-between p-3 border rounded-lg"
-                :class="getRiskFactorClass(riskFactor.severity)">
-                <div class="flex items-center space-x-3">
-                  <div class="w-2 h-2 rounded-full" :class="getRiskIndicatorClass(riskFactor.severity)"></div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900">{{ riskFactor.type }}</p>
-                    <p class="text-xs text-gray-500">{{ riskFactor.description }}</p>
-                  </div>
-                </div>
-                <span class="text-xs font-medium px-2 py-1 rounded-full"
-                  :class="getRiskSeverityClass(riskFactor.severity)">
-                  {{ riskFactor.severity }}
-                </span>
-              </div>
-            </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea v-model="newTask.description" rows="3"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter task description"></textarea>
           </div>
-        </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+            <input v-model="newTask.dueDate" type="date"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Related Account (optional)</label>
+            <select v-model="newTask.accountId"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Select account...</option>
+              <option v-for="account in accountDetails" :key="account.id" :value="account.id">
+                {{ account.name }} ({{ account.type }})
+              </option>
+            </select>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button" @click="showTaskModal = false"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Create
+              Task</button>
+          </div>
+        </form>
       </div>
+    </div>
+  </div>
 
-      <div class="bg-gray-50 px-6 py-4 border-t flex justify-end space-x-3">
-        <button @click="showAccountModal = false" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
-      </div>
+  <!-- Notification Toast -->
+  <div v-if="showNotification"
+    class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all">
+    <div class="flex items-center space-x-2">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+          clip-rule="evenodd" />
+      </svg>
+      <span>{{ notificationMessage }}</span>
     </div>
   </div>
 </template>
@@ -844,10 +901,23 @@ const currentPage = ref(1)
 const pageSize = 100
 const allTransactions = ref([])
 
-// Account Modal State
-const showAccountModal = ref(false)
-const selectedAccount = ref(null)
+// UI State
 const accountViewType = ref('cards')
+const showBulkActions = ref(false)
+const showTaskModal = ref(false)
+const showNotification = ref(false)
+const notificationMessage = ref('')
+const openMenus = ref({})
+
+// Task Creation State
+const newTask = ref({
+  type: 'review',
+  priority: 'medium',
+  title: '',
+  description: '',
+  dueDate: '',
+  accountId: ''
+})
 
 const transactionFilters = ref({
   startDate: '',
@@ -1464,16 +1534,146 @@ onMounted(() => {
 
   // Initialize default date range for transactions (last 30 days)
   resetFilters()
+
+  // Close menus when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+      Object.keys(openMenus.value).forEach(key => {
+        openMenus.value[key] = false
+      })
+      showBulkActions.value = false
+    }
+  })
 })
 
-// Account Helper Functions
-const drillDownToAccount = (account) => {
-  selectedAccount.value = {
-    ...account,
-    recentTransactions: generateAccountTransactions(),
-    riskFactors: generateAccountRiskFactors()
+// Action Helper Functions
+const toggleAccountMenu = (accountId) => {
+  // Close all other menus first
+  Object.keys(openMenus.value).forEach(key => {
+    if (key !== accountId) {
+      openMenus.value[key] = false
+    }
+  })
+  // Toggle the clicked menu
+  openMenus.value[accountId] = !openMenus.value[accountId]
+}
+
+const quickAction = (action, account) => {
+  openMenus.value[account.id] = false // Close menu
+
+  switch (action) {
+    case 'view-transactions':
+      showTransactionModal.value = true
+      loadTransactions()
+      showNotification.value = true
+      notificationMessage.value = `Viewing transactions for ${account.name}`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'create-task':
+      newTask.value.accountId = account.id
+      newTask.value.title = `Review ${account.name}`
+      newTask.value.description = `Account review for ${account.type} ending in ****${account.number.slice(-4)}`
+      showTaskModal.value = true
+      break
+    case 'flag-review':
+      showNotification.value = true
+      notificationMessage.value = `${account.name} flagged for review`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'generate-statement':
+      showNotification.value = true
+      notificationMessage.value = `Statement generated for ${account.name}`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'freeze-account':
+      if (confirm(`Are you sure you want to freeze ${account.name}?`)) {
+        showNotification.value = true
+        notificationMessage.value = `${account.name} has been frozen`
+        setTimeout(() => showNotification.value = false, 3000)
+      }
+      break
   }
-  showAccountModal.value = true
+}
+
+const bulkAction = (action) => {
+  showBulkActions.value = false
+
+  switch (action) {
+    case 'review-all':
+      const highRiskCount = accountDetails.value.filter(acc => acc.riskLevel === 'High').length
+      showNotification.value = true
+      notificationMessage.value = `Reviewing ${highRiskCount} high-risk accounts`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'generate-statements':
+      showNotification.value = true
+      notificationMessage.value = `Generating statements for all ${accountDetails.value.length} accounts`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'schedule-review':
+      newTask.value.type = 'meeting'
+      newTask.value.title = `Relationship Review - ${clientData.value?.name}`
+      newTask.value.description = 'Comprehensive relationship review including all accounts and risk assessment'
+      showTaskModal.value = true
+      break
+    case 'compliance-check':
+      showNotification.value = true
+      notificationMessage.value = 'Running compliance check on all accounts'
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'freeze-all':
+      if (confirm(`Are you sure you want to freeze ALL accounts for ${clientData.value?.name}? This is irreversible.`)) {
+        showNotification.value = true
+        notificationMessage.value = `All accounts for ${clientData.value?.name} have been frozen`
+        setTimeout(() => showNotification.value = false, 3000)
+      }
+      break
+  }
+}
+
+const clientAction = (action) => {
+  switch (action) {
+    case 'create-task':
+      newTask.value.title = `Client Follow-up - ${clientData.value?.name}`
+      newTask.value.description = 'General client relationship management task'
+      showTaskModal.value = true
+      break
+    case 'schedule-meeting':
+      newTask.value.type = 'meeting'
+      newTask.value.title = `Meeting - ${clientData.value?.name}`
+      newTask.value.description = 'Client meeting to discuss relationship and services'
+      showTaskModal.value = true
+      break
+    case 'generate-report':
+      showNotification.value = true
+      notificationMessage.value = `Comprehensive report generated for ${clientData.value?.name}`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+    case 'export-data':
+      showNotification.value = true
+      notificationMessage.value = `Data exported for ${clientData.value?.name}`
+      setTimeout(() => showNotification.value = false, 3000)
+      break
+  }
+}
+
+const createTask = () => {
+  // Simulate task creation
+  showNotification.value = true
+  notificationMessage.value = `Task "${newTask.value.title}" created successfully`
+
+  // Reset form
+  newTask.value = {
+    type: 'review',
+    priority: 'medium',
+    title: '',
+    description: '',
+    dueDate: '',
+    accountId: ''
+  }
+
+  showTaskModal.value = false
+  setTimeout(() => showNotification.value = false, 3000)
 }
 
 const generateAccountTransactions = () => {
