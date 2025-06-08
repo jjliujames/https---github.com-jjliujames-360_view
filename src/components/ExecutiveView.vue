@@ -144,7 +144,28 @@
                 </div>
               </div>
             </div>
+            <!-- Sparkline -->
+            <div class="mt-2 h-8 flex items-end space-x-1">
+              <div v-for="(value, index) in metrics.sparklines.portfolioValue" :key="index"
+                class="bg-td-green opacity-60 rounded-sm transition-all duration-200" :style="{
+                  height: `${(value / Math.max(...metrics.sparklines.portfolioValue)) * 100}%`,
+                  width: '8px'
+                }">
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Trend Analysis Button -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <button @click="showTrendChart('portfolio')"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+              </path>
+            </svg>
+            View Trend Analysis
+          </button>
         </div>
       </div>
 
@@ -173,7 +194,27 @@
                 </div>
               </div>
             </div>
+            <!-- Sparkline -->
+            <div class="mt-2 h-8 flex items-end space-x-1">
+              <div v-for="(value, index) in metrics.sparklines.clientCount" :key="index"
+                class="bg-green-600 opacity-60 rounded-sm transition-all duration-200" :style="{
+                  height: `${(value / Math.max(...metrics.sparklines.clientCount)) * 100}%`,
+                  width: '8px'
+                }">
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Trend Analysis Button -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <button @click="showTrendChart('clients')"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            View Trend Analysis
+          </button>
         </div>
       </div>
 
@@ -202,7 +243,28 @@
                 </div>
               </div>
             </div>
+            <!-- Sparkline -->
+            <div class="mt-2 h-8 flex items-end space-x-1">
+              <div v-for="(value, index) in metrics.sparklines.revenue" :key="index"
+                class="bg-green-500 opacity-60 rounded-sm transition-all duration-200" :style="{
+                  height: `${(value / Math.max(...metrics.sparklines.revenue)) * 100}%`,
+                  width: '8px'
+                }">
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Trend Analysis Button -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <button @click="showTrendChart('revenue')"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+              </path>
+            </svg>
+            View Trend Analysis
+          </button>
         </div>
       </div>
     </div>
@@ -311,7 +373,27 @@
             <p class="text-2xl font-bold text-purple-900">{{
               formatCurrency(metrics.opportunityInsights.totalOpportunityValue) }}</p>
             <p class="text-xs text-purple-600">Potential Revenue</p>
+            <!-- Sparkline for opportunities -->
+            <div class="mt-2 h-6 flex items-end space-x-1">
+              <div v-for="(value, index) in metrics.sparklines.opportunities" :key="index"
+                class="bg-purple-600 opacity-60 rounded-sm transition-all duration-200" :style="{
+                  height: `${(value / Math.max(...metrics.sparklines.opportunities)) * 100}%`,
+                  width: '6px'
+                }">
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Trend Analysis Button -->
+        <div class="mt-4 pt-4 border-t border-purple-200">
+          <button @click="showTrendChart('opportunities')"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-purple-300 rounded-md text-sm font-medium text-purple-700 bg-white hover:bg-purple-50 transition-colors">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6">
+              </path>
+            </svg>
+            View Opportunities
+          </button>
         </div>
       </div>
 
@@ -331,7 +413,27 @@
               metrics.opportunityInsights.clientsNeedingUpsell.toLocaleString() }}</p>
             <p class="text-xs text-blue-600">{{ ((metrics.opportunityInsights.clientsNeedingUpsell /
               metrics.totalClients) * 100).toFixed(1) }}% of clients</p>
+            <!-- Sparkline for high risk clients -->
+            <div class="mt-2 h-6 flex items-end space-x-1">
+              <div v-for="(value, index) in metrics.sparklines.highRiskClients" :key="index"
+                class="bg-blue-600 opacity-60 rounded-sm transition-all duration-200" :style="{
+                  height: `${(value / Math.max(...metrics.sparklines.highRiskClients)) * 100}%`,
+                  width: '6px'
+                }">
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- Trend Analysis Button -->
+        <div class="mt-4 pt-4 border-t border-blue-200">
+          <button @click="showTrendChart('risk')"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 transition-colors">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            View Risk Trends
+          </button>
         </div>
       </div>
 
@@ -574,16 +676,89 @@
         </table>
       </div>
     </div>
+
+    <!-- Hover Trend Chart Modal -->
+    <div v-if="showChart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click="hideTrendChart()">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto" @click.stop>
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">{{ currentChart.title }}</h3>
+              <p class="text-sm text-gray-600">{{ currentChart.subtitle }}</p>
+            </div>
+            <button @click="hideTrendChart()" class="text-gray-400 hover:text-gray-600">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Chart Content -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Main Trend Chart -->
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">6-Month Trend</h4>
+              <div class="h-64">
+                <canvas :data-ref="`trendChart-${currentChart.type}`" class="w-full h-full"></canvas>
+              </div>
+            </div>
+
+            <!-- Key Insights -->
+            <div class="space-y-4">
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-blue-800 mb-2">📊 Key Insights</h4>
+                <ul class="space-y-1 text-sm text-blue-700">
+                  <li v-for="insight in currentChart.insights" :key="insight">• {{ insight }}</li>
+                </ul>
+              </div>
+
+              <!-- Trend Statistics -->
+              <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-green-800 mb-3">📈 Trend Analysis</h4>
+                <div class="grid grid-cols-2 gap-4">
+                  <div v-for="stat in currentChart.stats" :key="stat.label" class="text-center">
+                    <p class="text-lg font-bold text-green-900">{{ stat.value }}</p>
+                    <p class="text-xs text-green-600">{{ stat.label }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Factors (if applicable) -->
+              <div v-if="currentChart.risks" class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-orange-800 mb-2">⚠️ Risk Factors</h4>
+                <ul class="space-y-1 text-sm text-orange-700">
+                  <li v-for="risk in currentChart.risks" :key="risk">• {{ risk }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Items -->
+          <div class="mt-6 pt-6 border-t border-gray-200">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">🎯 Recommended Actions</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <button v-for="action in currentChart.actions" :key="action.title" :class="action.class"
+                class="border rounded-lg p-3 text-left text-sm hover:shadow-sm transition-all">
+                <p class="font-medium">{{ action.title }}</p>
+                <p class="text-xs opacity-75">{{ action.description }}</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { executiveMetrics, metros, formatCurrency, getRiskColor } from '../data/mockData.js'
 import BarChart from './charts/BarChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 import KRIPanel from './KRIPanel.vue'
+import Chart from 'chart.js/auto'
 
 const router = useRouter()
 
@@ -591,6 +766,11 @@ const router = useRouter()
 const metrics = ref(executiveMetrics)
 const metrosList = ref(metros)
 const metricViewType = ref('yoy')
+
+// Trend Chart State
+const showChart = ref(false)
+const currentChart = ref({})
+let chartInstance = null
 
 const filters = reactive({
   metro: '',
@@ -680,6 +860,334 @@ const clientGrowthData = computed(() => {
     return null
   }
 })
+
+// Trend Chart Methods
+const showTrendChart = async (type) => {
+  const chartConfigs = {
+    portfolio: {
+      title: 'Portfolio Value Trend Analysis',
+      subtitle: '6-Month Portfolio Value Trajectory & Key Metrics',
+      type: 'portfolio',
+      data: {
+        labels: metrics.value.monthlyTrends.map(t => t.month),
+        datasets: [{
+          label: 'Portfolio Value ($B)',
+          data: metrics.value.monthlyTrends.map(t => t.portfolioValue / 1e9),
+          borderColor: '#6B8E23',
+          backgroundColor: 'rgba(107, 142, 35, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      insights: [
+        'Portfolio grew 9.1% over 6 months ($200M increase)',
+        'Strongest growth in Oct 2024 (+7.8% MoM)',
+        'September dip was temporary (-3.1% recovered)',
+        'Currently at all-time high of $2.4B'
+      ],
+      stats: [
+        { label: 'Growth Rate', value: '+9.1%' },
+        { label: 'Peak Month', value: 'Dec 2024' },
+        { label: 'Monthly Avg', value: '$2.28B' },
+        { label: 'Volatility', value: 'Low' }
+      ],
+      risks: [
+        'September volatility suggests market sensitivity',
+        'Growth rate slowing in recent months',
+        'Concentration risk in top 3 metros (65% of portfolio)'
+      ],
+      actions: [
+        {
+          title: 'Diversify Geographic Exposure',
+          description: 'Expand into emerging markets',
+          class: 'bg-blue-50 border-blue-200 text-blue-800'
+        },
+        {
+          title: 'Review Risk Management',
+          description: 'Assess portfolio concentration',
+          class: 'bg-orange-50 border-orange-200 text-orange-800'
+        },
+        {
+          title: 'Monitor Market Trends',
+          description: 'Track economic indicators',
+          class: 'bg-green-50 border-green-200 text-green-800'
+        }
+      ]
+    },
+    clients: {
+      title: 'Client Growth Analysis',
+      subtitle: 'Client Acquisition Trends & Portfolio Expansion',
+      type: 'clients',
+      data: {
+        labels: metrics.value.monthlyTrends.map(t => t.month),
+        datasets: [{
+          label: 'Total Clients',
+          data: metrics.value.monthlyTrends.map(t => t.clientCount),
+          borderColor: '#16A34A',
+          backgroundColor: 'rgba(22, 163, 74, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      insights: [
+        'Added 67 new clients in 6 months (+5.7%)',
+        'Consistent monthly growth averaging 11 clients',
+        'August had highest acquisition (31 new clients)',
+        'Client retention remains strong at 98.2%'
+      ],
+      stats: [
+        { label: 'Net Growth', value: '+67' },
+        { label: 'Growth Rate', value: '+5.7%' },
+        { label: 'Monthly Avg', value: '11 clients' },
+        { label: 'Retention', value: '98.2%' }
+      ],
+      actions: [
+        {
+          title: 'Accelerate Acquisition',
+          description: 'Launch referral programs',
+          class: 'bg-green-50 border-green-200 text-green-800'
+        },
+        {
+          title: 'Enhance Onboarding',
+          description: 'Improve client experience',
+          class: 'bg-blue-50 border-blue-200 text-blue-800'
+        },
+        {
+          title: 'Target High-Value Prospects',
+          description: 'Focus on enterprise clients',
+          class: 'bg-purple-50 border-purple-200 text-purple-800'
+        }
+      ]
+    },
+    revenue: {
+      title: 'Revenue Performance Analysis',
+      subtitle: 'Monthly Revenue Trends & Profitability Metrics',
+      type: 'revenue',
+      data: {
+        labels: metrics.value.monthlyTrends.map(t => t.month),
+        datasets: [{
+          label: 'Monthly Revenue ($M)',
+          data: metrics.value.monthlyTrends.map(t => t.revenue / 1e6),
+          borderColor: '#059669',
+          backgroundColor: 'rgba(5, 150, 105, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      insights: [
+        'Revenue increased 11.7% over 6 months',
+        'December reached record high of $16.2M',
+        'Strong Q4 performance (+13.2% vs Q3)',
+        'Revenue per client up 5.8% to $144K annually'
+      ],
+      stats: [
+        { label: 'Growth Rate', value: '+11.7%' },
+        { label: 'Peak Month', value: 'Dec 2024' },
+        { label: 'Per Client', value: '$144K' },
+        { label: 'Run Rate', value: '$194M' }
+      ],
+      risks: [
+        'Revenue concentration in top 20 clients (45%)',
+        'Seasonal patterns may impact Q1 performance',
+        'Fee pressure from market competition'
+      ],
+      actions: [
+        {
+          title: 'Diversify Revenue Streams',
+          description: 'Expand service offerings',
+          class: 'bg-green-50 border-green-200 text-green-800'
+        },
+        {
+          title: 'Client Wallet Share',
+          description: 'Increase cross-selling',
+          class: 'bg-blue-50 border-blue-200 text-blue-800'
+        },
+        {
+          title: 'Pricing Strategy Review',
+          description: 'Optimize fee structures',
+          class: 'bg-orange-50 border-orange-200 text-orange-800'
+        }
+      ]
+    },
+    opportunities: {
+      title: 'Opportunity Pipeline Analysis',
+      subtitle: 'AI-Identified Revenue Opportunities & Growth Potential',
+      type: 'opportunities',
+      data: {
+        labels: metrics.value.monthlyTrends.map(t => t.month),
+        datasets: [{
+          label: 'Opportunities Identified',
+          data: metrics.value.monthlyTrends.map(t => t.opportunities),
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      insights: [
+        '95 new opportunities identified this month (+21.8%)',
+        'AI has identified $65M in potential revenue',
+        'Treasury Management shows highest opportunity gap',
+        'Average opportunity size is $124K per client'
+      ],
+      stats: [
+        { label: 'New Opportunities', value: '+95' },
+        { label: 'Potential Value', value: '$65M' },
+        { label: 'Conversion Rate', value: '34%' },
+        { label: 'Avg Size', value: '$124K' }
+      ],
+      actions: [
+        {
+          title: 'Prioritize High-Value Opportunities',
+          description: 'Focus on $500K+ opportunities',
+          class: 'bg-purple-50 border-purple-200 text-purple-800'
+        },
+        {
+          title: 'Deploy Sales Teams',
+          description: 'Target treasury management gaps',
+          class: 'bg-green-50 border-green-200 text-green-800'
+        },
+        {
+          title: 'Enhance AI Models',
+          description: 'Improve opportunity scoring',
+          class: 'bg-blue-50 border-blue-200 text-blue-800'
+        }
+      ]
+    },
+    risk: {
+      title: 'Risk Management Dashboard',
+      subtitle: 'High-Risk Client Monitoring & Compliance Trends',
+      type: 'risk',
+      data: {
+        labels: metrics.value.riskTrends.map(t => t.month),
+        datasets: [{
+          label: 'High Risk Clients',
+          data: metrics.value.riskTrends.map(t => t.high),
+          borderColor: '#DC2626',
+          backgroundColor: 'rgba(220, 38, 38, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      insights: [
+        'High-risk clients decreased to 71 (-8.9% vs Jul)',
+        '5.7% of portfolio remains in high-risk category',
+        'Improved compliance scores across all metrics',
+        '3 clients moved from high to medium risk this month'
+      ],
+      stats: [
+        { label: 'High Risk', value: '71' },
+        { label: 'Risk Ratio', value: '5.7%' },
+        { label: 'Improved', value: '+3' },
+        { label: 'Compliance', value: '92%' }
+      ],
+      risks: [
+        'Cannabis sector clients require enhanced monitoring',
+        'Cryptocurrency transaction volumes increasing',
+        '5 clients pending regulatory review'
+      ],
+      actions: [
+        {
+          title: 'Enhanced Due Diligence',
+          description: 'Review high-risk client portfolios',
+          class: 'bg-red-50 border-red-200 text-red-800'
+        },
+        {
+          title: 'Compliance Training',
+          description: 'Update RM training programs',
+          class: 'bg-orange-50 border-orange-200 text-orange-800'
+        },
+        {
+          title: 'Risk Model Updates',
+          description: 'Refine risk scoring algorithms',
+          class: 'bg-yellow-50 border-yellow-200 text-yellow-800'
+        }
+      ]
+    }
+  }
+
+  currentChart.value = chartConfigs[type]
+  showChart.value = true
+
+  await nextTick()
+  await createTrendChart()
+}
+
+const hideTrendChart = () => {
+  showChart.value = false
+  if (chartInstance) {
+    chartInstance.destroy()
+    chartInstance = null
+  }
+}
+
+const createTrendChart = async () => {
+  await nextTick()
+  const canvas = document.querySelector(`canvas[data-ref="trendChart-${currentChart.value.type}"]`)
+
+  if (!canvas) {
+    // Create a temporary canvas element
+    const tempCanvas = document.createElement('canvas')
+    tempCanvas.setAttribute('data-ref', `trendChart-${currentChart.value.type}`)
+    const container = document.querySelector('.h-64')
+    if (container) {
+      container.appendChild(tempCanvas)
+    }
+  }
+
+  const ctx = canvas?.getContext('2d') || document.querySelector(`canvas[data-ref="trendChart-${currentChart.value.type}"]`)?.getContext('2d')
+
+  if (!ctx) return
+
+  if (chartInstance) {
+    chartInstance.destroy()
+  }
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: currentChart.value.data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: 'Month'
+          }
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: currentChart.value.data.datasets[0].label
+          }
+        }
+      },
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+      }
+    }
+  })
+}
 
 // Methods
 const drillDownToMetro = (metro) => {
@@ -796,6 +1304,8 @@ onMounted(() => {
 .metric-card {
   @apply bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow;
 }
+
+
 
 /* Charts and cards */
 .card {
