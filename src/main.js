@@ -9,7 +9,7 @@ import MarketView from './components/MarketView.vue'
 import RegionView from './components/RegionView.vue'
 import RelationshipManagerView from './components/RelationshipManagerView.vue'
 import RelationshipView from './components/RelationshipView.vue'
-import ClientView from './components/ClientView.vue'
+import ClientDetailView from './components/ClientDetailView.vue'
 import AccountView from './components/AccountView.vue'
 
 const routes = [
@@ -19,10 +19,10 @@ const routes = [
     { path: '/metro/:metroId/market/:marketId', component: MarketView, name: 'Market', props: true },
     { path: '/metro/:metroId/market/:marketId/region/:regionId', component: RegionView, name: 'Region', props: true },
     { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId', component: RelationshipManagerView, name: 'RelationshipManager', props: true },
-    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/client/:clientId', component: ClientView, name: 'RMClient', props: true },
     { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId', component: RelationshipView, name: 'Relationship', props: true },
-    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId', component: ClientView, name: 'Client', props: true },
-    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId/account/:accountId', component: AccountView, name: 'Account', props: true }
+    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId', component: ClientDetailView, name: 'ClientDetail', props: true },
+    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId/account/:accountId', component: AccountView, name: 'Account', props: true },
+    { path: '/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/client/:clientId', component: ClientDetailView, name: 'DirectClient', props: true }
 ]
 
 const router = createRouter({

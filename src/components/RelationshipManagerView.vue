@@ -599,24 +599,23 @@
       </div>
     </div>
 
-    <!-- 🧾 RM Portfolio Summary Table -->
+    <!-- 🧾 RM Relationship Portfolio Table -->
     <div class="card">
       <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
         <div class="flex justify-between items-center">
           <div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900">🧾 RM Portfolio Summary</h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Complete client portfolio with risk assessment and
-              recommended actions</p>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">🧾 RM Relationship Portfolio</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Click on any relationship to view client entities and
+              detailed analytics</p>
           </div>
           <div class="flex space-x-2">
-            <input type="text" v-model="searchQuery" placeholder="Search clients..."
+            <input type="text" v-model="searchQuery" placeholder="Search relationships..."
               class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-td-green focus:border-td-green">
             <select v-model="clientSort" class="px-3 py-2 border border-gray-300 rounded-md text-sm">
               <option value="name">Sort by Name</option>
               <option value="risk">Sort by Risk</option>
-              <option value="opportunity">Sort by Opportunity</option>
               <option value="revenue">Sort by Revenue</option>
-              <option value="flags">Sort by Risk Flags</option>
+              <option value="client_count">Sort by Client Count</option>
             </select>
           </div>
         </div>
@@ -625,102 +624,71 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client / Tier
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Relationship
+                Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Entities
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry /
-                Geography</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Score</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Flags</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Revenue
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Portfolio
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Balance
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Annual Revenue
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product
-                Penetration</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recommended
-                Action</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Review
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="client in enhancedClientData" :key="client.id"
-              class="hover:bg-gray-50 cursor-pointer transition-colors" @click="drillDownToClient(client)">
+            <tr v-for="relationship in rmRelationships" :key="relationship.id"
+              class="hover:bg-gray-50 cursor-pointer transition-colors" @click="drillDownToRelationship(relationship)">
 
-              <!-- Client / Tier -->
+              <!-- Relationship Name -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span class="text-sm font-medium text-gray-700">{{client.name.split(' ').map(n =>
-                        n[0]).join('')}}</span>
+                    <div class="h-10 w-10 rounded-full bg-td-green flex items-center justify-center">
+                      <span class="text-sm font-medium text-white">{{ relationship.name.split(' ')[0][0] }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
-                    <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getTierBadgeClass(client.tier)">
-                      {{ client.tier }}
-                    </span>
+                    <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
+                    <div class="text-sm text-gray-500">ID: {{ relationship.id }}</div>
                   </div>
                 </div>
               </td>
 
-              <!-- Industry / Geography -->
+              <!-- Client Entities -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ client.industry }}</div>
-                <div class="text-sm text-gray-500">{{ client.location }}</div>
+                <div class="text-sm font-medium text-gray-900">{{ relationship.clientCount }} entities</div>
+                <div class="text-sm text-gray-500">{{ relationship.tier || 'Platinum' }} Tier</div>
               </td>
 
-              <!-- Risk Score -->
+              <!-- Industry -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <span class="text-sm font-bold" :class="getRiskScoreColor(client.riskScore)">{{ client.riskScore
-                    }}</span>
-                  <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
-                    <div :class="['h-2 rounded-full', getRiskScoreBarColor(client.riskScore)]"
-                      :style="{ width: (client.riskScore / 10 * 100) + '%' }"></div>
-                  </div>
-                </div>
+                <div class="text-sm text-gray-900">{{ relationship.industry }}</div>
               </td>
 
-              <!-- Risk Flags -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center space-x-2">
-                  <span class="text-sm font-bold text-gray-900">{{ client.activeRiskFlags }}</span>
-                  <div class="flex space-x-1">
-                    <div v-for="flag in client.riskFlagIcons" :key="flag.type"
-                      class="w-4 h-4 rounded-full flex items-center justify-center" :class="flag.color"
-                      :title="flag.type">
-                      <span class="text-xs text-white font-bold">!</span>
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <!-- Total Revenue -->
+              <!-- Total Portfolio -->
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ formatCurrency(client.annualRevenue) }}
+                {{ formatCurrency(relationship.totalValue) }}
               </td>
 
-              <!-- Total Balance -->
+              <!-- Annual Revenue -->
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ formatCurrency(client.portfolioValue) }}
+                {{ formatCurrency(relationship.revenue) }}
               </td>
 
-              <!-- Product Penetration -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <span class="text-sm font-medium text-gray-900">{{ client.productPenetration }}%</span>
-                  <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-500 h-2 rounded-full" :style="{ width: client.productPenetration + '%' }"></div>
-                  </div>
-                </div>
-              </td>
-
-              <!-- Recommended Action -->
+              <!-- Risk Level -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-2 py-1 text-xs font-medium rounded-full"
-                  :class="getActionBadgeClass(client.recommendedAction)">
-                  {{ client.recommendedAction }}
+                  :class="getRiskBadgeClass(relationship.riskLevel)">
+                  {{ relationship.riskLevel }}
                 </span>
+              </td>
+
+              <!-- Last Review -->
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ relationship.lastReview || '3 weeks ago' }}
               </td>
 
             </tr>
@@ -734,7 +702,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getRMById, getRegionById, getMarketById, getMetroById, clients, formatCurrency, getRiskColor } from '../data/mockData.js'
+import { getRMById, getRegionById, getMarketById, getMetroById, clients, relationships, formatCurrency, getRiskColor } from '../data/mockData.js'
 import LineChart from './charts/LineChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 import BarChart from './charts/BarChart.vue'
@@ -938,22 +906,37 @@ const region = computed(() => getRegionById(props.regionId))
 const market = computed(() => getMarketById(props.marketId))
 const metro = computed(() => getMetroById(props.metroId))
 
-const rmClients = computed(() => {
-  if (!rm.value?.clientIds) return []
-  return rm.value.clientIds.map(clientId => {
-    const client = clients[clientId]
-    if (!client) return null
+const rmRelationships = computed(() => {
+  // Get relationships for this RM
+  if (!props.rmId) return []
+  const relationshipsForRM = relationships[props.rmId] || []
 
-    // Enhanced client data with tier, scores, and actions
-    return {
-      ...client,
-      tier: generateTier(client.portfolioValue),
-      riskScore: generateRiskScore(),
-      opportunityScore: generateOpportunityScore(),
-      nextAction: generateNextAction(),
-      nextActionDate: generateNextActionDate()
+  // Apply search filter
+  let filtered = relationshipsForRM
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(rel =>
+      rel.name.toLowerCase().includes(query) ||
+      rel.industry.toLowerCase().includes(query)
+    )
+  }
+
+  // Apply sorting
+  return filtered.sort((a, b) => {
+    switch (clientSort.value) {
+      case 'name':
+        return a.name.localeCompare(b.name)
+      case 'risk':
+        const riskOrder = { 'High': 3, 'Medium': 2, 'Low': 1 }
+        return (riskOrder[b.riskLevel] || 0) - (riskOrder[a.riskLevel] || 0)
+      case 'revenue':
+        return b.revenue - a.revenue
+      case 'client_count':
+        return b.clientCount - a.clientCount
+      default:
+        return 0
     }
-  }).filter(Boolean)
+  })
 })
 
 const filteredActions = computed(() => {
@@ -965,83 +948,6 @@ const filteredActions = computed(() => {
       default: return true
     }
   })
-})
-
-const sortedAndFilteredClients = computed(() => {
-  let filtered = rmClients.value
-
-  // Apply search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(client =>
-      client.name.toLowerCase().includes(query) ||
-      client.industry.toLowerCase().includes(query) ||
-      client.location.toLowerCase().includes(query)
-    )
-  }
-
-  // Apply sorting
-  return filtered.sort((a, b) => {
-    switch (clientSort.value) {
-      case 'name':
-        return a.name.localeCompare(b.name)
-      case 'risk':
-        return b.riskScore - a.riskScore
-      case 'opportunity':
-        return b.opportunityScore - a.opportunityScore
-      case 'revenue':
-        return b.annualRevenue - a.annualRevenue
-      default:
-        return 0
-    }
-  })
-})
-
-const enhancedClientData = computed(() => {
-  if (!rm.value?.clientIds) return []
-
-  return rm.value.clientIds.map(clientId => {
-    const client = clients[clientId]
-    if (!client) return null
-
-    // Generate enhanced client data
-    const riskScore = parseFloat(generateRiskScore())
-    const activeRiskFlags = Math.floor(Math.random() * 6)
-    const productPenetration = Math.floor(Math.random() * 60) + 40 // 40-100%
-
-    // Generate risk flag icons
-    const riskFlagIcons = []
-    const flagTypes = ['Crypto', 'Cash', 'Wire', 'MSB', 'PEP']
-    for (let i = 0; i < Math.min(activeRiskFlags, 3); i++) {
-      riskFlagIcons.push({
-        type: flagTypes[i],
-        color: i === 0 ? 'bg-red-500' : i === 1 ? 'bg-orange-500' : 'bg-yellow-500'
-      })
-    }
-
-    // Generate recommended action
-    let recommendedAction = 'Monitor'
-    if (activeRiskFlags >= 3) {
-      recommendedAction = 'Send for Review'
-    } else if (riskScore >= 8 && activeRiskFlags >= 1) {
-      recommendedAction = 'Escalate to Review'
-    } else if (productPenetration < 60 && activeRiskFlags === 0) {
-      recommendedAction = 'Upsell Product'
-    }
-
-    return {
-      ...client,
-      tier: generateTier(client.portfolioValue),
-      riskScore: riskScore,
-      activeRiskFlags: activeRiskFlags,
-      riskFlagIcons: riskFlagIcons,
-      productPenetration: productPenetration,
-      recommendedAction: recommendedAction,
-      opportunityScore: generateOpportunityScore(),
-      nextAction: generateNextAction(),
-      nextActionDate: generateNextActionDate()
-    }
-  }).filter(Boolean)
 })
 
 const riskTimelineData = computed(() => {
@@ -1082,8 +988,6 @@ const reviewStatusData = computed(() => {
     }]
   }
 })
-
-
 
 const transactionTrendData = computed(() => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -1260,17 +1164,26 @@ const getRiskFlagColor = (flag) => {
   return colors[flag] || 'bg-gray-100 text-gray-800'
 }
 
-const drillDownToClient = (client) => {
-  console.log('Drill down clicked! Client:', client.name, 'ID:', client.id)
-  console.log('Route params:', {
-    metroId: props.metroId,
-    marketId: props.marketId,
-    regionId: props.regionId,
-    rmId: props.rmId,
-    clientId: client.id
-  })
+const drillDownToRelationship = (relationship) => {
+  console.log('Drill down clicked! Relationship:', relationship.name, 'ID:', relationship.id)
   router.push({
-    name: 'RMClient',
+    name: 'Relationship',
+    params: {
+      metroId: props.metroId,
+      marketId: props.marketId,
+      regionId: props.regionId,
+      rmId: props.rmId,
+      relationshipId: relationship.id
+    }
+  })
+}
+
+// Keep for backward compatibility with existing table structure
+const drillDownToClient = (client) => {
+  // For now, redirect to a default relationship if client doesn't have relationshipId
+  const defaultRelationshipId = `rel_${client.id}_default`
+  router.push({
+    name: 'DirectClient',
     params: {
       metroId: props.metroId,
       marketId: props.marketId,
@@ -1376,11 +1289,19 @@ const getActionBadgeClass = (action) => {
   }
 }
 
+const getRiskBadgeClass = (riskLevel) => {
+  switch (riskLevel?.toLowerCase()) {
+    case 'high': return 'bg-red-100 text-red-800'
+    case 'medium': return 'bg-yellow-100 text-yellow-800'
+    case 'low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
 // Lifecycle
 onMounted(() => {
   console.log('RelationshipManagerView mounted for RM:', props.rmId)
   console.log('RM data:', rm.value)
-  console.log('RM clients:', rmClients.value)
 })
 </script>
 

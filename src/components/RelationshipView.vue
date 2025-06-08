@@ -28,7 +28,9 @@
         <div class="flex items-center">
           <div class="p-2 bg-td-green rounded-lg">
             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+              </path>
             </svg>
           </div>
           <div class="ml-4">
@@ -42,7 +44,9 @@
         <div class="flex items-center">
           <div class="p-2 bg-blue-500 rounded-lg">
             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+              </path>
             </svg>
           </div>
           <div class="ml-4">
@@ -56,7 +60,9 @@
         <div class="flex items-center">
           <div class="p-2 bg-purple-500 rounded-lg">
             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+              </path>
             </svg>
           </div>
           <div class="ml-4">
@@ -70,7 +76,9 @@
         <div class="flex items-center">
           <div class="p-2 bg-orange-500 rounded-lg">
             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+              </path>
             </svg>
           </div>
           <div class="ml-4">
@@ -120,22 +128,21 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name
+              </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deposits</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loans</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Portfolio Value
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Annual Revenue
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Score</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Flags</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr 
-              v-for="client in relationshipClients" 
-              :key="client.id"
-              @click="drillDownToClient(client)"
-              class="hover:bg-gray-50 cursor-pointer transition-colors"
-            >
+            <tr v-for="client in relationshipClients" :key="client.id" @click="drillDownToClient(client)"
+              class="hover:bg-gray-50 cursor-pointer transition-colors">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
@@ -145,23 +152,26 @@
                   </div>
                   <div class="ml-4">
                     <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
-                    <div class="text-sm text-gray-500">{{ client.taxId }}</div>
+                    <div class="text-sm text-gray-500">{{ client.id }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ client.industry }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ client.geography }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(client.totalDeposits) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(client.totalLoans) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(client.totalRevenue) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ client.location }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(client.portfolioValue) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(client.annualRevenue) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskScoreClass(client.riskScore)">
+                  {{ client.riskScore || 'N/A' }}
+                </span>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex flex-wrap gap-1">
-                  <span 
-                    v-for="flag in client.riskFlags" 
-                    :key="flag"
-                    class="risk-flag risk-medium"
-                  >
-                    {{ flag }}
+                  <span v-for="flag in client.riskFlags" :key="flag.category"
+                    class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskFlagClass(flag.severity)">
+                    {{ flag.category }}
                   </span>
                 </div>
               </td>
@@ -177,7 +187,7 @@
 </template>
 
 <script>
-import { relationshipManagers, relationships, clients, formatCurrency, getRiskColor } from '../data/mockData.js'
+import { relationshipManagers, relationships, clients, formatCurrency, getRiskColor, getClientsByRelationshipId } from '../data/mockData.js'
 
 export default {
   name: 'RelationshipView',
@@ -186,29 +196,59 @@ export default {
     relationship() {
       // Find the relationship across all RMs
       for (const rmId in relationships) {
-        const found = relationships[rmId].find(rel => rel.id === this.relationshipId)
+        const rmRelationships = relationships[rmId] || []
+        const found = rmRelationships.find(rel => rel.id === this.relationshipId)
         if (found) return found
       }
       return null
     },
     relationshipClients() {
-      return clients[this.relationshipId] || []
+      return getClientsByRelationshipId(this.relationshipId) || []
     },
     totalDeposits() {
-      return this.relationshipClients.reduce((sum, client) => sum + client.totalDeposits, 0)
+      return this.relationshipClients.reduce((sum, client) => {
+        return sum + (client.productSummary?.deposit?.balance || 0)
+      }, 0)
     },
     totalLoans() {
-      return this.relationshipClients.reduce((sum, client) => sum + client.totalLoans, 0)
+      return this.relationshipClients.reduce((sum, client) => {
+        return sum + (client.productSummary?.lending?.balance || 0)
+      }, 0)
     },
     totalAccounts() {
-      return this.relationshipClients.reduce((sum, client) => sum + client.accountCount, 0)
+      return this.relationshipClients.reduce((sum, client) => {
+        if (!client.productSummary) return sum
+        return sum + Object.values(client.productSummary).reduce((acc, product) => acc + (product.accounts || 0), 0)
+      }, 0)
     }
   },
   methods: {
     formatCurrency,
     getRiskColor,
+    getRiskScoreClass(score) {
+      if (!score) return 'bg-gray-100 text-gray-800'
+      if (score >= 8) return 'bg-red-100 text-red-800'
+      if (score >= 6) return 'bg-orange-100 text-orange-800'
+      if (score >= 4) return 'bg-yellow-100 text-yellow-800'
+      return 'bg-green-100 text-green-800'
+    },
+    getRiskFlagClass(severity) {
+      switch (severity) {
+        case 'Critical': return 'bg-red-100 text-red-800'
+        case 'Review': return 'bg-orange-100 text-orange-800'
+        case 'Watch': return 'bg-yellow-100 text-yellow-800'
+        default: return 'bg-gray-100 text-gray-800'
+      }
+    },
     drillDownToClient(client) {
-      this.$router.push({ name: 'Client', params: { clientId: client.id } })
+      // Navigate to individual client detail view
+      this.$router.push({
+        name: 'ClientDetail',
+        params: {
+          ...this.$route.params,
+          clientId: client.id
+        }
+      })
     },
     goBackToRM() {
       if (this.relationship) {
@@ -217,4 +257,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

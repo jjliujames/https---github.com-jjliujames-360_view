@@ -1080,38 +1080,174 @@ export const relationshipManagers = [
 ]
 
 export const relationships = {
-    'rm1': [
+    'rm-001': [
         {
-            id: 'rel1',
-            name: 'TechCorp Holdings',
-            industry: 'Technology',
-            totalValue: 85e6,
-            clientCount: 12,
-            revenue: 5.2e6,
-            riskLevel: 'Low',
-            rmId: 'rm1'
+            id: 'rel-001',
+            name: 'Johnson Holdings Group',
+            industry: 'Manufacturing',
+            totalValue: 49800000,
+            clientCount: 10,
+            revenue: 4063000,
+            riskLevel: 'Medium',
+            rmId: 'rm-001',
+            tier: 'Platinum',
+            lastReview: '2 weeks ago'
         },
         {
-            id: 'rel2',
-            name: 'Manufacturing Plus Group',
-            industry: 'Manufacturing',
-            totalValue: 67e6,
-            clientCount: 8,
-            revenue: 4.1e6,
-            riskLevel: 'Medium',
-            rmId: 'rm1'
+            id: 'rel-002',
+            name: 'TechCorp Ventures',
+            industry: 'Technology',
+            totalValue: 32800000,
+            clientCount: 5,
+            revenue: 2100000,
+            riskLevel: 'Low',
+            rmId: 'rm-001',
+            tier: 'Gold',
+            lastReview: '1 month ago'
+        },
+        {
+            id: 'rel-003',
+            name: 'Atlantic Healthcare Network',
+            industry: 'Healthcare',
+            totalValue: 28500000,
+            clientCount: 6,
+            revenue: 1800000,
+            riskLevel: 'Low',
+            rmId: 'rm-001',
+            tier: 'Gold',
+            lastReview: '3 weeks ago'
         }
     ],
-    'rm2': [
+    'rm-002': [
         {
-            id: 'rel3',
-            name: 'Pacific Retail Ventures',
-            industry: 'Retail',
-            totalValue: 92e6,
+            id: 'rel-004',
+            name: 'Global Energy Consortium',
+            industry: 'Energy',
+            totalValue: 67000000,
+            clientCount: 12,
+            revenue: 4200000,
+            riskLevel: 'High',
+            rmId: 'rm-002',
+            tier: 'Platinum',
+            lastReview: '1 week ago'
+        },
+        {
+            id: 'rel-005',
+            name: 'Northeast Construction Group',
+            industry: 'Construction',
+            totalValue: 38900000,
+            clientCount: 9,
+            revenue: 2650000,
+            riskLevel: 'Medium',
+            rmId: 'rm-002',
+            tier: 'Gold',
+            lastReview: '2 weeks ago'
+        }
+    ],
+    'rm-003': [
+        {
+            id: 'rel-006',
+            name: 'Pacific Aerospace Holdings',
+            industry: 'Aerospace',
+            totalValue: 89200000,
             clientCount: 15,
-            revenue: 6.8e6,
+            revenue: 5800000,
+            riskLevel: 'Medium',
+            rmId: 'rm-003',
+            tier: 'Platinum',
+            lastReview: '1 week ago'
+        }
+    ],
+    'rm-004': [
+        {
+            id: 'rel-007',
+            name: 'Maritime Solutions Network',
+            industry: 'Maritime',
+            totalValue: 55700000,
+            clientCount: 10,
+            revenue: 3200000,
+            riskLevel: 'High',
+            rmId: 'rm-004',
+            tier: 'Gold',
+            lastReview: '5 days ago'
+        },
+        {
+            id: 'rel-008',
+            name: 'Tourism & Hospitality Group',
+            industry: 'Tourism',
+            totalValue: 34200000,
+            clientCount: 7,
+            revenue: 2100000,
+            riskLevel: 'Medium',
+            rmId: 'rm-004',
+            tier: 'Silver',
+            lastReview: '2 weeks ago'
+        }
+    ],
+    'rm-005': [
+        {
+            id: 'rel-009',
+            name: 'Real Estate Development Corp',
+            industry: 'Real Estate',
+            totalValue: 78400000,
+            clientCount: 11,
+            revenue: 4900000,
+            riskLevel: 'Medium',
+            rmId: 'rm-005',
+            tier: 'Platinum',
+            lastReview: '10 days ago'
+        },
+        {
+            id: 'rel-010',
+            name: 'Global Logistics Network',
+            industry: 'Logistics',
+            totalValue: 84800000,
+            clientCount: 3,
+            revenue: 5610000,
+            riskLevel: 'High',
+            rmId: 'rm-005',
+            tier: 'Private',
+            lastReview: '3 days ago'
+        }
+    ],
+    'rm-006': [
+        {
+            id: 'rel-011',
+            name: 'Education Services Consortium',
+            industry: 'Education',
+            totalValue: 77300000,
+            clientCount: 3,
+            revenue: 3820000,
             riskLevel: 'Low',
-            rmId: 'rm2'
+            rmId: 'rm-006',
+            tier: 'Platinum',
+            lastReview: '1 week ago'
+        },
+        {
+            id: 'rel-012',
+            name: 'Food & Beverage Holdings',
+            industry: 'Food & Beverage',
+            totalValue: 77300000,
+            clientCount: 3,
+            revenue: 5080000,
+            riskLevel: 'Medium',
+            rmId: 'rm-006',
+            tier: 'Platinum',
+            lastReview: '5 days ago'
+        }
+    ],
+    'rm-007': [
+        {
+            id: 'rel-013',
+            name: 'International Trade Group',
+            industry: 'Import/Export',
+            totalValue: 156200000,
+            clientCount: 18,
+            revenue: 12400000,
+            riskLevel: 'High',
+            rmId: 'rm-007',
+            tier: 'Private',
+            lastReview: '2 days ago'
         }
     ]
 }
@@ -1119,32 +1255,365 @@ export const relationships = {
 export const clients = {
     'client-001': {
         id: 'client-001',
-        name: 'TechCorp Industries',
-        industry: 'Technology',
-        location: 'New York, NY',
-        portfolioValue: 85000000,
-        annualRevenue: 5200000,
-        riskFlags: ['High-Cash', 'Crypto'],
+        name: 'Johnson Manufacturing LLC',
+        industry: 'Manufacturing',
+        location: 'Chicago, IL',
+        relationshipId: 'rel-001',
+        portfolioValue: 28650000,
+        annualRevenue: 1063000,
+        relationshipYears: 8,
+        productPenetration: 73,
+        riskScore: 6.8,
+        lastReview: '2024-11-15',
+        nextReview: '2025-02-15',
+        beneficialOwners: [
+            { name: 'Robert Johnson', role: 'CEO & Founder', ownership: '65%', citizenshipCountry: 'USA' },
+            { name: 'Maria Johnson', role: 'COO', ownership: '25%', citizenshipCountry: 'USA' },
+            { name: 'Johnson Family Trust', role: 'Trust', ownership: '10%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Robert Johnson', title: 'CEO', signingAuthority: 'Unlimited' },
+            { name: 'Maria Johnson', title: 'COO', signingAuthority: '$500,000' },
+            { name: 'David Chen', title: 'CFO', signingAuthority: '$250,000' },
+            { name: 'Sarah Williams', title: 'Treasury Manager', signingAuthority: '$100,000' }
+        ],
+        conductors: [
+            { name: 'Robert Johnson', role: 'Primary Business Conductor', relationship: 'Owner' },
+            { name: 'Maria Johnson', role: 'Operations Conductor', relationship: 'Owner' },
+            { name: 'David Chen', role: 'Financial Conductor', relationship: 'Employee' }
+        ],
+        relatedEntities: [
+            { name: 'Johnson Holdings Group', relationship: 'Parent Company', ownership: '100%' },
+            { name: 'Johnson Logistics LLC', relationship: 'Subsidiary', ownership: '100%' },
+            { name: 'Midwest Manufacturing Partners', relationship: 'Joint Venture', ownership: '40%' }
+        ],
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 2 },
+            { category: 'High Cash', severity: 'Critical', count: 5 },
+            { category: 'High-Risk Industry', severity: 'Watch', count: 1 },
+            { category: 'UTRs', severity: 'Review', count: 3 },
+            { category: 'Luxury Spend', severity: 'Watch', count: 4 },
+            { category: 'Crypto', severity: 'Critical', count: 2 },
+            { category: 'Foreign ATM', severity: 'Review', count: 3 },
+            { category: 'High-Risk Wires', severity: 'Review', count: 2 }
+        ],
+        productSummary: {
+            deposit: { accounts: 4, balance: 12500000, revenue: 425000 },
+            lending: { accounts: 3, balance: 8900000, revenue: 380000 },
+            treasury: { accounts: 6, balance: 4200000, revenue: 156000 },
+            merchant: { accounts: 3, balance: 2100000, revenue: 78000 },
+            wealth: { accounts: 2, balance: 950000, revenue: 24000 }
+        },
+        rankings: {
+            risk: { rank: 15, percentile: 85 },
+            revenue: { rank: 8, percentile: 92 },
+            volume: { rank: 12, percentile: 88 },
+            overall: { rank: 9, percentile: 91 }
+        },
+        keyInsights: [
+            'Top 3% of clients in inbound transaction volume',
+            'Enhanced monitoring required due to recent crypto activity spikes',
+            'Opportunity for treasury management expansion (+$45K potential annual revenue)'
+        ],
         lastContact: '2024-01-15'
     },
     'client-002': {
         id: 'client-002',
-        name: 'Global Manufacturing Corp',
-        industry: 'Manufacturing',
+        name: 'Atlantic Healthcare Network - Main Campus',
+        industry: 'Healthcare',
         location: 'Boston, MA',
-        portfolioValue: 67000000,
-        annualRevenue: 4100000,
-        riskFlags: ['Cross-Border'],
+        relationshipId: 'rel-003',
+        portfolioValue: 15200000,
+        annualRevenue: 780000,
+        relationshipYears: 12,
+        productPenetration: 89,
+        riskScore: 3.2,
+        lastReview: '2024-10-28',
+        nextReview: '2025-01-28',
+        riskFlags: [
+            { category: 'High-Risk Industry', severity: 'Watch', count: 1 },
+            { category: 'UTRs', severity: 'Review', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 4, balance: 8200000, revenue: 380000 },
+            lending: { accounts: 2, balance: 4900000, revenue: 220000 },
+            treasury: { accounts: 3, balance: 1800000, revenue: 120000 },
+            merchant: { accounts: 2, balance: 280000, revenue: 45000 },
+            wealth: { accounts: 1, balance: 20000, revenue: 15000 }
+        },
+        rankings: {
+            risk: { rank: 89, percentile: 11 },
+            revenue: { rank: 3, percentile: 97 },
+            volume: { rank: 6, percentile: 94 },
+            overall: { rank: 4, percentile: 96 }
+        },
+        keyInsights: [
+            'Excellent relationship with minimal risk profile',
+            'Highest product penetration in portfolio (89%)',
+            'Strong growth trajectory in treasury management services'
+        ],
         lastContact: '2024-01-12'
     },
     'client-003': {
         id: 'client-003',
-        name: 'Financial Services Group',
-        industry: 'Financial Services',
+        name: 'Atlantic Healthcare Network - Outpatient Centers',
+        industry: 'Healthcare',
+        location: 'Cambridge, MA',
+        relationshipId: 'rel-003',
+        portfolioValue: 8900000,
+        annualRevenue: 420000,
+        relationshipYears: 8,
+        productPenetration: 67,
+        riskScore: 2.8,
+        lastReview: '2024-11-05',
+        nextReview: '2025-02-05',
+        riskFlags: [
+            { category: 'Foreign ATM', severity: 'Watch', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 3, balance: 5200000, revenue: 180000 },
+            lending: { accounts: 1, balance: 2100000, revenue: 95000 },
+            treasury: { accounts: 2, balance: 1400000, revenue: 85000 },
+            merchant: { accounts: 2, balance: 180000, revenue: 45000 },
+            wealth: { accounts: 1, balance: 20000, revenue: 15000 }
+        },
+        rankings: {
+            risk: { rank: 95, percentile: 5 },
+            revenue: { rank: 12, percentile: 88 },
+            volume: { rank: 18, percentile: 82 },
+            overall: { rank: 15, percentile: 85 }
+        },
+        keyInsights: [
+            'Low risk subsidiary with steady growth',
+            'Opportunity for lending expansion',
+            'Strong treasury management utilization'
+        ],
+        lastContact: '2024-01-08'
+    },
+    'client-004': {
+        id: 'client-004',
+        name: 'Atlantic Healthcare Network - Specialty Clinics',
+        industry: 'Healthcare',
+        location: 'Worcester, MA',
+        relationshipId: 'rel-003',
+        portfolioValue: 4400000,
+        annualRevenue: 220000,
+        relationshipYears: 5,
+        productPenetration: 45,
+        riskScore: 4.1,
+        lastReview: '2024-10-15',
+        nextReview: '2025-01-15',
+        riskFlags: [
+            { category: 'UTRs', severity: 'Review', count: 1 },
+            { category: 'High Cash', severity: 'Watch', count: 2 }
+        ],
+        productSummary: {
+            deposit: { accounts: 2, balance: 2800000, revenue: 95000 },
+            lending: { accounts: 1, balance: 1200000, revenue: 78000 },
+            treasury: { accounts: 1, balance: 350000, revenue: 35000 },
+            merchant: { accounts: 1, balance: 50000, revenue: 12000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 45, percentile: 55 },
+            revenue: { rank: 28, percentile: 72 },
+            volume: { rank: 35, percentile: 65 },
+            overall: { rank: 32, percentile: 68 }
+        },
+        keyInsights: [
+            'Growing specialty practice with expansion potential',
+            'Consider wealth management services introduction',
+            'Monitor cash transaction patterns'
+        ],
+        lastContact: '2024-01-03'
+    },
+    'client-006': {
+        id: 'client-006',
+        name: 'Atlantic Healthcare Network - Laboratory Services',
+        industry: 'Healthcare',
+        location: 'Springfield, MA',
+        relationshipId: 'rel-003',
+        portfolioValue: 2800000,
+        annualRevenue: 145000,
+        relationshipYears: 4,
+        productPenetration: 38,
+        riskScore: 3.5,
+        lastReview: '2024-09-20',
+        nextReview: '2024-12-20',
+        riskFlags: [],
+        productSummary: {
+            deposit: { accounts: 2, balance: 1800000, revenue: 68000 },
+            lending: { accounts: 1, balance: 650000, revenue: 42000 },
+            treasury: { accounts: 1, balance: 320000, revenue: 25000 },
+            merchant: { accounts: 1, balance: 30000, revenue: 10000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 78, percentile: 22 },
+            revenue: { rank: 42, percentile: 58 },
+            volume: { rank: 48, percentile: 52 },
+            overall: { rank: 45, percentile: 55 }
+        },
+        keyInsights: [
+            'Stable laboratory services division',
+            'Low risk profile with growth opportunity',
+            'Consider expanding treasury services'
+        ],
+        lastContact: '2024-01-05'
+    },
+    'client-007': {
+        id: 'client-007',
+        name: 'Atlantic Healthcare Network - Pharmaceuticals',
+        industry: 'Healthcare',
+        location: 'Hartford, CT',
+        relationshipId: 'rel-003',
+        portfolioValue: 1900000,
+        annualRevenue: 98000,
+        relationshipYears: 3,
+        productPenetration: 42,
+        riskScore: 2.9,
+        lastReview: '2024-11-10',
+        nextReview: '2025-02-10',
+        riskFlags: [
+            { category: 'High-Risk Industry', severity: 'Watch', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 1, balance: 1200000, revenue: 45000 },
+            lending: { accounts: 1, balance: 480000, revenue: 32000 },
+            treasury: { accounts: 1, balance: 180000, revenue: 15000 },
+            merchant: { accounts: 1, balance: 40000, revenue: 6000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 92, percentile: 8 },
+            revenue: { rank: 55, percentile: 45 },
+            volume: { rank: 62, percentile: 38 },
+            overall: { rank: 58, percentile: 42 }
+        },
+        keyInsights: [
+            'Pharmaceutical division with regulatory compliance focus',
+            'Excellent risk profile despite industry classification',
+            'Potential for wealth management services'
+        ],
+        lastContact: '2024-01-02'
+    },
+    'client-008': {
+        id: 'client-008',
+        name: 'Atlantic Healthcare Network - Home Care Services',
+        industry: 'Healthcare',
+        location: 'Providence, RI',
+        relationshipId: 'rel-003',
+        portfolioValue: 1600000,
+        annualRevenue: 85000,
+        relationshipYears: 2,
+        productPenetration: 35,
+        riskScore: 3.8,
+        lastReview: '2024-10-05',
+        nextReview: '2025-01-05',
+        riskFlags: [
+            { category: 'UTRs', severity: 'Watch', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 1, balance: 950000, revenue: 38000 },
+            lending: { accounts: 1, balance: 420000, revenue: 28000 },
+            treasury: { accounts: 1, balance: 200000, revenue: 15000 },
+            merchant: { accounts: 1, balance: 30000, revenue: 4000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 68, percentile: 32 },
+            revenue: { rank: 68, percentile: 32 },
+            volume: { rank: 72, percentile: 28 },
+            overall: { rank: 69, percentile: 31 }
+        },
+        keyInsights: [
+            'Newer home care services division',
+            'Growing market with expansion potential',
+            'Monitor transaction patterns as business scales'
+        ],
+        lastContact: '2024-01-01'
+    },
+    'client-005': {
+        id: 'client-005',
+        name: 'TechCorp Ventures',
+        industry: 'Technology',
+        location: 'Hartford, CT',
+        relationshipId: 'rel-001',
+        portfolioValue: 92000000,
+        annualRevenue: 6800000,
+        relationshipYears: 5,
+        productPenetration: 45,
+        riskScore: 8.7,
+        lastReview: '2024-12-01',
+        nextReview: '2025-03-01',
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 4 },
+            { category: 'High Cash', severity: 'Critical', count: 8 },
+            { category: 'Crypto', severity: 'Critical', count: 6 },
+            { category: 'High-Risk Wires', severity: 'Critical', count: 3 },
+            { category: 'Foreign ATM', severity: 'Review', count: 5 },
+            { category: 'UTRs', severity: 'Critical', count: 4 },
+            { category: 'Luxury Spend', severity: 'Review', count: 7 }
+        ],
+        productSummary: {
+            deposit: { accounts: 5, balance: 45600000, revenue: 2890000 },
+            lending: { accounts: 2, balance: 28900000, revenue: 1890000 },
+            treasury: { accounts: 4, balance: 12400000, revenue: 780000 },
+            merchant: { accounts: 7, balance: 4200000, revenue: 890000 },
+            wealth: { accounts: 1, balance: 900000, revenue: 350000 }
+        },
+        rankings: {
+            risk: { rank: 2, percentile: 98 },
+            revenue: { rank: 1, percentile: 99 },
+            volume: { rank: 3, percentile: 97 },
+            overall: { rank: 2, percentile: 98 }
+        },
+        keyInsights: [
+            'Highest risk client in portfolio - requires enhanced monitoring',
+            'Exceptional revenue generator despite risk profile',
+            'Immediate review required for crypto transaction patterns'
+        ],
+        lastContact: '2024-01-18'
+    },
+    'client-003': {
+        id: 'client-003',
+        name: 'TechCorp Ventures',
+        industry: 'Technology',
         location: 'Hartford, CT',
         portfolioValue: 92000000,
         annualRevenue: 6800000,
-        riskFlags: ['MSB', 'High-Cash'],
+        relationshipYears: 5,
+        productPenetration: 45,
+        riskScore: 8.7,
+        lastReview: '2024-12-01',
+        nextReview: '2025-03-01',
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 4 },
+            { category: 'High Cash', severity: 'Critical', count: 8 },
+            { category: 'Crypto', severity: 'Critical', count: 6 },
+            { category: 'High-Risk Wires', severity: 'Critical', count: 3 },
+            { category: 'Foreign ATM', severity: 'Review', count: 5 },
+            { category: 'UTRs', severity: 'Critical', count: 4 },
+            { category: 'Luxury Spend', severity: 'Review', count: 7 }
+        ],
+        productSummary: {
+            deposit: { accounts: 5, balance: 45600000, revenue: 2890000 },
+            lending: { accounts: 2, balance: 28900000, revenue: 1890000 },
+            treasury: { accounts: 4, balance: 12400000, revenue: 780000 },
+            merchant: { accounts: 7, balance: 4200000, revenue: 890000 },
+            wealth: { accounts: 1, balance: 900000, revenue: 350000 }
+        },
+        rankings: {
+            risk: { rank: 2, percentile: 98 },
+            revenue: { rank: 1, percentile: 99 },
+            volume: { rank: 3, percentile: 97 },
+            overall: { rank: 2, percentile: 98 }
+        },
+        keyInsights: [
+            'Highest risk client in portfolio - requires enhanced monitoring',
+            'Exceptional revenue generator despite risk profile',
+            'Immediate review required for crypto transaction patterns'
+        ],
         lastContact: '2024-01-18'
     },
     'client-004': {
@@ -1517,60 +1986,540 @@ export const clients = {
         riskFlags: ['Cross-Border', 'MSB'],
         lastContact: '2024-01-21'
     },
-    'rel1': [
-        {
-            id: 'client1',
-            name: 'TechCorp Inc.',
-            taxId: '***-**-1234',
-            industry: 'Software Development',
-            geography: 'New York, NY',
-            relationshipId: 'rel1',
-            totalDeposits: 45e6,
-            totalLoans: 15e6,
-            totalRevenue: 2.8e6,
-            accountCount: 8,
-            riskFlags: ['High-Cash', 'Crypto'],
-            riskLevel: 'Low',
-            beneficialOwnership: [
-                { name: 'John Smith', role: 'CEO', ownership: '45%' },
-                { name: 'TechVentures LLC', role: 'Investor', ownership: '35%' },
-                { name: 'Employee Stock Plan', role: 'Trust', ownership: '20%' }
-            ],
-            transactionTrends: [
-                { month: 'Jan', volume: 12.5e6, count: 245 },
-                { month: 'Feb', volume: 15.2e6, count: 289 },
-                { month: 'Mar', volume: 18.1e6, count: 312 },
-                { month: 'Apr', volume: 16.8e6, count: 298 },
-                { month: 'May', volume: 22.3e6, count: 354 },
-                { month: 'Jun', volume: 19.7e6, count: 331 }
-            ]
+    // Additional clients for existing relationships
+    'client-008': {
+        id: 'client-008',
+        name: 'Johnson Holdings Group - Subsidiary A',
+        industry: 'Manufacturing',
+        location: 'Milwaukee, WI',
+        relationshipId: 'rel-001',
+        portfolioValue: 8900000,
+        annualRevenue: 420000,
+        relationshipYears: 6,
+        productPenetration: 65,
+        riskScore: 5.2,
+        lastReview: '2024-11-08',
+        nextReview: '2025-02-08',
+        riskFlags: [
+            { category: 'High Cash', severity: 'Watch', count: 2 },
+            { category: 'UTRs', severity: 'Review', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 2, balance: 4200000, revenue: 180000 },
+            lending: { accounts: 1, balance: 2800000, revenue: 120000 },
+            treasury: { accounts: 2, balance: 1500000, revenue: 85000 },
+            merchant: { accounts: 1, balance: 400000, revenue: 35000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
         },
-        {
-            id: 'client2',
-            name: 'TechCorp Services',
-            taxId: '***-**-1235',
-            industry: 'Professional Services',
-            geography: 'New York, NY',
-            relationshipId: 'rel1',
-            totalDeposits: 28e6,
-            totalLoans: 8e6,
-            totalRevenue: 1.9e6,
-            accountCount: 5,
-            riskFlags: ['MSB'],
-            riskLevel: 'Medium',
-            beneficialOwnership: [
-                { name: 'TechCorp Inc.', role: 'Parent Company', ownership: '100%' }
-            ],
-            transactionTrends: [
-                { month: 'Jan', volume: 8.2e6, count: 156 },
-                { month: 'Feb', volume: 9.1e6, count: 178 },
-                { month: 'Mar', volume: 11.3e6, count: 201 },
-                { month: 'Apr', volume: 10.7e6, count: 189 },
-                { month: 'May', volume: 13.8e6, count: 234 },
-                { month: 'Jun', volume: 12.4e6, count: 218 }
-            ]
-        }
-    ]
+        rankings: {
+            risk: { rank: 45, percentile: 55 },
+            revenue: { rank: 28, percentile: 72 },
+            volume: { rank: 35, percentile: 65 },
+            overall: { rank: 32, percentile: 68 }
+        },
+        keyInsights: [
+            'Steady growth in treasury management services',
+            'Low risk profile with consistent cash flows'
+        ],
+        lastContact: '2024-11-20'
+    },
+    'client-009': {
+        id: 'client-009',
+        name: 'Johnson Holdings Group - Subsidiary B',
+        industry: 'Manufacturing',
+        location: 'Detroit, MI',
+        relationshipId: 'rel-001',
+        portfolioValue: 12300000,
+        annualRevenue: 580000,
+        relationshipYears: 4,
+        productPenetration: 58,
+        riskScore: 4.8,
+        lastReview: '2024-10-15',
+        nextReview: '2025-01-15',
+        riskFlags: [
+            { category: 'Foreign ATM', severity: 'Review', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 3, balance: 6800000, revenue: 280000 },
+            lending: { accounts: 2, balance: 3200000, revenue: 180000 },
+            treasury: { accounts: 1, balance: 1800000, revenue: 90000 },
+            merchant: { accounts: 1, balance: 500000, revenue: 30000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 52, percentile: 48 },
+            revenue: { rank: 22, percentile: 78 },
+            volume: { rank: 29, percentile: 71 },
+            overall: { rank: 27, percentile: 73 }
+        },
+        keyInsights: [
+            'Rapid expansion requiring additional working capital',
+            'Strong candidate for lending products expansion'
+        ],
+        lastContact: '2024-11-18'
+    },
+    // Global Logistics Network Clients (rel-010)
+    'client-010': {
+        id: 'client-010',
+        name: 'Global Logistics Network - North America',
+        industry: 'Logistics',
+        location: 'Chicago, IL',
+        relationshipId: 'rel-010',
+        portfolioValue: 28500000,
+        annualRevenue: 1850000,
+        relationshipYears: 7,
+        productPenetration: 85,
+        riskScore: 7.2,
+        lastReview: '2024-11-25',
+        nextReview: '2025-02-25',
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 3 },
+            { category: 'High Cash', severity: 'Critical', count: 4 },
+            { category: 'High-Risk Wires', severity: 'Watch', count: 2 },
+            { category: 'Foreign ATM', severity: 'Review', count: 5 }
+        ],
+        productSummary: {
+            deposit: { accounts: 5, balance: 12800000, revenue: 680000 },
+            lending: { accounts: 3, balance: 8900000, revenue: 520000 },
+            treasury: { accounts: 4, balance: 4200000, revenue: 380000 },
+            merchant: { accounts: 2, balance: 2100000, revenue: 180000 },
+            wealth: { accounts: 1, balance: 500000, revenue: 90000 }
+        },
+        rankings: {
+            risk: { rank: 8, percentile: 92 },
+            revenue: { rank: 5, percentile: 95 },
+            volume: { rank: 3, percentile: 97 },
+            overall: { rank: 4, percentile: 96 }
+        },
+        keyInsights: [
+            'Highest revenue generator in logistics sector',
+            'Enhanced monitoring required for cross-border transactions',
+            'Opportunity for FX hedging products expansion'
+        ],
+        lastContact: '2024-12-01'
+    },
+    'client-011': {
+        id: 'client-011',
+        name: 'Global Logistics Network - Europe',
+        industry: 'Logistics',
+        location: 'New York, NY',
+        relationshipId: 'rel-010',
+        portfolioValue: 22100000,
+        annualRevenue: 1420000,
+        relationshipYears: 5,
+        productPenetration: 78,
+        riskScore: 8.1,
+        lastReview: '2024-11-20',
+        nextReview: '2025-02-20',
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 2 },
+            { category: 'High-Risk Wires', severity: 'Critical', count: 6 },
+            { category: 'Foreign ATM', severity: 'Critical', count: 8 },
+            { category: 'Crypto', severity: 'Watch', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 4, balance: 9800000, revenue: 520000 },
+            lending: { accounts: 2, balance: 6700000, revenue: 420000 },
+            treasury: { accounts: 3, balance: 3600000, revenue: 280000 },
+            merchant: { accounts: 2, balance: 1500000, revenue: 150000 },
+            wealth: { accounts: 1, balance: 500000, revenue: 50000 }
+        },
+        rankings: {
+            risk: { rank: 3, percentile: 97 },
+            revenue: { rank: 12, percentile: 88 },
+            volume: { rank: 8, percentile: 92 },
+            overall: { rank: 7, percentile: 93 }
+        },
+        keyInsights: [
+            'High-risk profile due to international wire activity',
+            'Strong revenue despite enhanced monitoring requirements',
+            'Key client for trade finance products'
+        ],
+        lastContact: '2024-11-28'
+    },
+    // Education Services Consortium Clients (rel-011)
+    'client-012': {
+        id: 'client-012',
+        name: 'Education Services Consortium - University Division',
+        industry: 'Education',
+        location: 'Boston, MA',
+        relationshipId: 'rel-011',
+        portfolioValue: 18700000,
+        annualRevenue: 890000,
+        relationshipYears: 15,
+        productPenetration: 92,
+        riskScore: 2.1,
+        lastReview: '2024-10-30',
+        nextReview: '2025-01-30',
+        riskFlags: [],
+        productSummary: {
+            deposit: { accounts: 6, balance: 12200000, revenue: 480000 },
+            lending: { accounts: 2, balance: 4800000, revenue: 280000 },
+            treasury: { accounts: 3, balance: 1500000, revenue: 90000 },
+            merchant: { accounts: 1, balance: 200000, revenue: 40000 },
+            wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        rankings: {
+            risk: { rank: 95, percentile: 5 },
+            revenue: { rank: 18, percentile: 82 },
+            volume: { rank: 25, percentile: 75 },
+            overall: { rank: 22, percentile: 78 }
+        },
+        keyInsights: [
+            'Excellent credit profile with zero risk flags',
+            'Long-standing relationship with high loyalty',
+            'Stable cash flows from tuition and endowment'
+        ],
+        lastContact: '2024-11-22'
+    },
+    // Food & Beverage Holdings Clients (rel-012)
+    'client-013': {
+        id: 'client-013',
+        name: 'Food & Beverage Holdings - Restaurant Chain',
+        industry: 'Food & Beverage',
+        location: 'Atlanta, GA',
+        relationshipId: 'rel-012',
+        portfolioValue: 32800000,
+        annualRevenue: 2150000,
+        relationshipYears: 9,
+        productPenetration: 88,
+        riskScore: 5.8,
+        lastReview: '2024-11-10',
+        nextReview: '2025-02-10',
+        riskFlags: [
+            { category: 'High Cash', severity: 'Watch', count: 3 },
+            { category: 'UTRs', severity: 'Review', count: 2 }
+        ],
+        productSummary: {
+            deposit: { accounts: 8, balance: 18200000, revenue: 850000 },
+            lending: { accounts: 4, balance: 9800000, revenue: 680000 },
+            treasury: { accounts: 5, balance: 3200000, revenue: 380000 },
+            merchant: { accounts: 6, balance: 1400000, revenue: 220000 },
+            wealth: { accounts: 1, balance: 200000, revenue: 20000 }
+        },
+        rankings: {
+            risk: { rank: 38, percentile: 62 },
+            revenue: { rank: 6, percentile: 94 },
+            volume: { rank: 11, percentile: 89 },
+            overall: { rank: 8, percentile: 92 }
+        },
+        keyInsights: [
+            'High-volume merchant processing needs',
+            'Seasonal cash flow variations typical for restaurant industry',
+            'Strong expansion potential in new markets'
+        ],
+        lastContact: '2024-11-25'
+    },
+    // International Trade Group Clients (rel-013)  
+    'client-014': {
+        id: 'client-014',
+        name: 'International Trade Group - Import Division',
+        industry: 'Import/Export',
+        location: 'Los Angeles, CA',
+        relationshipId: 'rel-013',
+        portfolioValue: 45600000,
+        annualRevenue: 3850000,
+        relationshipYears: 12,
+        productPenetration: 95,
+        riskScore: 8.9,
+        lastReview: '2024-11-28',
+        nextReview: '2025-02-28',
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 5 },
+            { category: 'High Cash', severity: 'Critical', count: 7 },
+            { category: 'High-Risk Wires', severity: 'Critical', count: 12 },
+            { category: 'Foreign ATM', severity: 'Critical', count: 15 },
+            { category: 'High-Risk Industry', severity: 'Watch', count: 2 }
+        ],
+        productSummary: {
+            deposit: { accounts: 8, balance: 25200000, revenue: 1580000 },
+            lending: { accounts: 5, balance: 12800000, revenue: 1420000 },
+            treasury: { accounts: 6, balance: 5200000, revenue: 580000 },
+            merchant: { accounts: 3, balance: 2000000, revenue: 180000 },
+            wealth: { accounts: 2, balance: 400000, revenue: 90000 }
+        },
+        rankings: {
+            risk: { rank: 1, percentile: 99 },
+            revenue: { rank: 1, percentile: 99 },
+            volume: { rank: 1, percentile: 99 },
+            overall: { rank: 1, percentile: 99 }
+        },
+        keyInsights: [
+            'Highest risk and highest revenue client in portfolio',
+            'Complex international trade finance needs',
+            'Requires specialized compliance monitoring'
+        ],
+        lastContact: '2024-12-02'
+    },
+    // Additional clients for Food & Beverage Holdings (rel-012)
+    'client-015': {
+        id: 'client-015',
+        name: 'Food & Beverage Holdings - Catering Division',
+        industry: 'Food & Beverage',
+        location: 'Miami, FL',
+        relationshipId: 'rel-012',
+        portfolioValue: 18900000,
+        annualRevenue: 1250000,
+        relationshipYears: 6,
+        productPenetration: 82,
+        riskScore: 4.5,
+        lastReview: '2024-11-05',
+        nextReview: '2025-02-05',
+        beneficialOwners: [
+            { name: 'Elena Rodriguez', role: 'Division Manager', ownership: '15%', citizenshipCountry: 'USA' },
+            { name: 'Food & Beverage Holdings Inc', role: 'Parent Company', ownership: '85%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Elena Rodriguez', title: 'Division Manager', signingAuthority: '$200,000' },
+            { name: 'Michael Thompson', title: 'Regional CFO', signingAuthority: '$100,000' },
+            { name: 'Amy Foster', title: 'Operations Manager', signingAuthority: '$50,000' }
+        ],
+        conductors: [
+            { name: 'Elena Rodriguez', role: 'Primary Business Conductor', relationship: 'Manager' },
+            { name: 'Michael Thompson', role: 'Financial Conductor', relationship: 'Employee' }
+        ],
+        relatedEntities: [
+            { name: 'Food & Beverage Holdings Inc', relationship: 'Parent Company', ownership: '85%' },
+            { name: 'Premium Catering Services', relationship: 'Brand', ownership: '100%' }
+        ],
+        riskFlags: [
+            { category: 'UTRs', severity: 'Review', count: 1 }
+        ],
+        productSummary: {
+            deposit: { accounts: 4, balance: 9800000, revenue: 480000 },
+            lending: { accounts: 2, balance: 5200000, revenue: 350000 },
+            treasury: { accounts: 3, balance: 2800000, revenue: 260000 },
+            merchant: { accounts: 4, balance: 1000000, revenue: 140000 },
+            wealth: { accounts: 1, balance: 100000, revenue: 20000 }
+        },
+        rankings: {
+            risk: { rank: 62, percentile: 38 },
+            revenue: { rank: 15, percentile: 85 },
+            volume: { rank: 18, percentile: 82 },
+            overall: { rank: 19, percentile: 81 }
+        },
+        keyInsights: [
+            'Strong growth in corporate catering market',
+            'Opportunity for expanded merchant services',
+            'Seasonal revenue fluctuations during holiday periods'
+        ],
+        lastContact: '2024-11-28'
+    },
+    'client-016': {
+        id: 'client-016',
+        name: 'Food & Beverage Holdings - Distribution Center',
+        industry: 'Food & Beverage',
+        location: 'Dallas, TX',
+        relationshipId: 'rel-012',
+        portfolioValue: 25600000,
+        annualRevenue: 1680000,
+        relationshipYears: 8,
+        productPenetration: 91,
+        riskScore: 3.8,
+        lastReview: '2024-10-20',
+        nextReview: '2025-01-20',
+        beneficialOwners: [
+            { name: 'Food & Beverage Holdings Inc', role: 'Parent Company', ownership: '100%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'James Patterson', title: 'Distribution Director', signingAuthority: '$300,000' },
+            { name: 'Lisa Chang', title: 'Finance Director', signingAuthority: '$150,000' },
+            { name: 'Robert Mills', title: 'Operations Manager', signingAuthority: '$75,000' }
+        ],
+        conductors: [
+            { name: 'James Patterson', role: 'Primary Business Conductor', relationship: 'Manager' },
+            { name: 'Lisa Chang', role: 'Financial Conductor', relationship: 'Employee' }
+        ],
+        relatedEntities: [
+            { name: 'Food & Beverage Holdings Inc', relationship: 'Parent Company', ownership: '100%' },
+            { name: 'Southwest Logistics Partners', relationship: 'Service Provider', ownership: '0%' }
+        ],
+        riskFlags: [],
+        productSummary: {
+            deposit: { accounts: 6, balance: 14200000, revenue: 680000 },
+            lending: { accounts: 3, balance: 7800000, revenue: 520000 },
+            treasury: { accounts: 4, balance: 2900000, revenue: 320000 },
+            merchant: { accounts: 2, balance: 600000, revenue: 120000 },
+            wealth: { accounts: 1, balance: 100000, revenue: 40000 }
+        },
+        rankings: {
+            risk: { rank: 78, percentile: 22 },
+            revenue: { rank: 11, percentile: 89 },
+            volume: { rank: 14, percentile: 86 },
+            overall: { rank: 13, percentile: 87 }
+        },
+        keyInsights: [
+            'Excellent operational efficiency and low risk profile',
+            'Key logistics hub for entire food distribution network',
+            'Strong candidate for supply chain financing products'
+        ],
+        lastContact: '2024-11-30'
+    },
+    // Additional clients for Global Logistics Network (rel-010)
+    'client-017': {
+        id: 'client-017',
+        name: 'Global Logistics Network - Asia Pacific',
+        industry: 'Logistics',
+        location: 'Seattle, WA',
+        relationshipId: 'rel-010',
+        portfolioValue: 34200000,
+        annualRevenue: 2340000,
+        relationshipYears: 4,
+        productPenetration: 88,
+        riskScore: 7.8,
+        lastReview: '2024-11-15',
+        nextReview: '2025-02-15',
+        beneficialOwners: [
+            { name: 'Global Logistics Holdings', role: 'Parent Company', ownership: '80%', citizenshipCountry: 'USA' },
+            { name: 'Pacific Investment Group', role: 'Strategic Investor', ownership: '15%', citizenshipCountry: 'Singapore' },
+            { name: 'Management Team', role: 'Employee Ownership', ownership: '5%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Kevin Zhang', title: 'Regional Director', signingAuthority: '$500,000' },
+            { name: 'Sandra Kim', title: 'Finance Manager', signingAuthority: '$200,000' },
+            { name: 'Tony Liu', title: 'Operations Head', signingAuthority: '$100,000' }
+        ],
+        conductors: [
+            { name: 'Kevin Zhang', role: 'Primary Business Conductor', relationship: 'Manager' },
+            { name: 'Sandra Kim', role: 'Financial Conductor', relationship: 'Employee' },
+            { name: 'Tony Liu', role: 'Operations Conductor', relationship: 'Employee' }
+        ],
+        relatedEntities: [
+            { name: 'Global Logistics Holdings', relationship: 'Parent Company', ownership: '80%' },
+            { name: 'Pacific Shipping Lines', relationship: 'Service Partner', ownership: '0%' },
+            { name: 'Trans-Pacific Trade Corp', relationship: 'Joint Venture', ownership: '30%' }
+        ],
+        riskFlags: [
+            { category: 'MSB', severity: 'Critical', count: 2 },
+            { category: 'High-Risk Wires', severity: 'Critical', count: 8 },
+            { category: 'Foreign ATM', severity: 'Critical', count: 12 },
+            { category: 'High Cash', severity: 'Watch', count: 3 }
+        ],
+        productSummary: {
+            deposit: { accounts: 7, balance: 18600000, revenue: 920000 },
+            lending: { accounts: 4, balance: 9200000, revenue: 680000 },
+            treasury: { accounts: 5, balance: 4800000, revenue: 480000 },
+            merchant: { accounts: 3, balance: 1400000, revenue: 200000 },
+            wealth: { accounts: 1, balance: 200000, revenue: 60000 }
+        },
+        rankings: {
+            risk: { rank: 5, percentile: 95 },
+            revenue: { rank: 4, percentile: 96 },
+            volume: { rank: 2, percentile: 98 },
+            overall: { rank: 3, percentile: 97 }
+        },
+        keyInsights: [
+            'Critical hub for trans-Pacific trade operations',
+            'High risk due to complex international transactions',
+            'Major revenue contributor with specialized trade finance needs'
+        ],
+        lastContact: '2024-12-03'
+    },
+    // Additional clients for Education Services Consortium (rel-011)
+    'client-018': {
+        id: 'client-018',
+        name: 'Education Services Consortium - Research Foundation',
+        industry: 'Education',
+        location: 'Cambridge, MA',
+        relationshipId: 'rel-011',
+        portfolioValue: 42800000,
+        annualRevenue: 1950000,
+        relationshipYears: 18,
+        productPenetration: 95,
+        riskScore: 1.8,
+        lastReview: '2024-09-15',
+        nextReview: '2024-12-15',
+        beneficialOwners: [
+            { name: 'Education Services Consortium', role: 'Parent Organization', ownership: '100%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Dr. Patricia Adams', title: 'Foundation Director', signingAuthority: '$1,000,000' },
+            { name: 'Thomas Miller', title: 'Chief Financial Officer', signingAuthority: '$500,000' },
+            { name: 'Jennifer Walsh', title: 'Grants Manager', signingAuthority: '$250,000' },
+            { name: 'Dr. Marcus Foster', title: 'Research Director', signingAuthority: '$100,000' }
+        ],
+        conductors: [
+            { name: 'Dr. Patricia Adams', role: 'Primary Business Conductor', relationship: 'Director' },
+            { name: 'Thomas Miller', role: 'Financial Conductor', relationship: 'Employee' }
+        ],
+        relatedEntities: [
+            { name: 'Education Services Consortium', relationship: 'Parent Organization', ownership: '100%' },
+            { name: 'National Science Foundation', relationship: 'Funding Partner', ownership: '0%' },
+            { name: 'MIT Research Collaborative', relationship: 'Research Partner', ownership: '0%' }
+        ],
+        riskFlags: [],
+        productSummary: {
+            deposit: { accounts: 8, balance: 28500000, revenue: 1180000 },
+            lending: { accounts: 1, balance: 8900000, revenue: 420000 },
+            treasury: { accounts: 4, balance: 4200000, revenue: 280000 },
+            merchant: { accounts: 1, balance: 1100000, revenue: 60000 },
+            wealth: { accounts: 1, balance: 100000, revenue: 10000 }
+        },
+        rankings: {
+            risk: { rank: 98, percentile: 2 },
+            revenue: { rank: 7, percentile: 93 },
+            volume: { rank: 9, percentile: 91 },
+            overall: { rank: 11, percentile: 89 }
+        },
+        keyInsights: [
+            'Exceptional credit profile with zero risk indicators',
+            'Major endowment and grant management needs',
+            'Long-term relationship with highest trust level'
+        ],
+        lastContact: '2024-11-25'
+    },
+    'client-019': {
+        id: 'client-019',
+        name: 'Education Services Consortium - Online Learning Platform',
+        industry: 'Education',
+        location: 'Austin, TX',
+        relationshipId: 'rel-011',
+        portfolioValue: 15800000,
+        annualRevenue: 980000,
+        relationshipYears: 3,
+        productPenetration: 78,
+        riskScore: 2.5,
+        lastReview: '2024-10-10',
+        nextReview: '2025-01-10',
+        beneficialOwners: [
+            { name: 'Education Services Consortium', role: 'Parent Organization', ownership: '75%', citizenshipCountry: 'USA' },
+            { name: 'EdTech Innovations LLC', role: 'Technology Partner', ownership: '25%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Rachel Green', title: 'Platform Director', signingAuthority: '$200,000' },
+            { name: 'Mark Johnson', title: 'Technology Officer', signingAuthority: '$100,000' },
+            { name: 'Amy Chen', title: 'Finance Manager', signingAuthority: '$50,000' }
+        ],
+        conductors: [
+            { name: 'Rachel Green', role: 'Primary Business Conductor', relationship: 'Director' },
+            { name: 'Mark Johnson', role: 'Technology Conductor', relationship: 'Officer' }
+        ],
+        relatedEntities: [
+            { name: 'Education Services Consortium', relationship: 'Parent Organization', ownership: '75%' },
+            { name: 'EdTech Innovations LLC', relationship: 'Technology Partner', ownership: '25%' },
+            { name: 'Student Success Analytics', relationship: 'Software Platform', ownership: '100%' }
+        ],
+        riskFlags: [],
+        productSummary: {
+            deposit: { accounts: 5, balance: 8900000, revenue: 420000 },
+            lending: { accounts: 2, balance: 4200000, revenue: 280000 },
+            treasury: { accounts: 3, balance: 2100000, revenue: 180000 },
+            merchant: { accounts: 2, balance: 500000, revenue: 80000 },
+            wealth: { accounts: 1, balance: 100000, revenue: 20000 }
+        },
+        rankings: {
+            risk: { rank: 92, percentile: 8 },
+            revenue: { rank: 23, percentile: 77 },
+            volume: { rank: 32, percentile: 68 },
+            overall: { rank: 28, percentile: 72 }
+        },
+        keyInsights: [
+            'Rapidly growing online education segment',
+            'Strong technology infrastructure investment',
+            'Excellent growth potential in digital learning market'
+        ],
+        lastContact: '2024-11-27'
+    }
 }
 
 export const accounts = {
@@ -1679,4 +2628,8 @@ export const getRegionById = (regionId) => regions.find(r => r.id === regionId)
 export const getRMById = (rmId) => relationshipManagers.find(rm => rm.id === rmId)
 export const getRegionsByMarket = (marketId) => regions.filter(r => r.marketId === marketId)
 export const getRMsByRegion = (regionId) => relationshipManagers.filter(rm => rm.regionId === regionId)
-export const getClientById = (clientId) => clients[clientId] 
+export const getClientById = (clientId) => clients[clientId]
+
+export const getClientsByRelationshipId = (relationshipId) => {
+    return Object.values(clients).filter(client => client.relationshipId === relationshipId)
+}

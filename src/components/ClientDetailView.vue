@@ -191,40 +191,89 @@
               <div class="mt-6 pt-4 border-t border-gray-100">
                 <h4 class="text-sm font-medium text-gray-900 mb-3">Current Risk Flags</h4>
                 <div class="space-y-2">
-                  <div class="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+                  <div v-for="flag in clientData?.riskFlags || []" :key="flag.category"
+                    class="flex items-center justify-between p-2 rounded-lg" :class="getRiskFlagBgClass(flag.severity)">
                     <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span class="text-sm text-red-800">High Cash Transactions</span>
+                      <div class="w-2 h-2 rounded-full" :class="getRiskFlagDotClass(flag.severity)"></div>
+                      <span class="text-sm" :class="getRiskFlagTextClass(flag.severity)">{{ flag.category }}</span>
+                      <span v-if="flag.count > 1"
+                        class="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ flag.count }}</span>
                     </div>
-                    <span class="text-xs text-red-600 font-medium">Critical</span>
+                    <span class="text-xs font-medium" :class="getRiskFlagBadgeClass(flag.severity)">{{ flag.severity
+                      }}</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-red-600 rounded-full"></div>
-                      <span class="text-sm text-red-800">Crypto Activity</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Beneficial Ownership & Entity Structure -->
+          <div
+            v-if="clientData?.beneficialOwners || clientData?.authorizedSigners || clientData?.conductors || clientData?.relatedEntities"
+            class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">👥 Entity Structure & Control</h3>
+              <p class="text-sm text-gray-500 mt-1">Beneficial ownership, authorized signers, and business conductors
+              </p>
+            </div>
+            <div class="p-6">
+              <!-- Beneficial Owners -->
+              <div v-if="clientData?.beneficialOwners" class="mb-6">
+                <h4 class="text-sm font-medium text-gray-900 mb-3">💎 Beneficial Owners</h4>
+                <div class="space-y-2">
+                  <div v-for="owner in clientData.beneficialOwners" :key="owner.name"
+                    class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div>
+                      <div class="text-sm font-medium text-blue-900">{{ owner.name }}</div>
+                      <div class="text-xs text-blue-600">{{ owner.role }}</div>
+                      <div class="text-xs text-blue-500">{{ owner.citizenshipCountry }}</div>
                     </div>
-                    <span class="text-xs text-red-600 font-medium">Critical</span>
+                    <span class="text-sm font-bold text-blue-800">{{ owner.ownership }}</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      <span class="text-sm text-orange-800">Cross-Border Wires</span>
+                </div>
+              </div>
+
+              <!-- Authorized Signers -->
+              <div v-if="clientData?.authorizedSigners" class="mb-6">
+                <h4 class="text-sm font-medium text-gray-900 mb-3">✍️ Authorized Signers</h4>
+                <div class="space-y-2">
+                  <div v-for="signer in clientData.authorizedSigners" :key="signer.name"
+                    class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div>
+                      <div class="text-sm font-medium text-green-900">{{ signer.name }}</div>
+                      <div class="text-xs text-green-600">{{ signer.title }}</div>
                     </div>
-                    <span class="text-xs text-orange-600 font-medium">Review</span>
+                    <span class="text-sm font-medium text-green-800">{{ signer.signingAuthority }}</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span class="text-sm text-orange-800">MSB Activity</span>
+                </div>
+              </div>
+
+              <!-- Business Conductors -->
+              <div v-if="clientData?.conductors" class="mb-6">
+                <h4 class="text-sm font-medium text-gray-900 mb-3">🎯 Business Conductors</h4>
+                <div class="space-y-2">
+                  <div v-for="conductor in clientData.conductors" :key="conductor.name"
+                    class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                    <div>
+                      <div class="text-sm font-medium text-purple-900">{{ conductor.name }}</div>
+                      <div class="text-xs text-purple-600">{{ conductor.role }}</div>
                     </div>
-                    <span class="text-xs text-orange-600 font-medium">Review</span>
+                    <span class="text-sm text-purple-700">{{ conductor.relationship }}</span>
                   </div>
-                  <div class="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <span class="text-sm text-yellow-800">Industry Risk</span>
+                </div>
+              </div>
+
+              <!-- Related Entities -->
+              <div v-if="clientData?.relatedEntities">
+                <h4 class="text-sm font-medium text-gray-900 mb-3">🏢 Related Entities</h4>
+                <div class="space-y-2">
+                  <div v-for="entity in clientData.relatedEntities" :key="entity.name"
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">{{ entity.name }}</div>
+                      <div class="text-xs text-gray-600">{{ entity.relationship }}</div>
                     </div>
-                    <span class="text-xs text-yellow-600 font-medium">Watch</span>
+                    <span class="text-sm text-gray-700">{{ entity.ownership }}</span>
                   </div>
                 </div>
               </div>
@@ -620,6 +669,87 @@
             </div>
           </div>
 
+          <!-- Product Summary (if enhanced data is available) -->
+          <div v-if="clientData?.productSummary" class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">🏦 Product Portfolio Summary</h3>
+              <p class="text-sm text-gray-500 mt-1">Revenue and account breakdown by product line</p>
+            </div>
+            <div class="p-6">
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left text-sm font-medium text-gray-500 pb-3">Product</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Accounts</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Balance</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody class="space-y-2">
+                    <tr v-for="(product, key) in clientData.productSummary" :key="key" class="border-b border-gray-100">
+                      <td class="text-sm font-medium text-gray-900 py-3 capitalize">{{ key }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ product.accounts }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.balance) }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.revenue) }}</td>
+                    </tr>
+                    <tr class="border-t-2 border-gray-300 font-medium">
+                      <td class="text-sm text-gray-900 py-3">Total</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{Object.values(clientData.productSummary).reduce((sum, p) => sum + p.accounts, 0)}}
+                      </td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.balance,
+                          0))}}
+                      </td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.revenue,
+                          0))}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rankings & Performance (if enhanced data is available) -->
+          <div v-if="clientData?.rankings" class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">📊 Client Rankings & Performance</h3>
+              <p class="text-sm text-gray-500 mt-1">Comparative performance metrics across portfolio</p>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div v-for="(ranking, key) in clientData.rankings" :key="key"
+                  class="text-center p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm font-medium text-gray-700 capitalize">{{ key }} Rank</p>
+                  <p class="text-2xl font-bold text-gray-900">#{{ ranking.rank }}</p>
+                  <p class="text-sm text-blue-600">{{ ranking.percentile }}th percentile</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Insights (if enhanced data is available) -->
+          <div v-if="clientData?.keyInsights" class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">💡 Key Insights & Opportunities</h3>
+              <p class="text-sm text-gray-500 mt-1">AI-generated insights and recommendations</p>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3">
+                <div v-for="(insight, index) in clientData.keyInsights" :key="index"
+                  class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                  <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ index + 1 }}</span>
+                  </div>
+                  <p class="text-sm text-blue-900">{{ insight }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -879,7 +1009,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { clients, relationshipManagers, metros, markets, regions, formatCurrency, getClientById } from '../data/mockData.js'
+import { clients, relationshipManagers, metros, markets, regions, relationships, formatCurrency, getClientById } from '../data/mockData.js'
 import BarChart from './charts/BarChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 import LineChart from './charts/LineChart.vue'
@@ -940,7 +1070,13 @@ const breadcrumb = computed(() => {
   const region = regions.find(r => r.id === props.regionId)
   const rm = relationshipManagers.find(r => r.id === props.rmId)
 
-  return `${metro?.name || 'Metro'} > ${market?.name || 'Market'} > ${region?.name || 'Region'} > ${rm?.name || 'RM'}`
+  // Include relationship in breadcrumb for new hierarchy
+  if (props.relationshipId) {
+    const relationship = relationships[props.rmId]?.find(rel => rel.id === props.relationshipId)
+    return `${metro?.name || 'Metro'} > ${market?.name || 'Market'} > ${region?.name || 'Region'} > ${rm?.name || 'RM'} > ${relationship?.name || 'Relationship'} > Client Details`
+  }
+
+  return `${metro?.name || 'Metro'} > ${market?.name || 'Market'} > ${region?.name || 'Region'} > ${rm?.name || 'RM'} > Client Details`
 })
 
 
@@ -1412,6 +1548,43 @@ const getSeverityBadgeClass = (severity) => {
   }
 }
 
+// New risk flag styling methods for enhanced data structure
+const getRiskFlagBgClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'bg-red-50'
+    case 'Review': return 'bg-orange-50'
+    case 'Watch': return 'bg-yellow-50'
+    default: return 'bg-gray-50'
+  }
+}
+
+const getRiskFlagDotClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'bg-red-500'
+    case 'Review': return 'bg-orange-500'
+    case 'Watch': return 'bg-yellow-500'
+    default: return 'bg-gray-500'
+  }
+}
+
+const getRiskFlagTextClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'text-red-800'
+    case 'Review': return 'text-orange-800'
+    case 'Watch': return 'text-yellow-800'
+    default: return 'text-gray-800'
+  }
+}
+
+const getRiskFlagBadgeClass = (severity) => {
+  switch (severity) {
+    case 'Critical': return 'text-red-600'
+    case 'Review': return 'text-orange-600'
+    case 'Watch': return 'text-yellow-600'
+    default: return 'text-gray-600'
+  }
+}
+
 const getActionPriorityColor = (priority) => {
   switch (priority) {
     case 'Critical': return 'bg-red-500'
@@ -1529,7 +1702,7 @@ const getRiskFlagClass = (riskFlag) => {
 
 // Lifecycle
 onMounted(() => {
-  console.log('ClientView mounted for client:', props.clientId)
+  console.log('ClientDetailView mounted for client:', props.clientId)
   console.log('Client data:', clientData.value)
 
   // Initialize default date range for transactions (last 30 days)
