@@ -269,94 +269,6 @@
       </div>
     </div>
 
-    <!-- Regulatory Compliance Scorecard (Executive Focus) -->
-    <div class="card mb-8">
-      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900">🏛️ Regulatory Compliance Scorecard</h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Board-level compliance oversight and regulatory health</p>
-          </div>
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            Overall: Satisfactory
-          </span>
-        </div>
-      </div>
-      <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- BSA/AML Compliance -->
-          <div class="compliance-metric">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-600">BSA/AML Score</span>
-              <span class="text-lg font-bold text-green-600">92%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Target: >90%</p>
-          </div>
-
-          <!-- Regulatory Exams -->
-          <div class="compliance-metric">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-600">Exam Findings</span>
-              <span class="text-lg font-bold text-orange-600">3 Open</span>
-            </div>
-            <div class="space-y-1">
-              <div class="text-xs text-gray-600">• 1 High Priority</div>
-              <div class="text-xs text-gray-600">• 2 Medium Priority</div>
-            </div>
-            <p class="text-xs text-orange-500 mt-1">Next Exam: Q2 2025</p>
-          </div>
-
-          <!-- Capital Ratios -->
-          <div class="compliance-metric">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-600">Tier 1 Capital</span>
-              <span class="text-lg font-bold text-green-600">12.8%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-green-500 h-2 rounded-full" style="width: 89%"></div>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Regulatory Min: 8.5%</p>
-          </div>
-
-          <!-- Risk Metrics -->
-          <div class="compliance-metric">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-600">Credit Risk Level</span>
-              <span class="text-lg font-bold text-yellow-600">Moderate</span>
-            </div>
-            <div class="space-y-1">
-              <div class="text-xs text-gray-600">• NPL Ratio: 1.2%</div>
-              <div class="text-xs text-gray-600">• Charge-off: 0.8%</div>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Within tolerance</p>
-          </div>
-        </div>
-
-        <!-- Quick Actions for Executives -->
-        <div class="mt-6 pt-6 border-t border-gray-200">
-          <h4 class="text-sm font-medium text-gray-700 mb-3">Executive Actions Required</h4>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button class="bg-red-50 border border-red-200 rounded-lg p-3 text-left hover:bg-red-100">
-              <p class="text-sm font-medium text-red-800">Review High-Risk Clients</p>
-              <p class="text-xs text-red-600">5 clients requiring board attention</p>
-            </button>
-            <button class="bg-orange-50 border border-orange-200 rounded-lg p-3 text-left hover:bg-orange-100">
-              <p class="text-sm font-medium text-orange-800">Exam Preparation</p>
-              <p class="text-xs text-orange-600">Q2 regulatory exam in 90 days</p>
-            </button>
-            <button class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left hover:bg-blue-100">
-              <p class="text-sm font-medium text-blue-800">Strategic Planning</p>
-              <p class="text-xs text-blue-600">2025 business plan review</p>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- AI Opportunity Insights Section -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
       <!-- Total Opportunity Value -->
@@ -488,7 +400,7 @@
             <div class="flex justify-between items-start mb-3">
               <h4 class="text-sm font-medium text-gray-900 capitalize">{{ key.replace(/([A-Z])/g, ' $1').trim() }}</h4>
               <span class="text-lg font-bold" :class="getPenetrationColor(product.penetration)">{{ product.penetration
-              }}%</span>
+                }}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div class="bg-td-green h-2 rounded-full" :style="{ width: product.penetration + '%' }"></div>
@@ -654,7 +566,7 @@
                   <div class="flex-shrink-0 h-10 w-10">
                     <div class="h-10 w-10 rounded-full bg-td-green flex items-center justify-center">
                       <span class="text-sm font-medium text-white">{{metro.name.split(' ').map(n => n[0]).join('')
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                   <div class="ml-4">
@@ -1304,8 +1216,6 @@ onMounted(() => {
 .metric-card {
   @apply bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow;
 }
-
-
 
 /* Charts and cards */
 .card {

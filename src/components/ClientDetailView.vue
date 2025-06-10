@@ -108,16 +108,8 @@
                   <p class="text-sm text-gray-900">{{ clientData?.location || 'N/A' }}</p>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-500">Risk Score</p>
-                  <div class="flex items-center mt-1">
-                    <span class="text-lg font-bold" :class="getRiskScoreColor(riskScore)">
-                      {{ riskScore }}
-                    </span>
-                    <div class="ml-3 flex-1 bg-gray-200 rounded-full h-2">
-                      <div :class="['h-2 rounded-full', getRiskScoreBarColor(riskScore)]"
-                        :style="{ width: (riskScore / 10 * 100) + '%' }"></div>
-                    </div>
-                  </div>
+                  <p class="text-sm font-medium text-gray-500">RM No</p>
+                  <p class="text-sm text-gray-900">{{ relationshipManager?.id || 'N/A' }}</p>
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-500">Relationship Manager</p>
@@ -200,7 +192,7 @@
                         class="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ flag.count }}</span>
                     </div>
                     <span class="text-xs font-medium" :class="getRiskFlagBadgeClass(flag.severity)">{{ flag.severity
-                      }}</span>
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -212,7 +204,7 @@
             v-if="clientData?.beneficialOwners || clientData?.authorizedSigners || clientData?.conductors || clientData?.relatedEntities"
             class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">👥 Entity Structure & Control</h3>
+              <h3 class="text-lg font-medium text-gray-900">Related party</h3>
               <p class="text-sm text-gray-500 mt-1">Beneficial ownership, authorized signers, and business conductors
               </p>
             </div>
@@ -225,10 +217,9 @@
                     class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-blue-900">{{ owner.name }}</div>
-                      <div class="text-xs text-blue-600">{{ owner.role }}</div>
-                      <div class="text-xs text-blue-500">{{ owner.citizenshipCountry }}</div>
+                      <div class="text-xs text-blue-500">ID: {{ owner.id || 'BO-' + owner.name.replace(/\s/g,
+                        '').slice(0,6) }}</div>
                     </div>
-                    <span class="text-sm font-bold text-blue-800">{{ owner.ownership }}</span>
                   </div>
                 </div>
               </div>
@@ -241,9 +232,9 @@
                     class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-green-900">{{ signer.name }}</div>
-                      <div class="text-xs text-green-600">{{ signer.title }}</div>
+                      <div class="text-xs text-green-500">ID: {{ signer.id || 'SIG-' + signer.name.replace(/\s/g,
+                        '').slice(0,6) }}</div>
                     </div>
-                    <span class="text-sm font-medium text-green-800">{{ signer.signingAuthority }}</span>
                   </div>
                 </div>
               </div>
@@ -423,40 +414,34 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
-                      @click="drillDownToAccount(account)">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
-                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
+                    <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
+                      <td class="px-4 py-3">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getAccountTypeClass(account.type)">
-                          {{ account.type }}
+                          :class="getTransactionTypeClass(transaction.type)">
+                          {{ transaction.type }}
                         </span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                        :class="getAccountBalanceColor(account.balance)">
-                        {{ formatCurrency(account.balance) }}
+                      <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
+                      <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
+                      <td class="px-4 py-3 text-sm text-right font-medium"
+                        :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
+                        {{ formatCurrency(Math.abs(transaction.amount)) }}
+                        <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                        {{ formatCurrency(account.monthlyVolume) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
+                      <td class="px-4 py-3">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getRiskLevelClass(account.riskLevel)">
-                          {{ account.riskLevel }}
+                          :class="getStatusClass(transaction.status)">
+                          {{ transaction.status }}
                         </span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ formatDate(account.lastTransaction) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button class="text-blue-600 hover:text-blue-800">View</button>
-                        <span class="mx-2 text-gray-300">|</span>
-                        <button class="text-gray-600 hover:text-gray-800">History</button>
+                      <td class="px-4 py-3">
+                        <span v-if="transaction.riskFlag"
+                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          :class="getRiskFlagClass(transaction.riskFlag)">
+                          {{ transaction.riskFlag }}
+                        </span>
+                        <span v-else class="text-xs text-gray-400">-</span>
                       </td>
                     </tr>
                   </tbody>
