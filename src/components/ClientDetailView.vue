@@ -98,60 +98,42 @@
                   <span class="text-sm text-gray-600">Product Penetration</span>
                   <span class="text-sm font-medium">{{ clientData?.productPenetration || 0 }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
                   <div class="bg-blue-500 h-2 rounded-full"
                     :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Risk Assessment -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Risk Assessment</h3>
-            </div>
-            <div class="p-6">
-              <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Active Risk Flags</span>
-                  <span class="text-sm font-medium text-red-600">{{ clientData?.riskFlags?.length || 0 }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Typologies Identified</span>
-                  <span class="text-sm font-medium text-orange-600">3</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Last Review</span>
-                  <span class="text-sm font-medium">{{ formatDate(clientData?.lastReview) }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Next Review Due</span>
-                  <span class="text-sm font-medium">{{ formatDate(clientData?.nextReview) }}</span>
-                </div>
-              </div>
-
-              <!-- Risk Flags -->
-              <div class="mt-6 pt-4 border-t border-gray-100">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">Current Risk Flags</h4>
-                <div class="space-y-2">
-                  <div v-for="flag in clientData?.riskFlags || []" :key="flag.category"
-                    class="flex items-center justify-between p-2 rounded-lg" :class="getRiskFlagBgClass(flag.severity)">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-2 h-2 rounded-full" :class="getRiskFlagDotClass(flag.severity)"></div>
-                      <span class="text-sm" :class="getRiskFlagTextClass(flag.severity)">{{ flag.category }}</span>
-                      <span v-if="flag.count > 1"
-                        class="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ flag.count }}</span>
+                <!-- AI Product Recommendations -->
+                <div class="mt-4 pt-3 border-t border-gray-100">
+                  <div class="flex items-center justify-between mb-3">
+                    <h5 class="text-sm font-medium text-gray-900">🤖 AI Recommendations</h5>
+                    <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">ML Powered</span>
+                  </div>
+                  <div class="space-y-2">
+                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
+                      class="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                      <div class="flex-1">
+                        <div class="text-sm font-medium text-blue-900">{{ recommendation.product }}</div>
+                        <div class="text-xs text-blue-600">{{ recommendation.reason }}</div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <div class="text-right">
+                          <div class="text-xs font-medium text-green-700">{{ recommendation.confidence }}%</div>
+                          <div class="text-xs text-gray-500">{{ formatCurrency(recommendation.potentialRevenue) }}</div>
+                        </div>
+                        <button @click="acceptRecommendation(recommendation)"
+                          class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                          Accept
+                        </button>
+                      </div>
                     </div>
-                    <span class="text-xs font-medium" :class="getRiskFlagBadgeClass(flag.severity)">{{ flag.severity
-                    }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Beneficial Ownership & Entity Structure -->
+          <!-- Related party -->
           <div
             v-if="clientData?.beneficialOwners || clientData?.authorizedSigners || clientData?.conductors || clientData?.relatedEntities"
             class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -222,6 +204,7 @@
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- Right Column - Charts and Analysis -->
@@ -1109,6 +1092,85 @@ const productRecommendationVolume = computed(() => {
   return Math.floor(baseOpportunity * opportunityFactor)
 })
 
+const aiRecommendations = computed(() => {
+  if (!clientData.value) return []
+
+  const portfolioValue = clientData.value.portfolioValue || 0
+  const penetration = clientData.value.productPenetration || 0
+  const industry = clientData.value.industry || ''
+  const relationshipYears = clientData.value.relationshipYears || 0
+  const tier = clientTier.value
+
+  // AI/ML-based product recommendations based on client profile
+  const recommendations = []
+
+  // Treasury Management - High confidence for Commercial clients with high volume
+  if (tier === 'Commercial' && portfolioValue > 2000000) {
+    recommendations.push({
+      product: 'Treasury Management Suite',
+      reason: 'High transaction volume suggests need for cash management solutions',
+      confidence: 87,
+      potentialRevenue: Math.floor(portfolioValue * 0.008), // 0.8% of portfolio
+      priority: 'High',
+      aiFactors: ['Portfolio size', 'Commercial tier', 'Transaction patterns']
+    })
+  }
+
+  // Credit Line - Based on industry and relationship length
+  if (relationshipYears >= 2 && !industry.includes('Non-Profit')) {
+    const creditConfidence = tier === 'Commercial' ? 92 : 78
+    recommendations.push({
+      product: 'Business Line of Credit',
+      reason: `${relationshipYears}+ year relationship with growing transaction volume`,
+      confidence: creditConfidence,
+      potentialRevenue: Math.floor(portfolioValue * 0.025), // 2.5% of portfolio
+      priority: 'Medium',
+      aiFactors: ['Relationship tenure', 'Payment history', 'Industry risk']
+    })
+  }
+
+  // Investment Services - Low penetration but high portfolio
+  if (penetration < 40 && portfolioValue > 1000000) {
+    recommendations.push({
+      product: 'Investment Advisory Services',
+      reason: 'Low product penetration with high asset base indicates growth potential',
+      confidence: 73,
+      potentialRevenue: Math.floor(portfolioValue * 0.015), // 1.5% of portfolio
+      priority: 'Medium',
+      aiFactors: ['Portfolio concentration', 'Product gaps', 'Wealth management needs']
+    })
+  }
+
+  // Digital Banking - Based on transaction patterns and business type
+  if (industry.includes('Technology') || industry.includes('Retail')) {
+    recommendations.push({
+      product: 'Digital Banking Platform',
+      reason: 'Industry profile suggests high digital adoption likelihood',
+      confidence: 84,
+      potentialRevenue: Math.floor(portfolioValue * 0.005), // 0.5% of portfolio
+      priority: 'Low',
+      aiFactors: ['Industry digitization', 'Transaction channels', 'Age demographics']
+    })
+  }
+
+  // International Services - Based on transaction analysis
+  if (Math.random() > 0.6) { // Simulate international activity detection
+    recommendations.push({
+      product: 'International Trade Finance',
+      reason: 'Cross-border transaction patterns detected',
+      confidence: 69,
+      potentialRevenue: Math.floor(portfolioValue * 0.012), // 1.2% of portfolio
+      priority: 'Low',
+      aiFactors: ['Wire patterns', 'Currency exposure', 'Trade volumes']
+    })
+  }
+
+  // Sort by confidence and return top 3
+  return recommendations
+    .sort((a, b) => b.confidence - a.confidence)
+    .slice(0, 3)
+})
+
 
 
 // Enhanced Transaction Volume Data (Stacked Bar Chart)
@@ -1928,6 +1990,20 @@ const generateNineDigitId = (id, prefix) => {
 const drillDownToAccount = (account) => {
   // Implement drill-down functionality
   console.log('Drill down to account:', account)
+}
+
+const acceptRecommendation = (recommendation) => {
+  // Simulate accepting an AI recommendation
+  showNotification.value = true
+  notificationMessage.value = `Recommendation accepted: ${recommendation.product} (${recommendation.confidence}% confidence)`
+
+  // In a real app, this would:
+  // 1. Create a task or opportunity
+  // 2. Notify the relationship manager
+  // 3. Update the client's opportunity pipeline
+  // 4. Send to CRM system
+
+  setTimeout(() => showNotification.value = false, 4000)
 }
 </script>
 
