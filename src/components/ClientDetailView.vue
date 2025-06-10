@@ -18,54 +18,6 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center space-x-2">
-            <!-- Bulk Actions -->
-            <div class="relative">
-              <button @click="showBulkActions = !showBulkActions"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-                <span>Bulk Actions</span>
-                <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd" />
-                </svg>
-              </button>
-              <div v-if="showBulkActions" @click.stop
-                class="absolute left-0 top-12 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-20">
-                <div class="py-2">
-                  <button @click="bulkAction('review-all')"
-                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    🔍 Review All High-Risk Accounts
-                  </button>
-                  <button @click="bulkAction('generate-statements')"
-                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    📄 Generate All Statements
-                  </button>
-                  <button @click="bulkAction('schedule-review')"
-                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    📅 Schedule Relationship Review
-                  </button>
-                  <button @click="bulkAction('compliance-check')"
-                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    ✅ Run Compliance Check
-                  </button>
-                  <div class="border-t border-gray-100 my-1"></div>
-                  <button @click="bulkAction('freeze-all')"
-                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    ❄️ Freeze All Accounts
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- RM Actions -->
-            <button @click="clientAction('create-task')"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-              Create Task
-            </button>
-            <button @click="clientAction('schedule-meeting')"
-              class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              Schedule Meeting
-            </button>
             <button @click="clientAction('generate-report')"
               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
               Generate Report
@@ -296,6 +248,30 @@
               </div>
             </div>
             <div class="p-6">
+              <!-- Account Summary Metrics -->
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                  <p class="text-sm text-blue-600 font-medium">Total Accounts</p>
+                  <p class="text-2xl font-bold text-blue-900">{{ accountDetails.length }}</p>
+                  <p class="text-xs text-blue-600">{{ activeAccountsCount }} active</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                  <p class="text-sm text-green-600 font-medium">Total Deposits</p>
+                  <p class="text-2xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
+                  <p class="text-xs text-green-600">Across all accounts</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-lg">
+                  <p class="text-sm text-orange-600 font-medium">Opportunity</p>
+                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(productRecommendationVolume) }}</p>
+                  <p class="text-xs text-orange-600">Product recommendation volume</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg">
+                  <p class="text-sm text-red-600 font-medium">High Risk Accounts</p>
+                  <p class="text-2xl font-bold text-red-900">{{ highRiskAccountsCount }}</p>
+                  <p class="text-xs text-red-600">Require attention</p>
+                </div>
+              </div>
+
               <!-- Account Cards View -->
               <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div v-for="account in accountDetails" :key="account.id"
@@ -453,29 +429,49 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
 
-              <!-- Account Summary Metrics -->
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-blue-50 p-4 rounded-lg">
-                  <p class="text-sm text-blue-600 font-medium">Total Accounts</p>
-                  <p class="text-2xl font-bold text-blue-900">{{ accountDetails.length }}</p>
-                  <p class="text-xs text-blue-600">{{ activeAccountsCount }} active</p>
-                </div>
-                <div class="bg-green-50 p-4 rounded-lg">
-                  <p class="text-sm text-green-600 font-medium">Total Deposits</p>
-                  <p class="text-2xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
-                  <p class="text-xs text-green-600">Across all accounts</p>
-                </div>
-                <div class="bg-orange-50 p-4 rounded-lg">
-                  <p class="text-sm text-orange-600 font-medium">Monthly Volume</p>
-                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(totalMonthlyVolume) }}</p>
-                  <p class="text-xs text-orange-600">Total transaction volume</p>
-                </div>
-                <div class="bg-red-50 p-4 rounded-lg">
-                  <p class="text-sm text-red-600 font-medium">High Risk Accounts</p>
-                  <p class="text-2xl font-bold text-red-900">{{ highRiskAccountsCount }}</p>
-                  <p class="text-xs text-red-600">Require attention</p>
-                </div>
+          <!-- Product Summary (if enhanced data is available) -->
+          <div v-if="clientData?.productSummary" class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">🏦 Product Portfolio Summary</h3>
+              <p class="text-sm text-gray-500 mt-1">Revenue and account breakdown by product line</p>
+            </div>
+            <div class="p-6">
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left text-sm font-medium text-gray-500 pb-3">Product</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Accounts</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Balance</th>
+                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody class="space-y-2">
+                    <tr v-for="(product, key) in clientData.productSummary" :key="key" class="border-b border-gray-100">
+                      <td class="text-sm font-medium text-gray-900 py-3 capitalize">{{ key }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ product.accounts }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.balance) }}</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.revenue) }}</td>
+                    </tr>
+                    <tr class="border-t-2 border-gray-300 font-medium">
+                      <td class="text-sm text-gray-900 py-3">Total</td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{Object.values(clientData.productSummary).reduce((sum, p) => sum + p.accounts, 0)}}
+                      </td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.balance,
+                          0))}}
+                      </td>
+                      <td class="text-sm text-gray-900 py-3 text-right">
+                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.revenue,
+                          0))}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -541,36 +537,7 @@
             </div>
           </div>
 
-          <!-- Account Portfolio -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">💼 Account Portfolio</h3>
-              <p class="text-sm text-gray-500 mt-1">Account balances and distribution</p>
-            </div>
-            <div class="p-6">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="h-64">
-                  <DoughnutChart v-if="accountDistributionData" :data="accountDistributionData" />
-                </div>
-                <div class="space-y-4">
-                  <div v-for="account in accountSummary" :key="account.type"
-                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div class="flex items-center space-x-3">
-                      <div :class="['w-4 h-4 rounded-full', account.color]"></div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">{{ account.type }}</p>
-                        <p class="text-xs text-gray-600">{{ account.count }} accounts</p>
-                      </div>
-                    </div>
-                    <div class="text-right">
-                      <p class="text-sm font-bold text-gray-900">{{ formatCurrency(account.balance) }}</p>
-                      <p class="text-xs text-gray-500">{{ account.percentage }}%</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Risk Flag Distribution -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -660,49 +627,7 @@
             </div>
           </div>
 
-          <!-- Product Summary (if enhanced data is available) -->
-          <div v-if="clientData?.productSummary" class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">🏦 Product Portfolio Summary</h3>
-              <p class="text-sm text-gray-500 mt-1">Revenue and account breakdown by product line</p>
-            </div>
-            <div class="p-6">
-              <div class="overflow-x-auto">
-                <table class="min-w-full">
-                  <thead>
-                    <tr class="border-b border-gray-200">
-                      <th class="text-left text-sm font-medium text-gray-500 pb-3">Product</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Accounts</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Balance</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody class="space-y-2">
-                    <tr v-for="(product, key) in clientData.productSummary" :key="key" class="border-b border-gray-100">
-                      <td class="text-sm font-medium text-gray-900 py-3 capitalize">{{ key }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ product.accounts }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.balance) }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.revenue) }}</td>
-                    </tr>
-                    <tr class="border-t-2 border-gray-300 font-medium">
-                      <td class="text-sm text-gray-900 py-3">Total</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{Object.values(clientData.productSummary).reduce((sum, p) => sum + p.accounts, 0)}}
-                      </td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.balance,
-                          0))}}
-                      </td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.revenue,
-                          0))}}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Rankings & Performance (if enhanced data is available) -->
           <div v-if="clientData?.rankings" class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1090,10 +1015,8 @@ const totalBalance = computed(() => {
 
 const clientTier = computed(() => {
   const balance = totalBalance.value
-  if (balance >= 10000000) return 'Private'
-  if (balance >= 5000000) return 'Premium'
-  if (balance >= 1000000) return 'Preferred'
-  return 'Standard'
+  if (balance >= 5000000) return 'Commercial'
+  return 'Small Business'
 })
 
 const riskScore = computed(() => {
@@ -1170,6 +1093,20 @@ const totalMonthlyVolume = computed(() => {
 
 const highRiskAccountsCount = computed(() => {
   return accountDetails.value.filter(acc => acc.riskLevel === 'High').length
+})
+
+const productRecommendationVolume = computed(() => {
+  if (!clientData.value) return 0
+
+  // Calculate product recommendation volume based on client profile and portfolio
+  const portfolioValue = clientData.value.portfolioValue || 0
+  const penetration = clientData.value.productPenetration || 0
+
+  // Generate opportunity volume based on missing products and client size
+  const opportunityFactor = (100 - penetration) / 100 // Higher if lower penetration
+  const baseOpportunity = portfolioValue * 0.15 // 15% of portfolio as potential
+
+  return Math.floor(baseOpportunity * opportunityFactor)
 })
 
 
@@ -1498,10 +1435,8 @@ const formatDate = (dateString) => {
 
 const getTierBadgeClass = (tier) => {
   switch (tier?.toLowerCase()) {
-    case 'private': return 'bg-purple-100 text-purple-800'
-    case 'premium': return 'bg-yellow-100 text-yellow-800'
-    case 'preferred': return 'bg-blue-100 text-blue-800'
-    case 'standard': return 'bg-gray-100 text-gray-800'
+    case 'commercial': return 'bg-blue-100 text-blue-800'
+    case 'small business': return 'bg-green-100 text-green-800'
     default: return 'bg-gray-100 text-gray-800'
   }
 }
@@ -2014,3 +1949,4 @@ const drillDownToAccount = (account) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 </style>
+npm
