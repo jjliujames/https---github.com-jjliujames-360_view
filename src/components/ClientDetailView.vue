@@ -217,8 +217,8 @@
                     class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-blue-900">{{ owner.name }}</div>
-                      <div class="text-xs text-blue-500">ID: {{ owner.id || 'BO-' + owner.name.replace(/\s/g,
-                        '').slice(0,6) }}</div>
+                      <div class="text-xs text-blue-500">ID: {{ generateNineDigitId(owner.id || owner.name, 'BO') }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -232,8 +232,8 @@
                     class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-green-900">{{ signer.name }}</div>
-                      <div class="text-xs text-green-500">ID: {{ signer.id || 'SIG-' + signer.name.replace(/\s/g,
-                        '').slice(0,6) }}</div>
+                      <div class="text-xs text-green-500">ID: {{ generateNineDigitId(signer.id || signer.name, 'SIG') }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -247,9 +247,9 @@
                     class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-purple-900">{{ conductor.name }}</div>
-                      <div class="text-xs text-purple-600">{{ conductor.role }}</div>
+                      <div class="text-xs text-purple-500">ID: {{ generateNineDigitId(conductor.id || conductor.name,
+                        'CON') }}</div>
                     </div>
-                    <span class="text-sm text-purple-700">{{ conductor.relationship }}</span>
                   </div>
                 </div>
               </div>
@@ -262,9 +262,9 @@
                     class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-gray-900">{{ entity.name }}</div>
-                      <div class="text-xs text-gray-600">{{ entity.relationship }}</div>
+                      <div class="text-xs text-gray-500">ID: {{ generateNineDigitId(entity.id || entity.name, 'ENT') }}
+                      </div>
                     </div>
-                    <span class="text-sm text-gray-700">{{ entity.ownership }}</span>
                   </div>
                 </div>
               </div>
@@ -414,34 +414,40 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
-                      <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
-                      <td class="px-4 py-3">
+                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
+                      @click="drillDownToAccount(account)">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
+                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getTransactionTypeClass(transaction.type)">
-                          {{ transaction.type }}
+                          :class="getAccountTypeClass(account.type)">
+                          {{ account.type }}
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
-                      <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
-                      <td class="px-4 py-3 text-sm text-right font-medium"
-                        :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
-                        {{ formatCurrency(Math.abs(transaction.amount)) }}
-                        <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                        :class="getAccountBalanceColor(account.balance)">
+                        {{ formatCurrency(account.balance) }}
                       </td>
-                      <td class="px-4 py-3">
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                        {{ formatCurrency(account.monthlyVolume) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getStatusClass(transaction.status)">
-                          {{ transaction.status }}
+                          :class="getRiskLevelClass(account.riskLevel)">
+                          {{ account.riskLevel }}
                         </span>
                       </td>
-                      <td class="px-4 py-3">
-                        <span v-if="transaction.riskFlag"
-                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getRiskFlagClass(transaction.riskFlag)">
-                          {{ transaction.riskFlag }}
-                        </span>
-                        <span v-else class="text-xs text-gray-400">-</span>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ formatDate(account.lastTransaction) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-800">View</button>
+                        <span class="mx-2 text-gray-300">|</span>
+                        <button class="text-gray-600 hover:text-gray-800">History</button>
                       </td>
                     </tr>
                   </tbody>
@@ -1968,6 +1974,25 @@ const getRiskSeverityClass = (severity) => {
     case 'Low': return 'bg-green-100 text-green-800'
     default: return 'bg-gray-100 text-gray-800'
   }
+}
+
+const generateNineDigitId = (id, prefix) => {
+  // Generate a hash-based 9-digit ID from the input
+  let hash = 0
+  const str = (id || '').toString()
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  // Convert to positive and ensure 9 digits
+  const numericId = Math.abs(hash).toString().padStart(9, '0').slice(-9)
+  return numericId
+}
+
+const drillDownToAccount = (account) => {
+  // Implement drill-down functionality
+  console.log('Drill down to account:', account)
 }
 </script>
 
