@@ -93,43 +93,7 @@
                 <span class="text-sm text-gray-600">Relationship Length</span>
                 <span class="text-sm font-medium">{{ clientData?.relationshipYears || 0 }} years</span>
               </div>
-              <div class="pt-2 border-t border-gray-100">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm text-gray-600">Product Penetration</span>
-                  <span class="text-sm font-medium">{{ clientData?.productPenetration || 0 }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
-                  <div class="bg-blue-500 h-2 rounded-full"
-                    :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
-                </div>
 
-                <!-- AI Product Recommendations -->
-                <div class="mt-4 pt-3 border-t border-gray-100">
-                  <div class="flex items-center justify-between mb-3">
-                    <h5 class="text-sm font-medium text-gray-900">🤖 AI Recommendations</h5>
-                    <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">ML Powered</span>
-                  </div>
-                  <div class="space-y-2">
-                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
-                      class="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-                      <div class="flex-1">
-                        <div class="text-sm font-medium text-blue-900">{{ recommendation.product }}</div>
-                        <div class="text-xs text-blue-600">{{ recommendation.reason }}</div>
-                      </div>
-                      <div class="flex items-center space-x-2">
-                        <div class="text-right">
-                          <div class="text-xs font-medium text-green-700">{{ recommendation.confidence }}%</div>
-                          <div class="text-xs text-gray-500">{{ formatCurrency(recommendation.potentialRevenue) }}</div>
-                        </div>
-                        <button @click="acceptRecommendation(recommendation)"
-                          class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                          Accept
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -411,6 +375,84 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Penetration & AI Recommendations -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">📈 Product Penetration & AI Recommendations</h3>
+                  <p class="text-sm text-gray-500 mt-1">Current product penetration with ML-powered growth opportunities
+                  </p>
+                </div>
+                <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML Powered</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <!-- Product Penetration Overview -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                  <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ clientData?.productPenetration || 0 }}%</div>
+                    <div class="text-sm text-gray-600 mb-4">Current Product Penetration</div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                        :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-gray-500">
+                      {{ 100 - (clientData?.productPenetration || 0) }}% growth opportunity remaining
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                  <h4 class="text-lg font-medium text-gray-900 mb-4">🤖 AI-Powered Product Recommendations</h4>
+                  <div class="space-y-3">
+                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
+                      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all">
+                      <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                          <div class="flex items-center space-x-2 mb-2">
+                            <h5 class="text-sm font-semibold text-blue-900">{{ recommendation.product }}</h5>
+                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                              {{ recommendation.confidence }}% confidence
+                            </span>
+                          </div>
+                          <p class="text-sm text-blue-700 mb-2">{{ recommendation.reason }}</p>
+                          <div class="flex items-center space-x-4 text-xs text-gray-600">
+                            <span>💰 {{ formatCurrency(recommendation.potentialRevenue) }} potential</span>
+                            <span>🎯 {{ recommendation.priority }} priority</span>
+                          </div>
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                          <button @click="acceptRecommendation(recommendation)"
+                            class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
+                            Accept
+                          </button>
+                          <button
+                            class="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                            Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI Factors Summary -->
+                  <div v-if="aiRecommendations.length > 0" class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h6 class="text-xs font-medium text-gray-700 mb-2">AI Analysis Factors:</h6>
+                    <div class="flex flex-wrap gap-2">
+                      <span v-for="factor in [...new Set(aiRecommendations.flatMap(r => r.aiFactors))]" :key="factor"
+                        class="text-xs px-2 py-1 bg-white text-gray-600 rounded border">
+                        {{ factor }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
