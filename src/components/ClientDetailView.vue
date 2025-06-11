@@ -568,55 +568,54 @@
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h3 class="text-lg font-medium text-gray-900">⚠️ Risk Flag Distribution</h3>
-              <p class="text-sm text-gray-500 mt-1">Breakdown of active risk flags by category and severity</p>
+              <p class="text-sm text-gray-500 mt-1">Active risk flags by category - click for detailed analysis</p>
             </div>
             <div class="p-6">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="h-64">
-                  <DoughnutChart v-if="riskFlagDistributionData" :data="riskFlagDistributionData" />
-                </div>
-                <div class="space-y-4">
-                  <div v-for="flag in riskFlagSummary" :key="flag.category"
-                    class="flex items-center justify-between p-4 border rounded-lg"
-                    :class="getRiskFlagBorderClass(flag.severity)">
-                    <div class="flex items-center space-x-3">
-                      <div :class="['w-4 h-4 rounded-full', flag.color]"></div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">{{ flag.category }}</p>
-                        <p class="text-xs text-gray-600">{{ flag.severity }} risk level</p>
-                        <p class="text-xs text-gray-500 mt-1">{{ flag.description }}</p>
-                      </div>
-                    </div>
-                    <div class="text-right">
-                      <p class="text-sm font-bold text-gray-900">{{ flag.count }} flags</p>
-                      <p class="text-xs text-gray-500">{{ flag.percentage }}%</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4 text-sm">
-                <div class="text-center p-3 bg-red-50 rounded-lg">
+              <!-- Summary Cards at Top -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm mb-8">
+                <div class="text-center p-4 bg-red-50 rounded-lg">
                   <p class="text-red-600 font-medium">Critical</p>
-                  <p class="text-xl font-bold text-red-900">{{riskFlagSummary.filter(f => f.severity ===
+                  <p class="text-2xl font-bold text-red-900">{{riskFlagSummaryFiltered.filter(f => f.severity ===
                     'Critical').reduce((sum, f) => sum + f.count, 0)}}</p>
                   <p class="text-xs text-red-600">Immediate action required</p>
                 </div>
-                <div class="text-center p-3 bg-orange-50 rounded-lg">
+                <div class="text-center p-4 bg-orange-50 rounded-lg">
                   <p class="text-orange-600 font-medium">Review</p>
-                  <p class="text-xl font-bold text-orange-900">{{riskFlagSummary.filter(f => f.severity ===
+                  <p class="text-2xl font-bold text-orange-900">{{riskFlagSummaryFiltered.filter(f => f.severity ===
                     'Review').reduce((sum, f) => sum + f.count, 0)}}</p>
                   <p class="text-xs text-orange-600">Enhanced monitoring</p>
                 </div>
-                <div class="text-center p-3 bg-yellow-50 rounded-lg">
-                  <p class="text-yellow-600 font-medium">Watch</p>
-                  <p class="text-xl font-bold text-yellow-900">{{riskFlagSummary.filter(f => f.severity ===
-                    'Watch').reduce((sum, f) => sum + f.count, 0)}}</p>
-                  <p class="text-xs text-yellow-600">Routine monitoring</p>
-                </div>
-                <div class="text-center p-3 bg-blue-50 rounded-lg">
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
                   <p class="text-blue-600 font-medium">Total</p>
-                  <p class="text-xl font-bold text-blue-900">{{ clientData?.riskFlags?.length || 0 }}</p>
+                  <p class="text-2xl font-bold text-blue-900">{{riskFlagSummaryFiltered.reduce((sum, f) => sum +
+                    f.count, 0)}}</p>
                   <p class="text-xs text-blue-600">All active flags</p>
+                </div>
+              </div>
+
+              <!-- Clickable Risk Flag Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div v-for="flag in riskFlagSummaryFiltered" :key="flag.category" @click="openRiskFlagModal(flag)"
+                  class="cursor-pointer p-4 border rounded-lg hover:shadow-md transition-all transform hover:-translate-y-1"
+                  :class="getRiskFlagBorderClass(flag.severity)">
+                  <div class="flex items-center space-x-3 mb-3">
+                    <div :class="['w-4 h-4 rounded-full', flag.color]"></div>
+                    <div class="flex-1">
+                      <h4 class="text-sm font-semibold text-gray-900">{{ flag.category }}</h4>
+                      <p class="text-xs text-gray-600">{{ flag.severity }} risk level</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-lg font-bold text-gray-900">{{ flag.count }}</p>
+                      <p class="text-xs text-gray-500">{{ flag.percentage }}%</p>
+                    </div>
+                  </div>
+                  <p class="text-xs text-gray-500 mb-2">{{ flag.description }}</p>
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs text-blue-600 font-medium">View Details →</span>
+                    <span class="text-xs px-2 py-1 rounded-full" :class="getSeverityBadgeClass(flag.severity)">
+                      {{ flag.severity }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -945,6 +944,160 @@
       <span>{{ notificationMessage }}</span>
     </div>
   </div>
+
+  <!-- Risk Flag Details Modal -->
+  <div v-if="showRiskFlagModal && selectedRiskFlag"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="closeRiskFlagModal">
+    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div :class="['w-6 h-6 rounded-full', selectedRiskFlag.color]"></div>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-900">{{ selectedRiskFlag.category }} - Detailed Analysis</h3>
+              <p class="text-sm text-gray-600 mt-1">{{ selectedRiskFlag.description }}</p>
+            </div>
+            <span class="px-3 py-1 text-sm font-medium rounded-full"
+              :class="getSeverityBadgeClass(selectedRiskFlag.severity)">
+              {{ selectedRiskFlag.severity }}
+            </span>
+          </div>
+          <button @click="closeRiskFlagModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div v-if="generateRiskFlagData(selectedRiskFlag.category)" class="space-y-6">
+
+          <!-- Chart Section -->
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category).chartData" class="bg-gray-50 rounded-lg p-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">📊 Trend Analysis</h4>
+            <div class="h-64">
+              <BarChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData" />
+            </div>
+          </div>
+
+          <!-- High Cash Special Alert -->
+          <div
+            v-if="selectedRiskFlag.category === 'High Cash Transactions' && generateRiskFlagData(selectedRiskFlag.category).cumulativeAlert"
+            class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-sm font-medium text-yellow-800">{{
+                generateRiskFlagData(selectedRiskFlag.category).cumulativeAlert }}</span>
+            </div>
+          </div>
+
+          <!-- UTR Reports -->
+          <div v-if="selectedRiskFlag.category === 'UTR'">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">📋 Unusual Transaction Reports</h4>
+            <div class="space-y-4">
+              <div v-for="report in generateRiskFlagData(selectedRiskFlag.category).reports" :key="report.date"
+                class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <div class="flex items-start justify-between mb-2">
+                  <div class="flex-1">
+                    <div class="text-sm font-medium text-orange-900">{{ formatDate(report.date) }}</div>
+                    <div class="text-sm text-orange-700 mt-1">{{ report.description }}</div>
+                  </div>
+                  <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">{{ report.staff }}</span>
+                </div>
+                <div class="text-xs text-orange-600 bg-orange-100 p-2 rounded mt-2">
+                  <strong>Details:</strong> {{ report.details }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Details -->
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category).transactions">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">💳 Transaction Details</h4>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
+                    </th>
+                    <th v-if="selectedRiskFlag.category === 'Foreign ATM'"
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
+                    </th>
+                    <th v-if="selectedRiskFlag.category === 'High-Risk Wires'"
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Beneficiary
+                    </th>
+                    <th v-if="selectedRiskFlag.category === 'Crypto Activity'"
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exchange
+                    </th>
+                    <th v-if="selectedRiskFlag.category === 'Luxury Spend'"
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                    <th v-if="selectedRiskFlag.category === 'High Cash Transactions'"
+                      class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">3-Month
+                      Cumulative</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="transaction in generateRiskFlagData(selectedRiskFlag.category).transactions"
+                    :key="transaction.date" class="hover:bg-gray-50">
+                    <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
+                    <td class="px-4 py-4 text-sm font-medium text-right"
+                      :class="transaction.amount >= 10000 ? 'text-red-600' : 'text-gray-900'">
+                      {{ formatCurrency(transaction.amount) }}
+                    </td>
+                    <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.details }}</td>
+                    <td v-if="selectedRiskFlag.category === 'Foreign ATM'" class="px-4 py-4 text-sm text-gray-500">
+                      {{ transaction.location }}
+                      <div class="text-xs text-gray-400">{{ transaction.terminal }}</div>
+                    </td>
+                    <td v-if="selectedRiskFlag.category === 'High-Risk Wires'" class="px-4 py-4 text-sm text-gray-500">
+                      {{ transaction.beneficiary }}
+                      <div class="text-xs text-gray-400">{{ transaction.country }}</div>
+                    </td>
+                    <td v-if="selectedRiskFlag.category === 'Crypto Activity'" class="px-4 py-4 text-sm text-gray-500">
+                      {{ transaction.exchange }}
+                      <div class="text-xs text-gray-400">{{ transaction.crypto }}</div>
+                    </td>
+                    <td v-if="selectedRiskFlag.category === 'Luxury Spend'" class="px-4 py-4 text-sm text-gray-500">
+                      {{ transaction.items }}
+                      <div class="text-xs text-gray-400">{{ transaction.vendor }}</div>
+                    </td>
+                    <td v-if="selectedRiskFlag.category === 'High Cash Transactions'"
+                      class="px-4 py-4 text-sm text-right font-medium"
+                      :class="transaction.cumulative3Month >= 50000 ? 'text-red-600' : 'text-gray-900'">
+                      {{ formatCurrency(transaction.cumulative3Month) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <button @click="closeRiskFlagModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+              Close
+            </button>
+            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Generate Report
+            </button>
+            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+              Flag for Investigation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -979,6 +1132,10 @@ const showTaskModal = ref(false)
 const showNotification = ref(false)
 const notificationMessage = ref('')
 const openMenus = ref({})
+
+// Risk Flag Modal State
+const showRiskFlagModal = ref(false)
+const selectedRiskFlag = ref(null)
 
 // Task Creation State
 const newTask = ref({
@@ -1411,10 +1568,10 @@ const riskFlagSummary = computed(() => {
     const mockFlags = [
       { category: 'Crypto Activity', severity: 'Critical', count: 2, color: 'bg-red-500', description: 'Cryptocurrency transactions or blockchain business' },
       { category: 'High Cash Transactions', severity: 'Critical', count: 4, color: 'bg-red-600', description: 'Cash transactions above threshold' },
-      { category: 'Cross-Border Wires', severity: 'Review', count: 3, color: 'bg-orange-500', description: 'International wire transfers to high-risk countries' },
-      { category: 'MSB Activity', severity: 'Review', count: 1, color: 'bg-orange-600', description: 'Money Service Business classification' },
-      { category: 'Industry Risk', severity: 'Watch', count: 2, color: 'bg-yellow-500', description: 'High-risk industry classification' },
-      { category: 'Geographic Risk', severity: 'Watch', count: 1, color: 'bg-yellow-600', description: 'Operations in high-risk jurisdictions' }
+      { category: 'Foreign ATM', severity: 'Critical', count: 3, color: 'bg-red-400', description: 'ATM withdrawals in high-risk countries' },
+      { category: 'High-Risk Wires', severity: 'Review', count: 3, color: 'bg-orange-500', description: 'International wire transfers to high-risk countries' },
+      { category: 'Luxury Spend', severity: 'Review', count: 2, color: 'bg-orange-400', description: 'Large purchases of luxury goods using business funds' },
+      { category: 'UTR', severity: 'Review', count: 1, color: 'bg-orange-600', description: 'Unusual Transaction Reports filed by staff' }
     ]
 
     const total = mockFlags.reduce((sum, flag) => sum + flag.count, 0)
@@ -1445,6 +1602,17 @@ const riskFlagSummary = computed(() => {
     count,
     percentage: total > 0 ? Math.round((count / total) * 100) : 0,
     color: colors[index % colors.length]
+  }))
+})
+
+// Filtered risk flag summary (excludes Watch level)
+const riskFlagSummaryFiltered = computed(() => {
+  const filtered = riskFlagSummary.value.filter(flag => flag.severity !== 'Watch')
+  const total = filtered.reduce((sum, flag) => sum + flag.count, 0)
+
+  return filtered.map(flag => ({
+    ...flag,
+    percentage: total > 0 ? Math.round((flag.count / total) * 100) : 0
   }))
 })
 
@@ -2046,6 +2214,140 @@ const acceptRecommendation = (recommendation) => {
   // 4. Send to CRM system
 
   setTimeout(() => showNotification.value = false, 4000)
+}
+
+const openRiskFlagModal = (flag) => {
+  selectedRiskFlag.value = flag
+  showRiskFlagModal.value = true
+}
+
+const closeRiskFlagModal = () => {
+  showRiskFlagModal.value = false
+  selectedRiskFlag.value = null
+}
+
+// Generate mock data for risk flag details
+const generateRiskFlagData = (flagCategory) => {
+  const baseDate = new Date()
+
+  switch (flagCategory) {
+    case 'Foreign ATM':
+      return {
+        transactions: [
+          { date: '2024-01-15', amount: 500, details: 'ATM withdrawal in Kabul, Afghanistan', location: 'Kabul, AF', terminal: 'ATM-KAB-001' },
+          { date: '2024-01-18', amount: 800, details: 'ATM withdrawal in Damascus, Syria', location: 'Damascus, SY', terminal: 'ATM-DAM-003' },
+          { date: '2024-01-22', amount: 300, details: 'ATM withdrawal in Tehran, Iran', location: 'Tehran, IR', terminal: 'ATM-TEH-007' }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'Foreign ATM Withdrawals',
+            data: [0, 3, 1, 2],
+            backgroundColor: '#EF4444',
+            borderColor: '#DC2626',
+            borderWidth: 2
+          }]
+        }
+      }
+
+    case 'High-Risk Wires':
+      return {
+        transactions: [
+          { date: '2024-01-10', amount: 25000, details: 'Wire transfer to Bank of Beirut, Lebanon', beneficiary: 'Al-Rashid Trading Co', country: 'Lebanon' },
+          { date: '2024-01-25', amount: 18500, details: 'Wire transfer to Dubai Islamic Bank', beneficiary: 'Gulf Import Export LLC', country: 'UAE' },
+          { date: '2024-02-05', amount: 32000, details: 'Wire transfer to Commercial Bank of Qatar', beneficiary: 'Petro Chemicals Ltd', country: 'Qatar' }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'High-Risk Wire Transfers ($000s)',
+            data: [0, 43.5, 32, 15],
+            backgroundColor: '#F59E0B',
+            borderColor: '#D97706',
+            borderWidth: 2
+          }]
+        }
+      }
+
+    case 'Crypto Activity':
+      return {
+        transactions: [
+          { date: '2024-01-12', amount: 15000, details: 'Payment to Coinbase Pro for Bitcoin purchase', exchange: 'Coinbase Pro', crypto: 'Bitcoin' },
+          { date: '2024-01-20', amount: 8500, details: 'Transfer to Binance exchange wallet', exchange: 'Binance', crypto: 'Ethereum' },
+          { date: '2024-02-01', amount: 12000, details: 'Purchase from Kraken exchange', exchange: 'Kraken', crypto: 'Litecoin' }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'Crypto Transactions ($000s)',
+            data: [0, 23.5, 12, 8],
+            backgroundColor: '#8B5CF6',
+            borderColor: '#7C3AED',
+            borderWidth: 2
+          }]
+        }
+      }
+
+    case 'Luxury Spend':
+      return {
+        transactions: [
+          { date: '2024-01-08', amount: 45000, details: 'Purchase of Rolex watches from Beverly Hills Jewelers', vendor: 'Beverly Hills Jewelers', items: '3x Rolex Submariner watches' },
+          { date: '2024-01-15', amount: 28000, details: 'Louis Vuitton handbags and accessories purchase', vendor: 'Louis Vuitton Beverly Hills', items: '12x luxury handbags' },
+          { date: '2024-01-28', amount: 35000, details: 'Cartier jewelry purchase using business card', vendor: 'Cartier Rodeo Drive', items: 'Diamond bracelet and earrings' }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'Luxury Spending ($000s)',
+            data: [0, 108, 35, 22],
+            backgroundColor: '#EC4899',
+            borderColor: '#DB2777',
+            borderWidth: 2
+          }]
+        }
+      }
+
+    case 'High Cash Transactions':
+      return {
+        transactions: [
+          { date: '2024-01-05', amount: 12000, details: 'Large cash deposit - source: retail sales', cumulative3Month: 45000 },
+          { date: '2024-01-12', amount: 15000, details: 'Cash deposit - reported as business revenue', cumulative3Month: 60000 },
+          { date: '2024-01-20', amount: 18000, details: 'Large cash deposit exceeding daily limit', cumulative3Month: 78000 }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'Cash Deposits ($000s)',
+            data: [12, 45, 33, 28],
+            backgroundColor: '#10B981',
+            borderColor: '#059669',
+            borderWidth: 2
+          }]
+        },
+        cumulativeAlert: 'Cumulative cash deposits exceeded $50,000 threshold in 3-month period'
+      }
+
+    case 'UTR':
+      return {
+        reports: [
+          { date: '2024-01-10', description: 'Client inquired about CTR reporting thresholds and structuring laws', staff: 'Teller #3', details: 'Customer asked specific questions about $10,000 reporting requirements' },
+          { date: '2024-01-25', description: 'Structured deposits of $9,900 made consistently', staff: 'Branch Manager', details: 'Customer made multiple deposits just under CTR threshold over 2-week period' }
+        ],
+        chartData: {
+          labels: ['Dec', 'Jan', 'Feb', 'Mar'],
+          datasets: [{
+            label: 'UTR Reports Filed',
+            data: [0, 2, 1, 0],
+            backgroundColor: '#F97316',
+            borderColor: '#EA580C',
+            borderWidth: 2
+          }]
+        }
+      }
+
+    default:
+      return { transactions: [], chartData: null }
+  }
 }
 </script>
 
