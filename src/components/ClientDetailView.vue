@@ -1221,37 +1221,296 @@
             </div>
           </div>
 
-          <!-- Risk Flag Analysis -->
+          <!-- Risk Analytics & Time Series -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">🚩 Risk Flag Timeline</h3>
-              <p class="text-sm text-gray-500 mt-1">Historical risk flag activity and trends</p>
-            </div>
-            <div class="p-6">
-              <div class="h-64 mb-8">
-                <LineChart v-if="riskTimelineData" :data="riskTimelineData" />
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">📊 Risk Analytics & Time Series</h3>
+                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down capabilities
+                  </p>
+                </div>
+                <div class="flex items-center space-x-3">
+                  <select v-model="riskTimeframe" class="text-sm border border-gray-300 rounded-lg px-3 py-1">
+                    <option value="3M">Last 3 Months</option>
+                    <option value="6M">Last 6 Months</option>
+                    <option value="1Y">Last 12 Months</option>
+                    <option value="2Y">Last 24 Months</option>
+                  </select>
+                  <button @click="exportRiskData"
+                    class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">
+                    Export Data
+                  </button>
+                </div>
               </div>
-              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="text-center p-4 bg-red-50 rounded-lg">
-                  <p class="text-2xl font-bold text-red-600">{{ clientData?.riskFlags?.length || 0 }}</p>
-                  <p class="text-sm text-red-600 font-medium">Active Flags</p>
-                  <p class="text-xs text-gray-500 mt-1">Requires attention</p>
+            </div>
+
+            <div class="p-6">
+              <!-- Filter Controls -->
+              <div class="mb-6 flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-2">
+                  <label class="text-sm font-medium text-gray-700">Transaction Types:</label>
+                  <div class="flex space-x-2">
+                    <label v-for="txnType in transactionTypes" :key="txnType" class="flex items-center space-x-1">
+                      <input type="checkbox" v-model="selectedTxnTypes" :value="txnType" class="rounded">
+                      <span class="text-xs text-gray-600">{{ txnType }}</span>
+                    </label>
+                  </div>
                 </div>
-                <div class="text-center p-4 bg-orange-50 rounded-lg">
-                  <p class="text-2xl font-bold text-orange-600">7</p>
-                  <p class="text-sm text-orange-600 font-medium">Resolved This Month</p>
-                  <p class="text-xs text-gray-500 mt-1">Good progress</p>
+                <div class="flex items-center space-x-2">
+                  <label class="text-sm font-medium text-gray-700">Risk Flags:</label>
+                  <div class="flex space-x-2">
+                    <label v-for="flagType in flagTypes" :key="flagType" class="flex items-center space-x-1">
+                      <input type="checkbox" v-model="selectedFlagTypes" :value="flagType" class="rounded">
+                      <span class="text-xs text-gray-600">{{ flagType }}</span>
+                    </label>
+                  </div>
                 </div>
-                <div class="text-center p-4 bg-green-50 rounded-lg">
-                  <p class="text-2xl font-bold text-green-600">89%</p>
-                  <p class="text-sm text-green-600 font-medium">Resolution Rate</p>
-                  <p class="text-xs text-gray-500 mt-1">Above average</p>
+                <button @click="resetRiskFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset All</button>
+              </div>
+
+              <!-- Charts Grid -->
+              <div class="grid grid-cols-1 gap-6">
+
+                <!-- High Risk Transactions by Type -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type</h4>
+                    <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
+                      →</button>
+                  </div>
+                  <div class="h-64">
+                    <BarChart :data="riskTransactionTimeSeriesData" :options="stackedBarOptions" />
+                  </div>
+                  <div class="mt-3 flex justify-between text-xs text-gray-600">
+                    <span>Total High Risk: {{ totalHighRiskTransactions }}</span>
+                    <span>↑ {{ riskTrend }}% vs prev period</span>
+                  </div>
                 </div>
+
               </div>
             </div>
           </div>
 
+          <!-- Risk Flag Event Timeline -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">🕐 Risk Flag Event Timeline</h3>
+                  <p class="text-sm text-gray-500 mt-1">Chronological view of risk events by severity and type</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                  <select v-model="timelineRange" class="text-sm border border-gray-300 rounded-lg px-3 py-1">
+                    <option value="1M">Last Month</option>
+                    <option value="3M">Last 3 Months</option>
+                    <option value="6M">Last 6 Months</option>
+                    <option value="1Y">Last Year</option>
+                  </select>
+                  <button @click="exportTimelineData"
+                    class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">
+                    Export Timeline
+                  </button>
+                </div>
+              </div>
+            </div>
 
+            <div class="p-6">
+              <!-- Timeline Chart -->
+              <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="text-md font-medium text-gray-900">Risk Event Timeline by Category</h4>
+                  <div class="flex space-x-2 text-xs">
+                    <span class="flex items-center space-x-1">
+                      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <span>High Risk</span>
+                    </span>
+                    <span class="flex items-center space-x-1">
+                      <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <span>Medium Risk</span>
+                    </span>
+                    <span class="flex items-center space-x-1">
+                      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span>Low Risk</span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Timeline Grid -->
+                <div class="relative">
+                  <!-- Time axis -->
+                  <div class="flex justify-between text-xs text-gray-500 mb-4 px-24">
+                    <span v-for="timeLabel in timelineLabels" :key="timeLabel">{{ timeLabel }}</span>
+                  </div>
+
+                  <!-- Risk events by category -->
+                  <div class="space-y-4">
+                    <!-- UTR Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">UTR Filed</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in utrCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- MSB Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">MSB Activity</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in msbCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- High Cash Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">High Cash</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in cashCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Crypto Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">Crypto</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in cryptoCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Sanctions Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">Sanctions</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in sanctionsCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Compliance Category -->
+                    <div class="flex items-center">
+                      <div class="w-20 text-xs font-medium text-gray-700">Compliance</div>
+                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
+                        <div v-for="event in complianceCategoryEvents" :key="event.id"
+                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
+                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
+                          :title="event.description" @click="viewEventDetails(event)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Flag Summary - Horizontal Layout -->
+              <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="text-md font-medium text-gray-900 mb-4">📊 Flag Summary</h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                  <!-- UTR Summary -->
+                  <div class="p-3 bg-white rounded border">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-gray-900">UTR Filed</span>
+                      <span class="text-lg font-bold text-orange-600">{{ utrStats.total }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      <div>Rank: #{{ utrStats.rank }}/{{ utrStats.totalClients }}</div>
+                      <div>{{ utrStats.percentile }}th percentile</div>
+                      <div class="mt-1 text-orange-600">{{ utrStats.trend }}</div>
+                    </div>
+                  </div>
+
+                  <!-- MSB Classification -->
+                  <div class="p-3 bg-white rounded border">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-gray-900">MSB Status</span>
+                      <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Active</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      <div>Money Services Business</div>
+                      <div>Since: {{ msbStats.classifiedDate }}</div>
+                      <div class="mt-1 text-red-600">Permanent</div>
+                    </div>
+                  </div>
+
+                  <!-- High Cash Flags -->
+                  <div class="p-3 bg-white rounded border">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-gray-900">High Cash</span>
+                      <span class="text-lg font-bold text-yellow-600">{{ cashStats.flags }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      <div>90 days: {{ cashStats.recent }}</div>
+                      <div>Breaches: {{ cashStats.breaches }}</div>
+                      <div class="mt-1 text-yellow-600">{{ cashStats.status }}</div>
+                    </div>
+                  </div>
+
+                  <!-- Crypto Flags -->
+                  <div class="p-3 bg-white rounded border">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-gray-900">Crypto</span>
+                      <span class="text-lg font-bold text-purple-600">{{ cryptoStats.flags }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      <div>Exchanges: {{ cryptoStats.exchanges }}</div>
+                      <div>Volume: {{ formatCurrency(cryptoStats.volume) }}</div>
+                      <div class="mt-1 text-purple-600">{{ cryptoStats.trend }}</div>
+                    </div>
+                  </div>
+
+                  <!-- Sanctions Screening -->
+                  <div class="p-3 bg-white rounded border">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-gray-900">Sanctions</span>
+                      <span class="text-lg font-bold text-gray-600">{{ sanctionsStats.hits }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      <div>False+: {{ sanctionsStats.falsePositives }}</div>
+                      <div>Last: {{ sanctionsStats.lastScreen }}</div>
+                      <div class="mt-1 text-green-600">{{ sanctionsStats.status }}</div>
+                    </div>
+                  </div>
+
+                  <!-- Overall Risk Status -->
+                  <div class="p-3 bg-gradient-to-r from-red-50 to-orange-50 rounded border border-red-200">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-red-900">Overall Risk</span>
+                      <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full font-bold">HIGH</span>
+                    </div>
+                    <div class="text-xs text-red-700">
+                      <div>Score: {{ overallRisk.score }}/100</div>
+                      <div>MSB, High Cash</div>
+                      <div class="mt-1 font-medium">Enhanced monitoring</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Rankings & Performance and Key Insights Combined -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           <!-- Rankings & Performance (if enhanced data is available) -->
           <div v-if="clientData?.rankings" class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1260,12 +1519,37 @@
               <p class="text-sm text-gray-500 mt-1">Comparative performance metrics across portfolio</p>
             </div>
             <div class="p-6">
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div v-for="(ranking, key) in clientData.rankings" :key="key"
-                  class="text-center p-4 bg-gray-50 rounded-lg">
-                  <p class="text-sm font-medium text-gray-700 capitalize">{{ key }} Rank</p>
-                  <p class="text-2xl font-bold text-gray-900">#{{ ranking.rank }}</p>
-                  <p class="text-sm text-blue-600">{{ ranking.percentile }}th percentile</p>
+                  class="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100 hover:shadow-md transition-shadow">
+                  <div class="flex items-center justify-center mb-2">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-sm font-bold">#</span>
+                    </div>
+                  </div>
+                  <p class="text-sm font-medium text-gray-700 capitalize mb-1">{{ key.replace(/([A-Z])/g, ' $1').trim()
+                  }} Rank</p>
+                  <p class="text-2xl font-bold text-blue-900 mb-1">#{{ ranking.rank }}</p>
+                  <p class="text-sm text-blue-600 font-medium">{{ ranking.percentile }}th percentile</p>
+                  <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      :style="`width: ${ranking.percentile}%`"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Performance Summary -->
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="text-md font-medium text-gray-900 mb-3">📈 Performance Summary</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Overall Ranking:</span>
+                    <span class="font-medium text-blue-600">Top {{ topPercentile }}%</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Best Category:</span>
+                    <span class="font-medium text-green-600">{{ bestCategory }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1278,173 +1562,205 @@
               <p class="text-sm text-gray-500 mt-1">AI-generated insights and recommendations</p>
             </div>
             <div class="p-6">
-              <div class="space-y-3">
+              <div class="space-y-4">
                 <div v-for="(insight, index) in clientData.keyInsights" :key="index"
-                  class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
-                  <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="text-white text-xs font-bold">{{ index + 1 }}</span>
+                  class="flex items-start space-x-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 hover:shadow-md transition-shadow">
+                  <div
+                    class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-sm font-bold">{{ index + 1 }}</span>
                   </div>
-                  <p class="text-sm text-blue-900">{{ insight }}</p>
+                  <div class="flex-1">
+                    <p class="text-sm text-gray-900 leading-relaxed">{{ insight }}</p>
+                    <div class="mt-2 flex items-center space-x-2">
+                      <span
+                        class="px-2 py-1 text-xs font-medium bg-white text-orange-700 rounded-full border border-orange-200">
+                        {{ ['High Priority', 'Medium Priority', 'Low Priority'][index % 3] }}
+                      </span>
+                      <span
+                        class="px-2 py-1 text-xs font-medium bg-white text-blue-700 rounded-full border border-blue-200">
+                        {{ ['Revenue Growth', 'Risk Management', 'Operational Efficiency'][index % 3] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Items -->
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="text-md font-medium text-gray-900 mb-3">🎯 Recommended Actions</h4>
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-2 text-sm">
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span class="text-gray-700">Schedule quarterly business review</span>
+                  </div>
+                  <div class="flex items-center space-x-2 text-sm">
+                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span class="text-gray-700">Explore additional product opportunities</span>
+                  </div>
+                  <div class="flex items-center space-x-2 text-sm">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span class="text-gray-700">Update risk assessment documentation</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
         </div>
+
       </div>
     </div>
+  </div>
 
-    <!-- Transaction Details Modal -->
-    <div v-if="showTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      @click.self="showTransactionModal = false">
-      <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
-        <!-- Modal Header -->
-        <div class="p-6 border-b border-gray-200 bg-gray-50">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-xl font-semibold text-gray-900">💳 Transaction Details</h3>
-              <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction History
-              </p>
-            </div>
-            <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
+  <!-- Transaction Details Modal -->
+  <div v-if="showTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    @click.self="showTransactionModal = false">
+    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-900">💳 Transaction Details</h3>
+            <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction History
+            </p>
           </div>
+          <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
 
-          <!-- Date Range Filters -->
-          <div class="mt-4 flex flex-wrap items-center gap-4">
-            <div class="flex items-center space-x-2">
-              <label class="text-sm font-medium text-gray-700">From:</label>
-              <input v-model="transactionFilters.startDate" type="date"
-                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div class="flex items-center space-x-2">
-              <label class="text-sm font-medium text-gray-700">To:</label>
-              <input v-model="transactionFilters.endDate" type="date"
-                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div class="flex items-center space-x-2">
-              <label class="text-sm font-medium text-gray-700">Type:</label>
-              <select v-model="transactionFilters.type"
-                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="">All Types</option>
-                <option value="deposit">Deposits</option>
-                <option value="withdrawal">Withdrawals</option>
-                <option value="transfer">Transfers</option>
-                <option value="wire">Wires</option>
-                <option value="ach">ACH</option>
-                <option value="check">Checks</option>
-              </select>
-            </div>
-            <button @click="loadTransactions"
-              class="px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
-              Apply Filters
-            </button>
-            <button @click="resetFilters"
-              class="px-4 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors">
-              Reset
-            </button>
+        <!-- Date Range Filters -->
+        <div class="mt-4 flex flex-wrap items-center gap-4">
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">From:</label>
+            <input v-model="transactionFilters.startDate" type="date"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">To:</label>
+            <input v-model="transactionFilters.endDate" type="date"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">Type:</label>
+            <select v-model="transactionFilters.type"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">All Types</option>
+              <option value="deposit">Deposits</option>
+              <option value="withdrawal">Withdrawals</option>
+              <option value="transfer">Transfers</option>
+              <option value="wire">Wires</option>
+              <option value="ach">ACH</option>
+              <option value="check">Checks</option>
+            </select>
+          </div>
+          <button @click="loadTransactions"
+            class="px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
+            Apply Filters
+          </button>
+          <button @click="resetFilters"
+            class="px-4 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <!-- Transaction Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-green-50 p-4 rounded-lg">
+            <p class="text-sm text-green-600 font-medium">Total Inflows</p>
+            <p class="text-xl font-bold text-green-900">{{ formatCurrency(transactionSummary.totalInflows) }}</p>
+            <p class="text-xs text-green-600">{{ transactionSummary.inflowCount }} transactions</p>
+          </div>
+          <div class="bg-red-50 p-4 rounded-lg">
+            <p class="text-sm text-red-600 font-medium">Total Outflows</p>
+            <p class="text-xl font-bold text-red-900">{{ formatCurrency(transactionSummary.totalOutflows) }}</p>
+            <p class="text-xs text-red-600">{{ transactionSummary.outflowCount }} transactions</p>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <p class="text-sm text-blue-600 font-medium">Net Amount</p>
+            <p class="text-xl font-bold text-blue-900">{{ formatCurrency(transactionSummary.netAmount) }}</p>
+            <p class="text-xs text-blue-600">{{ transactionSummary.totalCount }} total transactions</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-sm text-gray-600 font-medium">Average Amount</p>
+            <p class="text-xl font-bold text-gray-900">{{ formatCurrency(transactionSummary.averageAmount) }}</p>
+            <p class="text-xs text-gray-600">Per transaction</p>
           </div>
         </div>
 
-        <!-- Modal Body -->
-        <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-          <!-- Transaction Summary -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-green-50 p-4 rounded-lg">
-              <p class="text-sm text-green-600 font-medium">Total Inflows</p>
-              <p class="text-xl font-bold text-green-900">{{ formatCurrency(transactionSummary.totalInflows) }}</p>
-              <p class="text-xs text-green-600">{{ transactionSummary.inflowCount }} transactions</p>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg">
-              <p class="text-sm text-red-600 font-medium">Total Outflows</p>
-              <p class="text-xl font-bold text-red-900">{{ formatCurrency(transactionSummary.totalOutflows) }}</p>
-              <p class="text-xs text-red-600">{{ transactionSummary.outflowCount }} transactions</p>
-            </div>
-            <div class="bg-blue-50 p-4 rounded-lg">
-              <p class="text-sm text-blue-600 font-medium">Net Amount</p>
-              <p class="text-xl font-bold text-blue-900">{{ formatCurrency(transactionSummary.netAmount) }}</p>
-              <p class="text-xs text-blue-600">{{ transactionSummary.totalCount }} total transactions</p>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <p class="text-sm text-gray-600 font-medium">Average Amount</p>
-              <p class="text-xl font-bold text-gray-900">{{ formatCurrency(transactionSummary.averageAmount) }}</p>
-              <p class="text-xs text-gray-600">Per transaction</p>
-            </div>
-          </div>
+        <!-- Transaction Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
+                </th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getTransactionTypeClass(transaction.type)">
+                    {{ transaction.type }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
+                <td class="px-4 py-3 text-sm text-right font-medium"
+                  :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
+                  {{ formatCurrency(Math.abs(transaction.amount)) }}
+                  <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getStatusClass(transaction.status)">
+                    {{ transaction.status }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <span v-if="transaction.riskFlag"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getRiskFlagClass(transaction.riskFlag)">
+                    {{ transaction.riskFlag }}
+                  </span>
+                  <span v-else class="text-xs text-gray-400">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <!-- Transaction Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description
-                  </th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
-                  </th>
-                  <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
-                  </th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
-                  <td class="px-4 py-3">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getTransactionTypeClass(transaction.type)">
-                      {{ transaction.type }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
-                  <td class="px-4 py-3 text-sm text-right font-medium"
-                    :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
-                    {{ formatCurrency(Math.abs(transaction.amount)) }}
-                    <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
-                  </td>
-                  <td class="px-4 py-3">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getStatusClass(transaction.status)">
-                      {{ transaction.status }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3">
-                    <span v-if="transaction.riskFlag"
-                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getRiskFlagClass(transaction.riskFlag)">
-                      {{ transaction.riskFlag }}
-                    </span>
-                    <span v-else class="text-xs text-gray-400">-</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
+              filteredTransactions.length) }} of {{ filteredTransactions.length }} transactions
           </div>
-
-          <!-- Pagination -->
-          <div class="mt-6 flex items-center justify-between">
-            <div class="text-sm text-gray-700">
-              Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
-                filteredTransactions.length) }} of {{ filteredTransactions.length }} transactions
-            </div>
-            <div class="flex items-center space-x-2">
-              <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
-                class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Previous
-              </button>
-              <span class="px-3 py-1 text-sm text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
-              <button @click="currentPage = Math.min(totalPages, currentPage + 1)"
-                :disabled="currentPage === totalPages"
-                class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Next
-              </button>
-            </div>
+          <div class="flex items-center space-x-2">
+            <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
+              class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Previous
+            </button>
+            <span class="px-3 py-1 text-sm text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button @click="currentPage = Math.min(totalPages, currentPage + 1)" :disabled="currentPage === totalPages"
+              class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Next
+            </button>
           </div>
         </div>
       </div>
@@ -1596,6 +1912,31 @@
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 class="text-lg font-medium text-blue-900 mb-2">📋 Risk Assessment Summary</h4>
             <p class="text-sm text-blue-800">{{ generateRiskFlagData(selectedRiskFlag.category).summary }}</p>
+          </div>
+
+          <!-- Time Series Chart for Risk Flag -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-lg font-medium text-gray-900">📈 {{ selectedRiskFlag.category }} - Historical Trend</h4>
+              <div class="flex space-x-2">
+                <select v-model="modalTimeframe" class="text-xs border border-gray-300 rounded px-2 py-1">
+                  <option value="3M">3 Months</option>
+                  <option value="6M">6 Months</option>
+                  <option value="1Y">12 Months</option>
+                </select>
+                <button @click="exportModalData"
+                  class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">
+                  Export
+                </button>
+              </div>
+            </div>
+            <div class="h-48">
+              <LineChart :data="generateModalTimeSeriesData(selectedRiskFlag.category)" :options="modalChartOptions" />
+            </div>
+            <div class="mt-3 flex justify-between text-xs text-gray-600">
+              <span>Trend: {{ getModalTrend(selectedRiskFlag.category) }}</span>
+              <span>Peak: {{ getModalPeak(selectedRiskFlag.category) }}</span>
+            </div>
           </div>
 
           <!-- Flag Details Section (for non-transaction flags) -->
@@ -1797,6 +2138,18 @@ const openMenus = ref({})
 // Risk Flag Modal State
 const showRiskFlagModal = ref(false)
 const selectedRiskFlag = ref(null)
+
+// Risk Analytics State
+const riskTimeframe = ref('6M')
+const modalTimeframe = ref('3M')
+const timelineRange = ref('3M')
+const showAllEvents = ref(false)
+const selectedTxnTypes = ref(['Wire', 'Cash', 'Crypto', 'MSB'])
+const selectedFlagTypes = ref(['UTR', 'High Cash', 'MSB', 'Crypto'])
+
+// Filter and chart options
+const transactionTypes = ['Wire', 'Cash', 'Crypto', 'MSB', 'ATM', 'ACH', 'Check']
+const flagTypes = ['UTR', 'High Cash', 'MSB', 'Crypto', 'HRJ', 'Sanctions', 'EDD']
 
 // Task Creation State
 const newTask = ref({
@@ -2188,6 +2541,421 @@ const aiRecommendations = computed(() => {
   return recommendations
     .sort((a, b) => b.confidence - a.confidence)
     .slice(0, 3)
+})
+
+// Risk Analytics Computed Properties
+const riskTransactionTimeSeriesData = computed(() => {
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+  return {
+    labels: months,
+    datasets: [
+      {
+        label: 'Wire Transfers',
+        data: [12, 18, 25, 22, 28, 31],
+        backgroundColor: '#EF4444',
+        borderColor: '#DC2626',
+        borderWidth: 1
+      },
+      {
+        label: 'Cash Transactions',
+        data: [8, 15, 18, 16, 22, 25],
+        backgroundColor: '#F59E0B',
+        borderColor: '#D97706',
+        borderWidth: 1
+      },
+      {
+        label: 'Crypto Activities',
+        data: [3, 7, 12, 8, 15, 18],
+        backgroundColor: '#8B5CF6',
+        borderColor: '#7C3AED',
+        borderWidth: 1
+      },
+      {
+        label: 'MSB Related',
+        data: [5, 8, 14, 11, 16, 20],
+        backgroundColor: '#EC4899',
+        borderColor: '#DB2777',
+        borderWidth: 1
+      }
+    ]
+  }
+})
+
+const riskFlagTimeSeriesData = computed(() => {
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+  return {
+    labels: months,
+    datasets: [
+      {
+        label: 'UTR Flags',
+        data: [2, 3, 5, 4, 6, 7],
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        tension: 0.3
+      },
+      {
+        label: 'High Cash Flags',
+        data: [1, 2, 4, 3, 5, 6],
+        borderColor: '#EF4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        tension: 0.3
+      },
+      {
+        label: 'MSB Flags',
+        data: [0, 1, 2, 1, 3, 4],
+        borderColor: '#8B5CF6',
+        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        tension: 0.3
+      },
+      {
+        label: 'Crypto Flags',
+        data: [1, 1, 3, 2, 4, 5],
+        borderColor: '#EC4899',
+        backgroundColor: 'rgba(236, 72, 153, 0.1)',
+        tension: 0.3
+      }
+    ]
+  }
+})
+
+const riskScoreTimeSeriesData = computed(() => {
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+  return {
+    labels: months,
+    datasets: [
+      {
+        label: 'Risk Score',
+        data: [45, 52, 67, 58, 71, 74],
+        borderColor: '#EF4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        tension: 0.3,
+        fill: true
+      }
+    ]
+  }
+})
+
+const complianceActionsData = computed(() => {
+  return {
+    labels: ['SARs Filed', 'UTRs Filed', 'EDD Reviews', 'Sanctions Screening'],
+    datasets: [{
+      data: [3, 7, 12, 8],
+      backgroundColor: ['#EF4444', '#F59E0B', '#10B981', '#6B7280'],
+      borderWidth: 0
+    }]
+  }
+})
+
+const totalHighRiskTransactions = computed(() => 132)
+const riskTrend = computed(() => 15.3)
+const totalRiskFlags = computed(() => 22)
+const activeInvestigations = computed(() => 8)
+const currentRiskScore = computed(() => 74)
+const riskScoreChange = computed(() => 3)
+
+const complianceStats = computed(() => ({
+  sars: 3,
+  utrs: 7,
+  edd: 12,
+  sanctions: 8
+}))
+
+const filteredRiskEvents = computed(() => {
+  const events = [
+    {
+      id: 1,
+      title: 'Large Cash Deposit Flagged',
+      description: '$25,000 cash deposit exceeds threshold',
+      date: '2024-03-01',
+      type: 'cash',
+      severity: 'High'
+    },
+    {
+      id: 2,
+      title: 'UTR Filed - Structured Transactions',
+      description: 'Pattern of deposits under $10,000',
+      date: '2024-02-28',
+      type: 'utr',
+      severity: 'Medium'
+    },
+    {
+      id: 3,
+      title: 'Crypto Exchange Wire Transfer',
+      description: 'Wire to Coinbase Pro for $45,000',
+      date: '2024-02-25',
+      type: 'crypto',
+      severity: 'High'
+    },
+    {
+      id: 4,
+      title: 'MSB Transaction Review',
+      description: 'Transaction with Western Union flagged',
+      date: '2024-02-22',
+      type: 'msb',
+      severity: 'Medium'
+    },
+    {
+      id: 5,
+      title: 'EDD Review Completed',
+      description: 'Enhanced due diligence review finalized',
+      date: '2024-02-20',
+      type: 'compliance',
+      severity: 'Low'
+    }
+  ]
+
+  return showAllEvents.value ? events : events.slice(0, 3)
+})
+
+// Timeline Data
+const timelineLabels = computed(() => {
+  switch (timelineRange.value) {
+    case '1M': return ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+    case '3M': return ['Jan', 'Feb', 'Mar']
+    case '6M': return ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+    case '1Y': return ['Q1', 'Q2', 'Q3', 'Q4']
+    default: return ['Jan', 'Feb', 'Mar']
+  }
+})
+
+const severeEvents = computed(() => [
+  {
+    id: 'sev-1',
+    label: 'MSB_flag',
+    description: 'MSB classification flagged',
+    startTime: 20,
+    duration: 15,
+    type: 'msb'
+  },
+  {
+    id: 'sev-2',
+    label: 'crypto_wire',
+    description: 'Large crypto wire transfer',
+    startTime: 65,
+    duration: 10,
+    type: 'crypto'
+  }
+])
+
+const elevatedEvents = computed(() => [
+  {
+    id: 'elev-1',
+    label: 'cash_deposit',
+    description: 'High cash deposit flagged',
+    startTime: 10,
+    duration: 12,
+    type: 'cash'
+  },
+  {
+    id: 'elev-2',
+    label: 'utr_filed',
+    description: 'UTR filed for structured transactions',
+    startTime: 30,
+    duration: 8,
+    type: 'utr'
+  },
+  {
+    id: 'elev-3',
+    label: 'sanctions_hit',
+    description: 'Sanctions screening hit',
+    startTime: 75,
+    duration: 6,
+    type: 'sanctions'
+  }
+])
+
+const lowEvents = computed(() => [
+  {
+    id: 'low-1',
+    label: 'routine_review',
+    description: 'Routine compliance review',
+    startTime: 45,
+    duration: 20,
+    type: 'compliance'
+  },
+  {
+    id: 'low-2',
+    label: 'kyc_update',
+    description: 'KYC information updated',
+    startTime: 85,
+    duration: 8,
+    type: 'kyc'
+  }
+])
+
+// Category-based timeline events
+const utrCategoryEvents = computed(() => [
+  {
+    id: 'utr-1',
+    description: 'UTR filed for structured transactions',
+    startTime: 30,
+    risk: 'medium',
+    type: 'utr'
+  },
+  {
+    id: 'utr-2',
+    description: 'UTR filed for suspicious activity',
+    startTime: 65,
+    risk: 'high',
+    type: 'utr'
+  },
+  {
+    id: 'utr-3',
+    description: 'UTR filed for cash activity',
+    startTime: 85,
+    risk: 'medium',
+    type: 'utr'
+  }
+])
+
+const msbCategoryEvents = computed(() => [
+  {
+    id: 'msb-1',
+    description: 'MSB classification flagged',
+    startTime: 20,
+    risk: 'high',
+    type: 'msb'
+  },
+  {
+    id: 'msb-2',
+    description: 'MSB transaction review',
+    startTime: 55,
+    risk: 'medium',
+    type: 'msb'
+  }
+])
+
+const cashCategoryEvents = computed(() => [
+  {
+    id: 'cash-1',
+    description: 'High cash deposit flagged',
+    startTime: 10,
+    risk: 'medium',
+    type: 'cash'
+  },
+  {
+    id: 'cash-2',
+    description: 'Large cash withdrawal',
+    startTime: 40,
+    risk: 'high',
+    type: 'cash'
+  },
+  {
+    id: 'cash-3',
+    description: 'Pattern of cash transactions',
+    startTime: 70,
+    risk: 'medium',
+    type: 'cash'
+  }
+])
+
+const cryptoCategoryEvents = computed(() => [
+  {
+    id: 'crypto-1',
+    description: 'Large crypto wire transfer',
+    startTime: 25,
+    risk: 'high',
+    type: 'crypto'
+  },
+  {
+    id: 'crypto-2',
+    description: 'Crypto exchange transaction',
+    startTime: 60,
+    risk: 'medium',
+    type: 'crypto'
+  }
+])
+
+const sanctionsCategoryEvents = computed(() => [
+  {
+    id: 'sanctions-1',
+    description: 'Sanctions screening hit',
+    startTime: 75,
+    risk: 'high',
+    type: 'sanctions'
+  },
+  {
+    id: 'sanctions-2',
+    description: 'False positive resolved',
+    startTime: 90,
+    risk: 'low',
+    type: 'sanctions'
+  }
+])
+
+const complianceCategoryEvents = computed(() => [
+  {
+    id: 'compliance-1',
+    description: 'Routine compliance review',
+    startTime: 45,
+    risk: 'low',
+    type: 'compliance'
+  },
+  {
+    id: 'compliance-2',
+    description: 'Enhanced due diligence',
+    startTime: 80,
+    risk: 'medium',
+    type: 'compliance'
+  }
+])
+
+// Risk Statistics
+const utrStats = computed(() => ({
+  total: 15,
+  rank: 23,
+  totalClients: 2847,
+  percentile: 92,
+  trend: '↑ 3 filed this month'
+}))
+
+const msbStats = computed(() => ({
+  classifiedDate: 'Jan 15, 2024',
+  status: 'Active',
+  riskLevel: 'High'
+}))
+
+const cashStats = computed(() => ({
+  flags: 28,
+  recent: 8,
+  breaches: 12,
+  status: 'Active monitoring'
+}))
+
+const cryptoStats = computed(() => ({
+  flags: 18,
+  exchanges: 5,
+  volume: 245000,
+  trend: '↑ Increasing activity'
+}))
+
+const sanctionsStats = computed(() => ({
+  hits: 3,
+  falsePositives: 2,
+  lastScreen: 'Mar 10, 2024',
+  status: 'Clean - no matches'
+}))
+
+const overallRisk = computed(() => ({
+  score: 87,
+  level: 'HIGH',
+  factors: ['MSB Classification', 'High Cash Activity', 'Crypto Transactions']
+}))
+
+// Computed properties for Performance Summary
+const topPercentile = computed(() => {
+  if (!clientData.value?.rankings) return 95
+  const percentiles = Object.values(clientData.value.rankings).map(r => r.percentile)
+  return Math.min(...percentiles)
+})
+
+const bestCategory = computed(() => {
+  if (!clientData.value?.rankings) return 'Revenue Growth'
+  const best = Object.entries(clientData.value.rankings).reduce(
+    (best, [key, val]) => val.percentile > best.percentile ? { key, percentile: val.percentile } : best,
+    { key: '', percentile: 0 }
+  )
+  return best.key.replace(/([A-Z])/g, ' $1').trim()
 })
 
 
@@ -3030,6 +3798,204 @@ const closeRiskFlagModal = () => {
 }
 
 // Generate mock data for risk flag details
+// Chart Options
+const stackedBarOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    x: { stacked: true },
+    y: { stacked: true }
+  },
+  plugins: {
+    legend: { position: 'top' }
+  }
+}
+
+const lineChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { position: 'top' }
+  }
+}
+
+const riskScoreOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: { min: 0, max: 100 }
+  },
+  plugins: {
+    legend: { position: 'top' }
+  }
+}
+
+const doughnutOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { position: 'bottom' }
+  }
+}
+
+const modalChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false }
+  }
+}
+
+// Risk Analytics Methods
+const resetRiskFilters = () => {
+  selectedTxnTypes.value = ['Wire', 'Cash', 'Crypto', 'MSB']
+  selectedFlagTypes.value = ['UTR', 'High Cash', 'MSB', 'Crypto']
+}
+
+const exportRiskData = () => {
+  // Implement risk data export
+  console.log('Exporting risk analytics data...')
+}
+
+const drillDownRiskTxn = () => {
+  // Open detailed risk transaction view
+  console.log('Drilling down into risk transactions...')
+}
+
+const drillDownRiskFlags = () => {
+  // Open detailed risk flags view
+  console.log('Drilling down into risk flags...')
+}
+
+const drillDownRiskScore = () => {
+  // Open detailed risk score analysis
+  console.log('Drilling down into risk score...')
+}
+
+const drillDownCompliance = () => {
+  // Open detailed compliance view
+  console.log('Drilling down into compliance actions...')
+}
+
+const openRiskEventModal = () => {
+  // Open risk event timeline modal
+  console.log('Opening risk event timeline...')
+}
+
+const viewEventDetails = (event) => {
+  // View specific risk event details
+  console.log('Viewing event details:', event)
+}
+
+const getRiskEventColor = (type) => {
+  const colors = {
+    cash: 'bg-yellow-500',
+    utr: 'bg-orange-500',
+    crypto: 'bg-purple-500',
+    msb: 'bg-pink-500',
+    compliance: 'bg-green-500'
+  }
+  return colors[type] || 'bg-gray-500'
+}
+
+const getRiskEventBadge = (severity) => {
+  const badges = {
+    High: 'bg-red-100 text-red-800',
+    Medium: 'bg-yellow-100 text-yellow-800',
+    Low: 'bg-green-100 text-green-800'
+  }
+  return badges[severity] || 'bg-gray-100 text-gray-800'
+}
+
+const generateModalTimeSeriesData = (category) => {
+  const months = modalTimeframe.value === '3M' ? ['Jan', 'Feb', 'Mar'] :
+    modalTimeframe.value === '6M' ? ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'] :
+      ['Q1', 'Q2', 'Q3', 'Q4']
+
+  // Generate data based on category
+  const dataMap = {
+    'UTR': [2, 4, 7, 5, 6, 8],
+    'High Cash Deposits': [3, 6, 8, 7, 9, 11],
+    'MSB Transactions': [1, 3, 5, 4, 6, 7],
+    'Crypto Activities': [2, 5, 8, 6, 9, 12],
+    'HRJ Wire Transfers': [1, 2, 4, 3, 5, 6]
+  }
+
+  const data = dataMap[category] || [1, 2, 3, 2, 4, 5]
+
+  return {
+    labels: months.slice(0, modalTimeframe.value === '3M' ? 3 : months.length),
+    datasets: [{
+      label: category,
+      data: data.slice(0, modalTimeframe.value === '3M' ? 3 : data.length),
+      borderColor: '#EF4444',
+      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+      tension: 0.3,
+      fill: true
+    }]
+  }
+}
+
+const getModalTrend = (category) => {
+  const trends = {
+    'UTR': 'Increasing',
+    'High Cash Deposits': 'Decreasing',
+    'MSB Transactions': 'Stable',
+    'Crypto Activities': 'Increasing',
+    'HRJ Wire Transfers': 'Increasing'
+  }
+  return trends[category] || 'Stable'
+}
+
+const getModalPeak = (category) => {
+  const peaks = {
+    'UTR': 'Feb 2024',
+    'High Cash Deposits': 'Jan 2024',
+    'MSB Transactions': 'Mar 2024',
+    'Crypto Activities': 'Mar 2024',
+    'HRJ Wire Transfers': 'Feb 2024'
+  }
+  return peaks[category] || 'Mar 2024'
+}
+
+const exportModalData = () => {
+  console.log('Exporting modal chart data...')
+}
+
+// Timeline Methods
+const getEventPosition = (event) => {
+  return {
+    left: `${event.startTime}%`,
+    width: `${event.duration}%`,
+    top: '1px'
+  }
+}
+
+const exportTimelineData = () => {
+  console.log('Exporting timeline data...')
+}
+
+// New methods for category-based timeline
+const getCircleEventPosition = (event) => {
+  return {
+    left: `${event.startTime}%`,
+    top: '1px'
+  }
+}
+
+const getEventColorClass = (risk) => {
+  switch (risk) {
+    case 'high':
+      return 'bg-red-500'
+    case 'medium':
+      return 'bg-yellow-500'
+    case 'low':
+      return 'bg-green-500'
+    default:
+      return 'bg-gray-500'
+  }
+}
+
 const generateRiskFlagData = (flagCategory) => {
   const baseDate = new Date()
 
