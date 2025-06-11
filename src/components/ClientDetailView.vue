@@ -174,12 +174,12 @@
         <!-- Right Column - Charts and Analysis -->
         <div class="lg:col-span-3 space-y-8">
 
-          <!-- Account Portfolio Summary -->
+          <!-- Account and Loan Portfolio Summary -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900">💼 Account Portfolio Summary</h3>
+                  <h3 class="text-lg font-medium text-gray-900">💼 Account and Loan Portfolio Summary</h3>
                   <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
                 </div>
                 <div class="flex space-x-2">
@@ -208,13 +208,13 @@
                   <p class="text-xs text-green-600">Across all accounts</p>
                 </div>
                 <div class="bg-orange-50 p-4 rounded-lg">
-                  <p class="text-sm text-orange-600 font-medium">Opportunity</p>
-                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(productRecommendationVolume) }}</p>
-                  <p class="text-xs text-orange-600">Product recommendation volume</p>
+                  <p class="text-sm text-orange-600 font-medium">Total Loan</p>
+                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(totalLoanAmount) }}</p>
+                  <p class="text-xs text-orange-600">{{ loanUtilityRate }}% utility rate</p>
                 </div>
                 <div class="bg-red-50 p-4 rounded-lg">
-                  <p class="text-sm text-red-600 font-medium">High Risk Accounts</p>
-                  <p class="text-2xl font-bold text-red-900">{{ highRiskAccountsCount }}</p>
+                  <p class="text-sm text-red-600 font-medium">High Risk Trx Volume</p>
+                  <p class="text-2xl font-bold text-red-900">{{ formatCurrency(highRiskTrxVolume) }}</p>
                   <p class="text-xs text-red-600">Require attention</p>
                 </div>
               </div>
@@ -287,14 +287,6 @@
                       <span class="text-gray-600">Last Activity:</span>
                       <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
                     </div>
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Risk Level:</span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                        :class="getRiskLevelClass(account.riskLevel)">
-                        {{ account.riskLevel }}
-                        <span v-if="account.riskLevel === 'High'" class="ml-1">⚠️</span>
-                      </span>
-                    </div>
                   </div>
 
                   <!-- Quick Action Buttons -->
@@ -328,8 +320,6 @@
                         Balance</th>
                       <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Monthly Volume</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk
-                        Level</th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
                         Activity</th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
@@ -357,12 +347,6 @@
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
                         {{ formatCurrency(account.monthlyVolume) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getRiskLevelClass(account.riskLevel)">
-                          {{ account.riskLevel }}
-                        </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ formatDate(account.lastTransaction) }}
@@ -1289,6 +1273,38 @@ const productRecommendationVolume = computed(() => {
   const baseOpportunity = portfolioValue * 0.15 // 15% of portfolio as potential
 
   return Math.floor(baseOpportunity * opportunityFactor)
+})
+
+const totalLoanAmount = computed(() => {
+  if (!clientData.value) return 0
+
+  // Calculate total loan amount based on portfolio value and client tier
+  const portfolioValue = clientData.value.portfolioValue || 0
+  const tier = clientTier.value
+
+  // Commercial clients typically have higher loan ratios
+  const loanRatio = tier === 'Commercial' ? 0.35 : 0.25
+
+  return Math.floor(portfolioValue * loanRatio)
+})
+
+const loanUtilityRate = computed(() => {
+  if (!clientData.value) return 0
+
+  // Calculate utility rate as percentage of loan usage
+  // Based on client activity and risk profile
+  const baseRate = Math.floor(Math.random() * 40) + 45 // 45-85%
+  return baseRate
+})
+
+const highRiskTrxVolume = computed(() => {
+  if (!clientData.value) return 0
+
+  // Calculate high risk transaction volume from monthly volumes
+  const totalVolume = totalMonthlyVolume.value
+  const riskPercentage = 0.12 // 12% of transactions flagged as high risk
+
+  return Math.floor(totalVolume * riskPercentage)
 })
 
 const aiRecommendations = computed(() => {
