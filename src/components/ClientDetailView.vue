@@ -220,6 +220,8 @@
                 </div>
               </div>
 
+
+
               <!-- Account Cards View -->
               <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div v-for="account in accountDetails" :key="account.id"
@@ -360,6 +362,46 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+
+              <!-- Account & Loan Portfolio Chart -->
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 class="text-lg font-medium text-gray-900">📊 Account & Loan Portfolio Balance</h4>
+                    <p class="text-sm text-gray-500">Account balances (positive) vs loan utilization (negative) with
+                      available credit line</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Deposits</span>
+                    <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Loans</span>
+                  </div>
+                </div>
+                <div class="h-80 bg-gray-50 rounded-lg p-4">
+                  <BarChart v-if="accountLoanPortfolioData" :data="accountLoanPortfolioData" />
+                </div>
+                <div class="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                  <div class="text-center p-3 bg-green-50 rounded-lg">
+                    <p class="text-green-600 font-medium">Total Account Balance</p>
+                    <p class="text-xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
+                    <p class="text-xs text-green-600">Across all accounts</p>
+                  </div>
+                  <div class="text-center p-3 bg-red-50 rounded-lg">
+                    <p class="text-red-600 font-medium">Total Loan Utility</p>
+                    <p class="text-xl font-bold text-red-900">{{ formatCurrency(totalLoanAmount) }}</p>
+                    <p class="text-xs text-red-600">{{ loanUtilityRate }}% utilized</p>
+                  </div>
+                  <div class="text-center p-3 bg-blue-50 rounded-lg">
+                    <p class="text-blue-600 font-medium">Available Credit</p>
+                    <p class="text-xl font-bold text-blue-900">{{ formatCurrency(totalAvailableCredit) }}</p>
+                    <p class="text-xs text-blue-600">Unused credit line</p>
+                  </div>
+                  <div class="text-center p-3 bg-purple-50 rounded-lg">
+                    <p class="text-purple-600 font-medium">Net Position</p>
+                    <p class="text-xl font-bold text-purple-900">{{ formatCurrency(netPortfolioPosition) }}</p>
+                    <p class="text-xs text-purple-600">Assets minus liabilities</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -650,16 +692,7 @@
                           </svg>
                         </div>
                       </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">International Trade Finance</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
+
                       <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-700">Foreign Exchange</span>
                         <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
@@ -813,7 +846,7 @@
               <div class="h-80">
                 <BarChart v-if="transactionVolumeData" :data="transactionVolumeData" />
               </div>
-              <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+              <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
                 <div class="text-center p-3 bg-green-50 rounded-lg">
                   <p class="text-green-600 font-medium">Total Inflows</p>
                   <p class="text-xl font-bold text-green-900">$2.8M</p>
@@ -829,11 +862,7 @@
                   <p class="text-xl font-bold text-blue-900">$0.7M</p>
                   <p class="text-xs text-blue-600">Positive trend</p>
                 </div>
-                <div class="text-center p-3 bg-yellow-50 rounded-lg">
-                  <p class="text-yellow-600 font-medium">Risk Percentile</p>
-                  <p class="text-xl font-bold text-yellow-900">85th</p>
-                  <p class="text-xs text-yellow-600">Above normal</p>
-                </div>
+
               </div>
               <div class="mt-4 flex justify-center flex-wrap gap-4 text-sm">
                 <div class="flex items-center">
@@ -844,10 +873,7 @@
                   <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
                   <span class="text-gray-600">Outbound Flows</span>
                 </div>
-                <div class="flex items-center">
-                  <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-                  <span class="text-gray-600">Risk Percentile</span>
-                </div>
+
               </div>
             </div>
           </div>
@@ -1613,6 +1639,143 @@ const highRiskTrxVolume = computed(() => {
   return Math.floor(totalVolume * riskPercentage)
 })
 
+const totalAvailableCredit = computed(() => {
+  if (!clientData.value) return 0
+
+  // Calculate total available credit based on portfolio and client tier
+  const portfolioValue = clientData.value.portfolioValue || 0
+  const tier = clientTier.value
+
+  // Commercial clients typically have higher credit lines
+  const creditMultiplier = tier === 'Commercial' ? 0.6 : 0.4
+  const totalCreditLine = Math.floor(portfolioValue * creditMultiplier)
+  const usedCredit = totalLoanAmount.value
+
+  return Math.max(0, totalCreditLine - usedCredit)
+})
+
+const netPortfolioPosition = computed(() => {
+  return totalDeposits.value - totalLoanAmount.value
+})
+
+// Account & Loan Portfolio Chart Data
+const accountLoanPortfolioData = computed(() => {
+  if (!accountDetails.value || accountDetails.value.length === 0) return null
+
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+  // Group accounts by type and get their actual balances
+  const accountsByType = {}
+  accountDetails.value.forEach(account => {
+    if (!accountsByType[account.type]) {
+      accountsByType[account.type] = 0
+    }
+    accountsByType[account.type] += account.balance
+  })
+
+  // Generate historical data based on current balances with small variations
+  const accountDatasets = []
+  const colors = [
+    { bg: 'rgba(34, 197, 94, 0.8)', border: '#22C55E' },
+    { bg: 'rgba(16, 185, 129, 0.8)', border: '#10B981' },
+    { bg: 'rgba(6, 182, 212, 0.8)', border: '#06B6D4' },
+    { bg: 'rgba(59, 130, 246, 0.8)', border: '#3B82F6' },
+    { bg: 'rgba(99, 102, 241, 0.8)', border: '#6366F1' }
+  ]
+
+  let colorIndex = 0
+  Object.entries(accountsByType).forEach(([accountType, balance]) => {
+    if (balance > 0 && !accountType.toLowerCase().includes('credit') && !accountType.toLowerCase().includes('loan')) {
+      // For deposit accounts (positive values)
+      const baseValue = balance / 1000 // Convert to thousands
+      const monthlyData = months.map((month, index) => {
+        if (index === months.length - 1) {
+          // Last month (December) should match exact current balance
+          return Math.floor(baseValue)
+        }
+        // Historical months with variation
+        const variation = (Math.random() - 0.5) * 0.2 // ±10% variation
+        return Math.floor(baseValue * (1 + variation))
+      })
+
+      accountDatasets.push({
+        label: accountType,
+        data: monthlyData,
+        backgroundColor: colors[colorIndex % colors.length].bg,
+        borderColor: colors[colorIndex % colors.length].border,
+        borderWidth: 1,
+        stack: 'assets'
+      })
+      colorIndex++
+    }
+  })
+
+  // Add loan data (negative values)
+  const loanColors = [
+    { bg: 'rgba(239, 68, 68, 0.8)', border: '#EF4444' },
+    { bg: 'rgba(220, 38, 38, 0.8)', border: '#DC2626' },
+    { bg: 'rgba(185, 28, 28, 0.8)', border: '#B91C1C' }
+  ]
+
+  // Generate loan utilization based on totalLoanAmount
+  const loanAmount = totalLoanAmount.value / 1000 // Convert to thousands
+  const loanDatasets = [
+    {
+      label: 'Business Line of Credit',
+      data: months.map((month, index) => {
+        if (index === months.length - 1) {
+          // Last month (December) should match exact proportion of current total loans
+          return -(Math.floor(loanAmount * 0.4))
+        }
+        // Historical months with variation
+        return -(Math.floor(loanAmount * 0.4 * (0.9 + Math.random() * 0.2)))
+      }),
+      backgroundColor: loanColors[0].bg,
+      borderColor: loanColors[0].border,
+      borderWidth: 1,
+      stack: 'liabilities'
+    },
+    {
+      label: 'Term Loans',
+      data: months.map((month, index) => {
+        if (index === months.length - 1) {
+          // Last month (December) should match exact proportion of current total loans
+          return -(Math.floor(loanAmount * 0.4))
+        }
+        // Historical months with variation
+        return -(Math.floor(loanAmount * 0.4 * (0.9 + Math.random() * 0.2)))
+      }),
+      backgroundColor: loanColors[1].bg,
+      borderColor: loanColors[1].border,
+      borderWidth: 1,
+      stack: 'liabilities'
+    },
+    {
+      label: 'Equipment Financing',
+      data: months.map((month, index) => {
+        if (index === months.length - 1) {
+          // Last month (December) should match exact proportion of current total loans
+          return -(Math.floor(loanAmount * 0.2))
+        }
+        // Historical months with variation
+        return -(Math.floor(loanAmount * 0.2 * (0.9 + Math.random() * 0.2)))
+      }),
+      backgroundColor: loanColors[2].bg,
+      borderColor: loanColors[2].border,
+      borderWidth: 1,
+      stack: 'liabilities'
+    }
+  ]
+
+  return {
+    labels: months,
+    datasets: [
+      ...accountDatasets,
+      ...loanDatasets
+    ]
+  }
+})
+
 const aiRecommendations = computed(() => {
   if (!clientData.value) return []
 
@@ -1674,17 +1837,7 @@ const aiRecommendations = computed(() => {
     })
   }
 
-  // International Services - Based on transaction analysis
-  if (Math.random() > 0.6) { // Simulate international activity detection
-    recommendations.push({
-      product: 'International Trade Finance',
-      reason: 'Cross-border transaction patterns detected',
-      confidence: 69,
-      potentialRevenue: Math.floor(portfolioValue * 0.012), // 1.2% of portfolio
-      priority: 'Low',
-      aiFactors: ['Wire patterns', 'Currency exposure', 'Trade volumes']
-    })
-  }
+
 
   // Sort by confidence and return top 3
   return recommendations
@@ -1712,8 +1865,6 @@ const transactionVolumeData = computed(() => {
     'ACH Out': months.map(() => -(Math.floor(Math.random() * 220) + 120)),
     'Wire Out': months.map(() => -(Math.floor(Math.random() * 250) + 100))
   }
-
-  const riskPercentile = months.map(() => Math.floor(Math.random() * 20) + 75) // 75-95th percentile
 
   return {
     labels: months,
@@ -1783,21 +1934,6 @@ const transactionVolumeData = computed(() => {
         borderColor: '#9CA3AF',
         borderWidth: 1,
         stack: 'transactions'
-      },
-      // Risk percentile overlay line
-      {
-        label: 'Risk Percentile',
-        data: riskPercentile,
-        type: 'line',
-        backgroundColor: 'rgba(245, 158, 11, 0.2)',
-        borderColor: '#F59E0B',
-        borderWidth: 3,
-        yAxisID: 'y1',
-        pointBackgroundColor: '#F59E0B',
-        pointBorderColor: '#ffffff',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        tension: 0.4
       }
     ]
   }
