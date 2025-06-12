@@ -175,232 +175,38 @@
         <!-- Right Column - Charts and Analysis -->
         <div class="lg:col-span-3 space-y-8">
 
-          <!-- Account and Loan Portfolio Summary -->
+          <!-- Section Title -->
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">Company Opportunities & Portfolio</h2>
+          </div>
+
+          <!-- Summary KPIs Row -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-medium text-gray-900">💼 Account and Loan Portfolio Summary</h3>
-                  <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="accountViewType = 'cards'"
-                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                    Card View
-                  </button>
-                  <button @click="accountViewType = 'table'"
-                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                    Table View
-                  </button>
-                </div>
-              </div>
-            </div>
             <div class="p-6">
-              <!-- Account Summary Metrics -->
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-blue-50 p-4 rounded-lg">
-                  <p class="text-sm text-blue-600 font-medium">Total Accounts</p>
-                  <p class="text-2xl font-bold text-blue-900">{{ accountDetails.length }}</p>
-                  <p class="text-xs text-blue-600">{{ activeAccountsCount }} active</p>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-600">{{ totalAccounts }}</div>
+                  <div class="text-sm text-gray-600">Total Accounts</div>
                 </div>
-                <div class="bg-green-50 p-4 rounded-lg">
-                  <p class="text-sm text-green-600 font-medium">Total Deposits</p>
-                  <p class="text-2xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
-                  <p class="text-xs text-green-600">Across all accounts</p>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
+                  <div class="text-sm text-gray-600">Total Deposits</div>
+                  <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
+                    getOrdinalSuffix(depositsPercentile) }} percentile</div>
                 </div>
-                <div class="bg-orange-50 p-4 rounded-lg">
-                  <p class="text-sm text-orange-600 font-medium">Total Loan</p>
-                  <p class="text-2xl font-bold text-orange-900">{{ formatCurrency(totalLoanAmount) }}</p>
-                  <p class="text-xs text-orange-600">{{ loanUtilityRate }}% utility rate</p>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalLoanAmount) }}</div>
+                  <div class="text-sm text-gray-600">Total Loans</div>
+                  <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
+                    getOrdinalSuffix(loansPercentile) }} percentile</div>
                 </div>
-                <div class="bg-red-50 p-4 rounded-lg">
-                  <p class="text-sm text-red-600 font-medium">High Risk Trx Volume</p>
-                  <p class="text-2xl font-bold text-red-900">{{ formatCurrency(highRiskTrxVolume) }}</p>
-                  <p class="text-xs text-red-600">Require attention</p>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-purple-600">{{ formatCurrency(totalBalance) }}</div>
+                  <div class="text-sm text-gray-600">Total Account Balance</div>
                 </div>
-              </div>
-
-
-
-              <!-- Account Cards View -->
-              <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div v-for="account in accountDetails" :key="account.id"
-                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all relative group"
-                  :class="getAccountCardClass(account.type)">
-                  <!-- Account Header -->
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="flex-1">
-                      <div class="flex items-center space-x-2">
-                        <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
-                        <span v-if="account.riskLevel === 'High'"
-                          class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                      </div>
-                      <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
-                    </div>
-                    <div class="text-right">
-                      <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
-                        {{ formatCurrency(account.balance) }}
-                      </span>
-                      <!-- Contextual Menu -->
-                      <div class="relative">
-                        <button @click="toggleAccountMenu(account.id)"
-                          class="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
-                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div v-if="openMenus[account.id]" @click.stop
-                          class="absolute right-0 top-6 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                          <div class="py-1">
-                            <button @click="quickAction('view-transactions', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              📊 View Transactions
-                            </button>
-                            <button @click="quickAction('generate-statement', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              📄 Generate Statement
-                            </button>
-                            <button @click="quickAction('flag-review', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              🚩 Flag for Review
-                            </button>
-                            <button @click="quickAction('create-task', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              ✅ Create Task
-                            </button>
-                            <button @click="quickAction('freeze-account', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                              ❄️ Freeze Account
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Account Metrics -->
-                  <div class="space-y-2 mb-3">
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Monthly Volume:</span>
-                      <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Last Activity:</span>
-                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
-                    </div>
-                  </div>
-
-                  <!-- Quick Action Buttons -->
-                  <div class="grid grid-cols-3 gap-2">
-                    <button @click="quickAction('view-transactions', account)"
-                      class="text-xs py-1.5 px-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
-                      Trx
-                    </button>
-                    <button @click="quickAction('create-task', account)"
-                      class="text-xs py-1.5 px-2 bg-green-50 text-green-700 rounded-md hover:bg-green-100 transition-colors">
-                      Create Task
-                    </button>
-                    <button @click="quickAction('flag-review', account)"
-                      class="text-xs py-1.5 px-2 bg-orange-50 text-orange-700 rounded-md hover:bg-orange-100 transition-colors">
-                      Flag Review
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Account Table View -->
-              <div v-if="accountViewType === 'table'" class="overflow-x-auto mb-6">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
-                      </th>
-                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Balance</th>
-                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Monthly Volume</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
-                        Activity</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
-                      @click="drillDownToAccount(account)">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
-                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getAccountTypeClass(account.type)">
-                          {{ account.type }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                        :class="getAccountBalanceColor(account.balance)">
-                        {{ formatCurrency(account.balance) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                        {{ formatCurrency(account.monthlyVolume) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ formatDate(account.lastTransaction) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button class="text-blue-600 hover:text-blue-800">View</button>
-                        <span class="mx-2 text-gray-300">|</span>
-                        <button class="text-gray-600 hover:text-gray-800">History</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Account & Loan Portfolio Chart -->
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-4">
-                  <div>
-                    <h4 class="text-lg font-medium text-gray-900">📊 Account & Loan Portfolio Balance</h4>
-                    <p class="text-sm text-gray-500">Account balances (positive) vs loan utilization (negative) with
-                      available credit line</p>
-                  </div>
-                  <div class="flex space-x-2">
-                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Deposits</span>
-                    <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Loans</span>
-                  </div>
-                </div>
-                <div class="h-80 bg-gray-50 rounded-lg p-4">
-                  <BarChart v-if="accountLoanPortfolioData" :data="accountLoanPortfolioData" />
-                </div>
-                <div class="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                  <div class="text-center p-3 bg-green-50 rounded-lg">
-                    <p class="text-green-600 font-medium">Total Account Balance</p>
-                    <p class="text-xl font-bold text-green-900">{{ formatCurrency(totalDeposits) }}</p>
-                    <p class="text-xs text-green-600">Across all accounts</p>
-                  </div>
-                  <div class="text-center p-3 bg-red-50 rounded-lg">
-                    <p class="text-red-600 font-medium">Total Loan Utility</p>
-                    <p class="text-xl font-bold text-red-900">{{ formatCurrency(totalLoanAmount) }}</p>
-                    <p class="text-xs text-red-600">{{ loanUtilityRate }}% utilized</p>
-                  </div>
-                  <div class="text-center p-3 bg-blue-50 rounded-lg">
-                    <p class="text-blue-600 font-medium">Available Credit</p>
-                    <p class="text-xl font-bold text-blue-900">{{ formatCurrency(totalAvailableCredit) }}</p>
-                    <p class="text-xs text-blue-600">Unused credit line</p>
-                  </div>
-                  <div class="text-center p-3 bg-purple-50 rounded-lg">
-                    <p class="text-purple-600 font-medium">Net Position</p>
-                    <p class="text-xl font-bold text-purple-900">{{ formatCurrency(netPortfolioPosition) }}</p>
-                    <p class="text-xs text-purple-600">Assets minus liabilities</p>
-                  </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-indigo-600">{{ numberOfOpportunities }}</div>
+                  <div class="text-sm text-gray-600">Number of Opportunities</div>
                 </div>
               </div>
             </div>
@@ -419,69 +225,6 @@
               </div>
             </div>
             <div class="p-6">
-              <!-- Product Penetration Overview -->
-              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="lg:col-span-1">
-                  <div class="text-center">
-                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ clientData?.productPenetration || 0 }}%</div>
-                    <div class="text-sm text-gray-600 mb-4">Current Product Penetration</div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
-                        :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
-                    </div>
-                    <div class="mt-3 text-xs text-gray-500">
-                      {{ 100 - (clientData?.productPenetration || 0) }}% growth opportunity remaining
-                    </div>
-                  </div>
-                </div>
-
-                <div class="lg:col-span-2">
-                  <h4 class="text-lg font-medium text-gray-900 mb-4">🤖 AI-Powered Product Recommendations</h4>
-                  <div class="space-y-3">
-                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
-                      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all">
-                      <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                          <div class="flex items-center space-x-2 mb-2">
-                            <h5 class="text-sm font-semibold text-blue-900">{{ recommendation.product }}</h5>
-                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-                              {{ recommendation.confidence }}% confidence
-                            </span>
-                          </div>
-                          <p class="text-sm text-blue-700 mb-2">{{ recommendation.reason }}</p>
-                          <div class="flex items-center space-x-4 text-xs text-gray-600">
-                            <span>💰 {{ formatCurrency(recommendation.potentialRevenue) }} potential</span>
-                            <span>🎯 {{ recommendation.priority }} priority</span>
-                          </div>
-                        </div>
-                        <div class="ml-4 flex flex-col space-y-2">
-                          <button @click="acceptRecommendation(recommendation)"
-                            class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
-                            Accept
-                          </button>
-                          <button
-                            class="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
-                            Details
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- AI Factors Summary -->
-                  <div v-if="aiRecommendations.length > 0" class="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <h6 class="text-xs font-medium text-gray-700 mb-2">AI Analysis Factors:</h6>
-                    <div class="flex flex-wrap gap-2">
-                      <span v-for="factor in [...new Set(aiRecommendations.flatMap(r => r.aiFactors))]" :key="factor"
-                        class="text-xs px-2 py-1 bg-white text-gray-600 rounded border">
-                        {{ factor }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <!-- Product Portfolio Breakdown -->
               <div class="mb-8">
                 <h4 class="text-lg font-medium text-gray-900 mb-4">🏦 Product Portfolio Breakdown</h4>
@@ -777,59 +520,263 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Product Penetration Overview -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                  <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ clientData?.productPenetration || 0 }}%</div>
+                    <div class="text-sm text-gray-600 mb-4">Current Product Penetration</div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                        :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-gray-500">
+                      {{ 100 - (clientData?.productPenetration || 0) }}% growth opportunity remaining
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                  <h4 class="text-lg font-medium text-gray-900 mb-4">🤖 AI-Powered Product Recommendations</h4>
+                  <div class="space-y-3">
+                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
+                      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all">
+                      <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                          <div class="flex items-center space-x-2 mb-2">
+                            <h5 class="text-sm font-semibold text-blue-900">{{ recommendation.product }}</h5>
+                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                              {{ recommendation.confidence }}% confidence
+                            </span>
+                          </div>
+                          <p class="text-sm text-blue-700 mb-2">{{ recommendation.reason }}</p>
+                          <div class="flex items-center space-x-4 text-xs text-gray-600">
+                            <span>💰 {{ formatCurrency(recommendation.potentialRevenue) }} potential</span>
+                            <span>🎯 {{ recommendation.priority }} priority</span>
+                          </div>
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                          <button @click="acceptRecommendation(recommendation)"
+                            class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
+                            Accept
+                          </button>
+                          <button
+                            class="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                            Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI Factors Summary -->
+                  <div v-if="aiRecommendations.length > 0" class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h6 class="text-xs font-medium text-gray-700 mb-2">AI Analysis Factors:</h6>
+                    <div class="flex flex-wrap gap-2">
+                      <span v-for="factor in [...new Set(aiRecommendations.flatMap(r => r.aiFactors))]" :key="factor"
+                        class="text-xs px-2 py-1 bg-white text-gray-600 rounded border">
+                        {{ factor }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Product Summary (if enhanced data is available) -->
-          <div v-if="clientData?.productSummary" class="bg-white rounded-lg shadow-sm border border-gray-200">
+          <!-- Account and Loan Portfolio Summary -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">🏦 Product Portfolio Summary</h3>
-              <p class="text-sm text-gray-500 mt-1">Revenue and account breakdown by product line</p>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">💼 Account and Loan Portfolio Summary</h3>
+                  <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="accountViewType = 'cards'"
+                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Card View
+                  </button>
+                  <button @click="accountViewType = 'table'"
+                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Table View
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="p-6">
-              <div class="overflow-x-auto">
-                <table class="min-w-full">
-                  <thead>
-                    <tr class="border-b border-gray-200">
-                      <th class="text-left text-sm font-medium text-gray-500 pb-3">Product</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Accounts</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Balance</th>
-                      <th class="text-right text-sm font-medium text-gray-500 pb-3">Revenue</th>
+
+
+
+
+              <!-- Account Cards View -->
+              <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div v-for="account in accountDetails" :key="account.id"
+                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all relative group"
+                  :class="getAccountCardClass(account.type)">
+                  <!-- Account Header -->
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2">
+                        <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
+                        <span v-if="account.riskLevel === 'High'"
+                          class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                      </div>
+                      <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
+                    </div>
+                    <div class="text-right">
+                      <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
+                        {{ formatCurrency(account.balance) }}
+                      </span>
+                      <!-- Contextual Menu -->
+                      <div class="relative">
+                        <button @click="toggleAccountMenu(account.id)"
+                          class="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div v-if="openMenus[account.id]" @click.stop
+                          class="absolute right-0 top-6 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                          <div class="py-1">
+                            <button @click="quickAction('view-transactions', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              📊 View Transactions
+                            </button>
+                            <button @click="quickAction('generate-statement', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              📄 Generate Statement
+                            </button>
+                            <button @click="quickAction('flag-review', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              🚩 Flag for Review
+                            </button>
+                            <button @click="quickAction('create-task', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                              ✅ Create Task
+                            </button>
+                            <button @click="quickAction('freeze-account', account)"
+                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                              ❄️ Freeze Account
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Account Metrics -->
+                  <div class="space-y-2 mb-3">
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Monthly Volume:</span>
+                      <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600">Last Activity:</span>
+                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Quick Action Buttons -->
+                  <div class="grid grid-cols-2 gap-2">
+                    <button @click="quickAction('view-transactions', account)"
+                      class="text-xs py-1.5 px-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
+                      Trx
+                    </button>
+                    <button @click="quickAction('view-trends', account)"
+                      title="Explore monthly trends in deposits, loans, and flagged activity over time"
+                      class="text-xs py-1.5 px-2 bg-purple-50 text-purple-700 rounded-md hover:bg-purple-100 transition-colors">
+                      📊 View Trends
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Account Table View -->
+              <div v-if="accountViewType === 'table'" class="overflow-x-auto mb-6">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
+                      </th>
+                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Balance</th>
+                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Monthly Volume</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
+                        Activity</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                      </th>
                     </tr>
                   </thead>
-                  <tbody class="space-y-2">
-                    <tr v-for="(product, key) in clientData.productSummary" :key="key" class="border-b border-gray-100">
-                      <td class="text-sm font-medium text-gray-900 py-3 capitalize">{{ key }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ product.accounts }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.balance) }}</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">{{ formatCurrency(product.revenue) }}</td>
-                    </tr>
-                    <tr class="border-t-2 border-gray-300 font-medium">
-                      <td class="text-sm text-gray-900 py-3">Total</td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{Object.values(clientData.productSummary).reduce((sum, p) => sum + p.accounts, 0)}}
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
+                      @click="drillDownToAccount(account)">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
+                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
+                        </div>
                       </td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.balance,
-                          0))}}
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          :class="getAccountTypeClass(account.type)">
+                          {{ account.type }}
+                        </span>
                       </td>
-                      <td class="text-sm text-gray-900 py-3 text-right">
-                        {{formatCurrency(Object.values(clientData.productSummary).reduce((sum, p) => sum + p.revenue,
-                          0))}}
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                        :class="getAccountBalanceColor(account.balance)">
+                        {{ formatCurrency(account.balance) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                        {{ formatCurrency(account.monthlyVolume) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ formatDate(account.lastTransaction) }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-800">View</button>
+                        <span class="mx-2 text-gray-300">|</span>
+                        <button class="text-gray-600 hover:text-gray-800">History</button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+
+              <!-- Account & Loan Portfolio Chart -->
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 class="text-lg font-medium text-gray-900">📊 Account & Loan Portfolio Balance</h4>
+                    <p class="text-sm text-gray-500">Account balances (positive) vs loan utilization (negative) with
+                      available credit line</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Deposits</span>
+                    <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Loans</span>
+                  </div>
+                </div>
+                <div class="h-80 bg-gray-50 rounded-lg p-4">
+                  <BarChart v-if="accountLoanPortfolioData" :data="accountLoanPortfolioData" />
+                </div>
+
+              </div>
             </div>
           </div>
 
-          <!-- Transaction Volume Trends -->
+          <!-- Transaction Volume Analysis -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900">💳 Transaction Volume Analysis</h3>
+                  <h3 class="text-lg font-medium text-gray-900">💸 Transaction Volume Analysis</h3>
                   <p class="text-sm text-gray-500 mt-1">Monthly transaction flows by category (inflows positive,
                     outflows negative)</p>
                 </div>
@@ -850,35 +797,30 @@
                 <div class="text-center p-3 bg-green-50 rounded-lg">
                   <p class="text-green-600 font-medium">Total Inflows</p>
                   <p class="text-xl font-bold text-green-900">$2.8M</p>
-                  <p class="text-xs text-green-600">+12% vs last month</p>
+                  <p class="text-xs text-green-500 font-medium">{{ inflowsPercentile }}{{
+                    getOrdinalSuffix(inflowsPercentile) }} percentile</p>
                 </div>
                 <div class="text-center p-3 bg-red-50 rounded-lg">
                   <p class="text-red-600 font-medium">Total Outflows</p>
                   <p class="text-xl font-bold text-red-900">$2.1M</p>
-                  <p class="text-xs text-red-600">+8% vs last month</p>
+                  <p class="text-xs text-red-500 font-medium">{{ outflowsPercentile }}{{
+                    getOrdinalSuffix(outflowsPercentile) }} percentile</p>
                 </div>
                 <div class="text-center p-3 bg-blue-50 rounded-lg">
                   <p class="text-blue-600 font-medium">Net Flow</p>
                   <p class="text-xl font-bold text-blue-900">$0.7M</p>
                   <p class="text-xs text-blue-600">Positive trend</p>
                 </div>
-
-              </div>
-              <div class="mt-4 flex justify-center flex-wrap gap-4 text-sm">
-                <div class="flex items-center">
-                  <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span class="text-gray-600">Inbound Flows</span>
-                </div>
-                <div class="flex items-center">
-                  <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                  <span class="text-gray-600">Outbound Flows</span>
-                </div>
-
               </div>
             </div>
           </div>
 
 
+
+          <!-- Risk Analysis Section -->
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">🚨 Risk Analysis</h2>
+          </div>
 
           <!-- Risk Flag Distribution -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -2183,7 +2125,8 @@ const activeAccountsCount = computed(() => {
 })
 
 const totalDeposits = computed(() => {
-  return accountDetails.value.reduce((sum, acc) => sum + acc.balance, 0)
+  if (!accountDetails.value || accountDetails.value.length === 0) return 0
+  return accountDetails.value.reduce((sum, acc) => sum + (acc.balance || 0), 0)
 })
 
 const totalMonthlyVolume = computed(() => {
@@ -2257,6 +2200,34 @@ const totalAvailableCredit = computed(() => {
 
 const netPortfolioPosition = computed(() => {
   return totalDeposits.value - totalLoanAmount.value
+})
+
+// New KPI computed properties
+const depositsPercentile = computed(() => {
+  // Generate percentile rank for deposits (higher is better)
+  return Math.floor(Math.random() * 30) + 70 // 70-99th percentile
+})
+
+const loansPercentile = computed(() => {
+  // Generate percentile rank for loans (higher is better)
+  return Math.floor(Math.random() * 25) + 75 // 75-99th percentile
+})
+
+const numberOfOpportunities = computed(() => {
+  // Calculate number of opportunities based on product penetration
+  const penetration = clientData.value?.productPenetration || 0
+  const maxOpportunities = 8
+  return Math.floor((100 - penetration) / 100 * maxOpportunities) + 2
+})
+
+const inflowsPercentile = computed(() => {
+  // Generate percentile rank for inflows
+  return Math.floor(Math.random() * 20) + 80 // 80-99th percentile
+})
+
+const outflowsPercentile = computed(() => {
+  // Generate percentile rank for outflows
+  return Math.floor(Math.random() * 25) + 65 // 65-89th percentile
 })
 
 // Account & Loan Portfolio Chart Data
@@ -3394,6 +3365,9 @@ onMounted(() => {
 
   // Initialize default date range for transactions (last 30 days)
   resetFilters()
+
+  // Load transactions data
+  loadTransactions()
 
   // Close menus when clicking outside
   document.addEventListener('click', (e) => {

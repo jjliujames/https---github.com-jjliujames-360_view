@@ -2601,14 +2601,21 @@ export const transactions = {
 
 // Helper functions
 export const formatCurrency = (amount) => {
-    if (amount >= 1e9) {
-        return `$${(amount / 1e9).toFixed(1)}B`
-    } else if (amount >= 1e6) {
-        return `$${(amount / 1e6).toFixed(1)}M`
-    } else if (amount >= 1e3) {
-        return `$${(amount / 1e3).toFixed(1)}K`
+    // Handle null, undefined, or non-numeric values
+    if (amount == null || isNaN(amount)) {
+        return '$0'
     }
-    return `$${amount.toLocaleString()}`
+
+    const numAmount = Number(amount)
+
+    if (numAmount >= 1e9) {
+        return `$${(numAmount / 1e9).toFixed(1)}B`
+    } else if (numAmount >= 1e6) {
+        return `$${(numAmount / 1e6).toFixed(1)}M`
+    } else if (numAmount >= 1e3) {
+        return `$${(numAmount / 1e3).toFixed(1)}K`
+    }
+    return `$${numAmount.toLocaleString()}`
 }
 
 export const getRiskColor = (riskScore) => {
