@@ -919,7 +919,6 @@
             <div class="p-4 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-base font-medium text-gray-900">⚠️ Risk Flag Distribution</h3>
                   <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
                     investigation details</p>
                 </div>
@@ -927,33 +926,12 @@
             </div>
             <div class="p-4">
               <!-- Summary Section -->
-              <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-red-50 rounded-lg p-3 border border-red-200">
+              <div class="mb-6 flex justify-center">
+                <div class="bg-red-50 rounded-lg p-4 border border-red-200 w-64">
                   <div class="text-center">
-                    <div class="text-xl font-bold text-red-600">{{ totalRiskFlags }}</div>
-                    <div class="text-xs text-gray-600">Total Risk Flags</div>
+                    <div class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</div>
+                    <div class="text-sm text-gray-600">Total Risk Flags</div>
                     <div class="text-xs text-red-500 font-medium">Active Monitoring</div>
-                  </div>
-                </div>
-                <div class="bg-orange-50 rounded-lg p-3 border border-orange-200">
-                  <div class="text-center">
-                    <div class="text-xl font-bold text-orange-600">{{ highRiskFlags }}</div>
-                    <div class="text-xs text-gray-600">High Risk Flags</div>
-                    <div class="text-xs text-orange-500 font-medium">Immediate Action</div>
-                  </div>
-                </div>
-                <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
-                  <div class="text-center">
-                    <div class="text-xl font-bold text-yellow-600">{{ mediumRiskFlags }}</div>
-                    <div class="text-xs text-gray-600">Medium Risk Flags</div>
-                    <div class="text-xs text-yellow-500 font-medium">Enhanced Review</div>
-                  </div>
-                </div>
-                <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                  <div class="text-center">
-                    <div class="text-xl font-bold text-blue-600">{{ reportedFlags }}</div>
-                    <div class="text-xs text-gray-600">Reported Flags</div>
-                    <div class="text-xs text-blue-500 font-medium">Filed with Authorities</div>
                   </div>
                 </div>
               </div>
@@ -963,10 +941,10 @@
                 <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                  <!-- Reported -->
+                  <!-- Non-Transactional Flag -->
                   <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
                     <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
-                      📋 Reported
+                      📋 Non-Transactional Flag
                     </h5>
                     <div class="space-y-2">
                       <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
@@ -978,6 +956,10 @@
                         @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
                         <span class="text-sm text-gray-700">High Risk Industry</span>
                         <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded">
+                        <span class="text-sm text-gray-700">CTR-exemption</span>
+                        <div class="w-4 h-4 rounded-full bg-green-500"></div>
                       </div>
                     </div>
                   </div>
@@ -1054,7 +1036,7 @@
                 </div>
 
                 <!-- Legend -->
-                <div class="mt-6 flex justify-center items-center space-x-8 text-sm">
+                <div class="mt-6 flex justify-center items-center space-x-6 text-sm">
                   <div class="flex items-center space-x-2">
                     <div class="w-4 h-4 rounded-full bg-red-500"></div>
                     <span class="text-gray-700">Data Present / Risk Confirmed</span>
@@ -1063,24 +1045,14 @@
                     <div class="w-4 h-4 rounded-full bg-gray-400"></div>
                     <span class="text-gray-700">No Data / Not Confirmed</span>
                   </div>
-                </div>
-              </div>
-
-              <!-- Industry Risk Flags -->
-              <div class="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Industry Risk Flags</h4>
-                <p class="text-xs text-gray-500 mb-4">High-risk business classifications</p>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  <div v-for="industry in riskIndustries" :key="industry.name"
-                    class="flex items-center justify-between p-2 bg-white rounded-lg hover:bg-gray-50 border">
-                    <div class="flex items-center space-x-2">
-                      <div class="w-3 h-3 rounded-full" :class="industry.confirmed ? 'bg-red-500' : 'bg-gray-400'">
-                      </div>
-                      <span class="text-xs text-gray-700">{{ industry.name }}</span>
-                    </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                    <span class="text-gray-700">Exemption / Approved</span>
                   </div>
                 </div>
               </div>
+
+
             </div>
           </div>
 
