@@ -31,41 +31,41 @@
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
         <!-- Left Column - Client Profile, Product Summary, Risk Assessment -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="lg:col-span-1 space-y-4">
 
           <!-- Client Profile -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6">
-              <div class="flex items-center space-x-4 mb-6">
-                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span class="text-xl font-medium text-gray-700">
+            <div class="p-4">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span class="text-sm font-medium text-gray-700">
                     {{clientData?.name?.split(' ').map(n => n[0]).join('') || 'N/A'}}
                   </span>
                 </div>
                 <div>
-                  <h2 class="text-xl font-semibold text-gray-900">{{ clientData?.name || 'N/A' }}</h2>
+                  <h2 class="text-lg font-semibold text-gray-900">{{ clientData?.name || 'N/A' }}</h2>
                   <p class="text-xs text-gray-500 mt-1">TIN: 12-3456789</p>
-                  <span class="px-3 py-1 text-sm font-medium rounded-full" :class="getTierBadgeClass(clientTier)">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getTierBadgeClass(clientTier)">
                     {{ clientTier }}
                   </span>
                 </div>
               </div>
 
-              <div class="space-y-4">
+              <div class="space-y-3">
                 <div>
-                  <p class="text-sm font-medium text-gray-500">Industry</p>
+                  <p class="text-xs font-medium text-gray-500">Industry</p>
                   <p class="text-sm text-gray-900">{{ clientData?.industry || 'N/A' }}</p>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-500">Location</p>
+                  <p class="text-xs font-medium text-gray-500">Location</p>
                   <p class="text-sm text-gray-900">{{ clientData?.location || 'N/A' }}</p>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-500">RM No</p>
+                  <p class="text-xs font-medium text-gray-500">RM No</p>
                   <p class="text-sm text-gray-900">{{ relationshipManager?.id || 'N/A' }}</p>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-500">Relationship Manager</p>
+                  <p class="text-xs font-medium text-gray-500">Relationship Manager</p>
                   <p class="text-sm text-gray-900">{{ relationshipManager?.name || 'N/A' }}</p>
                 </div>
               </div>
@@ -74,46 +74,47 @@
 
           <!-- Product & Relationship Summary -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Product & Relationship</h3>
+            <div class="p-3 border-b border-gray-200">
+              <h3 class="text-base font-medium text-gray-900">Product & Relationship</h3>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="p-4 space-y-3">
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Total Accounts</span>
+                <span class="text-xs text-gray-600">Total Accounts</span>
                 <span class="text-sm font-medium">{{ totalAccounts }}</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Total Balance</span>
+                <span class="text-xs text-gray-600">Total Balance</span>
                 <span class="text-sm font-medium">{{ formatCurrency(totalBalance) }}</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Annual Revenue</span>
+                <span class="text-xs text-gray-600">Annual Revenue</span>
                 <span class="text-sm font-medium">{{ formatCurrency(clientData?.annualRevenue || 0) }}</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Relationship Length</span>
+                <span class="text-xs text-gray-600">Relationship Length</span>
                 <span class="text-sm font-medium">{{ clientData?.relationshipYears || 0 }} years</span>
               </div>
-
             </div>
           </div>
+
+
 
           <!-- Related party -->
           <div
             v-if="clientData?.beneficialOwners || clientData?.authorizedSigners || clientData?.conductors || clientData?.relatedEntities"
             class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Related party</h3>
-              <p class="text-sm text-gray-500 mt-1">Beneficial ownership, authorized signers, and business conductors
+            <div class="p-3 border-b border-gray-200">
+              <h3 class="text-base font-medium text-gray-900">Related party</h3>
+              <p class="text-xs text-gray-500 mt-1">Beneficial ownership, authorized signers, and business conductors
               </p>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <!-- Beneficial Owners -->
-              <div v-if="clientData?.beneficialOwners" class="mb-6">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">💎 Beneficial Owners</h4>
+              <div v-if="clientData?.beneficialOwners" class="mb-4">
+                <h4 class="text-sm font-medium text-gray-900 mb-2">💎 Beneficial Owners</h4>
                 <div class="space-y-2">
                   <div v-for="owner in clientData.beneficialOwners" :key="owner.name"
-                    class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    class="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-blue-900">{{ owner.name }}</div>
                       <div class="text-xs text-blue-500">ID: {{ generateNineDigitId(owner.id || owner.name, 'BO') }}
@@ -124,11 +125,11 @@
               </div>
 
               <!-- Authorized Signers -->
-              <div v-if="clientData?.authorizedSigners" class="mb-6">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">✍️ Authorized Signers</h4>
+              <div v-if="clientData?.authorizedSigners" class="mb-4">
+                <h4 class="text-sm font-medium text-gray-900 mb-2">✍️ Authorized Signers</h4>
                 <div class="space-y-2">
                   <div v-for="signer in clientData.authorizedSigners" :key="signer.name"
-                    class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    class="flex items-center justify-between p-2 bg-green-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-green-900">{{ signer.name }}</div>
                       <div class="text-xs text-green-500">ID: {{ generateNineDigitId(signer.id || signer.name, 'SIG') }}
@@ -139,11 +140,11 @@
               </div>
 
               <!-- Business Conductors -->
-              <div v-if="clientData?.conductors" class="mb-6">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">🎯 Business Conductors</h4>
+              <div v-if="clientData?.conductors" class="mb-4">
+                <h4 class="text-sm font-medium text-gray-900 mb-2">🎯 Business Conductors</h4>
                 <div class="space-y-2">
                   <div v-for="conductor in clientData.conductors" :key="conductor.name"
-                    class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                    class="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-purple-900">{{ conductor.name }}</div>
                       <div class="text-xs text-purple-500">ID: {{ generateNineDigitId(conductor.id || conductor.name,
@@ -155,10 +156,10 @@
 
               <!-- Related Entities -->
               <div v-if="clientData?.relatedEntities">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">🏢 Related Entities</h4>
+                <h4 class="text-sm font-medium text-gray-900 mb-2">🏢 Related Entities</h4>
                 <div class="space-y-2">
                   <div v-for="entity in clientData.relatedEntities" :key="entity.name"
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                     <div>
                       <div class="text-sm font-medium text-gray-900">{{ entity.name }}</div>
                       <div class="text-xs text-gray-500">ID: {{ generateNineDigitId(entity.id || entity.name, 'ENT') }}
@@ -170,20 +171,40 @@
             </div>
           </div>
 
+          <!-- Industry Risk Flags -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-3 border-b border-gray-200">
+              <h3 class="text-base font-medium text-gray-900">🚨 Industry Risk Flags</h3>
+              <p class="text-xs text-gray-500 mt-1">High-risk business classifications</p>
+            </div>
+            <div class="p-3">
+              <div class="space-y-2">
+                <div v-for="industry in riskIndustries" :key="industry.name"
+                  class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 rounded-full" :class="industry.confirmed ? 'bg-red-500' : 'bg-gray-400'">
+                    </div>
+                    <span class="text-xs text-gray-700">{{ industry.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Right Column - Charts and Analysis -->
-        <div class="lg:col-span-3 space-y-8">
+        <div class="lg:col-span-3 space-y-6">
 
           <!-- Section Title -->
-          <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-900">Company Opportunities & Portfolio</h2>
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Company Opportunities & Portfolio</h2>
           </div>
 
           <!-- Summary KPIs Row -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6">
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div class="p-4">
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="text-center">
                   <div class="text-2xl font-bold text-blue-600">{{ totalAccounts }}</div>
                   <div class="text-sm text-gray-600">Total Accounts</div>
@@ -906,18 +927,19 @@
 
 
           <!-- Risk Analysis Section -->
-          <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">🚨 Risk Analysis</h2>
+          <div class="text-center mb-4">
+            <h2 class="text-xl font-bold text-gray-900">🚨 Risk Analysis</h2>
           </div>
 
+          <!-- Risk Analysis Content -->
           <!-- Risk Flag Distribution -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
+            <div class="p-4 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900">⚠️ Risk Flag Distribution</h3>
-                  <p class="text-sm text-gray-500 mt-1">Risk categories with detailed analysis - click for investigation
-                    details</p>
+                  <h3 class="text-base font-medium text-gray-900">⚠️ Risk Flag Distribution</h3>
+                  <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
+                    investigation details</p>
                 </div>
                 <div class="flex space-x-2">
                   <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">High Risk</span>
@@ -926,11 +948,11 @@
                 </div>
               </div>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <!-- Risk Flag Breakdown -->
-              <div class="mb-8">
-                <h4 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Flag Categories</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="mb-6">
+                <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                   <!-- Non-Transaction Flags -->
                   <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -1257,7 +1279,8 @@
               <div class="flex items-center justify-between">
                 <div>
                   <h3 class="text-lg font-medium text-gray-900">📊 Risk Analytics & Time Series</h3>
-                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down capabilities
+                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down
+                    capabilities
                   </p>
                 </div>
                 <div class="flex items-center space-x-3">
@@ -1296,7 +1319,8 @@
                     </label>
                   </div>
                 </div>
-                <button @click="resetRiskFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset All</button>
+                <button @click="resetRiskFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset
+                  All</button>
               </div>
 
               <!-- Charts Grid -->
@@ -1538,9 +1562,6 @@
           </div>
         </div>
 
-
-
-
       </div>
     </div>
   </div>
@@ -1554,7 +1575,8 @@
         <div class="flex items-center justify-between">
           <div>
             <h3 class="text-xl font-semibold text-gray-900">💳 Transaction Details</h3>
-            <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction History
+            <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction
+              History
             </p>
           </div>
           <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -1633,13 +1655,15 @@
               <tr>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Description
                 </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
                 </th>
                 <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
               </tr>
             </thead>
@@ -1818,10 +1842,12 @@
               </svg>
             </div>
             <div>
-              <h3 class="text-xl font-semibold text-gray-900">{{ selectedRiskFlag.category }} - Investigation Details
+              <h3 class="text-xl font-semibold text-gray-900">{{ selectedRiskFlag.category }} - Investigation
+                Details
               </h3>
-              <p class="text-sm text-gray-600 mt-1">{{ selectedRiskFlag.type || 'Risk flag analysis' }} | Risk Level: {{
-                selectedRiskFlag.riskLevel || 'Medium' }}</p>
+              <p class="text-sm text-gray-600 mt-1">{{ selectedRiskFlag.type || 'Risk flag analysis' }} | Risk
+                Level: {{
+                  selectedRiskFlag.riskLevel || 'Medium' }}</p>
             </div>
             <span class="px-3 py-1 text-sm font-medium rounded-full" :class="selectedRiskFlag.riskLevel === 'high' ? 'bg-red-100 text-red-800' :
               selectedRiskFlag.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' :
@@ -1850,7 +1876,8 @@
           <!-- Time Series Chart for Risk Flag -->
           <div class="bg-gray-50 rounded-lg p-4">
             <div class="flex items-center justify-between mb-4">
-              <h4 class="text-lg font-medium text-gray-900">📈 {{ selectedRiskFlag.category }} - Historical Trend</h4>
+              <h4 class="text-lg font-medium text-gray-900">📈 {{ selectedRiskFlag.category }} - Historical Trend
+              </h4>
               <div class="flex space-x-2">
                 <select v-model="modalTimeframe" class="text-xs border border-gray-300 rounded px-2 py-1">
                   <option value="3M">3 Months</option>
@@ -1917,8 +1944,10 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                    </th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
                     </th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Description</th>
@@ -1935,7 +1964,8 @@
                       class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Country/Bank</th>
                     <th v-if="selectedRiskFlag.category === 'HRJ ATM Withdrawals'"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Location
                     </th>
                   </tr>
                 </thead>
@@ -1984,7 +2014,8 @@
                     <td v-if="selectedRiskFlag.category === 'HRJ ATM Withdrawals'"
                       class="px-4 py-4 text-sm text-gray-500">
                       {{ transaction.city }}, {{ transaction.country }}
-                      <div class="text-xs text-gray-400">{{ transaction.terminal }} ({{ transaction.network }})</div>
+                      <div class="text-xs text-gray-400">{{ transaction.terminal }} ({{ transaction.network }})
+                      </div>
                       <div class="text-xs text-gray-400">{{ transaction.time }}</div>
                     </td>
                   </tr>
@@ -3147,6 +3178,25 @@ const riskFlagSummaryFiltered = computed(() => {
     ...flag,
     percentage: total > 0 ? Math.round((flag.count / total) * 100) : 0
   }))
+})
+
+// Risk Industries computed property
+const riskIndustries = computed(() => {
+  if (!clientData.value) return []
+
+  const clientIndustry = clientData.value.industry?.toLowerCase() || ''
+
+  const industries = [
+    { name: 'Gambling industry', confirmed: clientIndustry.includes('gambling') || clientIndustry.includes('casino') || clientIndustry.includes('gaming') },
+    { name: 'Crypto industry', confirmed: clientIndustry.includes('crypto') || clientIndustry.includes('bitcoin') || clientIndustry.includes('blockchain') || clientIndustry.includes('digital asset') },
+    { name: 'High cash Business', confirmed: clientIndustry.includes('cash') || clientIndustry.includes('retail') || clientIndustry.includes('restaurant') || clientIndustry.includes('convenience') },
+    { name: 'Real Estate', confirmed: clientIndustry.includes('real estate') || clientIndustry.includes('property') || clientIndustry.includes('development') },
+    { name: 'Cannabis Industry', confirmed: clientIndustry.includes('cannabis') || clientIndustry.includes('marijuana') || clientIndustry.includes('hemp') },
+    { name: 'Money Service Business (MSB)', confirmed: clientIndustry.includes('money service') || clientIndustry.includes('msb') || clientIndustry.includes('money transfer') || clientIndustry.includes('currency exchange') },
+    { name: 'Import/Export Business', confirmed: clientIndustry.includes('import') || clientIndustry.includes('export') || clientIndustry.includes('trade') || clientIndustry.includes('international commerce') }
+  ]
+
+  return industries
 })
 
 const riskFlagDistributionData = computed(() => {
