@@ -1055,8 +1055,7 @@
               <div class="flex items-center justify-between">
                 <div>
                   <h3 class="text-lg font-medium text-gray-900">📊 Risk Analytics & Time Series</h3>
-                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down
-                    capabilities
+                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down capabilities
                   </p>
                 </div>
                 <div class="flex items-center space-x-3">
@@ -1075,267 +1074,118 @@
             </div>
 
             <div class="p-6">
-              <!-- Filter Controls -->
-              <div class="mb-6 flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center space-x-2">
-                  <label class="text-sm font-medium text-gray-700">Transaction Types:</label>
-                  <div class="flex space-x-2">
-                    <label v-for="txnType in transactionTypes" :key="txnType" class="flex items-center space-x-1">
-                      <input type="checkbox" v-model="selectedTxnTypes" :value="txnType" class="rounded">
-                      <span class="text-xs text-gray-600">{{ txnType }}</span>
-                    </label>
+              <!-- Summary Section -->
+              <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}</div>
+                    <div class="text-sm text-gray-600">Total Risk Transaction Amount</div>
+                    <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
+                      getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
                   </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                  <label class="text-sm font-medium text-gray-700">Risk Flags:</label>
-                  <div class="flex space-x-2">
-                    <label v-for="flagType in flagTypes" :key="flagType" class="flex items-center space-x-1">
-                      <input type="checkbox" v-model="selectedFlagTypes" :value="flagType" class="rounded">
-                      <span class="text-xs text-gray-600">{{ flagType }}</span>
-                    </label>
+                <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
+                    <div class="text-sm text-gray-600">Total Risk Transactions</div>
+                    <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
+                      getOrdinalSuffix(riskCountPercentile) }} percentile</div>
                   </div>
                 </div>
-                <button @click="resetRiskFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset
-                  All</button>
+                <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-yellow-600">{{ totalUTRFiled }}</div>
+                    <div class="text-sm text-gray-600">UTR Filed</div>
+                    <div class="text-xs text-yellow-500 font-medium">{{ utrPercentile }}{{
+                      getOrdinalSuffix(utrPercentile) }} percentile</div>
+                  </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(averageRiskTransactionAmount) }}
+                    </div>
+                    <div class="text-sm text-gray-600">Average Risk Transaction</div>
+                    <div class="text-xs text-blue-500 font-medium">{{ avgRiskPercentile }}{{
+                      getOrdinalSuffix(avgRiskPercentile) }} percentile</div>
+                  </div>
+                </div>
               </div>
 
-              <!-- Charts Grid -->
-              <div class="grid grid-cols-1 gap-6">
+              <!-- Risk Transaction Types Filter -->
+              <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="text-sm font-medium text-gray-700">Risk Transaction Types:</label>
+                  <button @click="resetRiskTransactionFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset
+                    All</button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <label v-for="txnType in riskTransactionTypes" :key="txnType" class="flex items-center space-x-2">
+                    <input type="checkbox" v-model="selectedRiskTxnTypes" :value="txnType" class="rounded">
+                    <span class="text-xs text-gray-600">{{ txnType }}</span>
+                  </label>
+                </div>
+              </div>
 
-                <!-- High Risk Transactions by Type -->
+              <!-- Charts Section -->
+              <div class="space-y-4">
+                <!-- Stacked Bar Chart - Risk Transactions -->
                 <div class="bg-gray-50 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type</h4>
+                    <h4 class="text-md font-medium text-gray-900">🚨 Risk Transactions by Type (Monthly)</h4>
                     <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
                       →</button>
                   </div>
-                  <div class="h-64">
-                    <BarChart :data="riskTransactionTimeSeriesData" :options="stackedBarOptions" />
+                  <div class="h-80" ref="riskTransactionChart">
+                    <BarChart :data="filteredRiskTransactionData" :options="riskTransactionChartOptions" />
                   </div>
                   <div class="mt-3 flex justify-between text-xs text-gray-600">
-                    <span>Total High Risk: {{ totalHighRiskTransactions }}</span>
-                    <span>↑ {{ riskTrend }}% vs prev period</span>
+                    <span>Total Selected Types: {{ formatCurrency(selectedTypesTotalAmount) }}</span>
+                    <span>{{ selectedRiskTxnTypes.length }} of {{ riskTransactionTypes.length }} types selected</span>
                   </div>
                 </div>
 
-              </div>
-            </div>
-          </div>
-
-          <!-- Risk Flag Event Timeline -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-medium text-gray-900">🕐 Risk Flag Event Timeline</h3>
-                  <p class="text-sm text-gray-500 mt-1">Chronological view of risk events by severity and type</p>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <select v-model="timelineRange" class="text-sm border border-gray-300 rounded-lg px-3 py-1">
-                    <option value="1M">Last Month</option>
-                    <option value="3M">Last 3 Months</option>
-                    <option value="6M">Last 6 Months</option>
-                    <option value="1Y">Last Year</option>
-                  </select>
-                  <button @click="exportTimelineData"
-                    class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">
-                    Export Timeline
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="p-6">
-              <!-- Timeline Chart -->
-              <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                <div class="flex items-center justify-between mb-4">
-                  <h4 class="text-md font-medium text-gray-900">Risk Event Timeline by Category</h4>
-                  <div class="flex space-x-2 text-xs">
-                    <span class="flex items-center space-x-1">
-                      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span>High Risk</span>
-                    </span>
-                    <span class="flex items-center space-x-1">
-                      <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span>Medium Risk</span>
-                    </span>
-                    <span class="flex items-center space-x-1">
-                      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span>Low Risk</span>
-                    </span>
+                <!-- UTR Filed Scatter Chart -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-md font-medium text-gray-900">📋 UTR Filed Events</h4>
+                    <span class="text-xs text-gray-500">{{ totalUTRFiled }} events in selected period</span>
                   </div>
-                </div>
-
-                <!-- Timeline Grid -->
-                <div class="relative">
-                  <!-- Time axis -->
-                  <div class="flex justify-between text-xs text-gray-500 mb-4 px-24">
-                    <span v-for="timeLabel in timelineLabels" :key="timeLabel">{{ timeLabel }}</span>
-                  </div>
-
-                  <!-- Risk events by category -->
-                  <div class="space-y-4">
-                    <!-- UTR Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">UTR Filed</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in utrCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- MSB Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">MSB Activity</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in msbCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- High Cash Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">High Cash</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in cashCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Crypto Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">Crypto</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in cryptoCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Sanctions Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">Sanctions</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in sanctionsCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Compliance Category -->
-                    <div class="flex items-center">
-                      <div class="w-20 text-xs font-medium text-gray-700">Compliance</div>
-                      <div class="flex-1 h-8 bg-gray-100 rounded relative">
-                        <div v-for="event in complianceCategoryEvents" :key="event.id"
-                          class="absolute w-6 h-6 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform"
-                          :class="getEventColorClass(event.risk)" :style="getCircleEventPosition(event)"
-                          :title="event.description" @click="viewEventDetails(event)">
+                  <div class="h-20" ref="utrScatterChart">
+                    <div class="relative h-full">
+                      <!-- UTR Events as dots -->
+                      <div class="absolute inset-0 flex items-center">
+                        <div class="w-full relative h-2 bg-gray-200 rounded">
+                          <div v-for="utrEvent in utrEvents" :key="utrEvent.id"
+                            class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white cursor-pointer hover:scale-125 transition-transform group"
+                            :style="{ left: utrEvent.position + '%', top: '-2px' }" @click="viewUTRDetails(utrEvent)">
+                            <!-- Tooltip -->
+                            <div
+                              class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-lg">
+                              <div class="font-semibold">{{ utrEvent.date }}</div>
+                              <div class="text-gray-300">{{ utrEvent.description }}</div>
+                              <div class="text-yellow-300">Amount: {{ formatCurrency(utrEvent.amount) }}</div>
+                              <div class="text-blue-300">Officer: {{ utrEvent.officer }}</div>
+                              <div class="mt-1 text-gray-400 max-w-xs">{{ utrEvent.notes }}</div>
+                              <!-- Tooltip arrow -->
+                              <div
+                                class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <!-- Risk Flag Summary - Horizontal Layout -->
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h4 class="text-md font-medium text-gray-900 mb-4">📊 Flag Summary</h4>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                  <!-- UTR Summary -->
-                  <div class="p-3 bg-white rounded border">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-gray-900">UTR Filed</span>
-                      <span class="text-lg font-bold text-orange-600">{{ utrStats.total }}</span>
-                    </div>
-                    <div class="text-xs text-gray-600">
-                      <div>Rank: #{{ utrStats.rank }}/{{ utrStats.totalClients }}</div>
-                      <div>{{ utrStats.percentile }}th percentile</div>
-                      <div class="mt-1 text-orange-600">{{ utrStats.trend }}</div>
-                    </div>
-                  </div>
-
-                  <!-- MSB Classification -->
-                  <div class="p-3 bg-white rounded border">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-gray-900">MSB Status</span>
-                      <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Active</span>
-                    </div>
-                    <div class="text-xs text-gray-600">
-                      <div>Money Services Business</div>
-                      <div>Since: {{ msbStats.classifiedDate }}</div>
-                      <div class="mt-1 text-red-600">Permanent</div>
-                    </div>
-                  </div>
-
-                  <!-- High Cash Flags -->
-                  <div class="p-3 bg-white rounded border">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-gray-900">High Cash</span>
-                      <span class="text-lg font-bold text-yellow-600">{{ cashStats.flags }}</span>
-                    </div>
-                    <div class="text-xs text-gray-600">
-                      <div>90 days: {{ cashStats.recent }}</div>
-                      <div>Breaches: {{ cashStats.breaches }}</div>
-                      <div class="mt-1 text-yellow-600">{{ cashStats.status }}</div>
-                    </div>
-                  </div>
-
-                  <!-- Crypto Flags -->
-                  <div class="p-3 bg-white rounded border">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-gray-900">Crypto</span>
-                      <span class="text-lg font-bold text-purple-600">{{ cryptoStats.flags }}</span>
-                    </div>
-                    <div class="text-xs text-gray-600">
-                      <div>Exchanges: {{ cryptoStats.exchanges }}</div>
-                      <div>Volume: {{ formatCurrency(cryptoStats.volume) }}</div>
-                      <div class="mt-1 text-purple-600">{{ cryptoStats.trend }}</div>
-                    </div>
-                  </div>
-
-                  <!-- Sanctions Screening -->
-                  <div class="p-3 bg-white rounded border">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-gray-900">Sanctions</span>
-                      <span class="text-lg font-bold text-gray-600">{{ sanctionsStats.hits }}</span>
-                    </div>
-                    <div class="text-xs text-gray-600">
-                      <div>False+: {{ sanctionsStats.falsePositives }}</div>
-                      <div>Last: {{ sanctionsStats.lastScreen }}</div>
-                      <div class="mt-1 text-green-600">{{ sanctionsStats.status }}</div>
-                    </div>
-                  </div>
-
-                  <!-- Overall Risk Status -->
-                  <div class="p-3 bg-gradient-to-r from-red-50 to-orange-50 rounded border border-red-200">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-sm font-medium text-red-900">Overall Risk</span>
-                      <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full font-bold">HIGH</span>
-                    </div>
-                    <div class="text-xs text-red-700">
-                      <div>Score: {{ overallRisk.score }}/100</div>
-                      <div>MSB, High Cash</div>
-                      <div class="mt-1 font-medium">Enhanced monitoring</div>
-                    </div>
+                  <div class="mt-3 flex justify-between text-xs text-gray-600">
+                    <span>Click dots for UTR details</span>
+                    <span>{{ getUTRTrend() }} trend vs previous period</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+
         </div>
 
       </div>
@@ -2011,6 +1861,24 @@ const selectedFlagTypes = ref(['UTR', 'High Cash', 'MSB', 'Crypto'])
 const transactionTypes = ['Wire', 'Cash', 'Crypto', 'MSB', 'ATM', 'ACH', 'Check']
 const flagTypes = ['UTR', 'High Cash', 'MSB', 'Crypto', 'HRJ', 'Sanctions', 'EDD']
 
+// Risk Analytics Data
+const riskTransactionTypes = [
+  'High Cash Activities Deposit',
+  'Third Party Cheque Deposit',
+  'Crypto Trx',
+  'Luxury Goods Trx',
+  'Casino Trx',
+  'HRJ Trx ATM withdrawal',
+  'HRJ Trx Wire In',
+  'HRJ Trx Wire Out',
+  'HRJ Trx Debit Purchase',
+  'Cashier Cheque Purchase',
+  'High Cash Withdrawals',
+  'Cannabis-Related Trx'
+]
+
+const selectedRiskTxnTypes = ref([...riskTransactionTypes]) // All selected by default
+
 // Task Creation State
 const newTask = ref({
   type: 'review',
@@ -2427,9 +2295,173 @@ const aiRecommendations = computed(() => {
 
 
   // Sort by confidence and return top 3
-  return recommendations
-    .sort((a, b) => b.confidence - a.confidence)
-    .slice(0, 3)
+  return recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 3)
+})
+
+// Risk Analytics Computed Properties
+const totalRiskTransactionAmount = computed(() => {
+  // Generate total risk transaction amount based on client profile
+  const portfolioValue = clientData.value?.portfolioValue || 0
+  return Math.floor(portfolioValue * (0.15 + Math.random() * 0.25)) // 15-40% of portfolio
+})
+
+const totalRiskTransactionCount = computed(() => {
+  // Generate total risk transaction count
+  return Math.floor(Math.random() * 150) + 50 // 50-200 transactions
+})
+
+const totalUTRFiled = computed(() => {
+  // Generate UTR count
+  return Math.floor(Math.random() * 8) + 4 // 4-12 UTRs
+})
+
+const averageRiskTransactionAmount = computed(() => {
+  return Math.floor(totalRiskTransactionAmount.value / totalRiskTransactionCount.value)
+})
+
+const riskAmountPercentile = computed(() => {
+  return Math.floor(Math.random() * 15) + 85 // 85-99th percentile
+})
+
+const riskCountPercentile = computed(() => {
+  return Math.floor(Math.random() * 20) + 75 // 75-94th percentile
+})
+
+const utrPercentile = computed(() => {
+  return Math.floor(Math.random() * 10) + 90 // 90-99th percentile
+})
+
+const avgRiskPercentile = computed(() => {
+  return Math.floor(Math.random() * 25) + 70 // 70-94th percentile
+})
+
+const selectedTypesTotalAmount = computed(() => {
+  // Calculate total amount for selected transaction types
+  return Math.floor(totalRiskTransactionAmount.value * (selectedRiskTxnTypes.value.length / riskTransactionTypes.length))
+})
+
+const filteredRiskTransactionData = computed(() => {
+  const months = ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024']
+
+  const datasets = selectedRiskTxnTypes.value.map((txnType, index) => {
+    const colors = [
+      '#EF4444', '#F97316', '#EAB308', '#22C55E', '#06B6D4',
+      '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981',
+      '#6366F1', '#84CC16'
+    ]
+
+    // Generate monthly data for each transaction type
+    const baseAmount = Math.floor(totalRiskTransactionAmount.value / riskTransactionTypes.length)
+    const monthlyData = months.map(() => {
+      const variation = 0.7 + Math.random() * 0.6 // 70-130% variation
+      return Math.floor(baseAmount * variation)
+    })
+
+    return {
+      label: txnType,
+      data: monthlyData,
+      backgroundColor: colors[index % colors.length],
+      borderColor: colors[index % colors.length],
+      borderWidth: 1
+    }
+  })
+
+  return {
+    labels: months,
+    datasets: datasets
+  }
+})
+
+const riskTransactionChartOptions = computed(() => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: {
+        boxWidth: 12,
+        padding: 15,
+        font: {
+          size: 11
+        }
+      }
+    },
+    tooltip: {
+      mode: 'index',
+      intersect: false,
+      callbacks: {
+        label: function (context) {
+          return `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`
+        }
+      }
+    }
+  },
+  scales: {
+    x: {
+      stacked: true,
+      grid: {
+        display: false
+      },
+      ticks: {
+        font: {
+          size: 10
+        }
+      }
+    },
+    y: {
+      stacked: true,
+      beginAtZero: true,
+      ticks: {
+        callback: function (value) {
+          return formatCurrency(value)
+        },
+        font: {
+          size: 10
+        }
+      }
+    }
+  }
+}))
+
+const utrEvents = computed(() => {
+  // Generate UTR events with positions along timeline
+  const events = []
+  const totalEvents = totalUTRFiled.value
+
+  const officers = ['Sarah Johnson', 'Mike Rodriguez', 'Jennifer Chen', 'David Kim', 'Lisa Wang', 'Robert Taylor']
+  const descriptions = [
+    'Structured transaction pattern detected',
+    'Multiple cash deposits under threshold',
+    'Customer avoided CTR requirements',
+    'Suspicious deposit timing patterns',
+    'Client showed knowledge of reporting thresholds',
+    'Evasive behavior regarding fund sources'
+  ]
+  const notes = [
+    'Client made structured deposits of $9,900 each over consecutive days, inquired about CTR reporting thresholds',
+    'Customer asked detailed questions about CTR threshold amounts, then backed off from transaction',
+    'Multiple cash deposits avoiding $10K CTR threshold. Client became evasive when questioned about source',
+    'Customer inquired about structuring laws, then made series of deposits just under threshold',
+    'Client attempted large cashier check, reduced amount when informed of CTR requirements',
+    'Pattern of deposits with unusual knowledge of banking regulations for stated business type'
+  ]
+
+  for (let i = 0; i < totalEvents; i++) {
+    const position = Math.random() * 90 + 5 // 5-95% along timeline
+    const eventDate = new Date(2023, 6 + Math.floor(position / 12.5), Math.floor(Math.random() * 28) + 1)
+
+    events.push({
+      id: `utr_${i + 1}`,
+      date: eventDate.toLocaleDateString(),
+      position: position,
+      description: descriptions[i % descriptions.length],
+      amount: Math.floor(Math.random() * 50000) + 10000,
+      officer: officers[i % officers.length],
+      notes: notes[i % notes.length]
+    })
+  }
+
+  return events.sort((a, b) => a.position - b.position)
 })
 
 // Risk Analytics Computed Properties
@@ -3781,6 +3813,21 @@ const resetRiskFilters = () => {
 const exportRiskData = () => {
   // Implement risk data export
   console.log('Exporting risk analytics data...')
+}
+
+// Risk Analytics Helper Functions
+const resetRiskTransactionFilters = () => {
+  selectedRiskTxnTypes.value = [...riskTransactionTypes]
+}
+
+const viewUTRDetails = (utrEvent) => {
+  console.log('Viewing UTR details:', utrEvent)
+  // Could open a modal with UTR details
+}
+
+const getUTRTrend = () => {
+  const trends = ['Increasing', 'Stable', 'Decreasing']
+  return trends[Math.floor(Math.random() * trends.length)]
 }
 
 const drillDownRiskTxn = () => {
