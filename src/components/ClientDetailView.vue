@@ -230,14 +230,14 @@
                 <h4 class="text-lg font-medium text-gray-900 mb-4">🏦 Product Portfolio Breakdown</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                  <!-- Deposit Products -->
+                  <!-- Business Deposit Product -->
                   <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
                     <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
-                      💰 Deposit Products
+                      🟦 Business Deposit Product
                     </h5>
                     <div class="space-y-2">
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Business Checking</span>
+                        <span class="text-sm text-gray-700">Checking</span>
                         <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -247,7 +247,7 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Business Savings</span>
+                        <span class="text-sm text-gray-700">Debit Cards</span>
                         <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -257,17 +257,7 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Money Market</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Certificate of Deposit</span>
+                        <span class="text-sm text-gray-700">CDs</span>
                         <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -275,21 +265,97 @@
                           </svg>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <!-- Loan Products -->
-                  <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                    <h5 class="text-sm font-semibold text-orange-900 mb-3 flex items-center">
-                      🏦 Loan Products
-                    </h5>
-                    <div class="space-y-2">
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Business Line of Credit</span>
+                        <span class="text-sm text-gray-700">Savings and Money Market</span>
                         <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                               d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Business Lending Product -->
+                  <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                    <h5 class="text-sm font-semibold text-indigo-900 mb-3 flex items-center">
+                      🟦 Business Lending Product
+                    </h5>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Credit Cards</span>
+                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Loans and Lines of Credit</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Securities-Based Lending</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Real Estate Financing</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Paycheck Protection Program (PPP)</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Commercial Lending Solutions -->
+                  <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                    <h5 class="text-sm font-semibold text-orange-900 mb-3 flex items-center">
+                      🟧 Commercial Lending Solutions
+                    </h5>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Asset Based Lending</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Commercial Lending</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                               clip-rule="evenodd"></path>
                           </svg>
                         </div>
@@ -304,19 +370,11 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Equipment Financing</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                        <span class="text-sm text-gray-700">Equipment Finance</span>
+                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">SBA Loans</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            <path fill-rule="evenodd"
+                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                               clip-rule="evenodd"></path>
                           </svg>
                         </div>
@@ -325,33 +383,13 @@
                   </div>
 
                   <!-- Treasury & Cash Management -->
-                  <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <h5 class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
-                      🏛️ Treasury & Cash Management
+                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                    <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+                      🟨 Treasury & Cash Management
                     </h5>
                     <div class="space-y-2">
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">ACH Services</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Wire Services</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Treasury Management Suite</span>
+                        <span class="text-sm text-gray-700">Liquidity Management</span>
                         <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -361,7 +399,46 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Merchant Services</span>
+                        <span class="text-sm text-gray-700">Payables</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Receivables</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Fraud Control</span>
+                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Information Services</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Treasury Overview & Articles</span>
                         <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -372,47 +449,10 @@
                     </div>
                   </div>
 
-                  <!-- Investment & Advisory -->
+                  <!-- Business Services & Support -->
                   <div class="bg-green-50 rounded-lg p-4 border border-green-200">
                     <h5 class="text-sm font-semibold text-green-900 mb-3 flex items-center">
-                      📊 Investment & Advisory
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Investment Advisory</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Retirement Plans</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Private Banking</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Digital & International -->
-                  <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                    <h5 class="text-sm font-semibold text-indigo-900 mb-3 flex items-center">
-                      🌐 Digital & International
+                      🟩 Business Services & Support
                     </h5>
                     <div class="space-y-2">
                       <div class="flex items-center justify-between">
@@ -426,7 +466,16 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Digital Banking Platform</span>
+                        <span class="text-sm text-gray-700">Online Accounting</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Payroll</span>
                         <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -435,27 +484,8 @@
                           </svg>
                         </div>
                       </div>
-
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Foreign Exchange</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Risk Management -->
-                  <div class="bg-red-50 rounded-lg p-4 border border-red-200">
-                    <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
-                      🛡️ Risk Management
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Commercial Insurance</span>
+                        <span class="text-sm text-gray-700">Business Payment Suite</span>
                         <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -464,16 +494,7 @@
                         </div>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Letters of Credit</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110-2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Fraud Protection</span>
+                        <span class="text-sm text-gray-700">Overdraft Services</span>
                         <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -482,8 +503,75 @@
                           </svg>
                         </div>
                       </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Merchant Solutions</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">New to Small Business Checking</span>
+                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Healthcare Professionals</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                   </div>
+
+                  <!-- Wealth & Investment Services -->
+                  <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <h5 class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
+                      🟪 Wealth & Investment Services
+                    </h5>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Investments</span>
+                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Wealth & Retirement Planning</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Private Client Banking</span>
+                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
 
                 </div>
 
@@ -2293,7 +2381,7 @@ const accountLoanPortfolioData = computed(() => {
   const loanAmount = totalLoanAmount.value / 1000 // Convert to thousands
   const loanDatasets = [
     {
-      label: 'Business Line of Credit',
+      label: 'Commercial Lending',
       data: months.map((month, index) => {
         if (index === months.length - 1) {
           // Last month (December) should match exact proportion of current total loans
@@ -2360,10 +2448,10 @@ const aiRecommendations = computed(() => {
   // AI/ML-based product recommendations based on client profile
   const recommendations = []
 
-  // Treasury Management - High confidence for Commercial clients with high volume
+  // Liquidity Management - High confidence for Commercial clients with high volume
   if (tier === 'Commercial' && portfolioValue > 2000000) {
     recommendations.push({
-      product: 'Treasury Management Suite',
+      product: 'Liquidity Management',
       reason: 'High transaction volume suggests need for cash management solutions',
       confidence: 87,
       potentialRevenue: Math.floor(portfolioValue * 0.008), // 0.8% of portfolio
@@ -2376,7 +2464,7 @@ const aiRecommendations = computed(() => {
   if (relationshipYears >= 2 && !industry.includes('Non-Profit')) {
     const creditConfidence = tier === 'Commercial' ? 92 : 78
     recommendations.push({
-      product: 'Business Line of Credit',
+      product: 'Commercial Lending',
       reason: `${relationshipYears}+ year relationship with growing transaction volume`,
       confidence: creditConfidence,
       potentialRevenue: Math.floor(portfolioValue * 0.025), // 2.5% of portfolio
@@ -2388,7 +2476,7 @@ const aiRecommendations = computed(() => {
   // Investment Services - Low penetration but high portfolio
   if (penetration < 40 && portfolioValue > 1000000) {
     recommendations.push({
-      product: 'Investment Advisory Services',
+      product: 'Investments',
       reason: 'Low product penetration with high asset base indicates growth potential',
       confidence: 73,
       potentialRevenue: Math.floor(portfolioValue * 0.015), // 1.5% of portfolio
@@ -2936,7 +3024,7 @@ const accountDistributionData = computed(() => {
     'Savings': Math.floor(portfolioValue * 0.25),
     'Money Market': Math.floor(portfolioValue * 0.20),
     'Certificate of Deposit': Math.floor(portfolioValue * 0.30),
-    'Treasury Management': Math.floor(portfolioValue * 0.10)
+    'Liquidity Management': Math.floor(portfolioValue * 0.10)
   }
 
   return {
@@ -2968,7 +3056,7 @@ const accountSummary = computed(() => {
     'Savings': { balance: Math.floor(portfolioValue * 0.25), count: 1 },
     'Money Market': { balance: Math.floor(portfolioValue * 0.20), count: 1 },
     'Certificate of Deposit': { balance: Math.floor(portfolioValue * 0.30), count: Math.ceil(totalAccounts.value * 0.4) },
-    'Treasury Management': { balance: Math.floor(portfolioValue * 0.10), count: 1 }
+    'Liquidity Management': { balance: Math.floor(portfolioValue * 0.10), count: 1 }
   }
 
   const colors = [
