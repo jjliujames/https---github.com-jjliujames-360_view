@@ -954,319 +954,101 @@
                 <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-                  <!-- Non-Transaction Flags -->
-                  <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <h5 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                      📋 Non-Transaction Flags
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'UTR', type: 'non-transaction', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">UTR (Unusual Transaction Reports)</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'MSB Industry', type: 'non-transaction', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">MSB Industry Classification</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Crypto Industry', type: 'non-transaction', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">Crypto Industry Classification</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Correspondent Bank Flag', type: 'non-transaction', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">Correspondent Bank Flag</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- High Cash Activities -->
-                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                    <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
-                      💰 High Cash Activities
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-yellow-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Cash Deposits', type: 'high-cash', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">High Cash Deposits</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-yellow-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-cash', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">High Cash Withdrawals</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-yellow-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Cash Transaction Flagged', type: 'high-cash', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">Cash Transaction Flagged</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- High Risk Transactions -->
-                  <div class="bg-red-50 rounded-lg p-4 border border-red-200">
-                    <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
-                      🚨 High Risk Transactions
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'MSB Transactions', type: 'high-risk-trx', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">MSB Transactions</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Crypto Activities', type: 'high-risk-trx', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">Crypto Activities</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Luxury Spending', type: 'high-risk-trx', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">Luxury Spending</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'HRJ Wire Transfers', type: 'high-risk-trx', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">HRJ Wire In/Out</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- International Activities -->
-                  <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                    <h5 class="text-sm font-semibold text-orange-900 mb-3 flex items-center">
-                      🌍 International Activities
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-orange-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'HRJ ATM Withdrawals', type: 'international', riskLevel: 'high' })">
-                        <span class="text-sm text-gray-700">HRJ ATM Withdrawals</span>
-                        <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-orange-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Correspondent Bank Activities', type: 'international', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">Correspondent Bank Activities</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-orange-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Correspondent Bank Deposits', type: 'international', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">Correspondent Bank Deposits</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Compliance & Monitoring -->
+                  <!-- Reported -->
                   <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
                     <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
-                      🛡️ Compliance & Monitoring
+                      📋 Reported
                     </h5>
                     <div class="space-y-2">
                       <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Enhanced Due Diligence', type: 'compliance', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">Enhanced Due Diligence</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
+                        @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
+                        <span class="text-sm text-gray-700">UTR Filed (Volume)</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
                       </div>
                       <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'KYC Updates Required', type: 'compliance', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">KYC Updates Required</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Sanctions Screening', type: 'compliance', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">Sanctions Screening</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
+                        @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
+                        <span class="text-sm text-gray-700">High Risk Industry</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Business Activities -->
-                  <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <h5 class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
-                      🏢 Business Activities
+                  <!-- High Cash -->
+                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                    <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+                      💰 High Cash
                     </h5>
                     <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-purple-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Velocity Transactions', type: 'business', riskLevel: 'medium' })">
-                        <span class="text-sm text-gray-700">High Velocity Transactions</span>
-                        <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-purple-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Round Dollar Amounts', type: 'business', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">Round Dollar Amounts</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-purple-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Off-Hours Transactions', type: 'business', riskLevel: 'low' })">
-                        <span class="text-sm text-gray-700">Off-Hours Transactions</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-yellow-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'High Cash Activities Deposit', type: 'high-cash', riskLevel: 'high', hasData: true })">
+                        <span class="text-sm text-gray-700">High Cash Activities Deposit</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
                       </div>
                     </div>
                   </div>
+
+                  <!-- High Risk Trx -->
+                  <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                    <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
+                      🚨 High Risk Trx
+                    </h5>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Third Party Cheque Deposit', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                        <span class="text-sm text-gray-700">Third Party Cheque Deposit</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                        <span class="text-sm text-gray-700">Crypto Trx</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                        <span class="text-sm text-gray-700">Luxury Goods Trx</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Casino Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                        <span class="text-sm text-gray-700">Casino Trx</span>
+                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                        <span class="text-sm text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Cashier Cheque Purchase', type: 'high-risk-trx', riskLevel: 'medium', hasData: false })">
+                        <span class="text-sm text-gray-700">Cashier Cheque Purchase</span>
+                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                        <span class="text-sm text-gray-700">High Cash Withdrawals</span>
+                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      </div>
+                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                        @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                        <span class="text-sm text-gray-700">Cannabis-Related Trx</span>
+                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                      </div>
+                    </div>
+                  </div>
+
+
 
                 </div>
 
                 <!-- Legend -->
-                <div class="mt-6 flex justify-center items-center space-x-6 text-sm">
+                <div class="mt-6 flex justify-center items-center space-x-8 text-sm">
                   <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">High Risk - Immediate Action</span>
+                    <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                    <span class="text-gray-700">Data Present / Risk Confirmed</span>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-yellow-500 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">Medium Risk - Review Required</span>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">Low Risk - Monitoring</span>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">No Risk/Cleared</span>
+                    <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                    <span class="text-gray-700">No Data / Not Confirmed</span>
                   </div>
                 </div>
               </div>
@@ -1873,29 +1655,128 @@
             <p class="text-sm text-blue-800">{{ generateRiskFlagData(selectedRiskFlag.category).summary }}</p>
           </div>
 
-          <!-- Time Series Chart for Risk Flag -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <div class="flex items-center justify-between mb-4">
-              <h4 class="text-lg font-medium text-gray-900">📈 {{ selectedRiskFlag.category }} - Historical Trend
-              </h4>
-              <div class="flex space-x-2">
-                <select v-model="modalTimeframe" class="text-xs border border-gray-300 rounded px-2 py-1">
-                  <option value="3M">3 Months</option>
-                  <option value="6M">6 Months</option>
-                  <option value="1Y">12 Months</option>
-                </select>
-                <button @click="exportModalData"
-                  class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">
-                  Export
-                </button>
+          <!-- UTR Volume Data Section -->
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category).volumeData" class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">📊 UTR Filing Volume</h4>
+            <div class="grid grid-cols-4 gap-4 mb-4">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-red-600">{{
+                  generateRiskFlagData(selectedRiskFlag.category).volumeData.totalCount }}</div>
+                <div class="text-xs text-gray-500">Total UTRs Filed</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">{{
+                  generateRiskFlagData(selectedRiskFlag.category).volumeData.currentMonth }}</div>
+                <div class="text-xs text-gray-500">Current Month</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-600">{{
+                  generateRiskFlagData(selectedRiskFlag.category).volumeData.previousMonth }}</div>
+                <div class="text-xs text-gray-500">Previous Month</div>
+              </div>
+              <div class="text-center">
+                <div class="text-lg font-bold"
+                  :class="generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
+                  {{ generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? '↗️' : '↘️' }}
+                </div>
+                <div class="text-xs text-gray-500">Trend</div>
               </div>
             </div>
             <div class="h-48">
-              <LineChart :data="generateModalTimeSeriesData(selectedRiskFlag.category)" :options="modalChartOptions" />
+              <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
+                :options="modalChartOptions" />
             </div>
-            <div class="mt-3 flex justify-between text-xs text-gray-600">
-              <span>Trend: {{ getModalTrend(selectedRiskFlag.category) }}</span>
-              <span>Peak: {{ getModalPeak(selectedRiskFlag.category) }}</span>
+          </div>
+
+          <!-- Industry Details Section -->
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category).industryDetails" class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">🏭 Industry Risk Assessment</h4>
+            <div class="grid grid-cols-2 gap-6 mb-4">
+              <div>
+                <h5 class="font-medium text-gray-900 mb-2">Business Information</h5>
+                <div class="space-y-2 text-sm">
+                  <div><span class="font-medium">Industry:</span> {{
+                    generateRiskFlagData(selectedRiskFlag.category).industryDetails.primaryIndustry }}</div>
+                  <div><span class="font-medium">NAICS Code:</span> {{
+                    generateRiskFlagData(selectedRiskFlag.category).industryDetails.naicsCode }}</div>
+                  <div><span class="font-medium">Risk Rating:</span>
+                    <span class="px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.riskRating }}</span>
+                  </div>
+                  <div><span class="font-medium">CTR Exempt:</span>
+                    <span
+                      :class="generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'text-green-600' : 'text-red-600'">
+                      {{ generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h5 class="font-medium text-gray-900 mb-2">Flag Status</h5>
+                <div class="space-y-3">
+                  <div class="border border-gray-200 rounded p-3">
+                    <div class="flex items-center mb-1">
+                      <div class="w-3 h-3 bg-white border-2 border-gray-400 rounded-full mr-2"></div>
+                      <span class="font-medium text-sm">White Flag</span>
+                      <span class="ml-2 px-2 py-1 rounded text-xs bg-green-100 text-green-800">{{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.status }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 ml-5">{{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.reason }}</div>
+                    <div class="text-xs text-gray-500 ml-5 mt-1">Next Review: {{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.nextReview }}</div>
+                  </div>
+                  <div class="border border-gray-200 rounded p-3">
+                    <div class="flex items-center mb-1">
+                      <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                      <span class="font-medium text-sm">Red Flag</span>
+                      <span class="ml-2 px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.status }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 ml-5">{{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.reason }}</div>
+                    <div class="text-xs text-gray-500 ml-5 mt-1">
+                      <div
+                        v-for="trigger in generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.triggers"
+                        :key="trigger" class="mb-1">• {{ trigger }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monthly Volume Data Section -->
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume" class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">📈 Monthly Transaction Volume</h4>
+            <div class="grid grid-cols-4 gap-4 mb-4">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">{{
+                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.totalAmount) }}</div>
+                <div class="text-xs text-gray-500">Total (8 Months)</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-green-600">{{
+                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.currentMonth) }}</div>
+                <div class="text-xs text-gray-500">Current Month</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-600">{{
+                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.previousMonth) }}</div>
+                <div class="text-xs text-gray-500">Previous Month</div>
+              </div>
+              <div class="text-center">
+                <div class="text-lg font-bold"
+                  :class="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
+                  {{ generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? '↗️' : '↘️'
+                  }}
+                </div>
+                <div class="text-xs text-gray-500">Trend</div>
+              </div>
+            </div>
+            <div class="h-48">
+              <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
+                :options="modalChartOptions" />
             </div>
           </div>
 
@@ -1939,85 +1820,106 @@
 
           <!-- Transaction Details Section -->
           <div v-if="generateRiskFlagData(selectedRiskFlag.category).transactions">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">💳 Transaction Analysis</h4>
+            <h4 class="text-lg font-medium text-gray-900 mb-4">💳 Transaction Details</h4>
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
-                    </th>
-                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
                     </th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Description</th>
-                    <th v-if="selectedRiskFlag.category.includes('Cash')"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Branch/Teller</th>
-                    <th v-if="selectedRiskFlag.category === 'MSB Transactions'"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Counterparty</th>
-                    <th v-if="selectedRiskFlag.category === 'Crypto Activities'"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Exchange/Crypto</th>
-                    <th v-if="selectedRiskFlag.category === 'HRJ Wire Transfers'"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Country/Bank</th>
-                    <th v-if="selectedRiskFlag.category === 'HRJ ATM Withdrawals'"
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Location
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
                     </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                   <tr v-for="transaction in generateRiskFlagData(selectedRiskFlag.category).transactions"
-                    :key="transaction.date" class="hover:bg-gray-50">
+                    :key="transaction.date + transaction.amount" class="hover:bg-gray-50">
                     <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
                     <td class="px-4 py-4 text-sm font-medium text-right"
                       :class="transaction.amount >= 10000 ? 'text-red-600' : 'text-gray-900'">
                       {{ formatCurrency(transaction.amount) }}
                     </td>
-                    <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.description || transaction.purpose ||
-                      'N/A' }}</td>
+                    <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.description }}</td>
+                    <td class="px-4 py-4 text-sm text-gray-500">
+                      <!-- UTR Filed Details -->
+                      <div v-if="selectedRiskFlag.category === 'UTR Filed (Volume)'">
+                        <div class="font-medium">{{ transaction.referenceNo }}</div>
+                        <div class="text-xs text-gray-400">Officer: {{ transaction.officer }}</div>
+                        <div class="text-xs"
+                          :class="transaction.status === 'Filed' ? 'text-green-600' : 'text-yellow-600'">{{
+                            transaction.status }}</div>
+                      </div>
 
-                    <!-- Cash Transactions -->
-                    <td v-if="selectedRiskFlag.category.includes('Cash')" class="px-4 py-4 text-sm text-gray-500">
-                      {{ transaction.branch }}
-                      <div class="text-xs text-gray-400">{{ transaction.teller || transaction.manager }}</div>
-                    </td>
+                      <!-- Cash Transaction Details -->
+                      <div v-else-if="selectedRiskFlag.category.includes('Cash')">
+                        <div class="font-medium">{{ transaction.branch }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.teller || transaction.manager }}</div>
+                        <div v-if="transaction.purpose" class="text-xs text-gray-500">{{ transaction.purpose }}</div>
+                      </div>
 
-                    <!-- MSB Transactions -->
-                    <td v-if="selectedRiskFlag.category === 'MSB Transactions'" class="px-4 py-4 text-sm text-gray-500">
-                      {{ transaction.counterparty }}
-                      <div class="text-xs text-gray-400">{{ transaction.country }} - {{ transaction.type }}</div>
-                    </td>
+                      <!-- Third Party Cheque Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Third Party Cheque Deposit'">
+                        <div class="font-medium">{{ transaction.drawer }}</div>
+                        <div class="text-xs text-gray-400">Bank: {{ transaction.bank }}</div>
+                        <div class="text-xs text-gray-500">Payee: {{ transaction.payee }}</div>
+                      </div>
 
-                    <!-- Crypto Activities -->
-                    <td v-if="selectedRiskFlag.category === 'Crypto Activities'"
-                      class="px-4 py-4 text-sm text-gray-500">
-                      {{ transaction.exchange }}
-                      <div class="text-xs text-gray-400">{{ transaction.crypto }} ({{ transaction.type }})</div>
-                    </td>
+                      <!-- Crypto Transaction Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Crypto Trx'">
+                        <div class="font-medium">{{ transaction.exchange }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.crypto }} ({{ transaction.type }})</div>
+                        <div class="text-xs text-gray-500">{{ transaction.wallet }}</div>
+                      </div>
 
-                    <!-- HRJ Wire Transfers -->
-                    <td v-if="selectedRiskFlag.category === 'HRJ Wire Transfers'"
-                      class="px-4 py-4 text-sm text-gray-500">
-                      {{ transaction.country }}
-                      <div class="text-xs text-gray-400">{{ transaction.bank }}</div>
-                      <div class="text-xs" :class="transaction.sanctions === 'Blocked' ? 'text-red-600' :
-                        transaction.sanctions === 'Flagged' ? 'text-yellow-600' : 'text-green-600'">
-                        Sanctions: {{ transaction.sanctions }}
+                      <!-- Luxury Goods Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Luxury Goods Trx'">
+                        <div class="font-medium">{{ transaction.merchant }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.category }}</div>
+                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                      </div>
+
+                      <!-- Casino Transaction Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Casino Trx'">
+                        <div class="font-medium">{{ transaction.casino }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.type }}</div>
+                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                      </div>
+
+                      <!-- HRJ Transaction Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'HRJ Trx (ATM/Wire/Debit)'">
+                        <div class="font-medium">{{ transaction.type }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.country }}{{ transaction.city ? ', ' +
+                          transaction.city : '' }}</div>
+                        <div v-if="transaction.bank" class="text-xs text-gray-500">{{ transaction.bank }}</div>
+                        <div v-if="transaction.terminal" class="text-xs text-gray-500">{{ transaction.terminal }}</div>
+                        <div v-if="transaction.status" class="text-xs text-red-600 font-medium">{{ transaction.status }}
+                        </div>
+                      </div>
+
+                      <!-- Cashier Cheque Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Cashier Cheque Purchase'">
+                        <div class="font-medium">{{ transaction.payee }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.purpose }}</div>
+                        <div class="text-xs text-gray-500">{{ transaction.branch }}</div>
+                      </div>
+
+                      <!-- Cannabis Transaction Details -->
+                      <div v-else-if="selectedRiskFlag.category === 'Cannabis-Related Trx'">
+                        <div class="font-medium">{{ transaction.merchant }}</div>
+                        <div class="text-xs text-gray-400">{{ transaction.category || transaction.license }}</div>
+                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                      </div>
+
+                      <!-- Default Details -->
+                      <div v-else>
+                        <div class="text-xs text-gray-500">{{ transaction.purpose || transaction.note || 'N/A' }}</div>
                       </div>
                     </td>
-
-                    <!-- HRJ ATM Withdrawals -->
-                    <td v-if="selectedRiskFlag.category === 'HRJ ATM Withdrawals'"
-                      class="px-4 py-4 text-sm text-gray-500">
-                      {{ transaction.city }}, {{ transaction.country }}
-                      <div class="text-xs text-gray-400">{{ transaction.terminal }} ({{ transaction.network }})
-                      </div>
-                      <div class="text-xs text-gray-400">{{ transaction.time }}</div>
-                    </td>
+                    <td class="px-4 py-4 text-sm text-gray-500">{{ transaction.time || 'N/A' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -4030,134 +3932,317 @@ const generateRiskFlagData = (flagCategory) => {
   const baseDate = new Date()
 
   switch (flagCategory) {
-    // Non-Transaction Flags
-    case 'UTR':
+    // UTR Filed - Volume and trend data
+    case 'UTR Filed (Volume)':
       return {
+        volumeData: {
+          totalCount: 12,
+          currentMonth: 3,
+          previousMonth: 2,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'UTR Filings',
+            data: [1, 0, 2, 1, 3, 2, 2, 3],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         flagDetails: [
-          { date: '2024-01-10', officer: 'Sarah Johnson', note: 'Client inquired about CTR reporting thresholds and structuring laws', status: 'Filed', referenceNo: 'UTR-2024-001' },
-          { date: '2024-01-25', officer: 'Mike Rodriguez', note: 'Structured deposits of $9,900 made consistently over 2-week period', status: 'Under Review', referenceNo: 'UTR-2024-002' },
-          { date: '2024-02-03', officer: 'Jennifer Chen', note: 'Multiple cash deposits just under reporting threshold detected', status: 'Escalated', referenceNo: 'UTR-2024-003' }
+          { date: '2024-02-15', officer: 'Sarah Johnson', note: 'Structured deposits pattern detected - multiple $9,900 transactions', status: 'Filed', referenceNo: 'UTR-2024-003', amount: '$29,700' },
+          { date: '2024-02-08', officer: 'Mike Rodriguez', note: 'Customer inquiries about CTR thresholds followed by structured activity', status: 'Filed', referenceNo: 'UTR-2024-002', amount: '$19,800' },
+          { date: '2024-01-25', officer: 'Jennifer Chen', note: 'Multiple cash deposits just under $10K threshold over 3 days', status: 'Filed', referenceNo: 'UTR-2024-001', amount: '$28,500' }
         ],
-        investigations: [
-          { id: 'INV-2024-UTR-001', description: 'Pattern analysis of structured transactions', priority: 'High', assignedTo: 'BSA Compliance Team' },
-          { id: 'INV-2024-UTR-002', description: 'Customer interview regarding cash sourcing', priority: 'Medium', assignedTo: 'Relationship Manager' }
-        ],
-        summary: 'Client has shown patterns consistent with potential structuring behavior requiring enhanced monitoring.'
+        summary: 'Client shows consistent pattern of structuring behavior with 12 UTR filings in past 8 months. Recent increase in frequency requires enhanced monitoring.'
       }
 
-    case 'MSB Industry':
+    // High Risk Industry - Industry details with flags
+    case 'High Risk Industry':
       return {
+        industryDetails: {
+          primaryIndustry: 'Money Services Business (MSB)',
+          naicsCode: '522320',
+          riskRating: 'High',
+          ctrExempt: false,
+          whiteFlag: {
+            status: 'Active',
+            reason: 'Licensed MSB with compliant AML program',
+            lastReview: '2024-01-15',
+            nextReview: '2024-07-15'
+          },
+          redFlag: {
+            status: 'Active',
+            reason: 'High-volume cash transactions with international remittances',
+            triggers: ['Volume exceeds $500K monthly', 'Multiple high-risk jurisdictions', 'Frequent structuring patterns'],
+            lastTriggered: '2024-02-10'
+          }
+        },
         flagDetails: [
-          { category: 'Business Classification', detail: 'Check Cashing - Money Services Business', riskLevel: 'High', lastReview: '2024-01-15' },
-          { category: 'License Status', detail: 'Active MSB license in California (License #CA-MSB-2024-001)', riskLevel: 'Compliant', lastReview: '2024-01-15' },
-          { category: 'Transaction Volume', detail: 'Monthly volume exceeds $500K in check cashing services', riskLevel: 'High', lastReview: '2024-02-01' }
+          { category: 'Business Classification', detail: 'Check Cashing & Money Transfer Services', riskLevel: 'High', status: 'Red Flag' },
+          { category: 'License Status', detail: 'Active MSB License CA-MSB-2024-001', riskLevel: 'Compliant', status: 'White Flag' },
+          { category: 'AML Program', detail: 'BSA compliance program implemented', riskLevel: 'Medium', status: 'White Flag' },
+          { category: 'Transaction Volume', detail: 'Monthly volume: $750K+ in remittances', riskLevel: 'High', status: 'Red Flag' },
+          { category: 'Geographic Risk', detail: 'Services to 15+ high-risk jurisdictions', riskLevel: 'High', status: 'Red Flag' },
+          { category: 'CTR Exemption', detail: 'Not eligible for CTR exemption', riskLevel: 'Standard', status: 'N/A' }
         ],
-        investigations: [
-          { id: 'MSB-REVIEW-2024-Q1', description: 'Quarterly MSB compliance review', priority: 'Standard', assignedTo: 'MSB Compliance Officer' },
-          { id: 'MSB-EDD-2024-001', description: 'Enhanced due diligence for high-volume MSB', priority: 'High', assignedTo: 'Senior Compliance Manager' }
-        ],
-        summary: 'Client operates as licensed MSB requiring enhanced monitoring per regulatory requirements.'
+        summary: 'Licensed MSB with compliant programs but high transaction volumes and geographic risk exposure requiring enhanced monitoring.'
       }
 
-    case 'Crypto Industry':
+    // High Cash Activities - Monthly volume with charts and transaction details
+    case 'High Cash Activities Deposit':
       return {
-        flagDetails: [
-          { category: 'Business Type', detail: 'Cryptocurrency Exchange Platform', riskLevel: 'High', lastReview: '2024-01-20' },
-          { category: 'Virtual Currency License', detail: 'BitLicense approved in New York (License #NY-BC-001)', riskLevel: 'Compliant', lastReview: '2024-01-20' },
-          { category: 'AML Program', detail: 'Crypto-specific AML program implemented', riskLevel: 'Medium', lastReview: '2024-02-01' }
-        ],
-        investigations: [
-          { id: 'CRYPTO-AML-2024-001', description: 'Review of cryptocurrency AML compliance', priority: 'High', assignedTo: 'Digital Assets Team' },
-          { id: 'CRYPTO-SAR-2024-001', description: 'Suspicious activity monitoring for crypto transactions', priority: 'Ongoing', assignedTo: 'BSA Analyst' }
-        ],
-        summary: 'High-risk cryptocurrency business requiring specialized monitoring and compliance oversight.'
-      }
-
-    // High Cash Activities
-    case 'High Cash Deposits':
-      return {
+        monthlyVolume: {
+          totalAmount: 2450000,
+          currentMonth: 385000,
+          previousMonth: 342000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Cash Deposits ($)',
+            data: [245000, 289000, 312000, 298000, 356000, 378000, 342000, 385000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-05', amount: 24500, description: 'Cash deposit - retail sales revenue', branch: 'Main St Branch', teller: 'Teller #3', cumulative: 24500 },
-          { date: '2024-01-12', amount: 29800, description: 'Large cash deposit - business operations', branch: 'Downtown Branch', teller: 'Teller #7', cumulative: 54300 },
-          { date: '2024-01-20', amount: 31200, description: 'Cash deposit exceeding daily threshold', branch: 'Main St Branch', teller: 'Teller #1', cumulative: 85500 }
+          { date: '2024-02-15', amount: 45000, description: 'Cash deposit - retail sales revenue', branch: 'Main St Branch', teller: 'Teller #3', time: '10:30 AM', cumulative: 45000 },
+          { date: '2024-02-14', amount: 38500, description: 'Large cash deposit - business operations', branch: 'Downtown Branch', teller: 'Teller #7', time: '2:15 PM', cumulative: 83500 },
+          { date: '2024-02-13', amount: 52000, description: 'Cash deposit exceeding daily threshold', branch: 'Main St Branch', teller: 'Teller #1', time: '11:45 AM', cumulative: 135500 },
+          { date: '2024-02-12', amount: 29800, description: 'Weekend cash collection deposit', branch: 'North Branch', teller: 'Teller #5', time: '9:20 AM', cumulative: 165300 },
+          { date: '2024-02-10', amount: 41200, description: 'Multi-location cash consolidation', branch: 'Main St Branch', teller: 'Teller #2', time: '3:30 PM', cumulative: 206500 }
         ],
-        investigations: [
-          { id: 'CASH-INV-2024-001', description: 'Source of funds verification for large cash deposits', priority: 'High', assignedTo: 'AML Investigator' },
-          { id: 'CASH-PROF-2024-001', description: 'Business profile review - cash-intensive operations', priority: 'Medium', assignedTo: 'Risk Assessment Team' }
-        ],
-        summary: 'Pattern of large cash deposits exceeding normal business profile requires investigation.'
+        summary: 'High-volume cash deposit activity with $2.45M total over 8 months. Recent monthly increase of 12.6% requires enhanced monitoring.'
       }
 
     case 'High Cash Withdrawals':
       return {
+        monthlyVolume: {
+          totalAmount: 1850000,
+          currentMonth: 285000,
+          previousMonth: 245000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Cash Withdrawals ($)',
+            data: [185000, 210000, 225000, 198000, 235000, 258000, 245000, 285000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-08', amount: 18500, description: 'Cash withdrawal for payroll', purpose: 'Employee wages', branch: 'Main St Branch', manager: 'Branch Manager' },
-          { date: '2024-01-15', amount: 22000, description: 'Large cash withdrawal - business expenses', purpose: 'Vendor payments', branch: 'Downtown Branch', manager: 'Asst. Manager' },
-          { date: '2024-01-22', amount: 25500, description: 'Cash withdrawal exceeding normal patterns', purpose: 'Operational costs', branch: 'Main St Branch', manager: 'Branch Manager' }
+          { date: '2024-02-15', amount: 35000, description: 'Cash withdrawal for payroll', purpose: 'Employee wages', branch: 'Main St Branch', manager: 'Branch Manager', time: '9:00 AM' },
+          { date: '2024-02-12', amount: 28500, description: 'Large cash withdrawal - vendor payments', purpose: 'Supplier payments', branch: 'Downtown Branch', manager: 'Asst. Manager', time: '1:30 PM' },
+          { date: '2024-02-10', amount: 42000, description: 'Cash withdrawal exceeding normal patterns', purpose: 'Operational costs', branch: 'Main St Branch', manager: 'Branch Manager', time: '11:15 AM' },
+          { date: '2024-02-08', amount: 31200, description: 'Weekly cash needs withdrawal', purpose: 'Business operations', branch: 'North Branch', manager: 'Branch Manager', time: '2:45 PM' },
+          { date: '2024-02-05', amount: 25800, description: 'Cash for contractor payments', purpose: 'Service payments', branch: 'Main St Branch', manager: 'Asst. Manager', time: '10:20 AM' }
         ],
-        investigations: [
-          { id: 'CASH-OUT-2024-001', description: 'Verification of cash usage for business operations', priority: 'Medium', assignedTo: 'Compliance Officer' },
-          { id: 'CASH-PAT-2024-001', description: 'Analysis of cash withdrawal patterns', priority: 'Low', assignedTo: 'Risk Analyst' }
-        ],
-        summary: 'Cash withdrawal amounts require verification of business necessity and usage patterns.'
+        summary: 'High-volume cash withdrawal activity with $1.85M total over 8 months. Recent monthly increase of 16.3% requires verification of business necessity.'
       }
 
-    // High Risk Transactions
-    case 'MSB Transactions':
+    // High Risk Transactions - All with monthly volume and transaction details
+    case 'Third Party Cheque Deposit':
       return {
+        monthlyVolume: {
+          totalAmount: 3250000,
+          currentMonth: 485000,
+          previousMonth: 425000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Third Party Cheque Deposits ($)',
+            data: [325000, 385000, 410000, 395000, 445000, 465000, 425000, 485000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-10', amount: 15000, counterparty: 'Western Union Financial', type: 'Money Transfer', country: 'Mexico', purpose: 'Remittance Services' },
-          { date: '2024-01-18', amount: 23500, counterparty: 'MoneyGram International', type: 'Bulk Transfer', country: 'Philippines', purpose: 'Agent Settlement' },
-          { date: '2024-01-25', amount: 18700, counterparty: 'Ria Money Transfer', type: 'Cross-border Payment', country: 'India', purpose: 'Customer Remittance' }
+          { date: '2024-02-15', amount: 85000, description: 'Third party business cheque', drawer: 'ABC Construction Ltd', payee: 'Client Corp', bank: 'Chase Bank', time: '10:15 AM' },
+          { date: '2024-02-12', amount: 65000, description: 'Vendor payment cheque deposit', drawer: 'XYZ Suppliers Inc', payee: 'Client Corp', bank: 'Wells Fargo', time: '2:30 PM' },
+          { date: '2024-02-10', amount: 95000, description: 'Large third party cheque', drawer: 'DEF Holdings LLC', payee: 'Client Corp', bank: 'Bank of America', time: '11:45 AM' },
+          { date: '2024-02-08', amount: 72000, description: 'Contract payment cheque', drawer: 'GHI Services Corp', payee: 'Client Corp', bank: 'Citibank', time: '9:20 AM' },
+          { date: '2024-02-05', amount: 58000, description: 'Third party settlement cheque', drawer: 'JKL Trading Co', payee: 'Client Corp', bank: 'US Bank', time: '3:15 PM' }
         ],
-        investigations: [
-          { id: 'MSB-TXN-2024-001', description: 'Review of MSB counterparty relationships', priority: 'High', assignedTo: 'MSB Specialist' },
-          { id: 'MSB-VOL-2024-001', description: 'Transaction volume analysis with MSB entities', priority: 'Medium', assignedTo: 'Transaction Monitoring' }
-        ],
-        summary: 'High-frequency transactions with MSB entities require enhanced monitoring.'
+        summary: 'High-volume third party cheque deposits with $3.25M total over 8 months. Recent monthly increase of 14.1% requires enhanced verification.'
       }
 
-    case 'Crypto Activities':
+    case 'Crypto Trx':
       return {
+        monthlyVolume: {
+          totalAmount: 1850000,
+          currentMonth: 285000,
+          previousMonth: 245000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Crypto Transactions ($)',
+            data: [185000, 210000, 225000, 198000, 235000, 258000, 245000, 285000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-12', amount: 45000, exchange: 'Coinbase Pro', crypto: 'Bitcoin', type: 'Purchase', wallet: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa' },
-          { date: '2024-01-20', amount: 32500, exchange: 'Binance US', crypto: 'Ethereum', type: 'Sale', wallet: '0x742d35Cc6635C0532925a3b8D50d1f8A' },
-          { date: '2024-02-01', amount: 28000, exchange: 'Kraken', crypto: 'Litecoin', type: 'Exchange', wallet: 'LTC1qw508d6qejxtdg4y5r3zarvary0c5xw7k' }
+          { date: '2024-02-15', amount: 65000, description: 'Bitcoin purchase via Coinbase Pro', exchange: 'Coinbase Pro', crypto: 'Bitcoin', type: 'Purchase', wallet: '1A1zP1eP...DivfNa', time: '10:30 AM' },
+          { date: '2024-02-12', amount: 48500, description: 'Ethereum sale on Binance US', exchange: 'Binance US', crypto: 'Ethereum', type: 'Sale', wallet: '0x742d35...50d1f8A', time: '2:15 PM' },
+          { date: '2024-02-10', amount: 72000, description: 'Large crypto exchange transaction', exchange: 'Kraken', crypto: 'Bitcoin', type: 'Exchange', wallet: '1BvBMSE...c5xw7k', time: '11:45 AM' },
+          { date: '2024-02-08', amount: 35000, description: 'Litecoin purchase', exchange: 'Gemini', crypto: 'Litecoin', type: 'Purchase', wallet: 'LTC1qw5...ary0c5', time: '9:20 AM' },
+          { date: '2024-02-05', amount: 41200, description: 'Multi-crypto portfolio rebalancing', exchange: 'Coinbase Pro', crypto: 'Mixed', type: 'Exchange', wallet: 'Multiple', time: '3:30 PM' }
         ],
-        investigations: [
-          { id: 'CRYPTO-MON-2024-001', description: 'Cryptocurrency transaction monitoring', priority: 'High', assignedTo: 'Digital Assets Unit' },
-          { id: 'CRYPTO-SOURCE-2024-001', description: 'Source of funds for crypto investments', priority: 'Medium', assignedTo: 'AML Analyst' }
-        ],
-        summary: 'Large cryptocurrency transactions require enhanced due diligence and source verification.'
+        summary: 'High-volume cryptocurrency transactions with $1.85M total over 8 months. Recent monthly increase of 16.3% requires enhanced due diligence.'
       }
 
-    case 'HRJ Wire Transfers':
+    case 'Luxury Goods Trx':
       return {
+        monthlyVolume: {
+          totalAmount: 1250000,
+          currentMonth: 185000,
+          previousMonth: 165000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Luxury Goods Transactions ($)',
+            data: [125000, 145000, 155000, 138000, 165000, 175000, 165000, 185000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-15', amount: 35000, country: 'Iran', bank: 'Bank Melli Iran', beneficiary: 'Tehran Trading Co', purpose: 'Equipment Purchase', sanctions: 'Reviewed' },
-          { date: '2024-01-22', amount: 28500, country: 'Syria', bank: 'Commercial Bank of Syria', beneficiary: 'Damascus Import LLC', purpose: 'Goods Import', sanctions: 'Flagged' },
-          { date: '2024-01-30', amount: 42000, country: 'North Korea', bank: 'Foreign Trade Bank', beneficiary: 'Pyongyang Industries', purpose: 'Raw Materials', sanctions: 'Blocked' }
+          { date: '2024-02-15', amount: 45000, description: 'Luxury watch purchase', merchant: 'Rolex Boutique', category: 'Jewelry & Watches', location: 'Beverly Hills, CA', time: '2:30 PM' },
+          { date: '2024-02-12', amount: 35000, description: 'High-end jewelry transaction', merchant: 'Tiffany & Co', category: 'Jewelry & Watches', location: 'New York, NY', time: '11:15 AM' },
+          { date: '2024-02-10', amount: 28500, description: 'Designer handbag purchase', merchant: 'Louis Vuitton', category: 'Fashion & Accessories', location: 'Las Vegas, NV', time: '4:45 PM' },
+          { date: '2024-02-08', amount: 52000, description: 'Luxury car down payment', merchant: 'Ferrari Dealership', category: 'Automotive', location: 'Miami, FL', time: '10:20 AM' },
+          { date: '2024-02-05', amount: 18500, description: 'Fine art purchase', merchant: 'Sotheby\'s Auction', category: 'Art & Collectibles', location: 'Los Angeles, CA', time: '6:30 PM' }
         ],
-        investigations: [
-          { id: 'HRJ-WIRE-2024-001', description: 'High-risk jurisdiction wire transfer review', priority: 'Critical', assignedTo: 'Sanctions Compliance' },
-          { id: 'HRJ-SANC-2024-001', description: 'Enhanced sanctions screening', priority: 'High', assignedTo: 'OFAC Specialist' }
-        ],
-        summary: 'Wire transfers to high-risk jurisdictions require immediate sanctions review and compliance clearance.'
+        summary: 'High-value luxury goods transactions with $1.25M total over 8 months. Recent monthly increase of 12.1% requires source of funds verification.'
       }
 
-    // International Activities  
-    case 'HRJ ATM Withdrawals':
+    case 'Casino Trx':
       return {
+        monthlyVolume: {
+          totalAmount: 950000,
+          currentMonth: 145000,
+          previousMonth: 125000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Casino Transactions ($)',
+            data: [95000, 105000, 115000, 108000, 125000, 135000, 125000, 145000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
         transactions: [
-          { date: '2024-01-18', amount: 500, country: 'Afghanistan', city: 'Kabul', terminal: 'ATM-KAB-001', network: 'VISA', time: '14:32 UTC' },
-          { date: '2024-01-25', amount: 800, country: 'Syria', city: 'Damascus', terminal: 'ATM-DAM-003', network: 'MasterCard', time: '09:15 UTC' },
-          { date: '2024-02-02', amount: 300, country: 'Iran', city: 'Tehran', terminal: 'ATM-TEH-007', network: 'VISA', time: '16:45 UTC' }
+          { date: '2024-02-15', amount: 25000, description: 'Casino chip purchase', casino: 'Bellagio Las Vegas', type: 'Chip Purchase', location: 'Las Vegas, NV', time: '9:30 PM' },
+          { date: '2024-02-12', amount: 18500, description: 'Gaming transaction', casino: 'Mohegan Sun', type: 'Gaming Credit', location: 'Connecticut', time: '7:45 PM' },
+          { date: '2024-02-10', amount: 32000, description: 'Large casino transaction', casino: 'Borgata Hotel Casino', type: 'Chip Purchase', location: 'Atlantic City, NJ', time: '10:15 PM' },
+          { date: '2024-02-08', amount: 15000, description: 'Casino credit line draw', casino: 'Wynn Las Vegas', type: 'Credit Draw', location: 'Las Vegas, NV', time: '11:30 PM' },
+          { date: '2024-02-05', amount: 22500, description: 'High-stakes gaming', casino: 'Foxwoods Resort', type: 'Gaming Transaction', location: 'Connecticut', time: '8:20 PM' }
         ],
-        investigations: [
-          { id: 'HRJ-ATM-2024-001', description: 'ATM usage in high-risk jurisdictions', priority: 'High', assignedTo: 'International Risk Team' },
-          { id: 'HRJ-TRAVEL-2024-001', description: 'Travel pattern analysis', priority: 'Medium', assignedTo: 'Geographic Risk Analyst' }
+        summary: 'High-volume casino transactions with $950K total over 8 months. Recent monthly increase of 16.0% requires enhanced monitoring for potential money laundering.'
+      }
+
+    case 'HRJ Trx (ATM/Wire/Debit)':
+      return {
+        monthlyVolume: {
+          totalAmount: 750000,
+          currentMonth: 115000,
+          previousMonth: 95000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly HRJ Transactions ($)',
+            data: [75000, 85000, 92000, 88000, 98000, 105000, 95000, 115000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
+        transactions: [
+          { date: '2024-02-15', amount: 25000, description: 'Wire transfer to Iran', type: 'Wire Transfer', country: 'Iran', bank: 'Bank Melli Iran', purpose: 'Equipment Purchase', time: '10:30 AM' },
+          { date: '2024-02-12', amount: 1500, description: 'ATM withdrawal in Syria', type: 'ATM Withdrawal', country: 'Syria', city: 'Damascus', terminal: 'ATM-DAM-003', time: '2:15 PM' },
+          { date: '2024-02-10', amount: 18500, description: 'Debit card transaction in Afghanistan', type: 'Debit Transaction', country: 'Afghanistan', merchant: 'Local Supplier', city: 'Kabul', time: '11:45 AM' },
+          { date: '2024-02-08', amount: 32000, description: 'Wire to North Korea (BLOCKED)', type: 'Wire Transfer', country: 'North Korea', bank: 'Foreign Trade Bank', status: 'BLOCKED', time: '9:20 AM' },
+          { date: '2024-02-05', amount: 800, description: 'ATM cash withdrawal', type: 'ATM Withdrawal', country: 'Iran', city: 'Tehran', terminal: 'ATM-TEH-007', time: '3:30 PM' }
         ],
-        summary: 'ATM withdrawals in high-risk jurisdictions require enhanced monitoring and travel verification.'
+        summary: 'High-risk jurisdiction transactions with $750K total over 8 months. Recent monthly increase of 21.1% requires immediate sanctions screening.'
+      }
+
+    case 'Cashier Cheque Purchase':
+      return {
+        monthlyVolume: {
+          totalAmount: 1450000,
+          currentMonth: 225000,
+          previousMonth: 195000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Cashier Cheque Purchases ($)',
+            data: [145000, 165000, 175000, 168000, 185000, 205000, 195000, 225000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
+        transactions: [
+          { date: '2024-02-15', amount: 45000, description: 'Cashier cheque for real estate', payee: 'ABC Real Estate LLC', purpose: 'Property Purchase', branch: 'Main St Branch', time: '10:30 AM' },
+          { date: '2024-02-12', amount: 35000, description: 'Large cashier cheque purchase', payee: 'XYZ Construction Co', purpose: 'Contract Payment', branch: 'Downtown Branch', time: '2:15 PM' },
+          { date: '2024-02-10', amount: 58000, description: 'Cashier cheque for vehicle', payee: 'Luxury Auto Dealers', purpose: 'Car Purchase', branch: 'North Branch', time: '11:45 AM' },
+          { date: '2024-02-08', amount: 28500, description: 'Business payment cheque', payee: 'DEF Services Inc', purpose: 'Service Payment', branch: 'Main St Branch', time: '9:20 AM' },
+          { date: '2024-02-05', amount: 42000, description: 'Investment cashier cheque', payee: 'GHI Investment Fund', purpose: 'Investment Purchase', branch: 'Downtown Branch', time: '3:30 PM' }
+        ],
+        summary: 'High-volume cashier cheque purchases with $1.45M total over 8 months. Recent monthly increase of 15.4% requires enhanced verification of payees and purposes.'
+      }
+
+    case 'Cannabis-Related Trx':
+      return {
+        monthlyVolume: {
+          totalAmount: 850000,
+          currentMonth: 125000,
+          previousMonth: 105000,
+          trend: 'increasing'
+        },
+        chartData: {
+          labels: ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024'],
+          datasets: [{
+            label: 'Monthly Cannabis-Related Transactions ($)',
+            data: [85000, 95000, 105000, 98000, 115000, 125000, 105000, 125000],
+            borderColor: 'rgb(239, 68, 68)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
+        transactions: [
+          { date: '2024-02-15', amount: 25000, description: 'Cannabis dispensary payment', merchant: 'Green Valley Dispensary', license: 'CA-DISP-2024-001', location: 'Los Angeles, CA', time: '10:30 AM' },
+          { date: '2024-02-12', amount: 18500, description: 'Cannabis cultivation supplies', merchant: 'Hydro Supply Co', category: 'Cultivation Equipment', location: 'Denver, CO', time: '2:15 PM' },
+          { date: '2024-02-10', amount: 32000, description: 'Cannabis processing equipment', merchant: 'Extract Tech Solutions', category: 'Processing Equipment', location: 'Portland, OR', time: '11:45 AM' },
+          { date: '2024-02-08', amount: 15000, description: 'Cannabis testing services', merchant: 'Lab Analytics Inc', category: 'Testing & Compliance', location: 'Seattle, WA', time: '9:20 AM' },
+          { date: '2024-02-05', amount: 22500, description: 'Cannabis retail transaction', merchant: 'Wellness Cannabis Co', license: 'WA-RET-2024-003', location: 'Seattle, WA', time: '3:30 PM' }
+        ],
+        summary: 'Cannabis-related business transactions with $850K total over 8 months. Recent monthly increase of 19.0% requires compliance with state regulations and enhanced monitoring.'
       }
 
     default:
