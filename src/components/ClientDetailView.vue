@@ -171,25 +171,7 @@
             </div>
           </div>
 
-          <!-- Industry Risk Flags -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-3 border-b border-gray-200">
-              <h3 class="text-base font-medium text-gray-900">🚨 Industry Risk Flags</h3>
-              <p class="text-xs text-gray-500 mt-1">High-risk business classifications</p>
-            </div>
-            <div class="p-3">
-              <div class="space-y-2">
-                <div v-for="industry in riskIndustries" :key="industry.name"
-                  class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
-                  <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 rounded-full" :class="industry.confirmed ? 'bg-red-500' : 'bg-gray-400'">
-                    </div>
-                    <span class="text-xs text-gray-700">{{ industry.name }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
         </div>
 
@@ -941,11 +923,7 @@
                   <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
                     investigation details</p>
                 </div>
-                <div class="flex space-x-2">
-                  <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">High Risk</span>
-                  <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Medium Risk</span>
-                  <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Low Risk</span>
-                </div>
+
               </div>
             </div>
             <div class="p-4">
@@ -962,7 +940,7 @@
                     <div class="space-y-2">
                       <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
                         @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
-                        <span class="text-sm text-gray-700">UTR Filed (Volume)</span>
+                        <span class="text-sm text-gray-700">UTR Filed</span>
                         <div class="w-4 h-4 rounded-full bg-red-500"></div>
                       </div>
                       <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
@@ -1049,6 +1027,22 @@
                   <div class="flex items-center space-x-2">
                     <div class="w-4 h-4 rounded-full bg-gray-400"></div>
                     <span class="text-gray-700">No Data / Not Confirmed</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Industry Risk Flags -->
+              <div class="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Industry Risk Flags</h4>
+                <p class="text-xs text-gray-500 mb-4">High-risk business classifications</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div v-for="industry in riskIndustries" :key="industry.name"
+                    class="flex items-center justify-between p-2 bg-white rounded-lg hover:bg-gray-50 border">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-3 h-3 rounded-full" :class="industry.confirmed ? 'bg-red-500' : 'bg-gray-400'">
+                      </div>
+                      <span class="text-xs text-gray-700">{{ industry.name }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1846,7 +1840,7 @@
                     <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.description }}</td>
                     <td class="px-4 py-4 text-sm text-gray-500">
                       <!-- UTR Filed Details -->
-                      <div v-if="selectedRiskFlag.category === 'UTR Filed (Volume)'">
+                      <div v-if="selectedRiskFlag.category === 'UTR Filed'">
                         <div class="font-medium">{{ transaction.referenceNo }}</div>
                         <div class="text-xs text-gray-400">Officer: {{ transaction.officer }}</div>
                         <div class="text-xs"
@@ -3933,7 +3927,7 @@ const generateRiskFlagData = (flagCategory) => {
 
   switch (flagCategory) {
     // UTR Filed - Volume and trend data
-    case 'UTR Filed (Volume)':
+    case 'UTR Filed':
       return {
         volumeData: {
           totalCount: 12,
@@ -3952,11 +3946,13 @@ const generateRiskFlagData = (flagCategory) => {
           }]
         },
         flagDetails: [
-          { date: '2024-02-15', officer: 'Sarah Johnson', note: 'Structured deposits pattern detected - multiple $9,900 transactions', status: 'Filed', referenceNo: 'UTR-2024-003', amount: '$29,700' },
-          { date: '2024-02-08', officer: 'Mike Rodriguez', note: 'Customer inquiries about CTR thresholds followed by structured activity', status: 'Filed', referenceNo: 'UTR-2024-002', amount: '$19,800' },
-          { date: '2024-01-25', officer: 'Jennifer Chen', note: 'Multiple cash deposits just under $10K threshold over 3 days', status: 'Filed', referenceNo: 'UTR-2024-001', amount: '$28,500' }
+          { date: '2024-02-15', officer: 'Sarah Johnson', note: 'Client made structured deposits of $9,900 each over consecutive days, inquired about CTR reporting thresholds, and showed knowledge of $10K reporting requirements', status: 'Filed', referenceNo: 'UTR-2024-003', amount: '$29,700' },
+          { date: '2024-02-08', officer: 'Mike Rodriguez', note: 'Customer asked detailed questions about CTR threshold amounts, then backed off from purchasing bank note when told about detailed inquiries for usage documentation', status: 'Filed', referenceNo: 'UTR-2024-002', amount: '$19,800' },
+          { date: '2024-01-25', officer: 'Jennifer Chen', note: 'Client made multiple cash deposits of $9,950, $9,875, and $9,925 over 3 consecutive days, avoiding $10K CTR threshold. When questioned about source, client became evasive', status: 'Filed', referenceNo: 'UTR-2024-001', amount: '$28,500' },
+          { date: '2024-01-18', officer: 'David Kim', note: 'Customer inquired about structuring laws and CTR exemptions, then made series of $9,800 deposits. Showed unusual knowledge of banking regulations for stated business type', status: 'Filed', referenceNo: 'UTR-2024-004', amount: '$39,200' },
+          { date: '2024-01-10', officer: 'Lisa Wang', note: 'Client attempted to purchase $15K cashier check, when informed of CTR requirements, reduced amount to $9,500 and paid in cash. Returned next day for another $9,500 check', status: 'Filed', referenceNo: 'UTR-2024-005', amount: '$19,000' }
         ],
-        summary: 'Client shows consistent pattern of structuring behavior with 12 UTR filings in past 8 months. Recent increase in frequency requires enhanced monitoring.'
+        summary: 'Client shows consistent pattern of structuring behavior with 12 UTR filings in past 8 months. Demonstrates knowledge of CTR thresholds and actively avoids reporting requirements. Recent increase in frequency requires enhanced monitoring.'
       }
 
     // High Risk Industry - Industry details with flags
