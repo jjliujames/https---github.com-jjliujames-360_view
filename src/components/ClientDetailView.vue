@@ -923,14 +923,45 @@
                   <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
                     investigation details</p>
                 </div>
-
               </div>
             </div>
             <div class="p-4">
+              <!-- Summary Section -->
+              <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-red-50 rounded-lg p-3 border border-red-200">
+                  <div class="text-center">
+                    <div class="text-xl font-bold text-red-600">{{ totalRiskFlags }}</div>
+                    <div class="text-xs text-gray-600">Total Risk Flags</div>
+                    <div class="text-xs text-red-500 font-medium">Active Monitoring</div>
+                  </div>
+                </div>
+                <div class="bg-orange-50 rounded-lg p-3 border border-orange-200">
+                  <div class="text-center">
+                    <div class="text-xl font-bold text-orange-600">{{ highRiskFlags }}</div>
+                    <div class="text-xs text-gray-600">High Risk Flags</div>
+                    <div class="text-xs text-orange-500 font-medium">Immediate Action</div>
+                  </div>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+                  <div class="text-center">
+                    <div class="text-xl font-bold text-yellow-600">{{ mediumRiskFlags }}</div>
+                    <div class="text-xs text-gray-600">Medium Risk Flags</div>
+                    <div class="text-xs text-yellow-500 font-medium">Enhanced Review</div>
+                  </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                  <div class="text-center">
+                    <div class="text-xl font-bold text-blue-600">{{ reportedFlags }}</div>
+                    <div class="text-xs text-gray-600">Reported Flags</div>
+                    <div class="text-xs text-blue-500 font-medium">Filed with Authorities</div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Risk Flag Breakdown -->
               <div class="mb-6">
                 <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                   <!-- Reported -->
                   <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
@@ -951,70 +982,74 @@
                     </div>
                   </div>
 
-                  <!-- High Cash -->
-                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                    <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
-                      💰 High Cash
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-yellow-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Cash Activities Deposit', type: 'high-cash', riskLevel: 'high', hasData: true })">
-                        <span class="text-sm text-gray-700">High Cash Activities Deposit</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                      </div>
-                    </div>
-                  </div>
-
                   <!-- High Risk Trx -->
                   <div class="bg-red-50 rounded-lg p-4 border border-red-200">
                     <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
                       🚨 High Risk Trx
                     </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Third Party Cheque Deposit', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                        <span class="text-sm text-gray-700">Third Party Cheque Deposit</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                    <div class="grid grid-cols-1 gap-2">
+                      <!-- Row 1 -->
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'High Cash Activities Deposit', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                          <span class="text-xs text-gray-700">High Cash Activities Deposit</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Third Party Cheque Deposit', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                          <span class="text-xs text-gray-700">Third Party Cheque Deposit</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
                       </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
-                        <span class="text-sm text-gray-700">Crypto Trx</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      <!-- Row 2 -->
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                          <span class="text-xs text-gray-700">Crypto Trx</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                          <span class="text-xs text-gray-700">Luxury Goods Trx</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
                       </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                        <span class="text-sm text-gray-700">Luxury Goods Trx</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                      <!-- Row 3 -->
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Casino Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                          <span class="text-xs text-gray-700">Casino Trx</span>
+                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                          <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
                       </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Casino Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
-                        <span class="text-sm text-gray-700">Casino Trx</span>
-                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                      <!-- Row 4 -->
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Cashier Cheque Purchase', type: 'high-risk-trx', riskLevel: 'medium', hasData: false })">
+                          <span class="text-xs text-gray-700">Cashier Cheque Purchase</span>
+                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                          <span class="text-xs text-gray-700">High Cash Withdrawals</span>
+                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        </div>
                       </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
-                        <span class="text-sm text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Cashier Cheque Purchase', type: 'high-risk-trx', riskLevel: 'medium', hasData: false })">
-                        <span class="text-sm text-gray-700">Cashier Cheque Purchase</span>
-                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                        <span class="text-sm text-gray-700">High Cash Withdrawals</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
-                        <span class="text-sm text-gray-700">Cannabis-Related Trx</span>
-                        <div class="w-4 h-4 rounded-full bg-gray-400"></div>
+                      <!-- Row 5 -->
+                      <div class="grid grid-cols-1 gap-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                          <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
+                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-
 
                 </div>
 
@@ -1160,12 +1195,12 @@
                             :style="{ left: utrEvent.position + '%', top: '-2px' }" @click="viewUTRDetails(utrEvent)">
                             <!-- Tooltip -->
                             <div
-                              class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-lg">
+                              class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 shadow-lg w-96">
                               <div class="font-semibold">{{ utrEvent.date }}</div>
                               <div class="text-gray-300">{{ utrEvent.description }}</div>
                               <div class="text-yellow-300">Amount: {{ formatCurrency(utrEvent.amount) }}</div>
                               <div class="text-blue-300">Officer: {{ utrEvent.officer }}</div>
-                              <div class="mt-1 text-gray-400 max-w-xs">{{ utrEvent.notes }}</div>
+                              <div class="mt-1 text-gray-400 whitespace-normal">{{ utrEvent.notes }}</div>
                               <!-- Tooltip arrow -->
                               <div
                                 class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
@@ -2335,6 +2370,23 @@ const avgRiskPercentile = computed(() => {
   return Math.floor(Math.random() * 25) + 70 // 70-94th percentile
 })
 
+// Risk Flag Distribution Summary
+const totalRiskFlags = computed(() => {
+  return Math.floor(Math.random() * 15) + 18 // 18-32 total flags
+})
+
+const highRiskFlags = computed(() => {
+  return Math.floor(Math.random() * 8) + 6 // 6-13 high risk flags
+})
+
+const mediumRiskFlags = computed(() => {
+  return Math.floor(Math.random() * 6) + 4 // 4-9 medium risk flags
+})
+
+const reportedFlags = computed(() => {
+  return Math.floor(Math.random() * 4) + 3 // 3-6 reported flags
+})
+
 const selectedTypesTotalAmount = computed(() => {
   // Calculate total amount for selected transaction types
   return Math.floor(totalRiskTransactionAmount.value * (selectedRiskTxnTypes.value.length / riskTransactionTypes.length))
@@ -2569,7 +2621,6 @@ const complianceActionsData = computed(() => {
 
 const totalHighRiskTransactions = computed(() => 132)
 const riskTrend = computed(() => 15.3)
-const totalRiskFlags = computed(() => 22)
 const activeInvestigations = computed(() => 8)
 const currentRiskScore = computed(() => 74)
 const riskScoreChange = computed(() => 3)
