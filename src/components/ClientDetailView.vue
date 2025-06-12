@@ -36,12 +36,7 @@
           <!-- Client Profile -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-4">
-              <div class="flex items-center space-x-3 mb-4">
-                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span class="text-sm font-medium text-gray-700">
-                    {{clientData?.name?.split(' ').map(n => n[0]).join('') || 'N/A'}}
-                  </span>
-                </div>
+              <div class="mb-4">
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">{{ clientData?.name || 'N/A' }}</h2>
                   <p class="text-xs text-gray-500 mt-1">TIN: 12-3456789</p>
@@ -662,16 +657,7 @@
                     </div>
                   </div>
 
-                  <!-- AI Factors Summary -->
-                  <div v-if="aiRecommendations.length > 0" class="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <h6 class="text-xs font-medium text-gray-700 mb-2">AI Analysis Factors:</h6>
-                    <div class="flex flex-wrap gap-2">
-                      <span v-for="factor in [...new Set(aiRecommendations.flatMap(r => r.aiFactors))]" :key="factor"
-                        class="text-xs px-2 py-1 bg-white text-gray-600 rounded border">
-                        {{ factor }}
-                      </span>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -867,7 +853,7 @@
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900">💸 Transaction Volume Analysis</h3>
+                  <h3 class="text-lg font-medium text-gray-900">💸 Transaction Volume</h3>
                   <p class="text-sm text-gray-500 mt-1">Monthly transaction flows by category (inflows positive,
                     outflows negative)</p>
                 </div>
@@ -931,7 +917,6 @@
                   <div class="text-center">
                     <div class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</div>
                     <div class="text-sm text-gray-600">Total Risk Flags</div>
-                    <div class="text-xs text-red-500 font-medium">Active Monitoring</div>
                   </div>
                 </div>
               </div>
@@ -967,7 +952,7 @@
                   <!-- High Risk Trx -->
                   <div class="bg-red-50 rounded-lg p-4 border border-red-200">
                     <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
-                      🚨 High Risk Trx
+                      🚨 High Risk Transactions
                     </h5>
                     <div class="grid grid-cols-1 gap-2">
                       <!-- Row 1 -->
@@ -1072,7 +1057,7 @@
                 <div class="bg-red-50 rounded-lg p-4 border border-red-200">
                   <div class="text-center">
                     <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}</div>
-                    <div class="text-sm text-gray-600">Total Risk Transaction Amount</div>
+                    <div class="text-sm text-gray-600">High Risk Transaction Amount</div>
                     <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
                       getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
                   </div>
@@ -1080,7 +1065,7 @@
                 <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
                   <div class="text-center">
                     <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
-                    <div class="text-sm text-gray-600">Total Risk Transactions</div>
+                    <div class="text-sm text-gray-600">High Risk Transactions</div>
                     <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
                       getOrdinalSuffix(riskCountPercentile) }} percentile</div>
                   </div>
@@ -1115,7 +1100,7 @@
                 <!-- Stacked Bar Chart - Risk Transactions -->
                 <div class="bg-gray-50 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-md font-medium text-gray-900">🚨 Risk Transactions by Type (Monthly)</h4>
+                    <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
                     <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
                       →</button>
                   </div>
@@ -1131,7 +1116,7 @@
                 <!-- UTR Filed Scatter Chart -->
                 <div class="bg-gray-50 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-md font-medium text-gray-900">📋 UTR Filed Events</h4>
+                    <h4 class="text-md font-medium text-gray-900">📋 Store UTR Filed</h4>
                     <span class="text-xs text-gray-500">{{ totalUTRFiled }} events in selected period</span>
                   </div>
                   <div class="h-20" ref="utrScatterChart">
@@ -1162,7 +1147,7 @@
                   </div>
                   <div class="mt-3 flex justify-between text-xs text-gray-600">
                     <span>Click dots for UTR details</span>
-                    <span>{{ getUTRTrend() }} trend vs previous period</span>
+                    <span> </span>
                   </div>
                 </div>
               </div>
@@ -2321,7 +2306,7 @@ const avgRiskPercentile = computed(() => {
 
 // Risk Flag Distribution Summary
 const totalRiskFlags = computed(() => {
-  return Math.floor(Math.random() * 15) + 18 // 18-32 total flags
+  return 8 // 18-32 total flags
 })
 
 const highRiskFlags = computed(() => {
