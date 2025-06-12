@@ -1509,104 +1509,7 @@
         </div>
 
 
-        <!-- Rankings & Performance and Key Insights Combined -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          <!-- Rankings & Performance (if enhanced data is available) -->
-          <div v-if="clientData?.rankings" class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">📊 Client Rankings & Performance</h3>
-              <p class="text-sm text-gray-500 mt-1">Comparative performance metrics across portfolio</p>
-            </div>
-            <div class="p-6">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div v-for="(ranking, key) in clientData.rankings" :key="key"
-                  class="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100 hover:shadow-md transition-shadow">
-                  <div class="flex items-center justify-center mb-2">
-                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span class="text-white text-sm font-bold">#</span>
-                    </div>
-                  </div>
-                  <p class="text-sm font-medium text-gray-700 capitalize mb-1">{{ key.replace(/([A-Z])/g, ' $1').trim()
-                  }} Rank</p>
-                  <p class="text-2xl font-bold text-blue-900 mb-1">#{{ ranking.rank }}</p>
-                  <p class="text-sm text-blue-600 font-medium">{{ ranking.percentile }}th percentile</p>
-                  <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                      :style="`width: ${ranking.percentile}%`"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Performance Summary -->
-              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h4 class="text-md font-medium text-gray-900 mb-3">📈 Performance Summary</h4>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Overall Ranking:</span>
-                    <span class="font-medium text-blue-600">Top {{ topPercentile }}%</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Best Category:</span>
-                    <span class="font-medium text-green-600">{{ bestCategory }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Key Insights (if enhanced data is available) -->
-          <div v-if="clientData?.keyInsights" class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">💡 Key Insights & Opportunities</h3>
-              <p class="text-sm text-gray-500 mt-1">AI-generated insights and recommendations</p>
-            </div>
-            <div class="p-6">
-              <div class="space-y-4">
-                <div v-for="(insight, index) in clientData.keyInsights" :key="index"
-                  class="flex items-start space-x-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 hover:shadow-md transition-shadow">
-                  <div
-                    class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="text-white text-sm font-bold">{{ index + 1 }}</span>
-                  </div>
-                  <div class="flex-1">
-                    <p class="text-sm text-gray-900 leading-relaxed">{{ insight }}</p>
-                    <div class="mt-2 flex items-center space-x-2">
-                      <span
-                        class="px-2 py-1 text-xs font-medium bg-white text-orange-700 rounded-full border border-orange-200">
-                        {{ ['High Priority', 'Medium Priority', 'Low Priority'][index % 3] }}
-                      </span>
-                      <span
-                        class="px-2 py-1 text-xs font-medium bg-white text-blue-700 rounded-full border border-blue-200">
-                        {{ ['Revenue Growth', 'Risk Management', 'Operational Efficiency'][index % 3] }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Action Items -->
-              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h4 class="text-md font-medium text-gray-900 mb-3">🎯 Recommended Actions</h4>
-                <div class="space-y-2">
-                  <div class="flex items-center space-x-2 text-sm">
-                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span class="text-gray-700">Schedule quarterly business review</span>
-                  </div>
-                  <div class="flex items-center space-x-2 text-sm">
-                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <span class="text-gray-700">Explore additional product opportunities</span>
-                  </div>
-                  <div class="flex items-center space-x-2 text-sm">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span class="text-gray-700">Update risk assessment documentation</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
 
       </div>
     </div>
@@ -3274,6 +3177,21 @@ const formatDate = (dateString) => {
     month: 'short',
     day: 'numeric'
   })
+}
+
+const getOrdinalSuffix = (num) => {
+  const j = num % 10
+  const k = num % 100
+  if (j === 1 && k !== 11) {
+    return 'st'
+  }
+  if (j === 2 && k !== 12) {
+    return 'nd'
+  }
+  if (j === 3 && k !== 13) {
+    return 'rd'
+  }
+  return 'th'
 }
 
 const getTierBadgeClass = (tier) => {
