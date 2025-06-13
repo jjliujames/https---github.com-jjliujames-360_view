@@ -44,9 +44,9 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div class="text-center">
             <div class="text-2xl font-bold text-blue-600">{{ relationshipClients.length }}</div>
-            <div class="text-sm text-gray-600">Client Entities</div>
+            <div class="text-sm text-gray-600">Relationships</div>
             <div class="text-xs text-blue-500 font-medium">{{ clientsPercentile }}{{ getOrdinalSuffix(clientsPercentile)
-              }} percentile</div>
+            }} percentile</div>
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
@@ -62,7 +62,7 @@
             <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalLoans) }}</div>
             <div class="text-sm text-gray-600">Total Loans</div>
             <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{ getOrdinalSuffix(loansPercentile)
-              }} percentile</div>
+            }} percentile</div>
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
@@ -91,310 +91,507 @@
         </div>
       </div>
 
-      <!-- Portfolio Risk Heat Map -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <!-- Risk Heat Map -->
-        <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200">
-          <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">🔥 Portfolio Risk Heat Map</h3>
-            <p class="text-sm text-gray-500 mt-1">Risk distribution across client entities</p>
-          </div>
-          <div class="p-6">
-            <div class="grid grid-cols-4 gap-2 mb-4">
-              <div v-for="client in relationshipClients" :key="client.id" @click="drillDownToClient(client)"
-                class="aspect-square rounded cursor-pointer hover:scale-105 transition-transform flex items-center justify-center text-xs font-medium text-white"
-                :class="getRiskHeatMapColor(client.riskScore)"
-                :title="`${client.name} - Risk Score: ${client.riskScore || 'N/A'}`">
-                {{ client.name.split(' ')[0][0] }}{{ client.name.split(' ')[1]?.[0] || '' }}
-              </div>
-            </div>
-            <div class="flex items-center justify-between text-xs text-gray-500">
-              <span>Low Risk</span>
-              <div class="flex space-x-1">
-                <div class="w-4 h-4 bg-green-500 rounded"></div>
-                <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                <div class="w-4 h-4 bg-orange-500 rounded"></div>
-                <div class="w-4 h-4 bg-red-500 rounded"></div>
-              </div>
-              <span>High Risk</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Risk Trend Analysis -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">📈 Risk Trends</h3>
-            <p class="text-sm text-gray-500 mt-1">YoY & MoM analysis</p>
-          </div>
-          <div class="p-6 space-y-4">
-            <div class="text-center p-4 bg-red-50 rounded-lg">
-              <div class="text-2xl font-bold text-red-600">{{ riskTrendYoY }}%</div>
-              <div class="text-sm text-gray-600">YoY Risk Change</div>
-              <div class="text-xs" :class="riskTrendYoY > 0 ? 'text-red-500' : 'text-green-500'">
-                {{ riskTrendYoY > 0 ? '↗️ Increasing' : '↘️ Decreasing' }}
-              </div>
-            </div>
-            <div class="text-center p-4 bg-orange-50 rounded-lg">
-              <div class="text-2xl font-bold text-orange-600">{{ riskTrendMoM }}%</div>
-              <div class="text-sm text-gray-600">MoM Risk Change</div>
-              <div class="text-xs" :class="riskTrendMoM > 0 ? 'text-red-500' : 'text-green-500'">
-                {{ riskTrendMoM > 0 ? '↗️ Increasing' : '↘️ Decreasing' }}
-              </div>
-            </div>
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold text-blue-600">{{ highRiskClientCount }}</div>
-              <div class="text-sm text-gray-600">High Risk Clients</div>
-              <div class="text-xs text-blue-500">{{ Math.round((highRiskClientCount / relationshipClients.length) * 100)
-                }}% of portfolio</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- High Risk Transaction Analysis -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-        <div class="p-6 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">🚨 High Risk Transaction Analysis</h3>
-          <p class="text-sm text-gray-500 mt-1">Portfolio-wide risk transaction monitoring by type</p>
-        </div>
-        <div class="p-6">
-          <!-- Risk Transaction Summary -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="text-center p-4 bg-red-50 rounded-lg">
-              <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}</div>
-              <div class="text-sm text-gray-600">High Risk Transaction Amount</div>
-              <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
-                getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
-            </div>
-            <div class="text-center p-4 bg-orange-50 rounded-lg">
-              <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
-              <div class="text-sm text-gray-600">High Risk Transactions</div>
-              <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
-                getOrdinalSuffix(riskCountPercentile) }} percentile</div>
-            </div>
-            <div class="text-center p-4 bg-yellow-50 rounded-lg">
-              <div class="text-2xl font-bold text-yellow-600">{{ totalUTRFiled }}</div>
-              <div class="text-sm text-gray-600">UTR Filed</div>
-              <div class="text-xs text-yellow-500 font-medium">{{ utrPercentile }}{{ getOrdinalSuffix(utrPercentile) }}
-                percentile</div>
-            </div>
-          </div>
-
-          <!-- Risk Transaction Types Chart -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <div class="flex items-center justify-between mb-4">
-              <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
-              <div class="flex space-x-2">
-                <button @click="riskChartPeriod = 'monthly'"
-                  :class="['px-3 py-1 text-xs rounded-full', riskChartPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                  Monthly
-                </button>
-                <button @click="riskChartPeriod = 'quarterly'"
-                  :class="['px-3 py-1 text-xs rounded-full', riskChartPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                  Quarterly
-                </button>
-              </div>
-            </div>
-            <div class="h-64 bg-white rounded p-4">
-              <!-- Risk Transaction Chart -->
-              <div class="h-full">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="text-sm text-gray-600">Transaction Amount ($M)</div>
-                  <div class="flex space-x-4 text-xs">
-                    <div v-for="(type, index) in riskTransactionTypes.slice(0, 6)" :key="type"
-                      class="flex items-center space-x-1">
-                      <div class="w-3 h-3 rounded" :class="getRiskTypeColor(index)"></div>
-                      <span class="text-gray-600">{{ type }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Chart Area -->
-                <div class="relative h-48">
-                  <!-- Y-axis labels -->
-                  <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
-                    <span>{{ formatChartValue(maxChartValue) }}</span>
-                    <span>{{ formatChartValue(maxChartValue * 0.75) }}</span>
-                    <span>{{ formatChartValue(maxChartValue * 0.5) }}</span>
-                    <span>{{ formatChartValue(maxChartValue * 0.25) }}</span>
-                    <span>0</span>
-                  </div>
-
-                  <!-- Chart bars -->
-                  <div class="ml-8 h-full flex items-end space-x-2">
-                    <div v-for="(month, monthIndex) in chartMonths" :key="month"
-                      class="flex-1 flex flex-col items-center">
-                      <!-- Stacked bars -->
-                      <div class="w-full flex flex-col-reverse" :style="{ height: '192px' }">
-                        <div v-for="(type, typeIndex) in riskTransactionTypes.slice(0, 6)" :key="type"
-                          class="w-full transition-all duration-300 hover:opacity-80"
-                          :class="getRiskTypeColor(typeIndex)"
-                          :style="{ height: getBarHeight(monthIndex, typeIndex) + 'px' }"
-                          :title="`${type}: ${formatCurrency(getRiskTransactionAmount(monthIndex, typeIndex))}`">
-                        </div>
-                      </div>
-                      <!-- Month label -->
-                      <div class="text-xs text-gray-500 mt-2 transform -rotate-45 origin-left">{{ month }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Portfolio Opportunities -->
+      <!-- Portfolio Growth & Risk Trends Analysis -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
         <div class="p-6 border-b border-gray-200">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-lg font-medium text-gray-900">💰 Portfolio Opportunities</h3>
-              <p class="text-sm text-gray-500 mt-1">Cross-sell and upsell opportunities across relationship</p>
-            </div>
-            <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML Powered</span>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
-              <div class="text-sm text-gray-600">Total Opportunity Value</div>
-              <div class="text-xs text-green-500 font-medium">{{ opportunityCount }} opportunities identified</div>
-            </div>
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold text-blue-600">{{ averageProductPenetration }}%</div>
-              <div class="text-sm text-gray-600">Avg Product Penetration</div>
-              <div class="text-xs text-blue-500 font-medium">{{ penetrationGap }}% gap to target</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <div class="text-2xl font-bold text-purple-600">{{ topOpportunityClients }}</div>
-              <div class="text-sm text-gray-600">High Opportunity Clients</div>
-              <div class="text-xs text-purple-500 font-medium">Ready for engagement</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Client Portfolio Table -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="p-6 border-b border-gray-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-medium text-gray-900">👥 Client Portfolio Overview</h3>
-              <p class="text-sm text-gray-500 mt-1">Click on any client to drill down to detailed 360 profile</p>
+              <h3 class="text-lg font-medium text-gray-900">📊 Portfolio Growth & Risk Evolution</h3>
+              <p class="text-sm text-gray-500 mt-1">Track portfolio performance and risk trends over time</p>
             </div>
             <div class="flex space-x-2">
-              <button @click="clientViewType = 'table'"
-                :class="['px-3 py-1 text-xs rounded-full', clientViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                Table View
+              <button @click="trendPeriod = 'monthly'"
+                :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                Monthly
               </button>
-              <button @click="clientViewType = 'cards'"
-                :class="['px-3 py-1 text-xs rounded-full', clientViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                Card View
+              <button @click="trendPeriod = 'quarterly'"
+                :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                Quarterly
               </button>
             </div>
           </div>
         </div>
-
-        <!-- Table View -->
-        <div v-if="clientViewType === 'table'" class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Portfolio
-                  Value</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deposits</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loans</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Score
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Flags
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunities
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="client in relationshipClients" :key="client.id"
-                class="hover:bg-gray-50 cursor-pointer transition-colors">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{ formatCurrency(client.portfolioValue) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ formatCurrency(getClientDeposits(client)) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ formatCurrency(getClientLoans(client)) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskScoreClass(client.riskScore)">
-                    {{ client.riskScore || 'N/A' }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex space-x-1">
-                    <span v-for="flag in (client.riskFlags || []).slice(0, 2)" :key="flag.category"
-                      class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskFlagClass(flag.severity)">
-                      {{ flag.category }}
-                    </span>
-                    <span v-if="(client.riskFlags || []).length > 2" class="text-xs text-gray-500">
-                      +{{ (client.riskFlags || []).length - 2 }}
-                    </span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ getClientOpportunityCount(client) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button @click="drillDownToClient(client)" class="text-blue-600 hover:text-blue-800">
-                    View Details
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Card View -->
-        <div v-if="clientViewType === 'cards'" class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="client in relationshipClients" :key="client.id" @click="drillDownToClient(client)"
-              class="bg-gray-50 rounded-lg p-4 cursor-pointer hover:shadow-md transition-all border-l-4"
-              :class="getRiskBorderClass(client.riskScore)">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="text-sm font-medium text-gray-900">{{ client.name }}</h4>
-                <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskScoreClass(client.riskScore)">
-                  {{ client.riskScore || 'N/A' }}
-                </span>
+        <div class="p-6">
+          <!-- Growth & Risk Summary Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="text-center p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+              <div class="text-2xl font-bold text-green-600">{{ portfolioGrowthYoY }}%</div>
+              <div class="text-sm text-gray-600">Portfolio Growth YoY</div>
+              <div class="text-xs" :class="portfolioGrowthYoY > 0 ? 'text-green-500' : 'text-red-500'">
+                {{ portfolioGrowthYoY > 0 ? '📈 Growing' : '📉 Declining' }}
               </div>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Portfolio:</span>
-                  <span class="font-medium">{{ formatCurrency(client.portfolioValue) }}</span>
+              <div class="text-xs text-gray-500 mt-1">{{ formatCurrency(portfolioGrowthAmount) }} added</div>
+            </div>
+            <div class="text-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+              <div class="text-2xl font-bold text-blue-600">{{ portfolioGrowthMoM }}%</div>
+              <div class="text-sm text-gray-600">Portfolio Growth MoM</div>
+              <div class="text-xs" :class="portfolioGrowthMoM > 0 ? 'text-green-500' : 'text-red-500'">
+                {{ portfolioGrowthMoM > 0 ? '📈 Growing' : '📉 Declining' }}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">{{ formatCurrency(portfolioGrowthAmountMoM) }} this month</div>
+            </div>
+            <div class="text-center p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+              <div class="text-2xl font-bold text-orange-600">{{ riskFlagGrowthYoY }}%</div>
+              <div class="text-sm text-gray-600">Risk Flags Growth YoY</div>
+              <div class="text-xs"
+                :class="riskFlagGrowthYoY > 0 ? 'text-red-500' : riskFlagGrowthYoY < 0 ? 'text-green-500' : 'text-gray-500'">
+                {{ riskFlagGrowthYoY > 0 ? '⚠️ Increasing' : riskFlagGrowthYoY < 0 ? '✅ Decreasing' : '➖ No Change' }}
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">{{ riskFlagGrowthCount }} new flags</div>
+              </div>
+              <div class="text-center p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                <div class="text-2xl font-bold text-red-600">{{ riskFlagGrowthMoM }}%</div>
+                <div class="text-sm text-gray-600">Risk Flags Growth MoM</div>
+                <div class="text-xs"
+                  :class="riskFlagGrowthMoM > 0 ? 'text-red-500' : riskFlagGrowthMoM < 0 ? 'text-green-500' : 'text-gray-500'">
+                  {{ riskFlagGrowthMoM > 0 ? '⚠️ Increasing' : riskFlagGrowthMoM < 0 ? '✅ Decreasing' : '➖ No Change' }}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">{{ riskFlagGrowthCountMoM }} this month</div>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Risk Flags:</span>
-                  <span class="font-medium">{{ (client.riskFlags || []).length }}</span>
+              </div>
+
+              <!-- Trend Charts -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Portfolio Value Trend -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-md font-medium text-gray-900">💰 Portfolio Value Trend</h4>
+                    <span class="text-xs text-gray-500">Last 12 months</span>
+                  </div>
+                  <div class="h-64 bg-white rounded p-4">
+                    <div class="h-full flex flex-col">
+                      <!-- Portfolio trend chart -->
+                      <div class="flex-1 relative">
+                        <!-- Y-axis labels -->
+                        <div
+                          class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-3 py-2">
+                          <span>{{ formatChartValue(maxPortfolioValue) }}</span>
+                          <span>{{ formatChartValue(maxPortfolioValue * 0.75) }}</span>
+                          <span>{{ formatChartValue(maxPortfolioValue * 0.5) }}</span>
+                          <span>{{ formatChartValue(maxPortfolioValue * 0.25) }}</span>
+                          <span>0</span>
+                        </div>
+
+                        <!-- Line chart area -->
+                        <div class="ml-12 h-full flex flex-col">
+                          <div class="flex-1 relative">
+                            <svg class="w-full h-full">
+                              <polyline :points="portfolioTrendPoints" fill="none" stroke="#10B981" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                              <circle v-for="(point, index) in portfolioTrendPointsArray" :key="index" :cx="point.x"
+                                :cy="point.y" r="4" fill="#10B981" class="cursor-pointer"
+                                :title="`${trendMonths[index]}: ${formatCurrency(getPortfolioValueForMonth(index))}`" />
+                            </svg>
+                          </div>
+                          <!-- X-axis labels -->
+                          <div class="flex justify-between mt-2">
+                            <div v-for="month in trendMonths.filter((_, i) => i % 2 === 0)" :key="month"
+                              class="text-xs text-gray-500">{{ month }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Opportunities:</span>
-                  <span class="font-medium">{{ getClientOpportunityCount(client) }}</span>
+
+                <!-- Risk Flags Trend -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-md font-medium text-gray-900">🚨 Risk Flags by Month</h4>
+                    <span class="text-xs text-gray-500">Monthly risk flag count</span>
+                  </div>
+                  <div class="h-64 bg-white rounded p-4">
+                    <div class="h-full flex flex-col">
+                      <div class="flex-1 relative">
+                        <!-- Y-axis labels -->
+                        <div
+                          class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-3 py-2">
+                          <span>{{ maxRiskFlags }}</span>
+                          <span>{{ Math.floor(maxRiskFlags * 0.75) }}</span>
+                          <span>{{ Math.floor(maxRiskFlags * 0.5) }}</span>
+                          <span>{{ Math.floor(maxRiskFlags * 0.25) }}</span>
+                          <span>0</span>
+                        </div>
+
+                        <!-- Bar chart -->
+                        <div class="ml-12 h-full flex items-end space-x-1">
+                          <div v-for="(month, index) in trendMonths" :key="month"
+                            class="flex-1 flex flex-col items-center">
+                            <div
+                              class="w-full bg-red-500 rounded-t transition-all duration-300 hover:bg-red-600 cursor-pointer"
+                              :style="{ height: getRiskFlagBarHeight(index) + 'px' }"
+                              :title="`${month}: ${getRiskFlagsForMonth(index)} risk flags`">
+                            </div>
+                          </div>
+                        </div>
+                        <!-- X-axis labels -->
+                        <div class="flex justify-between mt-2">
+                          <div v-for="month in trendMonths.filter((_, i) => i % 2 === 0)" :key="month"
+                            class="text-xs text-gray-500">{{ month }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Key Insights -->
+              <div class="mt-6 bg-blue-50 rounded-lg p-4">
+                <h4 class="text-md font-medium text-gray-900 mb-3">🔍 Key Insights</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div class="space-y-2">
+                    <div class="flex items-start space-x-2">
+                      <span class="text-green-600">✓</span>
+                      <span>Portfolio grew by <strong>{{ formatCurrency(portfolioGrowthAmount) }}</strong> over the past
+                        year</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                      <span
+                        :class="riskFlagGrowthYoY > 0 ? 'text-red-600' : riskFlagGrowthYoY < 0 ? 'text-green-600' : 'text-gray-600'">
+                        {{ riskFlagGrowthYoY > 0 ? '⚠' : riskFlagGrowthYoY < 0 ? '✓' : '➖' }} </span>
+                          <span>Risk flags {{ riskFlagGrowthYoY > 0 ? 'increased' : riskFlagGrowthYoY < 0 ? 'decreased'
+                            : 'remained unchanged' }} <strong>{{ riskFlagGrowthYoY === 0 ? '' : 'by ' +
+                                Math.abs(riskFlagGrowthYoY) + '%' }}</strong> YoY</span>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex items-start space-x-2">
+                      <span :class="portfolioGrowthMoM > 0 ? 'text-green-600' : 'text-red-600'">
+                        {{ portfolioGrowthMoM > 0 ? '📈' : '📉' }}
+                      </span>
+                      <span>Monthly growth rate: <strong>{{ portfolioGrowthMoM }}%</strong></span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                      <span class="text-blue-600">ℹ</span>
+                      <span>Risk-to-growth ratio: <strong>{{ riskToGrowthRatio }}</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio Risk Heat Map -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Risk Heat Map -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">🔥 Portfolio Risk Heat Map</h3>
+                <p class="text-sm text-gray-500 mt-1">Risk distribution across client entities</p>
+              </div>
+              <div class="p-6">
+                <div class="grid grid-cols-4 gap-2 mb-4">
+                  <div v-for="client in relationshipClients" :key="client.id" @click="drillDownToClient(client)"
+                    class="aspect-square rounded cursor-pointer hover:scale-105 transition-transform flex items-center justify-center text-xs font-medium text-white"
+                    :class="getRiskHeatMapColor(client.riskScore)"
+                    :title="`${client.name} - Risk Score: ${client.riskScore || 'N/A'}`">
+                    {{ client.name.split(' ')[0][0] }}{{ client.name.split(' ')[1]?.[0] || '' }}
+                  </div>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>Low Risk</span>
+                  <div class="flex space-x-1">
+                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                    <div class="w-4 h-4 bg-orange-500 rounded"></div>
+                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                  </div>
+                  <span>High Risk</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Trend Analysis -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">📈 Risk Trends</h3>
+                <p class="text-sm text-gray-500 mt-1">YoY & MoM analysis</p>
+              </div>
+              <div class="p-6 space-y-4">
+                <div class="text-center p-4 bg-red-50 rounded-lg">
+                  <div class="text-2xl font-bold text-red-600">{{ riskTrendYoY }}%</div>
+                  <div class="text-sm text-gray-600">YoY Risk Change</div>
+                  <div class="text-xs" :class="riskTrendYoY > 0 ? 'text-red-500' : 'text-green-500'">
+                    {{ riskTrendYoY > 0 ? '↗️ Increasing' : '↘️ Decreasing' }}
+                  </div>
+                </div>
+                <div class="text-center p-4 bg-orange-50 rounded-lg">
+                  <div class="text-2xl font-bold text-orange-600">{{ riskTrendMoM }}%</div>
+                  <div class="text-sm text-gray-600">MoM Risk Change</div>
+                  <div class="text-xs" :class="riskTrendMoM > 0 ? 'text-red-500' : 'text-green-500'">
+                    {{ riskTrendMoM > 0 ? '↗️ Increasing' : '↘️ Decreasing' }}
+                  </div>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                  <div class="text-2xl font-bold text-blue-600">{{ highRiskClientCount }}</div>
+                  <div class="text-sm text-gray-600">High Risk Clients</div>
+                  <div class="text-xs text-blue-500">{{ Math.round((highRiskClientCount / relationshipClients.length) *
+                    100)
+                  }}% of portfolio</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- High Risk Transaction Analysis -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900">🚨 High Risk Transaction Analysis</h3>
+              <p class="text-sm text-gray-500 mt-1">Portfolio-wide risk transaction monitoring by type</p>
+            </div>
+            <div class="p-6">
+              <!-- Risk Transaction Summary -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="text-center p-4 bg-red-50 rounded-lg">
+                  <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}</div>
+                  <div class="text-sm text-gray-600">High Risk Transaction Amount</div>
+                  <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
+                    getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
+                </div>
+                <div class="text-center p-4 bg-orange-50 rounded-lg">
+                  <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
+                  <div class="text-sm text-gray-600">High Risk Transactions</div>
+                  <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
+                    getOrdinalSuffix(riskCountPercentile) }} percentile</div>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div class="text-2xl font-bold text-yellow-600">{{ totalUTRFiled }}</div>
+                  <div class="text-sm text-gray-600">UTR Filed</div>
+                  <div class="text-xs text-yellow-500 font-medium">{{ utrPercentile }}{{ getOrdinalSuffix(utrPercentile)
+                  }}
+                    percentile</div>
+                </div>
+              </div>
+
+              <!-- Risk Transaction Types Chart -->
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
+                  <div class="flex space-x-2">
+                    <button @click="riskChartPeriod = 'monthly'"
+                      :class="['px-3 py-1 text-xs rounded-full', riskChartPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                      Monthly
+                    </button>
+                    <button @click="riskChartPeriod = 'quarterly'"
+                      :class="['px-3 py-1 text-xs rounded-full', riskChartPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                      Quarterly
+                    </button>
+                  </div>
+                </div>
+                <div class="h-80 bg-white rounded p-4">
+                  <!-- Risk Transaction Chart -->
+                  <div class="h-full flex flex-col">
+                    <!-- Legend -->
+                    <div class="flex flex-wrap gap-x-4 gap-y-2 mb-4 text-xs">
+                      <div v-for="(type, index) in riskTransactionTypes.slice(0, 12)" :key="type"
+                        class="flex items-center space-x-1">
+                        <div class="w-3 h-3 rounded" :class="getRiskTypeColor(index)"></div>
+                        <span class="text-gray-600">{{ type }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Chart Area -->
+                    <div class="flex-1 relative">
+                      <!-- Y-axis labels -->
+                      <div
+                        class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-3 py-2">
+                        <span>{{ formatChartValue(maxChartValue) }}</span>
+                        <span>{{ formatChartValue(maxChartValue * 0.75) }}</span>
+                        <span>{{ formatChartValue(maxChartValue * 0.5) }}</span>
+                        <span>{{ formatChartValue(maxChartValue * 0.25) }}</span>
+                        <span>0</span>
+                      </div>
+
+                      <!-- Chart bars -->
+                      <div class="ml-12 h-full flex flex-col">
+                        <div class="flex-1 flex items-end space-x-1">
+                          <div v-for="(month, monthIndex) in chartMonths" :key="month"
+                            class="flex-1 flex flex-col items-center">
+                            <!-- Stacked bars -->
+                            <div class="w-full flex flex-col-reverse bg-gray-100 rounded-t"
+                              :style="{ height: 'calc(100% - 40px)', minHeight: '200px' }">
+                              <div v-for="(type, typeIndex) in riskTransactionTypes" :key="type"
+                                class="w-full transition-all duration-300 hover:opacity-80 cursor-pointer"
+                                :class="getRiskTypeColor(typeIndex)"
+                                :style="{ height: getBarHeight(monthIndex, typeIndex) + 'px' }"
+                                :title="`${type}: ${formatCurrency(getRiskTransactionAmount(monthIndex, typeIndex))}`">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- X-axis labels -->
+                        <div class="flex space-x-1 mt-2">
+                          <div v-for="month in chartMonths" :key="month" class="flex-1 text-center">
+                            <div class="text-xs text-gray-500 transform rotate-0">{{ month }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio Opportunities -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">💰 Portfolio Opportunities</h3>
+                  <p class="text-sm text-gray-500 mt-1">Cross-sell and upsell opportunities across relationship</p>
+                </div>
+                <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML Powered</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="text-center p-4 bg-green-50 rounded-lg">
+                  <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
+                  <div class="text-sm text-gray-600">Total Opportunity Value</div>
+                  <div class="text-xs text-green-500 font-medium">{{ opportunityCount }} opportunities identified</div>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                  <div class="text-2xl font-bold text-blue-600">{{ averageProductPenetration }}%</div>
+                  <div class="text-sm text-gray-600">Avg Product Penetration</div>
+                  <div class="text-xs text-blue-500 font-medium">{{ penetrationGap }}% gap to target</div>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-lg">
+                  <div class="text-2xl font-bold text-purple-600">{{ topOpportunityClients }}</div>
+                  <div class="text-sm text-gray-600">High Opportunity Clients</div>
+                  <div class="text-xs text-purple-500 font-medium">Ready for engagement</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Portfolio Table -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900">👥 Client Portfolio Overview</h3>
+                  <p class="text-sm text-gray-500 mt-1">Click on any client to drill down to detailed 360 profile</p>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="clientViewType = 'table'"
+                    :class="['px-3 py-1 text-xs rounded-full', clientViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Table View
+                  </button>
+                  <button @click="clientViewType = 'cards'"
+                    :class="['px-3 py-1 text-xs rounded-full', clientViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                    Card View
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table View -->
+            <div v-if="clientViewType === 'table'" class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Portfolio
+                      Value</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deposits
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loans
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk
+                      Score
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk
+                      Flags
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Opportunities
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="client in relationshipClients" :key="client.id"
+                    class="hover:bg-gray-50 cursor-pointer transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {{ formatCurrency(client.portfolioValue) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ formatCurrency(getClientDeposits(client)) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ formatCurrency(getClientLoans(client)) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 py-1 text-xs font-medium rounded-full"
+                        :class="getRiskScoreClass(client.riskScore)">
+                        {{ client.riskScore || 'N/A' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex space-x-1">
+                        <span v-for="flag in (client.riskFlags || []).slice(0, 2)" :key="flag.category"
+                          class="px-2 py-1 text-xs font-medium rounded-full" :class="getRiskFlagClass(flag.severity)">
+                          {{ flag.category }}
+                        </span>
+                        <span v-if="(client.riskFlags || []).length > 2" class="text-xs text-gray-500">
+                          +{{ (client.riskFlags || []).length - 2 }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ getClientOpportunityCount(client) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button @click="drillDownToClient(client)" class="text-blue-600 hover:text-blue-800">
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Card View -->
+            <div v-if="clientViewType === 'cards'" class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="client in relationshipClients" :key="client.id" @click="drillDownToClient(client)"
+                  class="bg-gray-50 rounded-lg p-4 cursor-pointer hover:shadow-md transition-all border-l-4"
+                  :class="getRiskBorderClass(client.riskScore)">
+                  <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-sm font-medium text-gray-900">{{ client.name }}</h4>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full"
+                      :class="getRiskScoreClass(client.riskScore)">
+                      {{ client.riskScore || 'N/A' }}
+                    </span>
+                  </div>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Portfolio:</span>
+                      <span class="font-medium">{{ formatCurrency(client.portfolioValue) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Risk Flags:</span>
+                      <span class="font-medium">{{ (client.riskFlags || []).length }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Opportunities:</span>
+                      <span class="font-medium">{{ getClientOpportunityCount(client) }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -407,10 +604,12 @@ export default {
   setup() {
     const clientViewType = ref('table')
     const riskChartPeriod = ref('monthly')
+    const trendPeriod = ref('monthly')
 
     return {
       clientViewType,
-      riskChartPeriod
+      riskChartPeriod,
+      trendPeriod
     }
   },
   computed: {
@@ -580,16 +779,97 @@ export default {
     },
 
     maxChartValue() {
-      // Calculate max value for chart scaling
+      // Calculate max value for chart scaling - include all transaction types
       let max = 0
       for (let monthIndex = 0; monthIndex < this.chartMonths.length; monthIndex++) {
         let monthTotal = 0
-        for (let typeIndex = 0; typeIndex < 6; typeIndex++) {
+        for (let typeIndex = 0; typeIndex < this.riskTransactionTypes.length; typeIndex++) {
           monthTotal += this.getRiskTransactionAmount(monthIndex, typeIndex)
         }
         max = Math.max(max, monthTotal)
       }
       return Math.ceil(max / 1000000) * 1000000 // Round up to nearest million
+    },
+
+    maxPortfolioValue() {
+      // Calculate max portfolio value for trend chart
+      const currentValue = this.totalPortfolioValue
+      const maxGrowth = 1.3 // 30% above current
+      return Math.ceil((currentValue * maxGrowth) / 1000000) * 1000000
+    },
+    portfolioTrendData() {
+      const points = []
+      const chartWidth = 300
+      const chartHeight = 180
+
+      if (this.maxPortfolioValue === 0) return []
+
+      for (let i = 0; i < 12; i++) {
+        const x = (i / 11) * chartWidth
+        const value = this.getPortfolioValueForMonth(i)
+        const y = chartHeight - ((value / this.maxPortfolioValue) * chartHeight)
+        points.push({ x, y, value })
+      }
+      return points
+    },
+    portfolioTrendPoints() {
+      if (!this.portfolioTrendData.length) return ' '
+      return this.portfolioTrendData.map(p => `${p.x},${p.y}`).join(' ')
+    },
+    portfolioTrendPointsArray() {
+      return this.portfolioTrendData
+    },
+    trendMonths() {
+      const months = []
+      const currentDate = new Date()
+      for (let i = 11; i >= 0; i--) {
+        const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1)
+        months.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }))
+      }
+      return months
+    },
+    portfolioGrowthYoY() {
+      // Calculate YoY portfolio growth percentage
+      return Math.floor(Math.random() * 25) + 5 // 5-30% growth
+    },
+    portfolioGrowthAmount() {
+      // Calculate absolute growth amount
+      return Math.floor(this.totalPortfolioValue * (this.portfolioGrowthYoY / 100))
+    },
+    portfolioGrowthMoM() {
+      // Calculate MoM portfolio growth percentage
+      return Math.floor(Math.random() * 8) - 2 // -2% to +6% monthly
+    },
+    portfolioGrowthAmountMoM() {
+      // Calculate absolute monthly growth amount
+      return Math.floor(this.totalPortfolioValue * (this.portfolioGrowthMoM / 100))
+    },
+    riskFlagGrowthYoY() {
+      // Calculate YoY risk flag growth percentage
+      return Math.floor(Math.random() * 40) - 10 // -10% to +30% change
+    },
+    riskFlagGrowthCount() {
+      // Calculate absolute risk flag growth count
+      return Math.floor(this.totalRiskFlags * (Math.abs(this.riskFlagGrowthYoY) / 100))
+    },
+    riskFlagGrowthMoM() {
+      // Calculate MoM risk flag growth percentage
+      return Math.floor(Math.random() * 20) - 5 // -5% to +15% monthly
+    },
+    riskFlagGrowthCountMoM() {
+      // Calculate absolute monthly risk flag growth count
+      return Math.floor(Math.random() * 5) + 1 // 1-5 new flags per month
+    },
+    riskToGrowthRatio() {
+      // Calculate risk-to-growth ratio
+      const riskGrowth = Math.abs(this.riskFlagGrowthYoY)
+      const portfolioGrowth = this.portfolioGrowthYoY
+      if (portfolioGrowth === 0) return 'N/A'
+      return (riskGrowth / portfolioGrowth).toFixed(2)
+    },
+    maxRiskFlags() {
+      // Calculate max risk flags for chart scaling
+      return Math.max(20, this.totalRiskFlags + 10)
     }
   },
   methods: {
@@ -679,20 +959,45 @@ export default {
     // Chart Methods
     getRiskTypeColor(index) {
       const colors = [
-        'bg-red-500',
-        'bg-orange-500',
-        'bg-yellow-500',
-        'bg-green-500',
-        'bg-blue-500',
-        'bg-purple-500',
-        'bg-pink-500',
-        'bg-indigo-500',
-        'bg-teal-500',
-        'bg-cyan-500',
-        'bg-lime-500',
-        'bg-amber-500'
+        'bg-teal-800',      // Dark teal
+        'bg-teal-400',      // Light teal
+        'bg-gray-100',      // Light gray
+        'bg-red-200',       // Light pink
+        'bg-orange-300',    // Light orange
+        'bg-green-400',     // Medium green
+        'bg-green-600',     // Darker green
+        'bg-green-700',     // Dark green
+        'bg-green-300',     // Light green
+        'bg-green-200',     // Very light green
+        'bg-green-100',     // Pale green
+        'bg-gray-50'        // Very light gray
       ]
       return colors[index % colors.length]
+    },
+
+    formatChartValue(value) {
+      if (value >= 1000000) {
+        return `$${(value / 1000000).toFixed(1)}M`
+      } else if (value >= 1000) {
+        return `$${(value / 1000).toFixed(0)}K`
+      }
+      return `$${value.toFixed(0)}`
+    },
+
+    getRiskFlagsForMonth(index) {
+      // Calculate risk flags for a specific month
+      const baseFlags = Math.floor(this.totalRiskFlags / 3) // Base monthly flags
+      const seasonalVariation = Math.sin((index / 12) * 2 * Math.PI) * 2 // Seasonal pattern
+      const randomVariation = (Math.random() - 0.5) * 4 // Random variation
+      return Math.max(1, Math.floor(baseFlags + seasonalVariation + randomVariation))
+    },
+
+    getRiskFlagBarHeight(index) {
+      // Calculate bar height for risk flags chart
+      if (this.maxRiskFlags === 0) return 2
+      const flagCount = this.getRiskFlagsForMonth(index)
+      const maxHeight = 180 // Chart height in pixels
+      return Math.max(2, (flagCount / this.maxRiskFlags) * maxHeight)
     },
 
     getRiskTransactionAmount(monthIndex, typeIndex) {
@@ -706,18 +1011,17 @@ export default {
     },
 
     getBarHeight(monthIndex, typeIndex) {
+      if (this.maxChartValue === 0) return 1
       const amount = this.getRiskTransactionAmount(monthIndex, typeIndex)
-      const maxHeight = 192 // Total chart height in pixels
-      return Math.max(2, (amount / this.maxChartValue) * maxHeight) // Minimum 2px height for visibility
+      const maxHeight = 200 // Total chart height in pixels
+      return Math.max(1, (amount / this.maxChartValue) * maxHeight) // Minimum 1px height for visibility
     },
 
-    formatChartValue(value) {
-      if (value >= 1000000) {
-        return `$${(value / 1000000).toFixed(1)}M`
-      } else if (value >= 1000) {
-        return `$${(value / 1000).toFixed(0)}K`
-      }
-      return `$${value.toFixed(0)}`
+    getPortfolioValueForMonth(index) {
+      // Calculate portfolio value for a specific month in the trend
+      const baseValue = this.totalPortfolioValue * (0.7 + (index / 11) * 0.3) // Growth trend
+      const variation = (Math.random() - 0.5) * 0.1 * baseValue // ±10% variation
+      return baseValue + variation
     }
   }
 }

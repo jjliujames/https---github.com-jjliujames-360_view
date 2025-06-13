@@ -2337,9 +2337,9 @@ const filteredRiskTransactionData = computed(() => {
 
   const datasets = selectedRiskTxnTypes.value.map((txnType, index) => {
     const colors = [
-      '#EF4444', '#F97316', '#EAB308', '#22C55E', '#06B6D4',
-      '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981',
-      '#6366F1', '#84CC16'
+      '#2D5A5A', '#7FB3B3', '#F5F5F5', '#F4C2C2', '#D4A574',
+      '#8FBC8F', '#5A7A5A', '#6B8E6B', '#A8C8A8', '#C8E6C8',
+      '#E8F4E8', '#F0F8F0'
     ]
 
     // Generate monthly data for each transaction type
