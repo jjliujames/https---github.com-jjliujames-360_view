@@ -188,7 +188,7 @@
                 </div>
                 <div class="text-center">
                   <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
-                  <div class="text-sm text-gray-600">Total Deposits</div>
+                  <div class="text-sm text-gray-600">Total Deposit Balance</div>
                   <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
                     getOrdinalSuffix(depositsPercentile) }} percentile</div>
                 </div>
@@ -199,8 +199,10 @@
                     getOrdinalSuffix(loansPercentile) }} percentile</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ formatCurrency(totalBalance) }}</div>
-                  <div class="text-sm text-gray-600">Total Account Balance</div>
+                  <div class="text-2xl font-bold text-purple-600">{{ loanUtilityRate }}%</div>
+                  <div class="text-sm text-gray-600">Loan Utility %</div>
+                  <div class="text-xs text-purple-500 font-medium">{{ loanUtilityPercentile }}{{
+                    getOrdinalSuffix(loanUtilityPercentile) }} percentile</div>
                 </div>
                 <div class="text-center">
                   <div class="text-2xl font-bold text-indigo-600">{{ numberOfOpportunities }}</div>
@@ -2023,6 +2025,10 @@ const loanUtilityRate = computed(() => {
   // Based on client activity and risk profile
   const baseRate = Math.floor(Math.random() * 40) + 45 // 45-85%
   return baseRate
+})
+
+const loanUtilityPercentile = computed(() => {
+  return Math.floor(Math.random() * 30) + 70 // 70-99th percentile
 })
 
 const highRiskTrxVolume = computed(() => {
