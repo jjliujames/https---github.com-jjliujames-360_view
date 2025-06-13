@@ -206,7 +206,7 @@
                 </div>
                 <div class="text-center">
                   <div class="text-2xl font-bold text-indigo-600">{{ numberOfOpportunities }}</div>
-                  <div class="text-sm text-gray-600">Number of Opportunities</div>
+                  <div class="text-sm text-gray-600">Opportunities</div>
                 </div>
               </div>
             </div>
