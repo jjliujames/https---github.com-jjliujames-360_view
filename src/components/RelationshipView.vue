@@ -331,48 +331,89 @@
                 </div>
             </div>
 
-            <!-- Portfolio Performance Trends (Compact) -->
+            <!-- Interactive Trend Charts -->
             <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">📈 Portfolio Performance Trends</h3>
-                        <div class="flex space-x-2">
-                            <button @click="trendPeriod = 'monthly'"
-                                :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                                Monthly
-                            </button>
-                            <button @click="trendPeriod = 'quarterly'"
-                                :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                                Quarterly
-                            </button>
+                        <h3 class="text-lg font-medium text-gray-900">📈 Interactive Trend Analysis</h3>
+                        <div class="flex items-center space-x-2">
+                            <select v-model="selectedTrendClient"
+                                class="text-xs border border-gray-300 rounded px-2 py-1">
+                                <option value="all">All Clients</option>
+                                <option v-for="client in relationshipClients" :key="client.id" :value="client.id">
+                                    {{ client.name }}
+                                </option>
+                            </select>
+                            <div class="flex space-x-1">
+                                <button @click="trendPeriod = 'monthly'"
+                                    :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                                    Monthly
+                                </button>
+                                <button @click="trendPeriod = 'quarterly'"
+                                    :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                                    Quarterly
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="p-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="text-center p-4 bg-green-50 rounded-lg">
-                            <div class="text-xl font-bold text-green-600">{{ portfolioGrowthYoY }}%</div>
-                            <div class="text-sm text-gray-600">Portfolio Growth YoY</div>
-                            <div class="text-xs text-green-500 font-medium">{{ formatCurrency(portfolioGrowthAmount) }}
-                                added</div>
+                    <!-- Metric Selection Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div @click="switchMetric('portfolio')"
+                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
+                                selectedMetric === 'portfolio' ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
+                            <div class="text-xl font-bold text-green-600">{{ formatCurrency(totalPortfolioValue) }}
+                            </div>
+                            <div class="text-sm text-gray-600">Portfolio Value</div>
+                            <div class="text-xs text-green-500 font-medium">{{ portfolioGrowthYoY }}% YoY Growth</div>
                         </div>
-                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                        <div @click="switchMetric('penetration')"
+                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
+                                selectedMetric === 'penetration' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
                             <div class="text-xl font-bold text-blue-600">{{ averageProductPenetration }}%</div>
-                            <div class="text-sm text-gray-600">Avg Product Penetration</div>
-                            <div class="text-xs text-blue-500 font-medium">{{ penetrationGap }}% gap to optimize</div>
+                            <div class="text-sm text-gray-600">Product Penetration</div>
+                            <div class="text-xs text-blue-500 font-medium">{{ penetrationGap }}% improvement potential
+                            </div>
                         </div>
-                        <div class="text-center p-4 bg-orange-50 rounded-lg">
-                            <div class="text-xl font-bold text-orange-600">{{ totalRiskFlags }}</div>
-                            <div class="text-sm text-gray-600">Total Risk Flags</div>
+                        <div @click="switchMetric('risk')"
+                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
+                                selectedMetric === 'risk' ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
+                            <div class="text-xl font-bold text-red-600">{{ totalRiskFlags }}</div>
+                            <div class="text-sm text-gray-600">Risk Flags</div>
                             <div class="text-xs" :class="riskFlagGrowthYoY > 0 ? 'text-red-500' : 'text-green-500'">
                                 {{ riskFlagGrowthYoY > 0 ? '↗️' : '↘️' }} {{ Math.abs(riskFlagGrowthYoY) }}% YoY
                             </div>
                         </div>
-                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                        <div @click="switchMetric('opportunity')"
+                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
+                                selectedMetric === 'opportunity' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
                             <div class="text-xl font-bold text-purple-600">{{ formatCurrency(totalOpportunityValue) }}
                             </div>
                             <div class="text-sm text-gray-600">Opportunity Value</div>
                             <div class="text-xs text-purple-500 font-medium">{{ totalOpportunities }} opportunities
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="relative">
+                        <div class="flex justify-center">
+                            <canvas ref="chartCanvas" :key="chartKey" width="800" height="400"
+                                class="max-w-full"></canvas>
+                        </div>
+
+                        <!-- Chart Insights -->
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div v-for="insight in getChartInsights()" :key="insight.id"
+                                class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-lg">{{ insight.icon }}</span>
+                                    <span class="font-medium text-gray-900">{{ insight.title }}</span>
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    <span>{{ insight.text }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -383,8 +424,32 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { relationshipManagers, relationships, clients, formatCurrency, getRiskColor, getClientsByRelationshipId } from '../data/mockData.js'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+} from 'chart.js'
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+)
 
 export default {
     name: 'RelationshipView',
@@ -393,11 +458,21 @@ export default {
         const clientViewType = ref('table')
         const riskChartPeriod = ref('monthly')
         const trendPeriod = ref('monthly')
+        const selectedMetric = ref('portfolio')
+        const selectedTrendClient = ref('all')
+        const chartCanvas = ref(null)
+        const chartInstance = ref(null)
+        const chartKey = ref(0)
 
         return {
             clientViewType,
             riskChartPeriod,
-            trendPeriod
+            trendPeriod,
+            selectedMetric,
+            selectedTrendClient,
+            chartCanvas,
+            chartInstance,
+            chartKey
         }
     },
     computed: {
@@ -946,6 +1021,279 @@ export default {
             const baseValue = this.totalPortfolioValue * (0.7 + (index / 11) * 0.3) // Growth trend
             const variation = (Math.random() - 0.5) * 0.1 * baseValue // ±10% variation
             return baseValue + variation
+        },
+
+        // Chart.js Methods
+        switchMetric(metric) {
+            this.selectedMetric = metric
+            this.chartKey += 1 // Force re-render
+            this.$nextTick(() => {
+                this.initChart()
+            })
+        },
+
+        async initChart() {
+            await this.$nextTick()
+            if (this.$refs.chartCanvas) {
+                this.createChart()
+            }
+        },
+
+        createChart() {
+            if (this.chartInstance) {
+                this.chartInstance.destroy()
+            }
+
+            const canvas = this.$refs.chartCanvas
+            if (!canvas) return
+
+            const ctx = canvas.getContext('2d')
+            const chartData = this.getChartData()
+            const chartOptions = this.getChartOptions()
+
+            this.chartInstance = new ChartJS(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: chartOptions
+            })
+        },
+
+        getChartData() {
+            const labels = this.chartMonths
+            const data = []
+
+            for (let i = 0; i < labels.length; i++) {
+                data.push(this.getMetricValue(this.selectedMetric, i))
+            }
+
+            return {
+                labels,
+                datasets: [{
+                    label: this.getMetricLabel(this.selectedMetric),
+                    data,
+                    backgroundColor: this.getMetricColor(this.selectedMetric),
+                    borderColor: this.getMetricColor(this.selectedMetric),
+                    borderWidth: 1
+                }]
+            }
+        },
+
+        getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${this.getMetricLabel(this.selectedMetric)} Trend (${this.trendPeriod})`
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            callback: (value) => this.formatYAxisLabel(value)
+                        }
+                    }
+                }
+            }
+        },
+
+        getMetricLabel(metric) {
+            const labels = {
+                portfolio: 'Portfolio Value',
+                penetration: 'Product Penetration',
+                risk: 'Risk Flags',
+                opportunity: 'Opportunity Value'
+            }
+            return labels[metric] || metric
+        },
+
+        getMetricColor(metric) {
+            const colors = {
+                portfolio: '#10B981',
+                penetration: '#3B82F6',
+                risk: '#EF4444',
+                opportunity: '#8B5CF6'
+            }
+            return colors[metric] || '#6B7280'
+        },
+
+        formatYAxisLabel(value) {
+            if (this.selectedMetric === 'penetration') {
+                return `${value}%`
+            } else if (this.selectedMetric === 'portfolio' || this.selectedMetric === 'opportunity') {
+                if (value >= 1000000) {
+                    return `$${(value / 1000000).toFixed(1)}M`
+                } else if (value >= 1000) {
+                    return `$${(value / 1000).toFixed(0)}K`
+                }
+                return `$${value}`
+            }
+            return value
+        },
+
+        getMetricValue(metric, index) {
+            switch (metric) {
+                case 'portfolio':
+                    if (this.selectedTrendClient === 'all') {
+                        return this.getPortfolioValueForMonth(index)
+                    } else {
+                        const client = this.relationshipClients.find(c => c.id === this.selectedTrendClient)
+                        if (client) {
+                            const baseValue = client.portfolioValue * (0.8 + (index / 11) * 0.2)
+                            return baseValue + (Math.random() - 0.5) * 0.1 * baseValue
+                        }
+                    }
+                    return 0
+                case 'penetration':
+                    const baseValue = Math.floor(this.averageProductPenetration + (Math.random() - 0.5) * 30)
+                    return Math.max(30, Math.min(85, baseValue))
+                case 'risk':
+                    return this.getRiskFlagsForMonth(index)
+                case 'opportunity':
+                    const baseOpp = this.totalOpportunityValue / 12
+                    return baseOpp * (0.8 + Math.random() * 0.4)
+                default:
+                    return 0
+            }
+        },
+
+        getChartInsights() {
+            const insights = []
+
+            switch (this.selectedMetric) {
+                case 'portfolio':
+                    insights.push(
+                        {
+                            id: 'growth',
+                            icon: '📈',
+                            title: 'Growth Trend',
+                            text: `Portfolio growing at ${this.portfolioGrowthYoY}% YoY rate`
+                        },
+                        {
+                            id: 'performance',
+                            icon: '🎯',
+                            title: 'Performance',
+                            text: `${this.portfolioPercentile}th percentile among peer relationships`
+                        },
+                        {
+                            id: 'opportunity',
+                            icon: '💡',
+                            title: 'Next Steps',
+                            text: `Focus on ${this.relationshipClients.length} high-value clients for expansion`
+                        }
+                    )
+                    break
+                case 'penetration':
+                    insights.push(
+                        {
+                            id: 'current',
+                            icon: '📊',
+                            title: 'Current State',
+                            text: `${this.averageProductPenetration}% average penetration across portfolio`
+                        },
+                        {
+                            id: 'gap',
+                            icon: '🔍',
+                            title: 'Opportunity Gap',
+                            text: `${this.penetrationGap}% improvement potential identified`
+                        },
+                        {
+                            id: 'focus',
+                            icon: '🎯',
+                            title: 'Priority Products',
+                            text: 'Treasury and lending show highest cross-sell potential'
+                        }
+                    )
+                    break
+                case 'risk':
+                    insights.push(
+                        {
+                            id: 'level',
+                            icon: '⚠️',
+                            title: 'Risk Level',
+                            text: `${this.portfolioRiskLevel} overall risk with ${this.totalRiskFlags} active flags`
+                        },
+                        {
+                            id: 'trend',
+                            icon: this.riskFlagGrowthYoY > 0 ? '📈' : '📉',
+                            title: 'Risk Trend',
+                            text: `Risk flags ${this.riskFlagGrowthYoY > 0 ? 'increased' : 'decreased'} ${Math.abs(this.riskFlagGrowthYoY)}% YoY`
+                        },
+                        {
+                            id: 'action',
+                            icon: '🔧',
+                            title: 'Required Action',
+                            text: `${this.highRiskClientCount} clients need immediate attention`
+                        }
+                    )
+                    break
+                case 'opportunity':
+                    insights.push(
+                        {
+                            id: 'value',
+                            icon: '💰',
+                            title: 'Total Value',
+                            text: `${this.formatCurrency(this.totalOpportunityValue)} in identified opportunities`
+                        },
+                        {
+                            id: 'count',
+                            icon: '📝',
+                            title: 'Active Opportunities',
+                            text: `${this.totalOpportunities} opportunities across relationship`
+                        },
+                        {
+                            id: 'potential',
+                            icon: '🚀',
+                            title: 'High Potential',
+                            text: `Top ${this.opportunityPercentile}% relationship for revenue growth`
+                        }
+                    )
+                    break
+            }
+
+            return insights
+        }
+    },
+
+    mounted() {
+        this.$nextTick(() => {
+            this.initChart()
+        })
+    },
+
+    beforeUnmount() {
+        if (this.chartInstance) {
+            this.chartInstance.destroy()
+        }
+    },
+
+    watch: {
+        selectedMetric() {
+            this.$nextTick(() => {
+                this.createChart()
+            })
+        },
+        selectedTrendClient() {
+            this.$nextTick(() => {
+                this.createChart()
+            })
+        },
+        trendPeriod() {
+            this.$nextTick(() => {
+                this.createChart()
+            })
         }
     }
 }
