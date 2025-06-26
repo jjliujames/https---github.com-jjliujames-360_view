@@ -399,8 +399,10 @@
                     <!-- Chart Container -->
                     <div class="relative">
                         <div class="flex justify-center">
-                            <canvas ref="chartCanvas" :key="chartKey" width="800" height="400"
-                                class="max-w-full"></canvas>
+                            <div class="w-full max-w-4xl h-96">
+                                <VueApexCharts :key="`chart-${selectedMetric}-${chartKey}`" type="bar"
+                                    :options="chartOptions" :series="chartSeries" height="400" width="100%" />
+                            </div>
                         </div>
 
                         <!-- Chart Insights -->
@@ -426,33 +428,13 @@
 <script>
 import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { relationshipManagers, relationships, clients, formatCurrency, getRiskColor, getClientsByRelationshipId } from '../data/mockData.js'
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-} from 'chart.js'
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-)
+import VueApexCharts from 'vue3-apexcharts'
 
 export default {
     name: 'RelationshipView',
+    components: {
+        VueApexCharts
+    },
     props: ['relationshipId'],
     setup() {
         const clientViewType = ref('table')
@@ -460,9 +442,9 @@ export default {
         const trendPeriod = ref('monthly')
         const selectedMetric = ref('portfolio')
         const selectedTrendClient = ref('all')
-        const chartCanvas = ref(null)
-        const chartInstance = ref(null)
         const chartKey = ref(0)
+        const chartOptions = ref({})
+        const chartSeries = ref([])
 
         return {
             clientViewType,
@@ -470,9 +452,9 @@ export default {
             trendPeriod,
             selectedMetric,
             selectedTrendClient,
-            chartCanvas,
-            chartInstance,
-            chartKey
+            chartKey,
+            chartOptions,
+            chartSeries
         }
     },
     computed: {
@@ -1023,90 +1005,141 @@ export default {
             return baseValue + variation
         },
 
-        // Chart.js Methods
+        // ApexCharts Methods
         switchMetric(metric) {
+            console.log('🔄 Switching to metric:', metric, 'current:', this.selectedMetric)
+
+            // Update metric (even if it's the same - forces refresh)
             this.selectedMetric = metric
-            this.chartKey += 1 // Force re-render
-            this.$nextTick(() => {
-                this.initChart()
-            })
+
+            // Increment key to force component re-render
+            this.chartKey += 1
+
+            // Update chart data and options
+            this.updateChart()
         },
 
-        async initChart() {
-            await this.$nextTick()
-            if (this.$refs.chartCanvas) {
-                this.createChart()
-            }
-        },
+        updateChart() {
+            console.log('🎯 Updating chart for metric:', this.selectedMetric)
 
-        createChart() {
-            if (this.chartInstance) {
-                this.chartInstance.destroy()
-            }
+            // Generate chart data and options
+            const data = this.getChartData()
+            const options = this.getApexChartOptions()
 
-            const canvas = this.$refs.chartCanvas
-            if (!canvas) return
+            // Update reactive variables
+            this.chartSeries = data.series
+            this.chartOptions = options
 
-            const ctx = canvas.getContext('2d')
-            const chartData = this.getChartData()
-            const chartOptions = this.getChartOptions()
-
-            this.chartInstance = new ChartJS(ctx, {
-                type: 'bar',
-                data: chartData,
-                options: chartOptions
-            })
+            console.log('✅ Chart updated successfully for metric:', this.selectedMetric)
         },
 
         getChartData() {
             const labels = this.chartMonths
             const data = []
 
+            // Safely generate data with validation
             for (let i = 0; i < labels.length; i++) {
-                data.push(this.getMetricValue(this.selectedMetric, i))
+                try {
+                    const value = this.getMetricValue(this.selectedMetric, i)
+                    // Ensure value is a valid number
+                    data.push(isNaN(value) ? 0 : Number(value))
+                } catch (error) {
+                    console.error('Error getting metric value for index', i, error)
+                    data.push(0) // Default to 0 if error
+                }
             }
 
             return {
-                labels,
-                datasets: [{
-                    label: this.getMetricLabel(this.selectedMetric),
-                    data,
-                    backgroundColor: this.getMetricColor(this.selectedMetric),
-                    borderColor: this.getMetricColor(this.selectedMetric),
-                    borderWidth: 1
+                series: [{
+                    name: this.getMetricLabel(this.selectedMetric) || 'Unknown Metric',
+                    data: data || []
+                }],
+                categories: labels || []
+            }
+        },
+
+        getApexChartOptions() {
+            return {
+                chart: {
+                    type: 'bar',
+                    height: 400,
+                    toolbar: {
+                        show: false
+                    },
+                    background: 'transparent'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '60%',
+                        dataLabels: {
+                            position: 'top'
+                        }
+                    }
+                },
+                colors: [this.getMetricColor(this.selectedMetric)],
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: this.chartMonths,
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    labels: {
+                        style: {
+                            colors: '#6B7280',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: (value) => this.formatYAxisLabel(value),
+                        style: {
+                            colors: '#6B7280',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                grid: {
+                    show: false
+                },
+                title: {
+                    text: `${this.getMetricLabel(this.selectedMetric)} Trend (${this.trendPeriod})`,
+                    align: 'center',
+                    style: {
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#1F2937'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: (value) => this.formatTooltipValue(value)
+                    }
+                },
+                responsive: [{
+                    breakpoint: 768,
+                    options: {
+                        chart: {
+                            height: 300
+                        }
+                    }
                 }]
             }
         },
 
-        getChartOptions() {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: `${this.getMetricLabel(this.selectedMetric)} Trend (${this.trendPeriod})`
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            callback: (value) => this.formatYAxisLabel(value)
-                        }
-                    }
-                }
+        formatTooltipValue(value) {
+            if (this.selectedMetric === 'penetration') {
+                return `${value.toFixed(1)}%`
+            } else if (this.selectedMetric === 'portfolio' || this.selectedMetric === 'opportunity') {
+                return this.formatCurrency(value)
             }
+            return value.toString()
         },
 
         getMetricLabel(metric) {
@@ -1268,32 +1301,23 @@ export default {
     },
 
     mounted() {
-        this.$nextTick(() => {
-            this.initChart()
-        })
-    },
-
-    beforeUnmount() {
-        if (this.chartInstance) {
-            this.chartInstance.destroy()
-        }
+        console.log('Component mounted, initializing chart...')
+        // Initialize chart data
+        this.updateChart()
     },
 
     watch: {
-        selectedMetric() {
-            this.$nextTick(() => {
-                this.createChart()
-            })
+        selectedMetric(newMetric, oldMetric) {
+            console.log('Watch: selectedMetric changed from', oldMetric, 'to', newMetric)
+            // switchMetric handles the update
         },
         selectedTrendClient() {
-            this.$nextTick(() => {
-                this.createChart()
-            })
+            console.log('Watch: selectedTrendClient changed to', this.selectedTrendClient)
+            this.updateChart()
         },
         trendPeriod() {
-            this.$nextTick(() => {
-                this.createChart()
-            })
+            console.log('Watch: trendPeriod changed to', this.trendPeriod)
+            this.updateChart()
         }
     }
 }
