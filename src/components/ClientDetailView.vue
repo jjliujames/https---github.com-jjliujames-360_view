@@ -181,32 +181,45 @@
           <!-- Summary KPIs Row -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-4">
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-blue-600">{{ totalAccounts }}</div>
-                  <div class="text-sm text-gray-600">Total Accounts</div>
+                  <div class="text-xl font-bold text-blue-600">{{ totalAccounts }}</div>
+                  <div class="text-xs text-gray-600">Total Accounts</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
-                  <div class="text-sm text-gray-600">Total Deposit Balance</div>
+                  <div class="text-xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
+                  <div class="text-xs text-gray-600">Total Deposit Balance</div>
                   <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
                     getOrdinalSuffix(depositsPercentile) }} percentile</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalLoanAmount) }}</div>
-                  <div class="text-sm text-gray-600">Total Loans</div>
+                  <div class="text-xl font-bold text-orange-600">{{ formatCurrency(totalLoanAmount) }}</div>
+                  <div class="text-xs text-gray-600">Total Loans</div>
                   <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
                     getOrdinalSuffix(loansPercentile) }} percentile</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ loanUtilityRate }}%</div>
-                  <div class="text-sm text-gray-600">Loan Utility %</div>
+                  <div class="text-xl font-bold text-purple-600">{{ loanUtilityRate }}%</div>
+                  <div class="text-xs text-gray-600">Loan Utility %</div>
                   <div class="text-xs text-purple-500 font-medium">{{ loanUtilityPercentile }}{{
                     getOrdinalSuffix(loanUtilityPercentile) }} percentile</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-indigo-600">{{ numberOfOpportunities }}</div>
-                  <div class="text-sm text-gray-600">Opportunities</div>
+                  <div class="text-xl font-bold text-cyan-600">{{ formatCurrency(clientData?.annualRevenue || 0) }}
+                  </div>
+                  <div class="text-xs text-gray-600">Revenue</div>
+                  <div class="text-xs text-cyan-500 font-medium">{{ revenuePercentile }}{{
+                    getOrdinalSuffix(revenuePercentile) }} percentile</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-xl font-bold text-indigo-600">{{ numberOfOpportunities }}</div>
+                  <div class="text-xs text-gray-600">Opportunities</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-xl font-bold text-red-600">{{ totalRiskFlags }}</div>
+                  <div class="text-xs text-gray-600">Risk Flags</div>
+                  <div class="text-xs text-red-500 font-medium">{{ riskFlagsPercentile }}{{
+                    getOrdinalSuffix(riskFlagsPercentile) }} percentile</div>
                 </div>
               </div>
             </div>
@@ -2088,6 +2101,28 @@ const outflowsPercentile = computed(() => {
   return Math.floor(Math.random() * 25) + 65 // 65-89th percentile
 })
 
+const revenuePercentile = computed(() => {
+  // Generate percentile rank for revenue (higher is better)
+  return Math.floor(Math.random() * 35) + 65 // 65-99th percentile
+})
+
+const totalRiskFlags = computed(() => {
+  // Calculate total risk flags based on various factors
+  if (!clientData.value) return 0
+
+  const baseRiskFlags = Math.floor(Math.random() * 3) + 1 // 1-3 base flags
+  const industryRisk = clientData.value.industry?.toLowerCase().includes('high-risk') ? 2 : 0
+  const volumeRisk = totalMonthlyVolume.value > 5000000 ? 1 : 0 // High volume adds risk
+
+  return baseRiskFlags + industryRisk + volumeRisk
+})
+
+const riskFlagsPercentile = computed(() => {
+  // Generate percentile rank for risk flags (lower is better, so invert)
+  const basePercentile = Math.floor(Math.random() * 40) + 10 // 10-49th percentile (lower is better for risk)
+  return Math.min(95, basePercentile + (totalRiskFlags.value * 5)) // Risk flags increase percentile
+})
+
 // Account & Loan Portfolio Chart Data
 const accountLoanPortfolioData = computed(() => {
   if (!accountDetails.value || accountDetails.value.length === 0) return null
@@ -2311,9 +2346,6 @@ const avgRiskPercentile = computed(() => {
 })
 
 // Risk Flag Distribution Summary
-const totalRiskFlags = computed(() => {
-  return 8 // 18-32 total flags
-})
 
 const highRiskFlags = computed(() => {
   return Math.floor(Math.random() * 8) + 6 // 6-13 high risk flags
