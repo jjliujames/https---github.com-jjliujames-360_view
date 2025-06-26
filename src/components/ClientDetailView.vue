@@ -175,7 +175,7 @@
 
           <!-- Section Title -->
           <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Company Opportunities & Portfolio</h2>
+            <h2 class="text-2xl font-bold text-gray-900">Company Portfolio, Opportunities & Risk Overview</h2>
           </div>
 
           <!-- Summary KPIs Row -->
@@ -225,13 +225,22 @@
             </div>
           </div>
 
+          <!-- Product Analysis & Opportunities Section -->
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">💼 Product Analysis & Growth Opportunities</h2>
+            <p class="text-sm text-gray-500 mt-2">Comprehensive product portfolio review and AI-driven growth
+              recommendations</p>
+          </div>
+
           <!-- Product Penetration & AI Recommendations -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900">📈 Product Penetration & AI Recommendations</h3>
-                  <p class="text-sm text-gray-500 mt-1">Current product penetration with ML-powered growth opportunities
+                  <h3 class="text-xl font-semibold text-gray-900">📈 Product Penetration & AI-Powered Recommendations
+                  </h3>
+                  <p class="text-sm text-gray-500 mt-2">Cross-sell opportunities and growth potential analysis powered
+                    by machine learning insights
                   </p>
                 </div>
                 <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML Powered</span>
