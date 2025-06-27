@@ -175,7 +175,9 @@
 
           <!-- Section Title -->
           <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Company Portfolio, Opportunities & Risk Overview</h2>
+            <h2 class="text-2xl font-bold text-gray-900">📊 Portfolio Analysis & Risk Management</h2>
+            <p class="text-sm text-gray-500 mt-2">Comprehensive portfolio review with opportunities and risk assessment
+            </p>
           </div>
 
           <!-- Summary KPIs Row -->
@@ -225,1584 +227,1629 @@
             </div>
           </div>
 
-          <!-- Product Analysis & Opportunities Section -->
-          <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">💼 Product Analysis & Growth Opportunities</h2>
-            <p class="text-sm text-gray-500 mt-2">Comprehensive product portfolio review and AI-driven growth
-              recommendations</p>
-          </div>
-
-          <!-- Product Penetration & AI Recommendations -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-xl font-semibold text-gray-900">📈 Product Penetration & AI-Powered Recommendations
-                  </h3>
-                  <p class="text-sm text-gray-500 mt-2">Cross-sell opportunities and growth potential analysis powered
-                    by machine learning insights
-                  </p>
-                </div>
-                <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML Powered</span>
-              </div>
-            </div>
-            <div class="p-6">
-              <!-- Product Portfolio Breakdown -->
-              <div class="mb-8">
-                <h4 class="text-lg font-medium text-gray-900 mb-4">🏦 Product Portfolio Breakdown</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                  <!-- Business Deposit Product -->
-                  <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
-                      🟦 Business Deposit Product
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Checking</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Debit Cards</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">CDs</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Savings and Money Market</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Business Lending Product -->
-                  <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                    <h5 class="text-sm font-semibold text-indigo-900 mb-3 flex items-center">
-                      🟦 Business Lending Product
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Credit Cards</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Loans and Lines of Credit</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Securities-Based Lending</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Real Estate Financing</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Paycheck Protection Program (PPP)</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Commercial Lending Solutions -->
-                  <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                    <h5 class="text-sm font-semibold text-orange-900 mb-3 flex items-center">
-                      🟧 Commercial Lending Solutions
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Asset Based Lending</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Commercial Lending</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Commercial Real Estate</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Equipment Finance</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Treasury & Cash Management -->
-                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                    <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
-                      🟨 Treasury & Cash Management
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Liquidity Management</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Payables</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Receivables</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Fraud Control</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Information Services</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Treasury Overview & Articles</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Business Services & Support -->
-                  <div class="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <h5 class="text-sm font-semibold text-green-900 mb-3 flex items-center">
-                      🟩 Business Services & Support
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Online Banking</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Online Accounting</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Payroll</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Business Payment Suite</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Overdraft Services</span>
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Merchant Solutions</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">New to Small Business Checking</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Healthcare Professionals</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Wealth & Investment Services -->
-                  <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <h5 class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
-                      🟪 Wealth & Investment Services
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Investments</span>
-                        <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Wealth & Retirement Planning</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-700">Private Client Banking</span>
-                        <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                              clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                </div>
-
-                <!-- Legend -->
-                <div class="mt-6 flex justify-center items-center space-x-6 text-sm">
-                  <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">Client Has Product</span>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">AI Recommended</span>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
-                      <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="text-gray-700">Not Available/Recommended</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Product Penetration Overview -->
-              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="lg:col-span-1">
-                  <div class="text-center">
-                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ clientData?.productPenetration || 0 }}%</div>
-                    <div class="text-sm text-gray-600 mb-4">Current Product Penetration</div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
-                        :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
-                    </div>
-                    <div class="mt-3 text-xs text-gray-500">
-                      {{ 100 - (clientData?.productPenetration || 0) }}% growth opportunity remaining
-                    </div>
-                  </div>
-                </div>
-
-                <div class="lg:col-span-2">
-                  <h4 class="text-lg font-medium text-gray-900 mb-4">🤖 AI-Powered Product Recommendations</h4>
-                  <div class="space-y-3">
-                    <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
-                      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all">
-                      <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                          <div class="flex items-center space-x-2 mb-2">
-                            <h5 class="text-sm font-semibold text-blue-900">{{ recommendation.product }}</h5>
-                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-                              {{ recommendation.confidence }}% confidence
-                            </span>
-                          </div>
-                          <p class="text-sm text-blue-700 mb-2">{{ recommendation.reason }}</p>
-                          <div class="flex items-center space-x-4 text-xs text-gray-600">
-                            <span>💰 {{ formatCurrency(recommendation.potentialRevenue) }} potential</span>
-                            <span>🎯 {{ recommendation.priority }} priority</span>
-                          </div>
-                        </div>
-                        <div class="ml-4 flex flex-col space-y-2">
-                          <button @click="acceptRecommendation(recommendation)"
-                            class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
-                            Accept
-                          </button>
-                          <button
-                            class="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
-                            Details
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-                </div>
-              </div>
+          <!-- Tab Navigation -->
+          <div class="mb-6">
+            <div class="border-b border-gray-200">
+              <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button @click="activeTab = 'portfolio'" :class="[
+                  activeTab === 'portfolio'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                ]">
+                  💼 Portfolio & Opportunities
+                </button>
+                <button @click="activeTab = 'risk'" :class="[
+                  activeTab === 'risk'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
+                ]">
+                  🚨 Risk Analysis
+                </button>
+              </nav>
             </div>
           </div>
 
-          <!-- Account and Loan Portfolio Summary -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-medium text-gray-900">💼 Account and Loan Portfolio Summary</h3>
-                  <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="accountViewType = 'cards'"
-                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                    Card View
-                  </button>
-                  <button @click="accountViewType = 'table'"
-                    :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                    Table View
-                  </button>
-                </div>
-              </div>
+          <!-- Portfolio & Opportunities Tab Content -->
+          <div v-show="activeTab === 'portfolio'">
+            <!-- Product Analysis & Opportunities Section -->
+            <div class="text-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">💼 Product Analysis & Growth Opportunities</h2>
+              <p class="text-sm text-gray-500 mt-2">Comprehensive product portfolio review and AI-driven growth
+                recommendations</p>
             </div>
-            <div class="p-6">
 
-
-
-
-              <!-- Account Cards View -->
-              <div v-if="accountViewType === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div v-for="account in accountDetails" :key="account.id"
-                  class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all relative group"
-                  :class="getAccountCardClass(account.type)">
-                  <!-- Account Header -->
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="flex-1">
-                      <div class="flex items-center space-x-2">
-                        <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
-                        <span v-if="account.riskLevel === 'High'"
-                          class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                      </div>
-                      <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
-                    </div>
-                    <div class="text-right">
-                      <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
-                        {{ formatCurrency(account.balance) }}
-                      </span>
-                      <!-- Contextual Menu -->
-                      <div class="relative">
-                        <button @click="toggleAccountMenu(account.id)"
-                          class="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
-                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div v-if="openMenus[account.id]" @click.stop
-                          class="absolute right-0 top-6 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                          <div class="py-1">
-                            <button @click="quickAction('view-transactions', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              📊 View Transactions
-                            </button>
-                            <button @click="quickAction('generate-statement', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              📄 Generate Statement
-                            </button>
-                            <button @click="quickAction('flag-review', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              🚩 Flag for Review
-                            </button>
-                            <button @click="quickAction('create-task', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              ✅ Create Task
-                            </button>
-                            <button @click="quickAction('freeze-account', account)"
-                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                              ❄️ Freeze Account
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Account Metrics -->
-                  <div class="space-y-2 mb-3">
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Monthly Volume:</span>
-                      <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                      <span class="text-gray-600">Last Activity:</span>
-                      <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
-                    </div>
-                  </div>
-
-                  <!-- Quick Action Buttons -->
-                  <div class="grid grid-cols-2 gap-2">
-                    <button @click="quickAction('view-transactions', account)"
-                      class="text-xs py-1.5 px-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
-                      Trx
-                    </button>
-                    <button @click="quickAction('view-trends', account)"
-                      title="Explore monthly trends in deposits, loans, and flagged activity over time"
-                      class="text-xs py-1.5 px-2 bg-purple-50 text-purple-700 rounded-md hover:bg-purple-100 transition-colors">
-                      📊 View Trends
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Account Table View -->
-              <div v-if="accountViewType === 'table'" class="overflow-x-auto mb-6">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
-                      </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
-                      </th>
-                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Balance</th>
-                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Monthly Volume</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
-                        Activity</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
-                      @click="drillDownToAccount(account)">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
-                          <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          :class="getAccountTypeClass(account.type)">
-                          {{ account.type }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                        :class="getAccountBalanceColor(account.balance)">
-                        {{ formatCurrency(account.balance) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                        {{ formatCurrency(account.monthlyVolume) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ formatDate(account.lastTransaction) }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button class="text-blue-600 hover:text-blue-800">View</button>
-                        <span class="mx-2 text-gray-300">|</span>
-                        <button class="text-gray-600 hover:text-gray-800">History</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Account & Loan Portfolio Chart -->
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-4">
+            <!-- Product Penetration & AI Recommendations -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
                   <div>
-                    <h4 class="text-lg font-medium text-gray-900">📊 Account & Loan Portfolio Balance</h4>
-                    <p class="text-sm text-gray-500">Account balances (positive) vs loan utilization (negative) with
-                      available credit line</p>
+                    <h3 class="text-xl font-semibold text-gray-900">📈 Product Penetration & AI-Powered Recommendations
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-2">Cross-sell opportunities and growth potential analysis powered
+                      by machine learning insights
+                    </p>
+                  </div>
+                  <span class="text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full font-medium">🤖 ML
+                    Powered</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <!-- Product Portfolio Breakdown -->
+                <div class="mb-8">
+                  <h4 class="text-lg font-medium text-gray-900 mb-4">🏦 Product Portfolio Breakdown</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Business Deposit Product -->
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                        🟦 Business Deposit Product
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Checking</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Debit Cards</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">CDs</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Savings and Money Market</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Business Lending Product -->
+                    <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                      <h5 class="text-sm font-semibold text-indigo-900 mb-3 flex items-center">
+                        🟦 Business Lending Product
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Credit Cards</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Loans and Lines of Credit</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Securities-Based Lending</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Real Estate Financing</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Paycheck Protection Program (PPP)</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Commercial Lending Solutions -->
+                    <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                      <h5 class="text-sm font-semibold text-orange-900 mb-3 flex items-center">
+                        🟧 Commercial Lending Solutions
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Asset Based Lending</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Commercial Lending</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Commercial Real Estate</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Equipment Finance</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Treasury & Cash Management -->
+                    <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                      <h5 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+                        🟨 Treasury & Cash Management
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Liquidity Management</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Payables</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Receivables</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Fraud Control</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Information Services</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Treasury Overview & Articles</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Business Services & Support -->
+                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <h5 class="text-sm font-semibold text-green-900 mb-3 flex items-center">
+                        🟩 Business Services & Support
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Online Banking</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Online Accounting</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Payroll</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Business Payment Suite</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Overdraft Services</span>
+                          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Merchant Solutions</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">New to Small Business Checking</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Healthcare Professionals</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Wealth & Investment Services -->
+                    <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                      <h5 class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
+                        🟪 Wealth & Investment Services
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Investments</span>
+                          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Wealth & Retirement Planning</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm text-gray-700">Private Client Banking</span>
+                          <div class="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+
+                  <!-- Legend -->
+                  <div class="mt-6 flex justify-center items-center space-x-6 text-sm">
+                    <div class="flex items-center space-x-2">
+                      <div class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                        <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
+                      <span class="text-gray-700">Client Has Product</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <div class="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                        <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
+                      <span class="text-gray-700">AI Recommended</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <div class="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
+                        <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
+                      <span class="text-gray-700">Not Available/Recommended</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Product Penetration Overview -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                  <div class="lg:col-span-1">
+                    <div class="text-center">
+                      <div class="text-4xl font-bold text-blue-600 mb-2">{{ clientData?.productPenetration || 0 }}%
+                      </div>
+                      <div class="text-sm text-gray-600 mb-4">Current Product Penetration</div>
+                      <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                          :style="{ width: (clientData?.productPenetration || 0) + '%' }"></div>
+                      </div>
+                      <div class="mt-3 text-xs text-gray-500">
+                        {{ 100 - (clientData?.productPenetration || 0) }}% growth opportunity remaining
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lg:col-span-2">
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">🤖 AI-Powered Product Recommendations</h4>
+                    <div class="space-y-3">
+                      <div v-for="recommendation in aiRecommendations" :key="recommendation.product"
+                        class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between">
+                          <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                              <h5 class="text-sm font-semibold text-blue-900">{{ recommendation.product }}</h5>
+                              <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                {{ recommendation.confidence }}% confidence
+                              </span>
+                            </div>
+                            <p class="text-sm text-blue-700 mb-2">{{ recommendation.reason }}</p>
+                            <div class="flex items-center space-x-4 text-xs text-gray-600">
+                              <span>💰 {{ formatCurrency(recommendation.potentialRevenue) }} potential</span>
+                              <span>🎯 {{ recommendation.priority }} priority</span>
+                            </div>
+                          </div>
+                          <div class="ml-4 flex flex-col space-y-2">
+                            <button @click="acceptRecommendation(recommendation)"
+                              class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
+                              Accept
+                            </button>
+                            <button
+                              class="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                              Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account and Loan Portfolio Summary -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-medium text-gray-900">💼 Account and Loan Portfolio Summary</h3>
+                    <p class="text-sm text-gray-500 mt-1">Client account breakdown with drill-down capability</p>
                   </div>
                   <div class="flex space-x-2">
-                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Deposits</span>
-                    <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Loans</span>
-                  </div>
-                </div>
-                <div class="h-80 bg-gray-50 rounded-lg p-4">
-                  <BarChart v-if="accountLoanPortfolioData" :data="accountLoanPortfolioData" />
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Transaction Volume Analysis -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-medium text-gray-900">💸 Transaction Volume</h3>
-                  <p class="text-sm text-gray-500 mt-1">Monthly transaction flows by category (inflows positive,
-                    outflows negative)</p>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="showTransactionModal = true"
-                    class="px-3 py-1 text-xs bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition-colors">View
-                    Trx</button>
-                  <button class="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Pattern Review</button>
-                  <button class="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full">Normal Range</button>
-                </div>
-              </div>
-            </div>
-            <div class="p-6">
-              <div class="h-80">
-                <BarChart v-if="transactionVolumeData" :data="transactionVolumeData" />
-              </div>
-              <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
-                <div class="text-center p-3 bg-green-50 rounded-lg">
-                  <p class="text-green-600 font-medium">Total Inflows</p>
-                  <p class="text-xl font-bold text-green-900">$2.8M</p>
-                  <p class="text-xs text-green-500 font-medium">{{ inflowsPercentile }}{{
-                    getOrdinalSuffix(inflowsPercentile) }} percentile</p>
-                </div>
-                <div class="text-center p-3 bg-red-50 rounded-lg">
-                  <p class="text-red-600 font-medium">Total Outflows</p>
-                  <p class="text-xl font-bold text-red-900">$2.1M</p>
-                  <p class="text-xs text-red-500 font-medium">{{ outflowsPercentile }}{{
-                    getOrdinalSuffix(outflowsPercentile) }} percentile</p>
-                </div>
-                <div class="text-center p-3 bg-blue-50 rounded-lg">
-                  <p class="text-blue-600 font-medium">Net Flow</p>
-                  <p class="text-xl font-bold text-blue-900">$0.7M</p>
-                  <p class="text-xs text-blue-600">Positive trend</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-          <!-- Risk Analysis Section -->
-          <div class="text-center mb-4">
-            <h2 class="text-xl font-bold text-gray-900">🚨 Risk Analysis</h2>
-          </div>
-
-          <!-- Risk Analysis Content -->
-          <!-- Risk Flag Distribution -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
-                    investigation details</p>
-                </div>
-              </div>
-            </div>
-            <div class="p-4">
-              <!-- Summary Section -->
-              <div class="mb-6 flex justify-center">
-                <div class="bg-red-50 rounded-lg p-4 border border-red-200 w-64">
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</div>
-                    <div class="text-sm text-gray-600">Total Risk Flags</div>
+                    <button @click="accountViewType = 'cards'"
+                      :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'cards' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                      Card View
+                    </button>
+                    <button @click="accountViewType = 'table'"
+                      :class="['px-3 py-1 text-xs rounded-full', accountViewType === 'table' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                      Table View
+                    </button>
                   </div>
                 </div>
               </div>
+              <div class="p-6">
 
-              <!-- Risk Flag Breakdown -->
-              <div class="mb-6">
-                <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                  <!-- Non-Transactional Flag -->
-                  <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
-                      📋 Non-Transactional Flag
-                    </h5>
-                    <div class="space-y-2">
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
-                        <span class="text-sm text-gray-700">UTR Filed</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+
+
+                <!-- Account Cards View -->
+                <div v-if="accountViewType === 'cards'"
+                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  <div v-for="account in accountDetails" :key="account.id"
+                    class="account-card bg-gradient-to-br border rounded-lg p-4 hover:shadow-md transition-all relative group"
+                    :class="getAccountCardClass(account.type)">
+                    <!-- Account Header -->
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                          <h4 class="text-sm font-medium text-gray-900">{{ account.name }}</h4>
+                          <span v-if="account.riskLevel === 'High'"
+                            class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        </div>
+                        <p class="text-xs text-gray-500">{{ account.type }} • ****{{ account.number.slice(-4) }}</p>
                       </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
-                        @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
-                        <span class="text-sm text-gray-700">High Risk Industry</span>
-                        <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                      </div>
-                      <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded">
-                        <span class="text-sm text-gray-700">CTR-exemption</span>
-                        <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                      <div class="text-right">
+                        <span class="text-lg font-bold" :class="getAccountBalanceColor(account.balance)">
+                          {{ formatCurrency(account.balance) }}
+                        </span>
+                        <!-- Contextual Menu -->
+                        <div class="relative">
+                          <button @click="toggleAccountMenu(account.id)"
+                            class="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                            </svg>
+                          </button>
+                          <!-- Dropdown Menu -->
+                          <div v-if="openMenus[account.id]" @click.stop
+                            class="absolute right-0 top-6 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                            <div class="py-1">
+                              <button @click="quickAction('view-transactions', account)"
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                📊 View Transactions
+                              </button>
+                              <button @click="quickAction('generate-statement', account)"
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                📄 Generate Statement
+                              </button>
+                              <button @click="quickAction('flag-review', account)"
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                🚩 Flag for Review
+                              </button>
+                              <button @click="quickAction('create-task', account)"
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                ✅ Create Task
+                              </button>
+                              <button @click="quickAction('freeze-account', account)"
+                                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                ❄️ Freeze Account
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    <!-- Account Metrics -->
+                    <div class="space-y-2 mb-3">
+                      <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Monthly Volume:</span>
+                        <span class="font-medium">{{ formatCurrency(account.monthlyVolume) }}</span>
+                      </div>
+                      <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Last Activity:</span>
+                        <span class="text-gray-500">{{ formatDate(account.lastTransaction) }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="grid grid-cols-2 gap-2">
+                      <button @click="quickAction('view-transactions', account)"
+                        class="text-xs py-1.5 px-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
+                        Trx
+                      </button>
+                      <button @click="quickAction('view-trends', account)"
+                        title="Explore monthly trends in deposits, loans, and flagged activity over time"
+                        class="text-xs py-1.5 px-2 bg-purple-50 text-purple-700 rounded-md hover:bg-purple-100 transition-colors">
+                        📊 View Trends
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Account Table View -->
+                <div v-if="accountViewType === 'table'" class="overflow-x-auto mb-6">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Account
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
+                        </th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Balance</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Monthly Volume</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
+                          Activity</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="account in accountDetails" :key="account.id" class="hover:bg-gray-50 cursor-pointer"
+                        @click="drillDownToAccount(account)">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">{{ account.name }}</div>
+                            <div class="text-sm text-gray-500">****{{ account.number.slice(-4) }}</div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            :class="getAccountTypeClass(account.type)">
+                            {{ account.type }}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                          :class="getAccountBalanceColor(account.balance)">
+                          {{ formatCurrency(account.balance) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                          {{ formatCurrency(account.monthlyVolume) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {{ formatDate(account.lastTransaction) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button class="text-blue-600 hover:text-blue-800">View</button>
+                          <span class="mx-2 text-gray-300">|</span>
+                          <button class="text-gray-600 hover:text-gray-800">History</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Account & Loan Portfolio Chart -->
+                <div class="mb-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 class="text-lg font-medium text-gray-900">📊 Account & Loan Portfolio Balance</h4>
+                      <p class="text-sm text-gray-500">Account balances (positive) vs loan utilization (negative) with
+                        available credit line</p>
+                    </div>
+                    <div class="flex space-x-2">
+                      <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Deposits</span>
+                      <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Loans</span>
+                    </div>
+                  </div>
+                  <div class="h-80 bg-gray-50 rounded-lg p-4">
+                    <BarChart v-if="accountLoanPortfolioData" :data="accountLoanPortfolioData" />
                   </div>
 
-                  <!-- High Risk Trx -->
-                  <div class="bg-red-50 rounded-lg p-4 border border-red-200">
-                    <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
-                      🚨 High Risk Transactions
-                    </h5>
-                    <div class="grid grid-cols-1 gap-2">
-                      <!-- Row 1 -->
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
-                          <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
-                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transaction Volume Analysis -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-medium text-gray-900">💸 Transaction Volume</h3>
+                    <p class="text-sm text-gray-500 mt-1">Monthly transaction flows by category (inflows positive,
+                      outflows negative)</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button @click="showTransactionModal = true"
+                      class="px-3 py-1 text-xs bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition-colors">View
+                      Trx</button>
+                    <button class="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Pattern Review</button>
+                    <button class="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full">Normal Range</button>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="h-80">
+                  <BarChart v-if="transactionVolumeData" :data="transactionVolumeData" />
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
+                  <div class="text-center p-3 bg-green-50 rounded-lg">
+                    <p class="text-green-600 font-medium">Total Inflows</p>
+                    <p class="text-xl font-bold text-green-900">$2.8M</p>
+                    <p class="text-xs text-green-500 font-medium">{{ inflowsPercentile }}{{
+                      getOrdinalSuffix(inflowsPercentile) }} percentile</p>
+                  </div>
+                  <div class="text-center p-3 bg-red-50 rounded-lg">
+                    <p class="text-red-600 font-medium">Total Outflows</p>
+                    <p class="text-xl font-bold text-red-900">$2.1M</p>
+                    <p class="text-xs text-red-500 font-medium">{{ outflowsPercentile }}{{
+                      getOrdinalSuffix(outflowsPercentile) }} percentile</p>
+                  </div>
+                  <div class="text-center p-3 bg-blue-50 rounded-lg">
+                    <p class="text-blue-600 font-medium">Net Flow</p>
+                    <p class="text-xl font-bold text-blue-900">$0.7M</p>
+                    <p class="text-xs text-blue-600">Positive trend</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Analysis Tab Content -->
+          <div v-show="activeTab === 'risk'">
+            <!-- Risk Analysis Section -->
+            <div class="text-center mb-4">
+              <h2 class="text-xl font-bold text-gray-900">🚨 Risk Analysis</h2>
+            </div>
+
+            <!-- Risk Analysis Content -->
+            <!-- Risk Flag Distribution -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-xs text-gray-500 mt-1">Risk categories with detailed analysis - click for
+                      investigation details</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4">
+                <!-- Summary Section -->
+                <div class="mb-6 flex justify-center">
+                  <div class="bg-red-50 rounded-lg p-4 border border-red-200 w-64">
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</div>
+                      <div class="text-sm text-gray-600">Total Risk Flags</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Risk Flag Breakdown -->
+                <div class="mb-6">
+                  <h4 class="text-base font-medium text-gray-900 mb-3">🚨 Risk Flag Categories</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- Non-Transactional Flag -->
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <h5 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                        📋 Non-Transactional Flag
+                      </h5>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
+                          <span class="text-sm text-gray-700">UTR Filed</span>
+                          <div class="w-4 h-4 rounded-full bg-red-500"></div>
                         </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Cashier Check Purchase', type: 'high-risk-trx', riskLevel: 'medium', hasData: false })">
-                          <span class="text-xs text-gray-700">Cashier Check Purchase</span>
-                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded"
+                          @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
+                          <span class="text-sm text-gray-700">High Risk Industry</span>
+                          <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded">
+                          <span class="text-sm text-gray-700">CTR-exemption</span>
+                          <div class="w-4 h-4 rounded-full bg-green-500"></div>
                         </div>
                       </div>
-                      <!-- Row 2 -->
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Casino Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
-                          <span class="text-xs text-gray-700">Casino Trx</span>
-                          <div class="w-3 h-3 rounded-full bg-gray-400"></div>
-                        </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
-                          <span class="text-xs text-gray-700">Crypto Trx</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        </div>
-                      </div>
-                      <!-- Row 3 -->
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'High Cash Deposit', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
-                          <span class="text-xs text-gray-700">High Cash Deposit</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                          <span class="text-xs text-gray-700">High Cash Withdrawals</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        </div>
-                      </div>
-                      <!-- Row 4 -->
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
-                          <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                          <span class="text-xs text-gray-700">Luxury Goods Trx</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        </div>
-                      </div>
-                      <!-- Row 5 -->
+                    </div>
+
+                    <!-- High Risk Trx -->
+                    <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                      <h5 class="text-sm font-semibold text-red-900 mb-3 flex items-center">
+                        🚨 High Risk Transactions
+                      </h5>
                       <div class="grid grid-cols-1 gap-2">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
-                          @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
-                          <span class="text-xs text-gray-700">Third Party Check Deposit</span>
-                          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <!-- Row 1 -->
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                            <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
+                            <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                          </div>
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Cashier Check Purchase', type: 'high-risk-trx', riskLevel: 'medium', hasData: false })">
+                            <span class="text-xs text-gray-700">Cashier Check Purchase</span>
+                            <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                          </div>
+                        </div>
+                        <!-- Row 2 -->
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Casino Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: false })">
+                            <span class="text-xs text-gray-700">Casino Trx</span>
+                            <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                          </div>
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                            <span class="text-xs text-gray-700">Crypto Trx</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
+                        </div>
+                        <!-- Row 3 -->
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'High Cash Deposit', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                            <span class="text-xs text-gray-700">High Cash Deposit</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                            <span class="text-xs text-gray-700">High Cash Withdrawals</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
+                        </div>
+                        <!-- Row 4 -->
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'high-risk-trx', riskLevel: 'high', hasData: true })">
+                            <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                            <span class="text-xs text-gray-700">Luxury Goods Trx</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
+                        </div>
+                        <!-- Row 5 -->
+                        <div class="grid grid-cols-1 gap-2">
+                          <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded"
+                            @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'high-risk-trx', riskLevel: 'medium', hasData: true })">
+                            <span class="text-xs text-gray-700">Third Party Check Deposit</span>
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                   </div>
 
+
                 </div>
 
 
-              </div>
-
-
-            </div>
-          </div>
-
-          <!-- Risk Analytics & Time Series -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-medium text-gray-900">📊 Risk Analytics & Time Series</h3>
-                  <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down capabilities
-                  </p>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <select v-model="riskTimeframe" class="text-sm border border-gray-300 rounded-lg px-3 py-1">
-                    <option value="3M">Last 3 Months</option>
-                    <option value="6M">Last 6 Months</option>
-                    <option value="1Y">Last 12 Months</option>
-                    <option value="2Y">Last 24 Months</option>
-                  </select>
-                  <button @click="exportRiskData"
-                    class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">
-                    Export Data
-                  </button>
-                </div>
               </div>
             </div>
 
-            <div class="p-6">
-              <!-- Summary Section -->
-              <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-red-50 rounded-lg p-4 border border-red-200">
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}</div>
-                    <div class="text-sm text-gray-600">High Risk Transaction Amount</div>
-                    <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
-                      getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
+            <!-- Risk Analytics & Time Series -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-medium text-gray-900">📊 Risk Analytics & Time Series</h3>
+                    <p class="text-sm text-gray-500 mt-1">Historical risk pattern analysis with drill-down capabilities
+                    </p>
                   </div>
-                </div>
-                <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
-                    <div class="text-sm text-gray-600">High Risk Transactions</div>
-                    <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
-                      getOrdinalSuffix(riskCountPercentile) }} percentile</div>
-                  </div>
-                </div>
-                <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-yellow-600">{{ totalUTRFiled }}</div>
-                    <div class="text-sm text-gray-600">UTR Filed</div>
-                    <div class="text-xs text-yellow-500 font-medium">{{ utrPercentile }}{{
-                      getOrdinalSuffix(utrPercentile) }} percentile</div>
+                  <div class="flex items-center space-x-3">
+                    <select v-model="riskTimeframe" class="text-sm border border-gray-300 rounded-lg px-3 py-1">
+                      <option value="3M">Last 3 Months</option>
+                      <option value="6M">Last 6 Months</option>
+                      <option value="1Y">Last 12 Months</option>
+                      <option value="2Y">Last 24 Months</option>
+                    </select>
+                    <button @click="exportRiskData"
+                      class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">
+                      Export Data
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <!-- Risk Transaction Types Filter -->
-              <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center justify-between mb-3">
-                  <label class="text-sm font-medium text-gray-700">Risk Transaction Types:</label>
-                  <button @click="resetRiskTransactionFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset
-                    All</button>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  <label v-for="txnType in riskTransactionTypes" :key="txnType" class="flex items-center space-x-2">
-                    <input type="checkbox" v-model="selectedRiskTxnTypes" :value="txnType" class="rounded">
-                    <span class="text-xs text-gray-600">{{ txnType }}</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Charts Section -->
-              <div class="space-y-4">
-                <!-- Stacked Bar Chart - Risk Transactions -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
-                    <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
-                      →</button>
+              <div class="p-6">
+                <!-- Summary Section -->
+                <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-red-600">{{ formatCurrency(totalRiskTransactionAmount) }}
+                      </div>
+                      <div class="text-sm text-gray-600">High Risk Transaction Amount</div>
+                      <div class="text-xs text-red-500 font-medium">{{ riskAmountPercentile }}{{
+                        getOrdinalSuffix(riskAmountPercentile) }} percentile</div>
+                    </div>
                   </div>
-                  <div class="h-80" ref="riskTransactionChart">
-                    <BarChart :data="filteredRiskTransactionData" :options="riskTransactionChartOptions" />
+                  <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-orange-600">{{ totalRiskTransactionCount }}</div>
+                      <div class="text-sm text-gray-600">High Risk Transactions</div>
+                      <div class="text-xs text-orange-500 font-medium">{{ riskCountPercentile }}{{
+                        getOrdinalSuffix(riskCountPercentile) }} percentile</div>
+                    </div>
                   </div>
-                  <div class="mt-3 flex justify-between text-xs text-gray-600">
-                    <span>Total Selected Types: {{ formatCurrency(selectedTypesTotalAmount) }}</span>
-                    <span>{{ selectedRiskTxnTypes.length }} of {{ riskTransactionTypes.length }} types selected</span>
+                  <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-yellow-600">{{ totalUTRFiled }}</div>
+                      <div class="text-sm text-gray-600">UTR Filed</div>
+                      <div class="text-xs text-yellow-500 font-medium">{{ utrPercentile }}{{
+                        getOrdinalSuffix(utrPercentile) }} percentile</div>
+                    </div>
                   </div>
                 </div>
 
-                <!-- UTR Filed Scatter Chart -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-md font-medium text-gray-900">📋 Store UTR Filed</h4>
-                    <span class="text-xs text-gray-500">{{ totalUTRFiled }} events in selected period</span>
+                <!-- Risk Transaction Types Filter -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                  <div class="flex items-center justify-between mb-3">
+                    <label class="text-sm font-medium text-gray-700">Risk Transaction Types:</label>
+                    <button @click="resetRiskTransactionFilters" class="text-xs text-blue-600 hover:text-blue-800">Reset
+                      All</button>
                   </div>
-                  <div class="h-20" ref="utrScatterChart">
-                    <div class="relative h-full">
-                      <!-- UTR Events as dots -->
-                      <div class="absolute inset-0 flex items-center">
-                        <div class="w-full relative h-2 bg-gray-200 rounded">
-                          <div v-for="utrEvent in utrEvents" :key="utrEvent.id"
-                            class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white cursor-pointer hover:scale-125 transition-transform group"
-                            :style="{ left: utrEvent.position + '%', top: '-2px' }" @click="viewUTRDetails(utrEvent)">
-                            <!-- Tooltip -->
-                            <div
-                              class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 shadow-lg w-96">
-                              <div class="font-semibold">{{ utrEvent.date }}</div>
-                              <div class="text-gray-300">{{ utrEvent.description }}</div>
-                              <div class="text-yellow-300">Amount: {{ formatCurrency(utrEvent.amount) }}</div>
-                              <div class="text-blue-300">Officer: {{ utrEvent.officer }}</div>
-                              <div class="mt-1 text-gray-400 whitespace-normal">{{ utrEvent.notes }}</div>
-                              <!-- Tooltip arrow -->
+                  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <label v-for="txnType in riskTransactionTypes" :key="txnType" class="flex items-center space-x-2">
+                      <input type="checkbox" v-model="selectedRiskTxnTypes" :value="txnType" class="rounded">
+                      <span class="text-xs text-gray-600">{{ txnType }}</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="space-y-4">
+                  <!-- Stacked Bar Chart - Risk Transactions -->
+                  <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                      <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
+                      <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
+                        →</button>
+                    </div>
+                    <div class="h-80" ref="riskTransactionChart">
+                      <BarChart :data="filteredRiskTransactionData" :options="riskTransactionChartOptions" />
+                    </div>
+                    <div class="mt-3 flex justify-between text-xs text-gray-600">
+                      <span>Total Selected Types: {{ formatCurrency(selectedTypesTotalAmount) }}</span>
+                      <span>{{ selectedRiskTxnTypes.length }} of {{ riskTransactionTypes.length }} types selected</span>
+                    </div>
+                  </div>
+
+                  <!-- UTR Filed Scatter Chart -->
+                  <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                      <h4 class="text-md font-medium text-gray-900">📋 Store UTR Filed</h4>
+                      <span class="text-xs text-gray-500">{{ totalUTRFiled }} events in selected period</span>
+                    </div>
+                    <div class="h-20" ref="utrScatterChart">
+                      <div class="relative h-full">
+                        <!-- UTR Events as dots -->
+                        <div class="absolute inset-0 flex items-center">
+                          <div class="w-full relative h-2 bg-gray-200 rounded">
+                            <div v-for="utrEvent in utrEvents" :key="utrEvent.id"
+                              class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white cursor-pointer hover:scale-125 transition-transform group"
+                              :style="{ left: utrEvent.position + '%', top: '-2px' }" @click="viewUTRDetails(utrEvent)">
+                              <!-- Tooltip -->
                               <div
-                                class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
+                                class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 shadow-lg w-96">
+                                <div class="font-semibold">{{ utrEvent.date }}</div>
+                                <div class="text-gray-300">{{ utrEvent.description }}</div>
+                                <div class="text-yellow-300">Amount: {{ formatCurrency(utrEvent.amount) }}</div>
+                                <div class="text-blue-300">Officer: {{ utrEvent.officer }}</div>
+                                <div class="mt-1 text-gray-400 whitespace-normal">{{ utrEvent.notes }}</div>
+                                <!-- Tooltip arrow -->
+                                <div
+                                  class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="mt-3 flex justify-between text-xs text-gray-600">
-                    <span>Click dots for UTR details</span>
-                    <span> </span>
+                    <div class="mt-3 flex justify-between text-xs text-gray-600">
+                      <span>Click dots for UTR details</span>
+                      <span> </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
 
-        </div>
+          </div>
 
-      </div>
-    </div>
-  </div>
-
-  <!-- Transaction Details Modal -->
-  <div v-if="showTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    @click.self="showTransactionModal = false">
-    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-gray-200 bg-gray-50">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-xl font-semibold text-gray-900">💳 Transaction Details</h3>
-            <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction
-              History
-            </p>
-          </div>
-          <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Date Range Filters -->
-        <div class="mt-4 flex flex-wrap items-center gap-4">
-          <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">From:</label>
-            <input v-model="transactionFilters.startDate" type="date"
-              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          </div>
-          <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">To:</label>
-            <input v-model="transactionFilters.endDate" type="date"
-              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          </div>
-          <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">Type:</label>
-            <select v-model="transactionFilters.type"
-              class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="">All Types</option>
-              <option value="deposit">Deposits</option>
-              <option value="withdrawal">Withdrawals</option>
-              <option value="transfer">Transfers</option>
-              <option value="wire">Wires</option>
-              <option value="ach">ACH</option>
-              <option value="check">Checks</option>
-            </select>
-          </div>
-          <button @click="loadTransactions"
-            class="px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
-            Apply Filters
-          </button>
-          <button @click="resetFilters"
-            class="px-4 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors">
-            Reset
-          </button>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-        <!-- Transaction Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-green-50 p-4 rounded-lg">
-            <p class="text-sm text-green-600 font-medium">Total Inflows</p>
-            <p class="text-xl font-bold text-green-900">{{ formatCurrency(transactionSummary.totalInflows) }}</p>
-            <p class="text-xs text-green-600">{{ transactionSummary.inflowCount }} transactions</p>
-          </div>
-          <div class="bg-red-50 p-4 rounded-lg">
-            <p class="text-sm text-red-600 font-medium">Total Outflows</p>
-            <p class="text-xl font-bold text-red-900">{{ formatCurrency(transactionSummary.totalOutflows) }}</p>
-            <p class="text-xs text-red-600">{{ transactionSummary.outflowCount }} transactions</p>
-          </div>
-          <div class="bg-blue-50 p-4 rounded-lg">
-            <p class="text-sm text-blue-600 font-medium">Net Amount</p>
-            <p class="text-xl font-bold text-blue-900">{{ formatCurrency(transactionSummary.netAmount) }}</p>
-            <p class="text-xs text-blue-600">{{ transactionSummary.totalCount }} total transactions</p>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <p class="text-sm text-gray-600 font-medium">Average Amount</p>
-            <p class="text-xl font-bold text-gray-900">{{ formatCurrency(transactionSummary.averageAmount) }}</p>
-            <p class="text-xs text-gray-600">Per transaction</p>
-          </div>
-        </div>
-
-        <!-- Transaction Table -->
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Description
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
-                </th>
-                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
-                <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
-                <td class="px-4 py-3">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    :class="getTransactionTypeClass(transaction.type)">
-                    {{ transaction.type }}
-                  </span>
-                </td>
-                <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
-                <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
-                <td class="px-4 py-3 text-sm text-right font-medium"
-                  :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
-                  {{ formatCurrency(Math.abs(transaction.amount)) }}
-                  <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
-                </td>
-                <td class="px-4 py-3">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    :class="getStatusClass(transaction.status)">
-                    {{ transaction.status }}
-                  </span>
-                </td>
-                <td class="px-4 py-3">
-                  <span v-if="transaction.riskFlag"
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    :class="getRiskFlagClass(transaction.riskFlag)">
-                    {{ transaction.riskFlag }}
-                  </span>
-                  <span v-else class="text-xs text-gray-400">-</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="mt-6 flex items-center justify-between">
-          <div class="text-sm text-gray-700">
-            Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
-              filteredTransactions.length) }} of {{ filteredTransactions.length }} transactions
-          </div>
-          <div class="flex items-center space-x-2">
-            <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
-              class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-              Previous
-            </button>
-            <span class="px-3 py-1 text-sm text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
-            <button @click="currentPage = Math.min(totalPages, currentPage + 1)" :disabled="currentPage === totalPages"
-              class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-              Next
-            </button>
-          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Task Creation Modal -->
-  <div v-if="showTaskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
-      <div class="bg-gray-50 px-6 py-4 border-b flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900">Create New Task</h2>
-        <button @click="showTaskModal = false" class="text-gray-400 hover:text-gray-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <div class="p-6">
-        <form @submit.prevent="createTask" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
-            <select v-model="newTask.type"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="review">Account Review</option>
-              <option value="follow-up">Client Follow-up</option>
-              <option value="compliance">Compliance Check</option>
-              <option value="meeting">Schedule Meeting</option>
-              <option value="documentation">Update Documentation</option>
-              <option value="investigation">Risk Investigation</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-            <select v-model="newTask.priority"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="critical">Critical</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input v-model="newTask.title" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter task title" required>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea v-model="newTask.description" rows="3"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter task description"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
-            <input v-model="newTask.dueDate" type="date"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Related Account (optional)</label>
-            <select v-model="newTask.accountId"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Select account...</option>
-              <option v-for="account in accountDetails" :key="account.id" :value="account.id">
-                {{ account.name }} ({{ account.type }})
-              </option>
-            </select>
-          </div>
-
-          <div class="flex justify-end space-x-3 pt-4">
-            <button type="button" @click="showTaskModal = false"
-              class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Create
-              Task</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification Toast -->
-  <div v-if="showNotification"
-    class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all">
-    <div class="flex items-center space-x-2">
-      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd"
-          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-          clip-rule="evenodd" />
-      </svg>
-      <span>{{ notificationMessage }}</span>
-    </div>
-  </div>
-
-  <!-- Risk Flag Details Modal -->
-  <div v-if="showRiskFlagModal && selectedRiskFlag"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="closeRiskFlagModal">
-    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center" :class="selectedRiskFlag.riskLevel === 'high' ? 'bg-red-500' :
-              selectedRiskFlag.riskLevel === 'medium' ? 'bg-yellow-500' :
-                selectedRiskFlag.riskLevel === 'low' ? 'bg-green-500' : 'bg-gray-400'">
-              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path v-if="selectedRiskFlag.riskLevel === 'high' || selectedRiskFlag.riskLevel === 'medium'"
-                  fill-rule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                  clip-rule="evenodd" />
-                <path v-else-if="selectedRiskFlag.riskLevel === 'low'" fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd" />
-                <path v-else fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clip-rule="evenodd" />
-              </svg>
-            </div>
+    <!-- Transaction Details Modal -->
+    <div v-if="showTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click.self="showTransactionModal = false">
+      <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-gray-200 bg-gray-50">
+          <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-xl font-semibold text-gray-900">{{ selectedRiskFlag.category }} - Investigation
-                Details
-              </h3>
-              <p class="text-sm text-gray-600 mt-1">{{ selectedRiskFlag.type || 'Risk flag analysis' }} | Risk
-                Level: {{
-                  selectedRiskFlag.riskLevel || 'Medium' }}</p>
+              <h3 class="text-xl font-semibold text-gray-900">💳 Transaction Details</h3>
+              <p class="text-sm text-gray-600 mt-1">{{ clientData?.name || 'Client' }} - Individual Transaction
+                History
+              </p>
             </div>
-            <span class="px-3 py-1 text-sm font-medium rounded-full" :class="selectedRiskFlag.riskLevel === 'high' ? 'bg-red-100 text-red-800' :
-              selectedRiskFlag.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                selectedRiskFlag.riskLevel === 'low' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
-              {{ selectedRiskFlag.riskLevel || 'Medium' }} Risk
-            </span>
+            <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           </div>
-          <button @click="closeRiskFlagModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+
+          <!-- Date Range Filters -->
+          <div class="mt-4 flex flex-wrap items-center gap-4">
+            <div class="flex items-center space-x-2">
+              <label class="text-sm font-medium text-gray-700">From:</label>
+              <input v-model="transactionFilters.startDate" type="date"
+                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex items-center space-x-2">
+              <label class="text-sm font-medium text-gray-700">To:</label>
+              <input v-model="transactionFilters.endDate" type="date"
+                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex items-center space-x-2">
+              <label class="text-sm font-medium text-gray-700">Type:</label>
+              <select v-model="transactionFilters.type"
+                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Types</option>
+                <option value="deposit">Deposits</option>
+                <option value="withdrawal">Withdrawals</option>
+                <option value="transfer">Transfers</option>
+                <option value="wire">Wires</option>
+                <option value="ach">ACH</option>
+                <option value="check">Checks</option>
+              </select>
+            </div>
+            <button @click="loadTransactions"
+              class="px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
+              Apply Filters
+            </button>
+            <button @click="resetFilters"
+              class="px-4 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+          <!-- Transaction Summary -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-green-50 p-4 rounded-lg">
+              <p class="text-sm text-green-600 font-medium">Total Inflows</p>
+              <p class="text-xl font-bold text-green-900">{{ formatCurrency(transactionSummary.totalInflows) }}</p>
+              <p class="text-xs text-green-600">{{ transactionSummary.inflowCount }} transactions</p>
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="text-sm text-red-600 font-medium">Total Outflows</p>
+              <p class="text-xl font-bold text-red-900">{{ formatCurrency(transactionSummary.totalOutflows) }}</p>
+              <p class="text-xs text-red-600">{{ transactionSummary.outflowCount }} transactions</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="text-sm text-blue-600 font-medium">Net Amount</p>
+              <p class="text-xl font-bold text-blue-900">{{ formatCurrency(transactionSummary.netAmount) }}</p>
+              <p class="text-xs text-blue-600">{{ transactionSummary.totalCount }} total transactions</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <p class="text-sm text-gray-600 font-medium">Average Amount</p>
+              <p class="text-xl font-bold text-gray-900">{{ formatCurrency(transactionSummary.averageAmount) }}</p>
+              <p class="text-xs text-gray-600">Per transaction</p>
+            </div>
+          </div>
+
+          <!-- Transaction Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account
+                  </th>
+                  <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getTransactionTypeClass(transaction.type)">
+                      {{ transaction.type }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ transaction.description }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ transaction.account }}</td>
+                  <td class="px-4 py-3 text-sm text-right font-medium"
+                    :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ formatCurrency(Math.abs(transaction.amount)) }}
+                    <span class="text-xs ml-1">{{ transaction.amount >= 0 ? '↗' : '↙' }}</span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getStatusClass(transaction.status)">
+                      {{ transaction.status }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <span v-if="transaction.riskFlag"
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getRiskFlagClass(transaction.riskFlag)">
+                      {{ transaction.riskFlag }}
+                    </span>
+                    <span v-else class="text-xs text-gray-400">-</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+              Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
+                filteredTransactions.length) }} of {{ filteredTransactions.length }} transactions
+            </div>
+            <div class="flex items-center space-x-2">
+              <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
+                class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Previous
+              </button>
+              <span class="px-3 py-1 text-sm text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
+              <button @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                :disabled="currentPage === totalPages"
+                class="px-3 py-1 border rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Creation Modal -->
+    <div v-if="showTaskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+        <div class="bg-gray-50 px-6 py-4 border-b flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900">Create New Task</h2>
+          <button @click="showTaskModal = false" class="text-gray-400 hover:text-gray-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
+
+        <div class="p-6">
+          <form @submit.prevent="createTask" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
+              <select v-model="newTask.type"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="review">Account Review</option>
+                <option value="follow-up">Client Follow-up</option>
+                <option value="compliance">Compliance Check</option>
+                <option value="meeting">Schedule Meeting</option>
+                <option value="documentation">Update Documentation</option>
+                <option value="investigation">Risk Investigation</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+              <select v-model="newTask.priority"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+              <input v-model="newTask.title" type="text"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter task title" required>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea v-model="newTask.description" rows="3"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter task description"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+              <input v-model="newTask.dueDate" type="date"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Related Account (optional)</label>
+              <select v-model="newTask.accountId"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Select account...</option>
+                <option v-for="account in accountDetails" :key="account.id" :value="account.id">
+                  {{ account.name }} ({{ account.type }})
+                </option>
+              </select>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4">
+              <button type="button" @click="showTaskModal = false"
+                class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Create
+                Task</button>
+            </div>
+          </form>
+        </div>
       </div>
+    </div>
 
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-        <div v-if="generateRiskFlagData(selectedRiskFlag.category)" class="space-y-6">
+    <!-- Notification Toast -->
+    <div v-if="showNotification"
+      class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all">
+      <div class="flex items-center space-x-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd" />
+        </svg>
+        <span>{{ notificationMessage }}</span>
+      </div>
+    </div>
 
-          <!-- Summary Section -->
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 class="text-lg font-medium text-blue-900 mb-2">📋 Risk Assessment Summary</h4>
-            <p class="text-sm text-blue-800">{{ generateRiskFlagData(selectedRiskFlag.category).summary }}</p>
-          </div>
-
-          <!-- UTR Volume Data Section -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).volumeData" class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">📊 UTR Filing Volume</h4>
-            <div class="grid grid-cols-4 gap-4 mb-4">
-              <div class="text-center">
-                <div class="text-2xl font-bold text-red-600">{{
-                  generateRiskFlagData(selectedRiskFlag.category).volumeData.totalCount }}</div>
-                <div class="text-xs text-gray-500">Total UTRs Filed</div>
-              </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">{{
-                  generateRiskFlagData(selectedRiskFlag.category).volumeData.currentMonth }}</div>
-                <div class="text-xs text-gray-500">Current Month</div>
-              </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-gray-600">{{
-                  generateRiskFlagData(selectedRiskFlag.category).volumeData.previousMonth }}</div>
-                <div class="text-xs text-gray-500">Previous Month</div>
-              </div>
-              <div class="text-center">
-                <div class="text-lg font-bold"
-                  :class="generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
-                  {{ generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? '↗️' : '↘️' }}
-                </div>
-                <div class="text-xs text-gray-500">Trend</div>
-              </div>
-            </div>
-            <div class="h-48">
-              <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
-                :options="modalChartOptions" />
-            </div>
-          </div>
-
-          <!-- Industry Details Section -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).industryDetails" class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">🏭 Industry Risk Assessment</h4>
-            <div class="grid grid-cols-2 gap-6 mb-4">
-              <div>
-                <h5 class="font-medium text-gray-900 mb-2">Business Information</h5>
-                <div class="space-y-2 text-sm">
-                  <div><span class="font-medium">Industry:</span> {{
-                    generateRiskFlagData(selectedRiskFlag.category).industryDetails.primaryIndustry }}</div>
-                  <div><span class="font-medium">NAICS Code:</span> {{
-                    generateRiskFlagData(selectedRiskFlag.category).industryDetails.naicsCode }}</div>
-                  <div><span class="font-medium">Risk Rating:</span>
-                    <span class="px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
-                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.riskRating }}</span>
-                  </div>
-                  <div><span class="font-medium">CTR Exempt:</span>
-                    <span
-                      :class="generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'text-green-600' : 'text-red-600'">
-                      {{ generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'Yes' : 'No' }}
-                    </span>
-                  </div>
-                </div>
+    <!-- Risk Flag Details Modal -->
+    <div v-if="showRiskFlagModal && selectedRiskFlag"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click.self="closeRiskFlagModal">
+      <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden mx-4">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-6 h-6 rounded-full flex items-center justify-center" :class="selectedRiskFlag.riskLevel === 'high' ? 'bg-red-500' :
+                selectedRiskFlag.riskLevel === 'medium' ? 'bg-yellow-500' :
+                  selectedRiskFlag.riskLevel === 'low' ? 'bg-green-500' : 'bg-gray-400'">
+                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path v-if="selectedRiskFlag.riskLevel === 'high' || selectedRiskFlag.riskLevel === 'medium'"
+                    fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+                  <path v-else-if="selectedRiskFlag.riskLevel === 'low'" fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                  <path v-else fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clip-rule="evenodd" />
+                </svg>
               </div>
               <div>
-                <h5 class="font-medium text-gray-900 mb-2">Flag Status</h5>
-                <div class="space-y-3">
-                  <div class="border border-gray-200 rounded p-3">
-                    <div class="flex items-center mb-1">
-                      <div class="w-3 h-3 bg-white border-2 border-gray-400 rounded-full mr-2"></div>
-                      <span class="font-medium text-sm">White Flag</span>
-                      <span class="ml-2 px-2 py-1 rounded text-xs bg-green-100 text-green-800">{{
-                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.status }}</span>
+                <h3 class="text-xl font-semibold text-gray-900">{{ selectedRiskFlag.category }} - Investigation
+                  Details
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">{{ selectedRiskFlag.type || 'Risk flag analysis' }} | Risk
+                  Level: {{
+                    selectedRiskFlag.riskLevel || 'Medium' }}</p>
+              </div>
+              <span class="px-3 py-1 text-sm font-medium rounded-full" :class="selectedRiskFlag.riskLevel === 'high' ? 'bg-red-100 text-red-800' :
+                selectedRiskFlag.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  selectedRiskFlag.riskLevel === 'low' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                {{ selectedRiskFlag.riskLevel || 'Medium' }} Risk
+              </span>
+            </div>
+            <button @click="closeRiskFlagModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div v-if="generateRiskFlagData(selectedRiskFlag.category)" class="space-y-6">
+
+            <!-- Summary Section -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 class="text-lg font-medium text-blue-900 mb-2">📋 Risk Assessment Summary</h4>
+              <p class="text-sm text-blue-800">{{ generateRiskFlagData(selectedRiskFlag.category).summary }}</p>
+            </div>
+
+            <!-- UTR Volume Data Section -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).volumeData" class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">📊 UTR Filing Volume</h4>
+              <div class="grid grid-cols-4 gap-4 mb-4">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-red-600">{{
+                    generateRiskFlagData(selectedRiskFlag.category).volumeData.totalCount }}</div>
+                  <div class="text-xs text-gray-500">Total UTRs Filed</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-600">{{
+                    generateRiskFlagData(selectedRiskFlag.category).volumeData.currentMonth }}</div>
+                  <div class="text-xs text-gray-500">Current Month</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-gray-600">{{
+                    generateRiskFlagData(selectedRiskFlag.category).volumeData.previousMonth }}</div>
+                  <div class="text-xs text-gray-500">Previous Month</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-lg font-bold"
+                    :class="generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
+                    {{ generateRiskFlagData(selectedRiskFlag.category).volumeData.trend === 'increasing' ? '↗️' : '↘️'
+                    }}
+                  </div>
+                  <div class="text-xs text-gray-500">Trend</div>
+                </div>
+              </div>
+              <div class="h-48">
+                <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
+                  :options="modalChartOptions" />
+              </div>
+            </div>
+
+            <!-- Industry Details Section -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).industryDetails"
+              class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">🏭 Industry Risk Assessment</h4>
+              <div class="grid grid-cols-2 gap-6 mb-4">
+                <div>
+                  <h5 class="font-medium text-gray-900 mb-2">Business Information</h5>
+                  <div class="space-y-2 text-sm">
+                    <div><span class="font-medium">Industry:</span> {{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.primaryIndustry }}</div>
+                    <div><span class="font-medium">NAICS Code:</span> {{
+                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.naicsCode }}</div>
+                    <div><span class="font-medium">Risk Rating:</span>
+                      <span class="px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.riskRating }}</span>
                     </div>
-                    <div class="text-xs text-gray-600 ml-5">{{
-                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.reason }}</div>
-                    <div class="text-xs text-gray-500 ml-5 mt-1">Next Review: {{
-                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.nextReview }}</div>
-                  </div>
-                  <div class="border border-gray-200 rounded p-3">
-                    <div class="flex items-center mb-1">
-                      <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                      <span class="font-medium text-sm">Red Flag</span>
-                      <span class="ml-2 px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
-                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.status }}</span>
-                    </div>
-                    <div class="text-xs text-gray-600 ml-5">{{
-                      generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.reason }}</div>
-                    <div class="text-xs text-gray-500 ml-5 mt-1">
-                      <div
-                        v-for="trigger in generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.triggers"
-                        :key="trigger" class="mb-1">• {{ trigger }}</div>
+                    <div><span class="font-medium">CTR Exempt:</span>
+                      <span
+                        :class="generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'text-green-600' : 'text-red-600'">
+                        {{ generateRiskFlagData(selectedRiskFlag.category).industryDetails.ctrExempt ? 'Yes' : 'No' }}
+                      </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Monthly Volume Data Section -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume" class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">📈 Monthly Transaction Volume</h4>
-            <div class="grid grid-cols-4 gap-4 mb-4">
-              <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">{{
-                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.totalAmount) }}</div>
-                <div class="text-xs text-gray-500">Total (8 Months)</div>
-              </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-green-600">{{
-                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.currentMonth) }}</div>
-                <div class="text-xs text-gray-500">Current Month</div>
-              </div>
-              <div class="text-center">
-                <div class="text-2xl font-bold text-gray-600">{{
-                  formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.previousMonth) }}</div>
-                <div class="text-xs text-gray-500">Previous Month</div>
-              </div>
-              <div class="text-center">
-                <div class="text-lg font-bold"
-                  :class="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
-                  {{ generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? '↗️' : '↘️'
-                  }}
-                </div>
-                <div class="text-xs text-gray-500">Trend</div>
-              </div>
-            </div>
-            <div class="h-48">
-              <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
-                :options="modalChartOptions" />
-            </div>
-          </div>
-
-          <!-- Flag Details Section (for non-transaction flags) -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).flagDetails">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">🚩 Flag Details & Notes</h4>
-            <div class="space-y-4">
-              <div v-for="detail in generateRiskFlagData(selectedRiskFlag.category).flagDetails"
-                :key="detail.date || detail.category" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                <div v-if="detail.officer" class="flex items-start justify-between mb-2">
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-900">{{ formatDate(detail.date) }}</div>
-                    <div class="text-sm text-gray-700 mt-1">{{ detail.note }}</div>
-                    <div class="text-xs text-gray-500 mt-1">Officer: {{ detail.officer }}</div>
-                  </div>
-                  <div class="flex flex-col items-end">
-                    <span class="text-xs px-2 py-1 rounded" :class="detail.status === 'Filed' ? 'bg-green-100 text-green-800' :
-                      detail.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'">
-                      {{ detail.status }}
-                    </span>
-                    <span class="text-xs text-gray-500 mt-1">{{ detail.referenceNo }}</span>
+                <div>
+                  <h5 class="font-medium text-gray-900 mb-2">Flag Status</h5>
+                  <div class="space-y-3">
+                    <div class="border border-gray-200 rounded p-3">
+                      <div class="flex items-center mb-1">
+                        <div class="w-3 h-3 bg-white border-2 border-gray-400 rounded-full mr-2"></div>
+                        <span class="font-medium text-sm">White Flag</span>
+                        <span class="ml-2 px-2 py-1 rounded text-xs bg-green-100 text-green-800">{{
+                          generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.status }}</span>
+                      </div>
+                      <div class="text-xs text-gray-600 ml-5">{{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.reason }}</div>
+                      <div class="text-xs text-gray-500 ml-5 mt-1">Next Review: {{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.whiteFlag.nextReview }}</div>
+                    </div>
+                    <div class="border border-gray-200 rounded p-3">
+                      <div class="flex items-center mb-1">
+                        <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                        <span class="font-medium text-sm">Red Flag</span>
+                        <span class="ml-2 px-2 py-1 rounded text-xs bg-red-100 text-red-800">{{
+                          generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.status }}</span>
+                      </div>
+                      <div class="text-xs text-gray-600 ml-5">{{
+                        generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.reason }}</div>
+                      <div class="text-xs text-gray-500 ml-5 mt-1">
+                        <div
+                          v-for="trigger in generateRiskFlagData(selectedRiskFlag.category).industryDetails.redFlag.triggers"
+                          :key="trigger" class="mb-1">• {{ trigger }}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div v-else class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-900">{{ detail.category }}</div>
-                    <div class="text-sm text-gray-700 mt-1">{{ detail.detail }}</div>
-                    <div class="text-xs text-gray-500 mt-1">Last Review: {{ formatDate(detail.lastReview) }}</div>
-                  </div>
-                  <span class="text-xs px-2 py-1 rounded" :class="detail.riskLevel === 'High' ? 'bg-red-100 text-red-800' :
-                    detail.riskLevel === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                      detail.riskLevel === 'Compliant' ? 'bg-green-100 text-green-800' :
-                        'bg-gray-100 text-gray-800'">
-                    {{ detail.riskLevel }}
-                  </span>
-                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Transaction Details Section -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).transactions">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">💳 Transaction Details</h4>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
-                    </th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
-                    </th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="transaction in generateRiskFlagData(selectedRiskFlag.category).transactions"
-                    :key="transaction.date + transaction.amount" class="hover:bg-gray-50">
-                    <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
-                    <td class="px-4 py-4 text-sm font-medium text-right"
-                      :class="transaction.amount >= 10000 ? 'text-red-600' : 'text-gray-900'">
-                      {{ formatCurrency(transaction.amount) }}
-                    </td>
-                    <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.description }}</td>
-                    <td class="px-4 py-4 text-sm text-gray-500">
-                      <!-- UTR Filed Details -->
-                      <div v-if="selectedRiskFlag.category === 'UTR Filed'">
-                        <div class="font-medium">{{ transaction.referenceNo }}</div>
-                        <div class="text-xs text-gray-400">Officer: {{ transaction.officer }}</div>
-                        <div class="text-xs"
-                          :class="transaction.status === 'Filed' ? 'text-green-600' : 'text-yellow-600'">{{
-                            transaction.status }}</div>
-                      </div>
-
-                      <!-- Cash Transaction Details -->
-                      <div v-else-if="selectedRiskFlag.category.includes('Cash')">
-                        <div class="font-medium">{{ transaction.branch }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.teller || transaction.manager }}</div>
-                        <div v-if="transaction.purpose" class="text-xs text-gray-500">{{ transaction.purpose }}</div>
-                      </div>
-
-                      <!-- Third Party Cheque Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Third Party Cheque Deposit'">
-                        <div class="font-medium">{{ transaction.drawer }}</div>
-                        <div class="text-xs text-gray-400">Bank: {{ transaction.bank }}</div>
-                        <div class="text-xs text-gray-500">Payee: {{ transaction.payee }}</div>
-                      </div>
-
-                      <!-- Crypto Transaction Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Crypto Trx'">
-                        <div class="font-medium">{{ transaction.exchange }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.crypto }} ({{ transaction.type }})</div>
-                        <div class="text-xs text-gray-500">{{ transaction.wallet }}</div>
-                      </div>
-
-                      <!-- Luxury Goods Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Luxury Goods Trx'">
-                        <div class="font-medium">{{ transaction.merchant }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.category }}</div>
-                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
-                      </div>
-
-                      <!-- Casino Transaction Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Casino Trx'">
-                        <div class="font-medium">{{ transaction.casino }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.type }}</div>
-                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
-                      </div>
-
-                      <!-- HRJ Transaction Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'HRJ Trx (ATM/Wire/Debit)'">
-                        <div class="font-medium">{{ transaction.type }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.country }}{{ transaction.city ? ', ' +
-                          transaction.city : '' }}</div>
-                        <div v-if="transaction.bank" class="text-xs text-gray-500">{{ transaction.bank }}</div>
-                        <div v-if="transaction.terminal" class="text-xs text-gray-500">{{ transaction.terminal }}</div>
-                        <div v-if="transaction.status" class="text-xs text-red-600 font-medium">{{ transaction.status }}
-                        </div>
-                      </div>
-
-                      <!-- Cashier Cheque Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Cashier Cheque Purchase'">
-                        <div class="font-medium">{{ transaction.payee }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.purpose }}</div>
-                        <div class="text-xs text-gray-500">{{ transaction.branch }}</div>
-                      </div>
-
-                      <!-- Cannabis Transaction Details -->
-                      <div v-else-if="selectedRiskFlag.category === 'Cannabis-Related Trx'">
-                        <div class="font-medium">{{ transaction.merchant }}</div>
-                        <div class="text-xs text-gray-400">{{ transaction.category || transaction.license }}</div>
-                        <div class="text-xs text-gray-500">{{ transaction.location }}</div>
-                      </div>
-
-                      <!-- Default Details -->
-                      <div v-else>
-                        <div class="text-xs text-gray-500">{{ transaction.purpose || transaction.note || 'N/A' }}</div>
-                      </div>
-                    </td>
-                    <td class="px-4 py-4 text-sm text-gray-500">{{ transaction.time || 'N/A' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Investigations Section -->
-          <div v-if="generateRiskFlagData(selectedRiskFlag.category).investigations">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">🔍 Active Investigations</h4>
-            <div class="space-y-3">
-              <div v-for="investigation in generateRiskFlagData(selectedRiskFlag.category).investigations"
-                :key="investigation.id" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                <div class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-900">{{ investigation.id }}</div>
-                    <div class="text-sm text-gray-700 mt-1">{{ investigation.description }}</div>
-                    <div class="text-xs text-gray-500 mt-1">Assigned to: {{ investigation.assignedTo }}</div>
+            <!-- Monthly Volume Data Section -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume" class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">📈 Monthly Transaction Volume</h4>
+              <div class="grid grid-cols-4 gap-4 mb-4">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-blue-600">{{
+                    formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.totalAmount) }}</div>
+                  <div class="text-xs text-gray-500">Total (8 Months)</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-green-600">{{
+                    formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.currentMonth) }}</div>
+                  <div class="text-xs text-gray-500">Current Month</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-gray-600">{{
+                    formatCurrency(generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.previousMonth) }}</div>
+                  <div class="text-xs text-gray-500">Previous Month</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-lg font-bold"
+                    :class="generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? 'text-red-600' : 'text-green-600'">
+                    {{ generateRiskFlagData(selectedRiskFlag.category).monthlyVolume.trend === 'increasing' ? '↗️' :
+                      '↘️'
+                    }}
                   </div>
-                  <span class="text-xs px-2 py-1 rounded" :class="investigation.priority === 'Critical' ? 'bg-red-100 text-red-800' :
-                    investigation.priority === 'High' ? 'bg-orange-100 text-orange-800' :
-                      investigation.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                        investigation.priority === 'Ongoing' ? 'bg-blue-100 text-blue-800' :
+                  <div class="text-xs text-gray-500">Trend</div>
+                </div>
+              </div>
+              <div class="h-48">
+                <LineChart :data="generateRiskFlagData(selectedRiskFlag.category).chartData"
+                  :options="modalChartOptions" />
+              </div>
+            </div>
+
+            <!-- Flag Details Section (for non-transaction flags) -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).flagDetails">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">🚩 Flag Details & Notes</h4>
+              <div class="space-y-4">
+                <div v-for="detail in generateRiskFlagData(selectedRiskFlag.category).flagDetails"
+                  :key="detail.date || detail.category" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                  <div v-if="detail.officer" class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-900">{{ formatDate(detail.date) }}</div>
+                      <div class="text-sm text-gray-700 mt-1">{{ detail.note }}</div>
+                      <div class="text-xs text-gray-500 mt-1">Officer: {{ detail.officer }}</div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                      <span class="text-xs px-2 py-1 rounded" :class="detail.status === 'Filed' ? 'bg-green-100 text-green-800' :
+                        detail.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'">
+                        {{ detail.status }}
+                      </span>
+                      <span class="text-xs text-gray-500 mt-1">{{ detail.referenceNo }}</span>
+                    </div>
+                  </div>
+                  <div v-else class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-900">{{ detail.category }}</div>
+                      <div class="text-sm text-gray-700 mt-1">{{ detail.detail }}</div>
+                      <div class="text-xs text-gray-500 mt-1">Last Review: {{ formatDate(detail.lastReview) }}</div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded" :class="detail.riskLevel === 'High' ? 'bg-red-100 text-red-800' :
+                      detail.riskLevel === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                        detail.riskLevel === 'Compliant' ? 'bg-green-100 text-green-800' :
                           'bg-gray-100 text-gray-800'">
-                    {{ investigation.priority }}
-                  </span>
+                      {{ detail.riskLevel }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-            <button @click="closeRiskFlagModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-              Close
-            </button>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Generate Report
-            </button>
-            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-              Flag for Investigation
-            </button>
+            <!-- Transaction Details Section -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).transactions">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">💳 Transaction Details</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                      </th>
+                      <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                      </th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Description</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
+                      </th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="transaction in generateRiskFlagData(selectedRiskFlag.category).transactions"
+                      :key="transaction.date + transaction.amount" class="hover:bg-gray-50">
+                      <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(transaction.date) }}</td>
+                      <td class="px-4 py-4 text-sm font-medium text-right"
+                        :class="transaction.amount >= 10000 ? 'text-red-600' : 'text-gray-900'">
+                        {{ formatCurrency(transaction.amount) }}
+                      </td>
+                      <td class="px-4 py-4 text-sm text-gray-900">{{ transaction.description }}</td>
+                      <td class="px-4 py-4 text-sm text-gray-500">
+                        <!-- UTR Filed Details -->
+                        <div v-if="selectedRiskFlag.category === 'UTR Filed'">
+                          <div class="font-medium">{{ transaction.referenceNo }}</div>
+                          <div class="text-xs text-gray-400">Officer: {{ transaction.officer }}</div>
+                          <div class="text-xs"
+                            :class="transaction.status === 'Filed' ? 'text-green-600' : 'text-yellow-600'">{{
+                              transaction.status }}</div>
+                        </div>
+
+                        <!-- Cash Transaction Details -->
+                        <div v-else-if="selectedRiskFlag.category.includes('Cash')">
+                          <div class="font-medium">{{ transaction.branch }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.teller || transaction.manager }}</div>
+                          <div v-if="transaction.purpose" class="text-xs text-gray-500">{{ transaction.purpose }}</div>
+                        </div>
+
+                        <!-- Third Party Cheque Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Third Party Cheque Deposit'">
+                          <div class="font-medium">{{ transaction.drawer }}</div>
+                          <div class="text-xs text-gray-400">Bank: {{ transaction.bank }}</div>
+                          <div class="text-xs text-gray-500">Payee: {{ transaction.payee }}</div>
+                        </div>
+
+                        <!-- Crypto Transaction Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Crypto Trx'">
+                          <div class="font-medium">{{ transaction.exchange }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.crypto }} ({{ transaction.type }})</div>
+                          <div class="text-xs text-gray-500">{{ transaction.wallet }}</div>
+                        </div>
+
+                        <!-- Luxury Goods Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Luxury Goods Trx'">
+                          <div class="font-medium">{{ transaction.merchant }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.category }}</div>
+                          <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                        </div>
+
+                        <!-- Casino Transaction Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Casino Trx'">
+                          <div class="font-medium">{{ transaction.casino }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.type }}</div>
+                          <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                        </div>
+
+                        <!-- HRJ Transaction Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'HRJ Trx (ATM/Wire/Debit)'">
+                          <div class="font-medium">{{ transaction.type }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.country }}{{ transaction.city ? ', ' +
+                            transaction.city : '' }}</div>
+                          <div v-if="transaction.bank" class="text-xs text-gray-500">{{ transaction.bank }}</div>
+                          <div v-if="transaction.terminal" class="text-xs text-gray-500">{{ transaction.terminal }}
+                          </div>
+                          <div v-if="transaction.status" class="text-xs text-red-600 font-medium">{{ transaction.status
+                            }}
+                          </div>
+                        </div>
+
+                        <!-- Cashier Cheque Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Cashier Cheque Purchase'">
+                          <div class="font-medium">{{ transaction.payee }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.purpose }}</div>
+                          <div class="text-xs text-gray-500">{{ transaction.branch }}</div>
+                        </div>
+
+                        <!-- Cannabis Transaction Details -->
+                        <div v-else-if="selectedRiskFlag.category === 'Cannabis-Related Trx'">
+                          <div class="font-medium">{{ transaction.merchant }}</div>
+                          <div class="text-xs text-gray-400">{{ transaction.category || transaction.license }}</div>
+                          <div class="text-xs text-gray-500">{{ transaction.location }}</div>
+                        </div>
+
+                        <!-- Default Details -->
+                        <div v-else>
+                          <div class="text-xs text-gray-500">{{ transaction.purpose || transaction.note || 'N/A' }}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 text-sm text-gray-500">{{ transaction.time || 'N/A' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Investigations Section -->
+            <div v-if="generateRiskFlagData(selectedRiskFlag.category).investigations">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">🔍 Active Investigations</h4>
+              <div class="space-y-3">
+                <div v-for="investigation in generateRiskFlagData(selectedRiskFlag.category).investigations"
+                  :key="investigation.id" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-900">{{ investigation.id }}</div>
+                      <div class="text-sm text-gray-700 mt-1">{{ investigation.description }}</div>
+                      <div class="text-xs text-gray-500 mt-1">Assigned to: {{ investigation.assignedTo }}</div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded" :class="investigation.priority === 'Critical' ? 'bg-red-100 text-red-800' :
+                      investigation.priority === 'High' ? 'bg-orange-100 text-orange-800' :
+                        investigation.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                          investigation.priority === 'Ongoing' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'">
+                      {{ investigation.priority }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              <button @click="closeRiskFlagModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                Close
+              </button>
+              <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Generate Report
+              </button>
+              <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                Flag for Investigation
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -1849,6 +1896,9 @@ const timelineRange = ref('3M')
 const showAllEvents = ref(false)
 const selectedTxnTypes = ref(['Wire', 'Cash', 'Crypto', 'MSB'])
 const selectedFlagTypes = ref(['UTR', 'High Cash', 'MSB', 'Crypto'])
+
+// Tab State
+const activeTab = ref('portfolio')
 
 // Filter and chart options
 const transactionTypes = ['Wire', 'Cash', 'Crypto', 'MSB', 'ATM', 'ACH', 'Check']
