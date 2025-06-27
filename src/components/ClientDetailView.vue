@@ -67,33 +67,6 @@
             </div>
           </div>
 
-          <!-- Product & Relationship Summary -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-3 border-b border-gray-200">
-              <h3 class="text-base font-medium text-gray-900">Product & Relationship</h3>
-            </div>
-            <div class="p-4 space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-600">Total Accounts</span>
-                <span class="text-sm font-medium">{{ totalAccounts }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-600">Total Balance</span>
-                <span class="text-sm font-medium">{{ formatCurrency(totalBalance) }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-600">Annual Revenue</span>
-                <span class="text-sm font-medium">{{ formatCurrency(clientData?.annualRevenue || 0) }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-600">Relationship Length</span>
-                <span class="text-sm font-medium">{{ clientData?.relationshipYears || 0 }} years</span>
-              </div>
-            </div>
-          </div>
-
-
-
           <!-- Related party -->
           <div
             v-if="clientData?.beneficialOwners || clientData?.authorizedSigners || clientData?.conductors || clientData?.relatedEntities"
@@ -1777,7 +1750,7 @@
                           <div v-if="transaction.terminal" class="text-xs text-gray-500">{{ transaction.terminal }}
                           </div>
                           <div v-if="transaction.status" class="text-xs text-red-600 font-medium">{{ transaction.status
-                            }}
+                          }}
                           </div>
                         </div>
 
