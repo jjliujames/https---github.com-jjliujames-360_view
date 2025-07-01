@@ -20,7 +20,7 @@
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">{{ relationship?.name }}</h1>
                             <p class="text-gray-600 mt-1">{{ relationship?.industry }} • {{ relationshipClients.length
-                            }} Client Entities</p>
+                                }} Client Entities</p>
                             <div class="flex items-center space-x-4 mt-3">
                                 <span class="text-sm text-gray-500">RM: {{ relationshipManager?.name }}</span>
                                 <span class="text-sm text-gray-500">•</span>
@@ -494,7 +494,7 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Loans:</span>
                                     <span class="font-medium text-orange-600">{{ formatCurrency(getClientLoans(client))
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
 
