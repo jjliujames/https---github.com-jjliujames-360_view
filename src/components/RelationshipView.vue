@@ -70,7 +70,16 @@
                 </div>
                 <div class="p-4">
                     <!-- Enhanced KPI Cards with Trend Indicators -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 mb-6">
+                        <div @click="switchMetric('revenue')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'revenue' ? 'border-emerald-500 bg-emerald-50' : 'border-transparent hover:border-emerald-200 hover:bg-emerald-50']">
+                            <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(totalRevenue) }}</div>
+                            <div class="text-sm text-gray-600">Total Revenue</div>
+                            <div class="text-xs text-emerald-500 font-medium">{{ revenuePercentile }}{{
+                                getOrdinalSuffix(revenuePercentile) }} percentile</div>
+                            <div class="text-xs text-emerald-500 font-medium mt-1">📈 +18.7% (6M)</div>
+                        </div>
                         <div @click="switchMetric('accounts')"
                             :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
                                 selectedMetric === 'accounts' ? 'border-blue-500 bg-blue-50' : 'border-transparent hover:border-blue-200 hover:bg-blue-50']">
@@ -177,6 +186,94 @@
                                     <span class="text-sm font-medium text-gray-900">{{ insight.title }}</span>
                                 </div>
                                 <div class="text-xs text-gray-600">{{ insight.text }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔗 Entity Relationship Map -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">🔗 Entity Relationship Map</h2>
+                    <p class="text-sm text-gray-600 mt-1">Visual organization chart showing all client entities and
+                        their connections</p>
+                </div>
+                <div class="p-4">
+                    <!-- D3 Organizational Chart -->
+                    <OrgChart :orgData="johnsonHoldingsOrgData" @nodeClick="navigateToClient" />
+
+                    <!-- Chart Info Panel -->
+                    <div class="mt-4 bg-white border rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">4</div>
+                                <div class="text-gray-600">Total Entities</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600">3</div>
+                                <div class="text-gray-600">Operating Companies</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600">Low</div>
+                                <div class="text-gray-600">Risk Rating</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center text-xs text-gray-500">
+                            Click on subsidiary companies to view detailed client analysis
+                        </div>
+                    </div>
+
+                    <!-- Entity List -->
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-blue-600 rounded mr-2"></div>
+                                <span class="font-medium text-blue-800">Johnson Holdings Group</span>
+                            </div>
+                            <div class="text-xs text-blue-600 space-y-1">
+                                <div>Total Assets: $3.2B</div>
+                                <div>Entities: 3 companies</div>
+                                <div>Risk: Low</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                            @click="navigateToClient('johnson_mfg')">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-green-600 rounded mr-2"></div>
+                                <span class="font-medium text-green-800">Johnson Manufacturing LLC</span>
+                            </div>
+                            <div class="text-xs text-green-600 space-y-1">
+                                <div>Revenue: $850M</div>
+                                <div>Facilities: 5 plants</div>
+                                <div>Risk: Low</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                            @click="navigateToClient('jhg_sub_a')">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-green-600 rounded mr-2"></div>
+                                <span class="font-medium text-green-800">JHG - Subsidiary A</span>
+                            </div>
+                            <div class="text-xs text-green-600 space-y-1">
+                                <div>Revenue: $420M</div>
+                                <div>Focus: Services</div>
+                                <div>Risk: Low</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                            @click="navigateToClient('jhg_sub_b')">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-green-600 rounded mr-2"></div>
+                                <span class="font-medium text-green-800">JHG - Subsidiary B</span>
+                            </div>
+                            <div class="text-xs text-green-600 space-y-1">
+                                <div>Revenue: $315M</div>
+                                <div>Focus: Distribution</div>
+                                <div>Risk: Low</div>
                             </div>
                         </div>
                     </div>
@@ -415,18 +512,20 @@
 import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { relationshipManagers, relationships, clients, formatCurrency, getRiskColor, getClientsByRelationshipId } from '../data/mockData.js'
 import VueApexCharts from 'vue3-apexcharts'
+import OrgChart from './charts/OrgChart.vue'
 
 export default {
     name: 'RelationshipView',
     components: {
-        VueApexCharts
+        VueApexCharts,
+        OrgChart
     },
     props: ['relationshipId'],
     setup() {
         const clientViewType = ref('table')
         const riskChartPeriod = ref('monthly')
         const trendPeriod = ref('monthly')
-        const selectedMetric = ref('deposits')
+        const selectedMetric = ref('revenue')
         const selectedTrendClient = ref('all')
         const chartKey = ref(0)
         const chartOptions = ref({})
@@ -473,6 +572,16 @@ export default {
         totalLoans() {
             return this.relationshipClients.reduce((sum, client) => {
                 return sum + (client.productSummary?.lending?.balance || client.portfolioValue * 0.25 || 0)
+            }, 0)
+        },
+        totalRevenue() {
+            return this.relationshipClients.reduce((sum, client) => {
+                // Calculate revenue based on portfolio value and product mix
+                const portfolioValue = client.portfolioValue || 0
+                const depositRevenue = (client.productSummary?.deposit?.balance || portfolioValue * 0.6) * 0.015 // 1.5% NIM on deposits
+                const lendingRevenue = (client.productSummary?.lending?.balance || portfolioValue * 0.25) * 0.045 // 4.5% yield on loans
+                const feeRevenue = portfolioValue * 0.008 // 0.8% fee income
+                return sum + depositRevenue + lendingRevenue + feeRevenue
             }, 0)
         },
         totalAccounts() {
@@ -544,6 +653,37 @@ export default {
         },
         penetrationGap() {
             return 85 - this.averageProductPenetration
+        },
+
+        // D3 Org Chart Data
+        johnsonHoldingsOrgData() {
+            return {
+                name: 'Johnson Holdings Group',
+                assets: '$3.2B Total Assets',
+                children: [
+                    {
+                        id: 'johnson_mfg',
+                        name: 'Johnson Manufacturing LLC',
+                        revenue: '$850M Revenue',
+                        clickable: true,
+                        tooltip: '<strong>Johnson Manufacturing LLC</strong><br/>Revenue: $850M<br/>Facilities: 5 plants<br/>Risk: Low<br/><em>Click to view details</em>'
+                    },
+                    {
+                        id: 'jhg_sub_a',
+                        name: 'JHG - Subsidiary A',
+                        revenue: '$420M Revenue',
+                        clickable: true,
+                        tooltip: '<strong>JHG - Subsidiary A</strong><br/>Revenue: $420M<br/>Focus: Services<br/>Risk: Low<br/><em>Click to view details</em>'
+                    },
+                    {
+                        id: 'jhg_sub_b',
+                        name: 'JHG - Subsidiary B',
+                        revenue: '$315M Revenue',
+                        clickable: true,
+                        tooltip: '<strong>JHG - Subsidiary B</strong><br/>Revenue: $315M<br/>Focus: Distribution<br/>Risk: Low<br/><em>Click to view details</em>'
+                    }
+                ]
+            }
         },
 
         // Alert and Priority Data
@@ -655,6 +795,9 @@ export default {
         },
         loansPercentile() {
             return Math.floor(Math.random() * 40) + 60 // 60-99th percentile
+        },
+        revenuePercentile() {
+            return Math.floor(Math.random() * 30) + 70 // 70-99th percentile
         },
         accountsPercentile() {
             return Math.floor(Math.random() * 30) + 70 // 70-99th percentile
@@ -917,6 +1060,26 @@ export default {
             })
         },
 
+        navigateToClient(clientId) {
+            // Navigate to ClientDetailView for the specified entity
+            // Map entity IDs to actual client IDs from the relationship
+            const clientMappings = {
+                'johnson_mfg': 'client_001',      // Johnson Manufacturing LLC
+                'jhg_sub_a': 'client_002',        // JHG - Subsidiary A  
+                'jhg_sub_b': 'client_003'         // JHG - Subsidiary B
+            }
+
+            const actualClientId = clientMappings[clientId] || clientId
+
+            this.$router.push({
+                name: 'ClientDetail',
+                params: {
+                    ...this.$route.params,
+                    clientId: actualClientId
+                }
+            })
+        },
+
         goBackToRM() {
             if (this.relationship) {
                 this.$router.push({ name: 'RelationshipManager', params: { rmId: this.relationship.rmId } })
@@ -1063,7 +1226,14 @@ export default {
                 const data = []
                 for (let i = 0; i < labels.length; i++) {
                     let value = 0
-                    if (this.selectedMetric === 'deposits') {
+                    if (this.selectedMetric === 'revenue') {
+                        // Calculate client revenue based on portfolio
+                        const portfolioValue = client.portfolioValue || 0
+                        const depositRevenue = this.getClientDeposits(client) * 0.015 // 1.5% NIM
+                        const lendingRevenue = this.getClientLoans(client) * 0.045 // 4.5% yield
+                        const feeRevenue = portfolioValue * 0.008 // 0.8% fee income
+                        value = (depositRevenue + lendingRevenue + feeRevenue) * (0.75 + (i / 11) * 0.25) * (0.9 + Math.random() * 0.2)
+                    } else if (this.selectedMetric === 'deposits') {
                         value = this.getClientDeposits(client) * (0.8 + (i / 11) * 0.2) * (0.9 + Math.random() * 0.2)
                     } else if (this.selectedMetric === 'loans') {
                         value = this.getClientLoans(client) * (0.85 + (i / 11) * 0.15) * (0.9 + Math.random() * 0.2)
@@ -1297,11 +1467,12 @@ export default {
         },
 
         isStackedMetric(metric) {
-            return ['deposits', 'loans', 'accounts', 'opportunity', 'risk'].includes(metric)
+            return ['revenue', 'deposits', 'loans', 'accounts', 'opportunity', 'risk'].includes(metric)
         },
 
         getMetricColors(metric) {
             const colorSchemes = {
+                revenue: ['#059669', '#10B981', '#34D399', '#6EE7B7'],
                 deposits: ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0'],
                 loans: ['#F59E0B', '#FBBF24', '#FCD34D', '#FDE68A'],
                 accounts: ['#3B82F6', '#60A5FA', '#93C5FD', '#DBEAFE'],
@@ -1315,7 +1486,7 @@ export default {
         formatTooltipValue(value) {
             if (this.selectedMetric === 'penetration' || this.selectedMetric === 'utility') {
                 return `${value.toFixed(1)}%`
-            } else if (['deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
+            } else if (['revenue', 'deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
                 return this.formatCurrency(value)
             }
             return Math.floor(value).toString()
@@ -1323,6 +1494,7 @@ export default {
 
         getMetricLabel(metric) {
             const labels = {
+                revenue: 'Total Revenue',
                 accounts: 'Total Accounts',
                 deposits: 'Total Deposits',
                 loans: 'Total Loans',
@@ -1348,7 +1520,7 @@ export default {
         formatYAxisLabel(value) {
             if (this.selectedMetric === 'penetration' || this.selectedMetric === 'utility') {
                 return `${value}%`
-            } else if (['deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
+            } else if (['revenue', 'deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
                 if (value >= 1000000) {
                     return `$${(value / 1000000).toFixed(1)}M`
                 } else if (value >= 1000) {
@@ -1361,6 +1533,8 @@ export default {
 
         getMetricValue(metric, index) {
             switch (metric) {
+                case 'revenue':
+                    return this.totalRevenue * (0.75 + (index / 11) * 0.25) * (0.9 + Math.random() * 0.2)
                 case 'deposits':
                     return this.totalDeposits * (0.8 + (index / 11) * 0.2) * (0.9 + Math.random() * 0.2)
                 case 'loans':
@@ -1398,6 +1572,28 @@ export default {
             const insights = []
 
             switch (this.selectedMetric) {
+                case 'revenue':
+                    insights.push(
+                        {
+                            id: 'total',
+                            icon: '💰',
+                            title: 'Total Revenue',
+                            text: `${this.formatCurrency(this.totalRevenue)} annual revenue generated`
+                        },
+                        {
+                            id: 'growth',
+                            icon: '📈',
+                            title: 'Revenue Growth',
+                            text: `${this.revenuePercentile}th percentile performance, trending upward`
+                        },
+                        {
+                            id: 'composition',
+                            icon: '🎯',
+                            title: 'Revenue Mix',
+                            text: 'Balanced across deposits, lending, and fee income streams'
+                        }
+                    )
+                    break
                 case 'portfolio':
                     insights.push(
                         {
@@ -1493,6 +1689,7 @@ export default {
 
         getMetricDisplayName(metric) {
             const names = {
+                revenue: 'Total Revenue',
                 accounts: 'Total Accounts',
                 deposits: 'Total Deposits',
                 loans: 'Total Loans',
@@ -1505,6 +1702,7 @@ export default {
 
         getMetricInsight(metric) {
             const insights = {
+                revenue: 'Revenue trends show relationship profitability and fee income generation',
                 accounts: 'Account growth indicates relationship expansion and engagement',
                 deposits: 'Deposit trends reflect client liquidity and trust in the relationship',
                 loans: 'Lending utilization shows credit facility adoption and business growth',
