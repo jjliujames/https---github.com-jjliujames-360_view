@@ -18,6 +18,15 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center space-x-2">
+            <!-- Alert Indicator -->
+            <button v-if="totalAlertCount > 0" @click="showAlertModal = true"
+              class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+              :class="alertIndicatorClass">
+              <span class="text-lg">{{ alertIndicatorIcon }}</span>
+              <span>{{ totalAlertCount }} Alert{{ totalAlertCount > 1 ? 's' : '' }}</span>
+              <div v-if="hasCriticalAlerts" class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            </button>
+
             <button @click="clientAction('generate-report')"
               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
               Generate Report
@@ -200,6 +209,10 @@
             </div>
           </div>
 
+
+
+
+
           <!-- Tab Navigation -->
           <div class="mb-6">
             <div class="border-b border-gray-200">
@@ -219,6 +232,17 @@
                   'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
                 ]">
                   🚨 Risk Analysis
+                </button>
+                <button @click="activeTab = 'loans'" :class="[
+                  activeTab === 'loans'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-1'
+                ]">
+                  <span>📋 Loan Applications</span>
+                  <span v-if="pendingLoansCount > 0" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                    {{ pendingLoansCount }} Pending
+                  </span>
                 </button>
               </nav>
             </div>
@@ -1750,7 +1774,7 @@
                           <div v-if="transaction.terminal" class="text-xs text-gray-500">{{ transaction.terminal }}
                           </div>
                           <div v-if="transaction.status" class="text-xs text-red-600 font-medium">{{ transaction.status
-                          }}
+                            }}
                           </div>
                         </div>
 
@@ -1823,6 +1847,456 @@
     </div>
   </div>
 
+  <!-- Loan Applications Tab Content -->
+  <div v-show="activeTab === 'loans'">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">📋 Loan Application Management</h2>
+      <p class="text-sm text-gray-500 mt-2">Track current applications and review lending history</p>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="p-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{{ allLoanApplications.length }}</div>
+            <div class="text-xs text-gray-600">Total Applications</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-orange-600">{{ pendingLoansCount }}</div>
+            <div class="text-xs text-gray-600">Pending Review</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">{{ approvedLoansCount }}</div>
+            <div class="text-xs text-gray-600">Approved Loans</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(totalLoanPipeline) }}</div>
+            <div class="text-xs text-gray-600">Pipeline Value</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="p-4">
+        <div class="flex flex-wrap items-center space-x-4">
+          <div>
+            <label class="text-sm font-medium text-gray-700">Status:</label>
+            <select v-model="loanStatusFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-gray-700">Type:</label>
+            <select v-model="loanTypeFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+              <option value="all">All Types</option>
+              <option value="sba">SBA Loans</option>
+              <option value="commercial">Commercial</option>
+              <option value="real-estate">Real Estate</option>
+              <option value="equipment">Equipment</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-gray-700">Sort by:</label>
+            <select v-model="loanSortBy" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+              <option value="date">Application Date</option>
+              <option value="amount">Loan Amount</option>
+              <option value="status">Status</option>
+              <option value="type">Loan Type</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loan Applications List -->
+    <div class="space-y-4">
+      <div v-for="application in filteredLoanApplications" :key="application.id"
+        class="bg-white rounded-lg shadow-sm border border-gray-200">
+
+        <!-- Collapsed Header (Always Visible) -->
+        <div class="p-4 cursor-pointer" @click="toggleLoanApplication(application.id)">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3">
+                <h4 class="font-semibold text-gray-900">{{ application.loanType }}</h4>
+                <span class="text-lg font-bold text-blue-600">{{ formatCurrency(application.requestedAmount) }}</span>
+                <span class="px-2 py-1 text-xs font-medium rounded-full"
+                  :class="getLoanStatusClass(application.status)">
+                  {{ application.status }}
+                </span>
+                <span v-if="application.status === 'Pending' && application.completionPercentage"
+                  class="text-xs text-gray-500">
+                  {{ application.completionPercentage }}% Complete
+                </span>
+              </div>
+              <div class="mt-1 text-sm text-gray-600">
+                Applied: {{ application.applicationDate }}
+                <span v-if="application.loanOfficer" class="ml-3">Officer: {{ application.loanOfficer }}</span>
+                <span v-if="application.decisionDate" class="ml-3">Decision: {{ application.decisionDate }}</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span v-if="application.status === 'Pending'" class="text-xs text-orange-600 font-medium">
+                Est. Closing: {{ application.estimatedClosing }}
+              </span>
+              <svg class="w-5 h-5 text-gray-400 transition-transform"
+                :class="{ 'rotate-180': expandedApplications.includes(application.id) }" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expanded Content -->
+        <div v-show="expandedApplications.includes(application.id)" class="border-t border-gray-200">
+          <div class="p-4">
+
+            <!-- Application Details -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <h5 class="text-sm font-medium text-gray-700 mb-2">Application Info</h5>
+                <div class="text-sm space-y-1">
+                  <div><span class="text-gray-600">ID:</span> {{ application.applicationId }}</div>
+                  <div><span class="text-gray-600">Term:</span> {{ application.termLength }}</div>
+                  <div v-if="application.interestRate"><span class="text-gray-600">Rate:</span> {{
+                    application.interestRate }}</div>
+                  <div v-if="application.collateral"><span class="text-gray-600">Collateral:</span> {{
+                    application.collateral }}</div>
+                </div>
+              </div>
+              <div>
+                <h5 class="text-sm font-medium text-gray-700 mb-2">Financial Details</h5>
+                <div class="text-sm space-y-1">
+                  <div><span class="text-gray-600">Requested:</span> {{ formatCurrency(application.requestedAmount) }}
+                  </div>
+                  <div v-if="application.approvedAmount"><span class="text-gray-600">Approved:</span> {{
+                    formatCurrency(application.approvedAmount) }}</div>
+                  <div v-if="application.outstandingBalance"><span class="text-gray-600">Outstanding:</span> {{
+                    formatCurrency(application.outstandingBalance) }}</div>
+                  <div v-if="application.monthlyPayment"><span class="text-gray-600">Payment:</span> {{
+                    formatCurrency(application.monthlyPayment) }}/mo</div>
+                </div>
+              </div>
+              <div>
+                <h5 class="text-sm font-medium text-gray-700 mb-2">Status & Timeline</h5>
+                <div class="text-sm space-y-1">
+                  <div><span class="text-gray-600">Status:</span> {{ application.status }}</div>
+                  <div><span class="text-gray-600">Applied:</span> {{ application.applicationDate }}</div>
+                  <div v-if="application.decisionDate"><span class="text-gray-600">Decision:</span> {{
+                    application.decisionDate }}</div>
+                  <div v-if="application.fundingDate"><span class="text-gray-600">Funded:</span> {{
+                    application.fundingDate }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress Steps for Pending Applications -->
+            <div v-if="application.status === 'Pending'" class="mb-6">
+              <h5 class="text-sm font-medium text-gray-700 mb-3">Application Progress</h5>
+              <div class="space-y-3">
+                <div v-for="step in loanProcessSteps" :key="step.id" class="flex items-center space-x-3 p-3 rounded-lg"
+                  :class="getStepClass(step, application)">
+                  <div class="flex-shrink-0">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center"
+                      :class="getStepIconClass(step, application)">
+                      <span v-if="isStepCompleted(step, application)" class="text-white text-xs">✓</span>
+                      <span v-else-if="isStepInProgress(step, application)" class="text-white text-xs">⋯</span>
+                      <span v-else class="text-gray-400 text-xs">{{ step.id }}</span>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h6 class="font-medium text-sm">{{ step.icon }} {{ step.title }}</h6>
+                      <span class="text-xs" :class="getStepStatusClass(step, application)">
+                        {{ getStepStatus(step, application) }}
+                      </span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1">{{ step.description }}</p>
+                    <div v-if="step.requirements && isStepInProgress(step, application)" class="mt-2">
+                      <div class="text-xs text-gray-500 mb-1">Required:</div>
+                      <ul class="text-xs space-y-1">
+                        <li v-for="req in step.requirements" :key="req" class="flex items-center space-x-1">
+                          <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+                          <span>{{ req }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-2">
+              <button @click="viewApplicationDetails(application)"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                View Full Details
+              </button>
+              <button v-if="application.status === 'Pending'" @click="updateApplicationStatus(application)"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+                Update Status
+              </button>
+              <button v-if="application.loanOfficer" @click="contactLoanOfficer(application)"
+                class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700">
+                Contact Officer
+              </button>
+              <button @click="generateLoanReport(application)"
+                class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
+                Generate Report
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-if="filteredLoanApplications.length === 0" class="text-center py-8 text-gray-500">
+      <span class="text-4xl">📄</span>
+      <p class="mt-2">No loan applications found matching your criteria</p>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div v-if="showAlertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    @click.self="showAlertModal = false">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+              ⚠️ Client Alerts - {{ clientData?.name }}
+            </h2>
+            <p class="text-sm text-gray-600 mt-1">
+              {{ totalAlertCount }} active alert{{ totalAlertCount > 1 ? 's' : '' }} requiring attention
+            </p>
+          </div>
+          <button @click="showAlertModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Alert Tabs -->
+        <div class="mt-4 border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8" aria-label="Alert Tabs">
+            <button @click="activeAlertTab = 'delinquency'" :class="[
+              activeAlertTab === 'delinquency'
+                ? 'border-red-500 text-red-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+            ]">
+              <span>🚨</span>
+              <span>Loan Delinquency</span>
+              <span v-if="loanDelinquencyAlerts.length > 0"
+                class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                {{ loanDelinquencyAlerts.length }}
+              </span>
+            </button>
+            <button @click="activeAlertTab = 'overdraft'" :class="[
+              activeAlertTab === 'overdraft'
+                ? 'border-orange-500 text-orange-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+            ]">
+              <span>💰</span>
+              <span>Overdraft</span>
+              <span v-if="overdraftAlerts.length > 0"
+                class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                {{ overdraftAlerts.length }}
+              </span>
+            </button>
+            <button @click="activeAlertTab = 'other'" :class="[
+              activeAlertTab === 'other'
+                ? 'border-yellow-500 text-yellow-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+            ]">
+              <span>⚠️</span>
+              <span>Other Alerts</span>
+              <span v-if="otherAlerts.length > 0" class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                {{ otherAlerts.length }}
+              </span>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 max-h-96 overflow-y-auto">
+        <!-- Loan Delinquency Tab -->
+        <div v-show="activeAlertTab === 'delinquency'">
+          <div v-if="loanDelinquencyAlerts.length === 0" class="text-center py-8 text-gray-500">
+            <span class="text-4xl">✅</span>
+            <p class="mt-2">No loan delinquency alerts</p>
+          </div>
+          <div v-else class="space-y-4">
+            <div v-for="alert in loanDelinquencyAlerts" :key="alert.id"
+              class="border border-red-200 rounded-lg p-4 bg-red-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-3">
+                    <h4 class="font-semibold text-red-900">{{ alert.loanType }}</h4>
+                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                      {{ alert.daysPastDue }} days past due
+                    </span>
+                    <span class="bg-red-200 text-red-900 text-xs px-2 py-1 rounded-full font-medium">
+                      {{ alert.severity }}
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                    <div>
+                      <span class="text-gray-600">Account:</span>
+                      <div class="font-medium">{{ alert.accountNumber }}</div>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Amount Due:</span>
+                      <div class="font-medium text-red-600">{{ formatCurrency(alert.amountDue) }}</div>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Last Payment:</span>
+                      <div class="font-medium">{{ alert.lastPaymentDate }}</div>
+                    </div>
+                  </div>
+                  <div class="text-sm">
+                    <span class="text-gray-600">Total Outstanding:</span>
+                    <span class="font-medium text-red-700 ml-1">{{ formatCurrency(alert.totalOutstanding) }}</span>
+                    <span class="text-gray-600 ml-3">Original Amount:</span>
+                    <span class="font-medium ml-1">{{ formatCurrency(alert.originalAmount) }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col space-y-2 ml-4">
+                  <button @click="handleDelinquencyAlert(alert)"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700">
+                    Review Now
+                  </button>
+                  <button @click="scheduleCall(alert)"
+                    class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
+                    Schedule Call
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overdraft Tab -->
+        <div v-show="activeAlertTab === 'overdraft'">
+          <div v-if="overdraftAlerts.length === 0" class="text-center py-8 text-gray-500">
+            <span class="text-4xl">✅</span>
+            <p class="mt-2">No overdraft alerts</p>
+          </div>
+          <div v-else class="space-y-4">
+            <div v-for="alert in overdraftAlerts" :key="alert.id"
+              class="border border-orange-200 rounded-lg p-4 bg-orange-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-3">
+                    <h4 class="font-semibold text-orange-900">{{ alert.accountType }}</h4>
+                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                      {{ alert.severity }} Priority
+                    </span>
+                    <span class="bg-orange-200 text-orange-900 text-xs px-2 py-1 rounded-full font-medium">
+                      {{ alert.daysOverdrawn }} days overdrawn
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                    <div>
+                      <span class="text-gray-600">Account:</span>
+                      <div class="font-medium">{{ alert.accountNumber }}</div>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Current Balance:</span>
+                      <div class="font-medium text-orange-600">{{ formatCurrency(alert.currentBalance) }}</div>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Overdraft Amount:</span>
+                      <div class="font-medium text-red-600">{{ formatCurrency(Math.abs(alert.currentBalance)) }}</div>
+                    </div>
+                  </div>
+                  <div class="text-sm">
+                    <span class="text-gray-600">Overdraft Limit:</span>
+                    <span class="font-medium ml-1">{{ formatCurrency(alert.overdraftLimit) }}</span>
+                    <span class="text-gray-600 ml-3">Fee Accrued:</span>
+                    <span class="font-medium text-red-600 ml-1">{{ formatCurrency(alert.feeAccrued) }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col space-y-2 ml-4">
+                  <button @click="handleOverdraftAlert(alert)"
+                    class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700">
+                    Review Account
+                  </button>
+                  <button @click="contactClient(alert)"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                    Contact Client
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other Alerts Tab -->
+        <div v-show="activeAlertTab === 'other'">
+          <div v-if="otherAlerts.length === 0" class="text-center py-8 text-gray-500">
+            <span class="text-4xl">✅</span>
+            <p class="mt-2">No other alerts</p>
+          </div>
+          <div v-else class="space-y-4">
+            <div v-for="alert in otherAlerts" :key="alert.id"
+              class="border border-yellow-200 rounded-lg p-4 bg-yellow-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-2">
+                    <h4 class="font-semibold text-yellow-900">{{ alert.type }}</h4>
+                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                      {{ alert.severity }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-gray-700">{{ alert.description }}</p>
+                </div>
+                <button @click="handleOtherAlert(alert)"
+                  class="bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700">
+                  Review
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-6 border-t border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex space-x-3">
+            <button @click="markAllAsReviewed"
+              class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+              Mark All as Reviewed
+            </button>
+            <button @click="exportAlertReport"
+              class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+              Export Report
+            </button>
+          </div>
+          <button @click="showAlertModal = false"
+            class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -1872,6 +2346,19 @@ const selectedFlagTypes = ref(['UTR', 'High Cash', 'MSB', 'Crypto'])
 
 // Tab State
 const activeTab = ref('portfolio')
+
+// Loan Application Tracker Collapse State
+const isLoanTrackerCollapsed = ref(false)
+
+// Alert Modal State
+const showAlertModal = ref(false)
+const activeAlertTab = ref('delinquency')
+
+// Loan Applications Tab State
+const loanStatusFilter = ref('all')
+const loanTypeFilter = ref('all')
+const loanSortBy = ref('date')
+const expandedApplications = ref([])
 
 // Filter and chart options
 const transactionTypes = ['Wire', 'Cash', 'Crypto', 'MSB', 'ATM', 'ACH', 'Check']
@@ -2018,6 +2505,181 @@ const accountDetails = computed(() => {
   return accounts
 })
 
+// Loan Delinquency Alerts
+const loanDelinquencyAlerts = computed(() => {
+  if (!clientData.value || clientData.value.name !== 'Johnson Manufacturing LLC') return []
+
+  return [
+    {
+      id: 'del_001',
+      loanType: 'Commercial Term Loan',
+      accountNumber: 'TL-2024-0892',
+      daysPastDue: 62,
+      amountDue: 125000,
+      totalOutstanding: 2156000,
+      originalAmount: 2800000,
+      lastPaymentDate: 'Oct 14, 2024',
+      severity: 'Critical'
+    }
+  ]
+})
+
+// Overdraft Alerts
+const overdraftAlerts = computed(() => {
+  if (!clientData.value) return []
+
+  // Generate overdraft alerts for business checking accounts
+  const alerts = []
+
+  // Check if this client should have overdraft issues
+  if (clientData.value.name === 'Johnson Manufacturing LLC' || Math.random() > 0.7) {
+    alerts.push({
+      id: 'od_001',
+      accountType: 'Business Checking',
+      accountNumber: 'CHK-847291',
+      currentBalance: -15250,
+      overdraftLimit: 50000,
+      feeAccrued: 275,
+      severity: 'High',
+      daysOverdrawn: 3
+    })
+  }
+
+  return alerts
+})
+
+// Loan Applications Tracker
+const loanApplications = computed(() => {
+  if (!clientData.value) return []
+
+  // Show loan applications for specific clients or randomly
+  if (clientData.value.name === 'Johnson Manufacturing LLC' ||
+    clientData.value.name === 'Johnson Holdings Group - Subsidiary A' ||
+    Math.random() > 0.8) {
+    return [
+      {
+        id: 'app_001',
+        loanType: 'SBA 504 Commercial Real Estate Loan',
+        requestedAmount: 1500000,
+        applicationDate: 'Nov 28, 2024',
+        status: 'Under Review',
+        completionPercentage: 65,
+        currentStep: 3,
+        estimatedClosing: 'Jan 15, 2025'
+      }
+    ]
+  }
+
+  return []
+})
+
+// Loan Process Steps (Based on user requirements)
+const loanProcessSteps = computed(() => [
+  {
+    id: 1,
+    icon: '🔏',
+    title: 'Document Review and Signatures',
+    description: 'Review and sign required documents with wet ink signatures',
+    requirements: [
+      'SBA 8821 Disclosure Addendum signed',
+      'SBA Form 1919 (Business & Guarantor) completed',
+      'SBA Form 1050 (Disbursement Info) submitted',
+      'Household Liquid Asset Certification Form',
+      'SBA Guaranty Fee Agreement executed',
+      'Business Overdraft Protection Application/Agreement'
+    ]
+  },
+  {
+    id: 2,
+    icon: '🏢',
+    title: 'Site Visit & Application Requirements',
+    description: 'Required site visit for commercial exposure ≥ $25,000',
+    requirements: [
+      'Site visit completed and documented',
+      'Updated application with full DOB submitted',
+      'Property assessment completed'
+    ]
+  },
+  {
+    id: 3,
+    icon: '🧾',
+    title: 'Business & Ownership Verification',
+    description: 'Verify business ownership and entity structure',
+    requirements: [
+      'Beneficial Ownership Certification (25%+ owners)',
+      'CAIVRS Acknowledgement signed by all borrowers',
+      'Business name verification across all documents'
+    ]
+  },
+  {
+    id: 4,
+    icon: '🏦',
+    title: 'Bank Account Requirements',
+    description: 'Establish required banking relationships',
+    requirements: [
+      'TD Bank checking account in borrower name',
+      'Preauthorized withdrawal setup',
+      'Overdraft protection established'
+    ]
+  },
+  {
+    id: 5,
+    icon: '🌐',
+    title: 'Corporate Status & Legal Standing',
+    description: 'Verify corporate status and legal compliance',
+    requirements: [
+      'Active corporate status verification',
+      'Updated legal standing documentation',
+      'Domestic state operation compliance'
+    ]
+  }
+])
+
+// Other Alerts (placeholder for additional alert types)
+const otherAlerts = computed(() => {
+  // Placeholder for other types of alerts (compliance, risk flags, etc.)
+  return []
+})
+
+// Critical Alerts (General) - for backward compatibility
+const criticalAlerts = computed(() => {
+  const alerts = []
+
+  // Add delinquency alerts
+  alerts.push(...loanDelinquencyAlerts.value)
+
+  // Add overdraft alerts  
+  alerts.push(...overdraftAlerts.value)
+
+  return alerts
+})
+
+// Alert Indicator Computed Properties
+const totalAlertCount = computed(() => {
+  return loanDelinquencyAlerts.value.length + overdraftAlerts.value.length + otherAlerts.value.length
+})
+
+const hasCriticalAlerts = computed(() => {
+  return loanDelinquencyAlerts.value.some(alert => alert.severity === 'Critical') ||
+    overdraftAlerts.value.some(alert => alert.severity === 'High')
+})
+
+const alertIndicatorClass = computed(() => {
+  if (hasCriticalAlerts.value) {
+    return 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-300'
+  } else if (overdraftAlerts.value.length > 0) {
+    return 'bg-orange-100 text-orange-800 hover:bg-orange-200 border border-orange-300'
+  } else {
+    return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border border-yellow-300'
+  }
+})
+
+const alertIndicatorIcon = computed(() => {
+  if (hasCriticalAlerts.value) return '🚨'
+  if (overdraftAlerts.value.length > 0) return '⚠️'
+  return '⚠️'
+})
+
 // Account Summary Computed Properties
 const activeAccountsCount = computed(() => {
   return accountDetails.value.filter(acc => acc.balance > 1000).length
@@ -2084,6 +2746,185 @@ const highRiskTrxVolume = computed(() => {
   const riskPercentage = 0.12 // 12% of transactions flagged as high risk
 
   return Math.floor(totalVolume * riskPercentage)
+})
+
+// Loan Applications Tab Computed Properties
+const allLoanApplications = computed(() => {
+  if (!clientData.value) return []
+
+  // Historical loan applications for Johnson Manufacturing LLC
+  return [
+    {
+      id: 'loan_001',
+      applicationId: 'SBA-2024-1892',
+      loanType: 'SBA 504 Commercial Real Estate Loan',
+      requestedAmount: 1500000,
+      approvedAmount: 1350000,
+      outstandingBalance: 1250000,
+      monthlyPayment: 7850,
+      applicationDate: 'Nov 28, 2024',
+      decisionDate: 'Dec 12, 2024',
+      fundingDate: null,
+      status: 'Pending',
+      completionPercentage: 65,
+      currentStep: 3,
+      estimatedClosing: 'Jan 15, 2025',
+      loanOfficer: 'Sarah Chen',
+      termLength: '20 years',
+      interestRate: '5.75%',
+      collateral: 'Commercial Property - 123 Industrial Blvd'
+    },
+    {
+      id: 'loan_002',
+      applicationId: 'COM-2024-0745',
+      loanType: 'Commercial Term Loan',
+      requestedAmount: 500000,
+      approvedAmount: 500000,
+      outstandingBalance: 385000,
+      monthlyPayment: 3950,
+      applicationDate: 'Jun 15, 2024',
+      decisionDate: 'Jul 2, 2024',
+      fundingDate: 'Jul 15, 2024',
+      status: 'Approved',
+      completionPercentage: 100,
+      loanOfficer: 'Michael Torres',
+      termLength: '5 years',
+      interestRate: '6.25%',
+      collateral: 'Equipment & Inventory'
+    },
+    {
+      id: 'loan_003',
+      applicationId: 'EQP-2023-2134',
+      loanType: 'Equipment Finance Loan',
+      requestedAmount: 250000,
+      approvedAmount: 250000,
+      outstandingBalance: 145000,
+      monthlyPayment: 2200,
+      applicationDate: 'Mar 8, 2023',
+      decisionDate: 'Mar 22, 2023',
+      fundingDate: 'Apr 5, 2023',
+      status: 'Approved',
+      completionPercentage: 100,
+      loanOfficer: 'Jennifer Park',
+      termLength: '7 years',
+      interestRate: '5.95%',
+      collateral: 'Manufacturing Equipment'
+    },
+    {
+      id: 'loan_004',
+      applicationId: 'LOC-2024-0892',
+      loanType: 'Business Line of Credit',
+      requestedAmount: 750000,
+      approvedAmount: 600000,
+      outstandingBalance: 320000,
+      monthlyPayment: 0, // Revolving credit
+      applicationDate: 'Jan 12, 2024',
+      decisionDate: 'Jan 28, 2024',
+      fundingDate: 'Feb 5, 2024',
+      status: 'Approved',
+      completionPercentage: 100,
+      loanOfficer: 'David Kim',
+      termLength: 'Revolving (3 year term)',
+      interestRate: 'Prime + 2.5%',
+      collateral: 'Business Assets'
+    },
+    {
+      id: 'loan_005',
+      applicationId: 'REF-2023-0156',
+      loanType: 'Commercial Mortgage Refinance',
+      requestedAmount: 2200000,
+      status: 'Rejected',
+      applicationDate: 'Sep 14, 2023',
+      decisionDate: 'Oct 12, 2023',
+      loanOfficer: 'Amanda Rodriguez',
+      termLength: '15 years',
+      interestRate: 'N/A'
+    },
+    {
+      id: 'loan_006',
+      applicationId: 'SBA-2025-0023',
+      loanType: 'SBA Express Loan',
+      requestedAmount: 350000,
+      applicationDate: 'Dec 5, 2024',
+      status: 'Pending',
+      completionPercentage: 25,
+      currentStep: 1,
+      estimatedClosing: 'Feb 20, 2025',
+      loanOfficer: 'Robert Chen',
+      termLength: '10 years',
+      interestRate: '8.25%',
+      collateral: 'Working Capital'
+    },
+    {
+      id: 'loan_007',
+      applicationId: 'AUTO-2024-1567',
+      loanType: 'Auto/Fleet Financing',
+      requestedAmount: 180000,
+      applicationDate: 'Oct 8, 2024',
+      status: 'Pending',
+      completionPercentage: 40,
+      currentStep: 2,
+      estimatedClosing: 'Jan 8, 2025',
+      loanOfficer: 'Lisa Wang',
+      termLength: '5 years',
+      interestRate: '6.75%',
+      collateral: 'Fleet Vehicles (8 units)'
+    }
+  ]
+})
+
+const filteredLoanApplications = computed(() => {
+  let filtered = [...allLoanApplications.value]
+
+  // Filter by status
+  if (loanStatusFilter.value !== 'all') {
+    filtered = filtered.filter(app => app.status.toLowerCase() === loanStatusFilter.value.toLowerCase())
+  }
+
+  // Filter by type
+  if (loanTypeFilter.value !== 'all') {
+    const typeMap = {
+      'sba': 'SBA',
+      'commercial': 'Commercial',
+      'real-estate': 'Real Estate',
+      'equipment': 'Equipment'
+    }
+    const filterType = typeMap[loanTypeFilter.value]
+    if (filterType) {
+      filtered = filtered.filter(app => app.loanType.includes(filterType))
+    }
+  }
+
+  // Sort applications
+  filtered.sort((a, b) => {
+    switch (loanSortBy.value) {
+      case 'amount':
+        return b.requestedAmount - a.requestedAmount
+      case 'status':
+        return a.status.localeCompare(b.status)
+      case 'type':
+        return a.loanType.localeCompare(b.loanType)
+      case 'date':
+      default:
+        return new Date(b.applicationDate) - new Date(a.applicationDate)
+    }
+  })
+
+  return filtered
+})
+
+const pendingLoansCount = computed(() => {
+  return allLoanApplications.value.filter(app => app.status === 'Pending').length
+})
+
+const approvedLoansCount = computed(() => {
+  return allLoanApplications.value.filter(app => app.status === 'Approved').length
+})
+
+const totalLoanPipeline = computed(() => {
+  return allLoanApplications.value
+    .filter(app => app.status === 'Pending')
+    .reduce((sum, app) => sum + app.requestedAmount, 0)
 })
 
 const totalAvailableCredit = computed(() => {
@@ -3479,6 +4320,55 @@ const getRiskFlagClass = (riskFlag) => {
   }
 }
 
+// Loan Application Methods
+const toggleLoanApplication = (applicationId) => {
+  const index = expandedApplications.value.indexOf(applicationId)
+  if (index > -1) {
+    expandedApplications.value.splice(index, 1)
+  } else {
+    expandedApplications.value.push(applicationId)
+  }
+}
+
+const getLoanStatusClass = (status) => {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'bg-orange-100 text-orange-800'
+    case 'approved':
+      return 'bg-green-100 text-green-800'
+    case 'rejected':
+      return 'bg-red-100 text-red-800'
+    case 'closed':
+      return 'bg-gray-100 text-gray-800'
+    default:
+      return 'bg-blue-100 text-blue-800'
+  }
+}
+
+const viewApplicationDetails = (application) => {
+  showNotification.value = true
+  notificationMessage.value = `Opening detailed view for ${application.loanType}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const updateApplicationStatus = (application) => {
+  showNotification.value = true
+  notificationMessage.value = `Status update initiated for ${application.applicationId}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const contactLoanOfficer = (application) => {
+  showNotification.value = true
+  notificationMessage.value = `Connecting with ${application.loanOfficer}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const generateLoanReport = (application) => {
+  showNotification.value = true
+  notificationMessage.value = `Generating report for ${application.applicationId}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
 // Lifecycle
 onMounted(() => {
   console.log('ClientDetailView mounted for client:', props.clientId)
@@ -3628,6 +4518,122 @@ const createTask = () => {
   }
 
   showTaskModal.value = false
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+// Alert and Loan Application Methods
+const handleDelinquencyAlert = (alert) => {
+  showNotification.value = true
+  notificationMessage.value = `Opening review for ${alert.loanType} - ${alert.accountNumber}`
+  setTimeout(() => showNotification.value = false, 3000)
+  // In real implementation, would navigate to loan review page
+}
+
+const handleOverdraftAlert = (alert) => {
+  showNotification.value = true
+  notificationMessage.value = `Opening account review for ${alert.accountNumber}`
+  setTimeout(() => showNotification.value = false, 3000)
+  // In real implementation, would navigate to account detail page
+}
+
+const getApplicationStatusClass = (status) => {
+  switch (status) {
+    case 'Under Review': return 'text-orange-600'
+    case 'Approved': return 'text-green-600'
+    case 'Pending': return 'text-yellow-600'
+    case 'Rejected': return 'text-red-600'
+    default: return 'text-gray-600'
+  }
+}
+
+const getStepClass = (step, application) => {
+  if (isStepCompleted(step, application)) {
+    return 'bg-green-50 border border-green-200'
+  } else if (isStepInProgress(step, application)) {
+    return 'bg-blue-50 border border-blue-200'
+  } else {
+    return 'bg-gray-50 border border-gray-200'
+  }
+}
+
+const getStepIconClass = (step, application) => {
+  if (isStepCompleted(step, application)) {
+    return 'bg-green-500'
+  } else if (isStepInProgress(step, application)) {
+    return 'bg-blue-500'
+  } else {
+    return 'bg-gray-300'
+  }
+}
+
+const getStepStatusClass = (step, application) => {
+  if (isStepCompleted(step, application)) {
+    return 'text-green-600'
+  } else if (isStepInProgress(step, application)) {
+    return 'text-blue-600'
+  } else {
+    return 'text-gray-500'
+  }
+}
+
+const isStepCompleted = (step, application) => {
+  return step.id < application.currentStep
+}
+
+const isStepInProgress = (step, application) => {
+  return step.id === application.currentStep
+}
+
+const getStepStatus = (step, application) => {
+  if (isStepCompleted(step, application)) {
+    return 'Completed'
+  } else if (isStepInProgress(step, application)) {
+    return 'In Progress'
+  } else {
+    return 'Pending'
+  }
+}
+
+const updateLoanApplicationStatus = (application) => {
+  showNotification.value = true
+  notificationMessage.value = `Updating status for ${application.loanType}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+// Additional Alert Modal Methods
+const scheduleCall = (alert) => {
+  showNotification.value = true
+  notificationMessage.value = `Scheduling call for ${alert.loanType} - ${alert.accountNumber}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const contactClient = (alert) => {
+  showNotification.value = true
+  notificationMessage.value = `Initiating client contact for ${alert.accountNumber}`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const handleOtherAlert = (alert) => {
+  showNotification.value = true
+  notificationMessage.value = `Reviewing ${alert.type} alert`
+  setTimeout(() => showNotification.value = false, 3000)
+}
+
+const markAllAsReviewed = () => {
+  showNotification.value = true
+  notificationMessage.value = `All ${totalAlertCount.value} alerts marked as reviewed`
+  setTimeout(() => showNotification.value = false, 3000)
+
+  // In real implementation, would update alert status in backend
+  // For demo, close modal after marking as reviewed
+  setTimeout(() => {
+    showAlertModal.value = false
+  }, 1500)
+}
+
+const exportAlertReport = () => {
+  showNotification.value = true
+  notificationMessage.value = `Exporting alert report for ${clientData.value?.name}`
   setTimeout(() => showNotification.value = false, 3000)
 }
 
