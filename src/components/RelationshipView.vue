@@ -61,48 +61,123 @@
                 </div>
             </div>
 
-            <!-- Consistent KPI Summary (Same as ClientDetailView Structure) -->
+            <!-- Enhanced Portfolio Summary with Integrated Trends -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
                 <div class="p-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">🏢 Relationship Portfolio Summary</h3>
+                    <p class="text-sm text-gray-500 mt-1">Current metrics with trend analysis - click any metric to view
+                        detailed trends</p>
                 </div>
                 <div class="p-4">
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <div class="text-center">
+                    <!-- Enhanced KPI Cards with Trend Indicators -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                        <div @click="switchMetric('accounts')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'accounts' ? 'border-blue-500 bg-blue-50' : 'border-transparent hover:border-blue-200 hover:bg-blue-50']">
                             <div class="text-2xl font-bold text-blue-600">{{ totalAccounts }}</div>
                             <div class="text-sm text-gray-600">Total Accounts</div>
                             <div class="text-xs text-blue-500 font-medium">{{ accountsPercentile }}{{
                                 getOrdinalSuffix(accountsPercentile) }} percentile</div>
+                            <div class="text-xs text-blue-500 font-medium mt-1">📈 +8.2% (6M)</div>
                         </div>
-                        <div class="text-center">
+                        <div @click="switchMetric('deposits')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'deposits' ? 'border-green-500 bg-green-50' : 'border-transparent hover:border-green-200 hover:bg-green-50']">
                             <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
                             <div class="text-sm text-gray-600">Total Deposits</div>
                             <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
                                 getOrdinalSuffix(depositsPercentile) }} percentile</div>
+                            <div class="text-xs text-green-500 font-medium mt-1">📈 +12.3% (6M)</div>
                         </div>
-                        <div class="text-center">
+                        <div @click="switchMetric('loans')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'loans' ? 'border-orange-500 bg-orange-50' : 'border-transparent hover:border-orange-200 hover:bg-orange-50']">
                             <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalLoans) }}</div>
                             <div class="text-sm text-gray-600">Total Loans</div>
                             <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
                                 getOrdinalSuffix(loansPercentile) }} percentile</div>
+                            <div class="text-xs text-orange-500 font-medium mt-1">📈 +5.7% (6M)</div>
                         </div>
-                        <div class="text-center">
+                        <div @click="switchMetric('utility')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'utility' ? 'border-purple-500 bg-purple-50' : 'border-transparent hover:border-purple-200 hover:bg-purple-50']">
                             <div class="text-2xl font-bold text-purple-600">{{ loanUtilityRate }}%</div>
                             <div class="text-sm text-gray-600">Loan Utility %</div>
                             <div class="text-xs text-purple-500 font-medium">{{ loanUtilityPercentile }}{{
                                 getOrdinalSuffix(loanUtilityPercentile) }} percentile</div>
+                            <div class="text-xs text-purple-500 font-medium mt-1">📈 +3.1% (6M)</div>
                         </div>
-                        <div class="text-center">
+                        <div @click="switchMetric('opportunity')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'opportunity' ? 'border-indigo-500 bg-indigo-50' : 'border-transparent hover:border-indigo-200 hover:bg-indigo-50']">
                             <div class="text-2xl font-bold text-indigo-600">{{ totalOpportunities }}</div>
                             <div class="text-sm text-gray-600">Total Opportunities</div>
                             <div class="text-xs text-indigo-500 font-medium">Top {{ opportunityPercentile }}% potential
                             </div>
+                            <div class="text-xs text-indigo-500 font-medium mt-1">📈 +15.6% (6M)</div>
                         </div>
-                        <div class="text-center">
+                        <div @click="switchMetric('risk')"
+                            :class="['text-center cursor-pointer p-3 rounded-lg border-2 transition-all',
+                                selectedMetric === 'risk' ? 'border-red-500 bg-red-50' : 'border-transparent hover:border-red-200 hover:bg-red-50']">
                             <div class="text-2xl font-bold text-red-600">{{ totalRiskFlags }}</div>
                             <div class="text-sm text-gray-600">Risk Flags</div>
                             <div class="text-xs text-red-500 font-medium">{{ riskFlagsPercentile }}{{
                                 getOrdinalSuffix(riskFlagsPercentile) }} percentile</div>
+                            <div class="text-xs text-red-500 font-medium mt-1">📉 -8.4% (6M)</div>
+                        </div>
+                    </div>
+
+                    <!-- Integrated Trend Analysis -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h4 class="text-base font-medium text-gray-900">📈 Trend Analysis: {{
+                                    getMetricDisplayName(selectedMetric) }}</h4>
+                                <p class="text-sm text-gray-500">{{ getMetricInsight(selectedMetric) }}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <select v-model="selectedTrendClient"
+                                    class="text-xs border border-gray-300 rounded px-2 py-1">
+                                    <option value="all">All Clients</option>
+                                    <option v-for="client in relationshipClients" :key="client.id" :value="client.id">
+                                        {{ client.name }}
+                                    </option>
+                                </select>
+                                <div class="flex space-x-1">
+                                    <button @click="trendPeriod = 'monthly'"
+                                        :class="['px-2 py-1 text-xs rounded', trendPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                                        3M
+                                    </button>
+                                    <button @click="trendPeriod = 'quarterly'"
+                                        :class="['px-2 py-1 text-xs rounded', trendPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                                        6M
+                                    </button>
+                                    <button @click="trendPeriod = 'yearly'"
+                                        :class="['px-2 py-1 text-xs rounded', trendPeriod === 'yearly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
+                                        1Y
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="relative overflow-hidden">
+                            <div class="w-full h-64">
+                                <VueApexCharts :key="`chart-${selectedMetric}-${chartKey}`" type="bar"
+                                    :options="chartOptions" :series="chartSeries" height="250" width="100%" />
+                            </div>
+                        </div>
+
+                        <!-- Quick Insights -->
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div v-for="insight in getChartInsights()" :key="insight.id"
+                                class="p-3 rounded-lg border border-gray-200 bg-gray-50">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="text-sm">{{ insight.icon }}</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ insight.title }}</span>
+                                </div>
+                                <div class="text-xs text-gray-600">{{ insight.text }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -331,96 +406,7 @@
                 </div>
             </div>
 
-            <!-- Interactive Trend Charts -->
-            <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-4 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">📈 Interactive Trend Analysis</h3>
-                        <div class="flex items-center space-x-2">
-                            <select v-model="selectedTrendClient"
-                                class="text-xs border border-gray-300 rounded px-2 py-1">
-                                <option value="all">All Clients</option>
-                                <option v-for="client in relationshipClients" :key="client.id" :value="client.id">
-                                    {{ client.name }}
-                                </option>
-                            </select>
-                            <div class="flex space-x-1">
-                                <button @click="trendPeriod = 'monthly'"
-                                    :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                                    Monthly
-                                </button>
-                                <button @click="trendPeriod = 'quarterly'"
-                                    :class="['px-3 py-1 text-xs rounded-full', trendPeriod === 'quarterly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700']">
-                                    Quarterly
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <!-- Metric Selection Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div @click="switchMetric('portfolio')"
-                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
-                                selectedMetric === 'portfolio' ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
-                            <div class="text-xl font-bold text-green-600">{{ formatCurrency(totalPortfolioValue) }}
-                            </div>
-                            <div class="text-sm text-gray-600">Portfolio Value</div>
-                            <div class="text-xs text-green-500 font-medium">{{ portfolioGrowthYoY }}% YoY Growth</div>
-                        </div>
-                        <div @click="switchMetric('penetration')"
-                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
-                                selectedMetric === 'penetration' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
-                            <div class="text-xl font-bold text-blue-600">{{ averageProductPenetration }}%</div>
-                            <div class="text-sm text-gray-600">Product Penetration</div>
-                            <div class="text-xs text-blue-500 font-medium">{{ penetrationGap }}% improvement potential
-                            </div>
-                        </div>
-                        <div @click="switchMetric('risk')"
-                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
-                                selectedMetric === 'risk' ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
-                            <div class="text-xl font-bold text-red-600">{{ totalRiskFlags }}</div>
-                            <div class="text-sm text-gray-600">Risk Flags</div>
-                            <div class="text-xs" :class="riskFlagGrowthYoY > 0 ? 'text-red-500' : 'text-green-500'">
-                                {{ riskFlagGrowthYoY > 0 ? '↗️' : '↘️' }} {{ Math.abs(riskFlagGrowthYoY) }}% YoY
-                            </div>
-                        </div>
-                        <div @click="switchMetric('opportunity')"
-                            :class="['cursor-pointer text-center p-4 rounded-lg border-2 transition-all',
-                                selectedMetric === 'opportunity' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100']">
-                            <div class="text-xl font-bold text-purple-600">{{ formatCurrency(totalOpportunityValue) }}
-                            </div>
-                            <div class="text-sm text-gray-600">Opportunity Value</div>
-                            <div class="text-xs text-purple-500 font-medium">{{ totalOpportunities }} opportunities
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Chart Container -->
-                    <div class="relative">
-                        <div class="flex justify-center">
-                            <div class="w-full max-w-4xl h-96">
-                                <VueApexCharts :key="`chart-${selectedMetric}-${chartKey}`" type="bar"
-                                    :options="chartOptions" :series="chartSeries" height="400" width="100%" />
-                            </div>
-                        </div>
-
-                        <!-- Chart Insights -->
-                        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div v-for="insight in getChartInsights()" :key="insight.id"
-                                class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <span class="text-lg">{{ insight.icon }}</span>
-                                    <span class="font-medium text-gray-900">{{ insight.title }}</span>
-                                </div>
-                                <div class="text-sm text-gray-600">
-                                    <span>{{ insight.text }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -440,7 +426,7 @@ export default {
         const clientViewType = ref('table')
         const riskChartPeriod = ref('monthly')
         const trendPeriod = ref('monthly')
-        const selectedMetric = ref('portfolio')
+        const selectedMetric = ref('deposits')
         const selectedTrendClient = ref('all')
         const chartKey = ref(0)
         const chartOptions = ref({})
@@ -1035,17 +1021,27 @@ export default {
 
         getChartData() {
             const labels = this.chartMonths
-            const data = []
 
-            // Safely generate data with validation
+            // For stacked bar charts, create multiple series for better visualization
+            if (this.selectedMetric === 'deposits' || this.selectedMetric === 'loans') {
+                return this.getStackedFinancialData(labels)
+            } else if (this.selectedMetric === 'accounts') {
+                return this.getStackedAccountData(labels)
+            } else if (this.selectedMetric === 'opportunity') {
+                return this.getStackedOpportunityData(labels)
+            } else if (this.selectedMetric === 'risk') {
+                return this.getStackedRiskData(labels)
+            }
+
+            // Default single series for other metrics
+            const data = []
             for (let i = 0; i < labels.length; i++) {
                 try {
                     const value = this.getMetricValue(this.selectedMetric, i)
-                    // Ensure value is a valid number
                     data.push(isNaN(value) ? 0 : Number(value))
                 } catch (error) {
                     console.error('Error getting metric value for index', i, error)
-                    data.push(0) // Default to 0 if error
+                    data.push(0)
                 }
             }
 
@@ -1058,26 +1054,131 @@ export default {
             }
         },
 
+        getStackedFinancialData(labels) {
+            const series = []
+            const clientCount = this.relationshipClients.length
+
+            // Create series for each client
+            this.relationshipClients.forEach((client, clientIndex) => {
+                const data = []
+                for (let i = 0; i < labels.length; i++) {
+                    let value = 0
+                    if (this.selectedMetric === 'deposits') {
+                        value = this.getClientDeposits(client) * (0.8 + (i / 11) * 0.2) * (0.9 + Math.random() * 0.2)
+                    } else if (this.selectedMetric === 'loans') {
+                        value = this.getClientLoans(client) * (0.85 + (i / 11) * 0.15) * (0.9 + Math.random() * 0.2)
+                    }
+                    data.push(Math.floor(value))
+                }
+
+                series.push({
+                    name: client.name,
+                    data: data
+                })
+            })
+
+            return { series, categories: labels }
+        },
+
+        getStackedAccountData(labels) {
+            const accountTypes = ['Checking', 'Savings', 'Credit', 'Investment']
+            const series = []
+
+            accountTypes.forEach(type => {
+                const data = []
+                for (let i = 0; i < labels.length; i++) {
+                    // Generate account counts with growth trend
+                    const baseCount = Math.floor(this.totalAccounts / 4) * (0.9 + (i / 11) * 0.1)
+                    const variation = Math.floor(Math.random() * 3) - 1
+                    data.push(Math.max(1, baseCount + variation))
+                }
+
+                series.push({
+                    name: `${type} Accounts`,
+                    data: data
+                })
+            })
+
+            return { series, categories: labels }
+        },
+
+        getStackedOpportunityData(labels) {
+            const oppTypes = ['Credit Products', 'Treasury Services', 'Investment Products', 'FX Services']
+            const series = []
+
+            oppTypes.forEach(type => {
+                const data = []
+                for (let i = 0; i < labels.length; i++) {
+                    const baseValue = (this.totalOpportunityValue / 4) * (0.8 + Math.random() * 0.4)
+                    data.push(Math.floor(baseValue))
+                }
+
+                series.push({
+                    name: type,
+                    data: data
+                })
+            })
+
+            return { series, categories: labels }
+        },
+
+        getStackedRiskData(labels) {
+            const riskTypes = ['High Risk', 'Medium Risk', 'Low Risk', 'Compliance']
+            const series = []
+
+            riskTypes.forEach((type, index) => {
+                const data = []
+                for (let i = 0; i < labels.length; i++) {
+                    let baseCount = 0
+                    switch (index) {
+                        case 0: baseCount = Math.floor(this.totalRiskFlags * 0.3); break // High
+                        case 1: baseCount = Math.floor(this.totalRiskFlags * 0.4); break // Medium  
+                        case 2: baseCount = Math.floor(this.totalRiskFlags * 0.2); break // Low
+                        case 3: baseCount = Math.floor(this.totalRiskFlags * 0.1); break // Compliance
+                    }
+                    const variation = Math.floor(Math.random() * 3) - 1
+                    data.push(Math.max(0, baseCount + variation))
+                }
+
+                series.push({
+                    name: type,
+                    data: data
+                })
+            })
+
+            return { series, categories: labels }
+        },
+
         getApexChartOptions() {
+            const isStacked = this.isStackedMetric(this.selectedMetric)
+
             return {
                 chart: {
                     type: 'bar',
-                    height: 400,
+                    height: 250,
+                    stacked: isStacked,
                     toolbar: {
                         show: false
                     },
-                    background: 'transparent'
+                    background: 'transparent',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    parentHeightOffset: 0,
+                    redrawOnParentResize: true,
+                    zoom: {
+                        enabled: false
+                    }
                 },
                 plotOptions: {
                     bar: {
-                        borderRadius: 4,
-                        columnWidth: '60%',
+                        borderRadius: isStacked ? 2 : 4,
+                        columnWidth: '70%',
                         dataLabels: {
                             position: 'top'
-                        }
+                        },
+                        borderRadiusApplication: 'end'
                     }
                 },
-                colors: [this.getMetricColor(this.selectedMetric)],
+                colors: this.getMetricColors(this.selectedMetric),
                 dataLabels: {
                     enabled: false
                 },
@@ -1092,8 +1193,11 @@ export default {
                     labels: {
                         style: {
                             colors: '#6B7280',
-                            fontSize: '12px'
-                        }
+                            fontSize: '11px',
+                            fontWeight: 500
+                        },
+                        maxHeight: 60,
+                        rotate: -45
                     }
                 },
                 yaxis: {
@@ -1101,53 +1205,132 @@ export default {
                         formatter: (value) => this.formatYAxisLabel(value),
                         style: {
                             colors: '#6B7280',
-                            fontSize: '12px'
-                        }
+                            fontSize: '11px',
+                            fontWeight: 500
+                        },
+                        maxWidth: 80
+                    },
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
                     }
                 },
                 grid: {
-                    show: false
+                    show: true,
+                    borderColor: '#F3F4F6',
+                    strokeDashArray: 3,
+                    xaxis: {
+                        lines: {
+                            show: false
+                        }
+                    },
+                    yaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
                 },
-                title: {
-                    text: `${this.getMetricLabel(this.selectedMetric)} Trend (${this.trendPeriod})`,
-                    align: 'center',
-                    style: {
-                        fontSize: '16px',
-                        fontWeight: 600,
-                        color: '#1F2937'
+                legend: {
+                    show: isStacked,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    labels: {
+                        colors: '#6B7280'
+                    },
+                    markers: {
+                        width: 8,
+                        height: 8,
+                        radius: 2
+                    },
+                    itemMargin: {
+                        horizontal: 8,
+                        vertical: 4
                     }
                 },
                 tooltip: {
                     y: {
                         formatter: (value) => this.formatTooltipValue(value)
+                    },
+                    theme: 'light',
+                    style: {
+                        fontSize: '12px'
                     }
+                },
+                stroke: {
+                    show: false
+                },
+                fill: {
+                    opacity: 0.85
                 },
                 responsive: [{
                     breakpoint: 768,
                     options: {
                         chart: {
-                            height: 300
+                            height: 200
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '80%'
+                            }
+                        },
+                        xaxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
                         }
                     }
                 }]
             }
         },
 
+        isStackedMetric(metric) {
+            return ['deposits', 'loans', 'accounts', 'opportunity', 'risk'].includes(metric)
+        },
+
+        getMetricColors(metric) {
+            const colorSchemes = {
+                deposits: ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0'],
+                loans: ['#F59E0B', '#FBBF24', '#FCD34D', '#FDE68A'],
+                accounts: ['#3B82F6', '#60A5FA', '#93C5FD', '#DBEAFE'],
+                opportunity: ['#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'],
+                risk: ['#EF4444', '#F87171', '#FCA5A5', '#FECACA'],
+                utility: ['#6366F1']
+            }
+            return colorSchemes[metric] || ['#6B7280']
+        },
+
         formatTooltipValue(value) {
-            if (this.selectedMetric === 'penetration') {
+            if (this.selectedMetric === 'penetration' || this.selectedMetric === 'utility') {
                 return `${value.toFixed(1)}%`
-            } else if (this.selectedMetric === 'portfolio' || this.selectedMetric === 'opportunity') {
+            } else if (['deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
                 return this.formatCurrency(value)
             }
-            return value.toString()
+            return Math.floor(value).toString()
         },
 
         getMetricLabel(metric) {
             const labels = {
-                portfolio: 'Portfolio Value',
-                penetration: 'Product Penetration',
+                accounts: 'Total Accounts',
+                deposits: 'Total Deposits',
+                loans: 'Total Loans',
+                utility: 'Loan Utility Rate',
+                opportunity: 'Opportunity Value',
                 risk: 'Risk Flags',
-                opportunity: 'Opportunity Value'
+                portfolio: 'Portfolio Value',
+                penetration: 'Product Penetration'
             }
             return labels[metric] || metric
         },
@@ -1163,9 +1346,9 @@ export default {
         },
 
         formatYAxisLabel(value) {
-            if (this.selectedMetric === 'penetration') {
+            if (this.selectedMetric === 'penetration' || this.selectedMetric === 'utility') {
                 return `${value}%`
-            } else if (this.selectedMetric === 'portfolio' || this.selectedMetric === 'opportunity') {
+            } else if (['deposits', 'loans', 'portfolio', 'opportunity'].includes(this.selectedMetric)) {
                 if (value >= 1000000) {
                     return `$${(value / 1000000).toFixed(1)}M`
                 } else if (value >= 1000) {
@@ -1173,11 +1356,25 @@ export default {
                 }
                 return `$${value}`
             }
-            return value
+            return Math.floor(value)
         },
 
         getMetricValue(metric, index) {
             switch (metric) {
+                case 'deposits':
+                    return this.totalDeposits * (0.8 + (index / 11) * 0.2) * (0.9 + Math.random() * 0.2)
+                case 'loans':
+                    return this.totalLoans * (0.85 + (index / 11) * 0.15) * (0.9 + Math.random() * 0.2)
+                case 'accounts':
+                    return Math.floor(this.totalAccounts * (0.9 + (index / 11) * 0.1))
+                case 'utility':
+                    const baseUtility = this.loanUtilityRate + (Math.random() - 0.5) * 10
+                    return Math.max(20, Math.min(95, baseUtility))
+                case 'opportunity':
+                    const baseOpp = this.totalOpportunityValue / 12
+                    return baseOpp * (0.8 + Math.random() * 0.4)
+                case 'risk':
+                    return this.getRiskFlagsForMonth(index)
                 case 'portfolio':
                     if (this.selectedTrendClient === 'all') {
                         return this.getPortfolioValueForMonth(index)
@@ -1192,11 +1389,6 @@ export default {
                 case 'penetration':
                     const baseValue = Math.floor(this.averageProductPenetration + (Math.random() - 0.5) * 30)
                     return Math.max(30, Math.min(85, baseValue))
-                case 'risk':
-                    return this.getRiskFlagsForMonth(index)
-                case 'opportunity':
-                    const baseOpp = this.totalOpportunityValue / 12
-                    return baseOpp * (0.8 + Math.random() * 0.4)
                 default:
                     return 0
             }
@@ -1297,6 +1489,30 @@ export default {
             }
 
             return insights
+        },
+
+        getMetricDisplayName(metric) {
+            const names = {
+                accounts: 'Total Accounts',
+                deposits: 'Total Deposits',
+                loans: 'Total Loans',
+                utility: 'Loan Utility Rate',
+                opportunity: 'Opportunities',
+                risk: 'Risk Flags'
+            }
+            return names[metric] || metric
+        },
+
+        getMetricInsight(metric) {
+            const insights = {
+                accounts: 'Account growth indicates relationship expansion and engagement',
+                deposits: 'Deposit trends reflect client liquidity and trust in the relationship',
+                loans: 'Lending utilization shows credit facility adoption and business growth',
+                utility: 'Utility rate indicates efficiency of credit facility usage',
+                opportunity: 'Opportunity pipeline shows potential for revenue growth',
+                risk: 'Risk flag trends help identify emerging compliance or operational concerns'
+            }
+            return insights[metric] || 'Select a metric to view detailed trend analysis'
         }
     },
 
