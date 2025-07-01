@@ -1213,6 +1213,225 @@
 
           </div>
 
+          <div v-show="activeTab === 'loans'">
+            <div class="text-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">📋 Loan Application Management</h2>
+              <p class="text-sm text-gray-500 mt-2">Track current applications and review lending history</p>
+            </div>
+
+            <!-- Summary Statistics -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ allLoanApplications.length }}</div>
+                    <div class="text-xs text-gray-600">Total Applications</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-orange-600">{{ pendingLoansCount }}</div>
+                    <div class="text-xs text-gray-600">Pending Review</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">{{ approvedLoansCount }}</div>
+                    <div class="text-xs text-gray-600">Approved Loans</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(totalLoanPipeline) }}</div>
+                    <div class="text-xs text-gray-600">Pipeline Value</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+              <div class="p-4">
+                <div class="flex flex-wrap items-center space-x-4">
+                  <div>
+                    <label class="text-sm font-medium text-gray-700">Status:</label>
+                    <select v-model="loanStatusFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+                      <option value="all">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-700">Type:</label>
+                    <select v-model="loanTypeFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+                      <option value="all">All Types</option>
+                      <option value="sba">SBA Loans</option>
+                      <option value="commercial">Commercial</option>
+                      <option value="real-estate">Real Estate</option>
+                      <option value="equipment">Equipment</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                    <select v-model="loanSortBy" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
+                      <option value="date">Application Date</option>
+                      <option value="amount">Loan Amount</option>
+                      <option value="status">Status</option>
+                      <option value="type">Loan Type</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loan Applications List -->
+            <div class="space-y-4">
+              <div v-for="application in filteredLoanApplications" :key="application.id"
+                class="bg-white rounded-lg shadow-sm border border-gray-200">
+
+                <!-- Collapsed Header (Always Visible) -->
+                <div class="p-4 cursor-pointer" @click="toggleLoanApplication(application.id)">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-3">
+                        <h4 class="font-semibold text-gray-900">{{ application.loanType }}</h4>
+                        <span class="text-lg font-bold text-blue-600">{{ formatCurrency(application.requestedAmount)
+                          }}</span>
+                        <span class="px-2 py-1 text-xs font-medium rounded-full"
+                          :class="getLoanStatusClass(application.status)">
+                          {{ application.status }}
+                        </span>
+                        <span v-if="application.status === 'Pending' && application.completionPercentage"
+                          class="text-xs text-gray-500">
+                          {{ application.completionPercentage }}% Complete
+                        </span>
+                      </div>
+                      <div class="mt-1 text-sm text-gray-600">
+                        Applied: {{ application.applicationDate }}
+                        <span v-if="application.loanOfficer" class="ml-3">Officer: {{ application.loanOfficer }}</span>
+                        <span v-if="application.decisionDate" class="ml-3">Decision: {{ application.decisionDate
+                          }}</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span v-if="application.status === 'Pending'" class="text-xs text-orange-600 font-medium">
+                        Est. Closing: {{ application.estimatedClosing }}
+                      </span>
+                      <svg class="w-5 h-5 text-gray-400 transition-transform"
+                        :class="{ 'rotate-180': expandedApplications.includes(application.id) }" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expanded Content -->
+                <div v-show="expandedApplications.includes(application.id)" class="border-t border-gray-200">
+                  <div class="p-4">
+
+                    <!-- Application Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700 mb-2">Application Info</h5>
+                        <div class="text-sm space-y-1">
+                          <div><span class="text-gray-600">ID:</span> {{ application.applicationId }}</div>
+                          <div><span class="text-gray-600">Term:</span> {{ application.termLength }}</div>
+                          <div v-if="application.interestRate"><span class="text-gray-600">Rate:</span> {{
+                            application.interestRate }}</div>
+                          <div v-if="application.collateral"><span class="text-gray-600">Collateral:</span> {{
+                            application.collateral }}</div>
+                        </div>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700 mb-2">Financial Details</h5>
+                        <div class="text-sm space-y-1">
+                          <div><span class="text-gray-600">Requested:</span> {{
+                            formatCurrency(application.requestedAmount) }}
+                          </div>
+                          <div v-if="application.approvedAmount"><span class="text-gray-600">Approved:</span> {{
+                            formatCurrency(application.approvedAmount) }}</div>
+                          <div v-if="application.outstandingBalance"><span class="text-gray-600">Outstanding:</span> {{
+                            formatCurrency(application.outstandingBalance) }}</div>
+                          <div v-if="application.monthlyPayment"><span class="text-gray-600">Payment:</span> {{
+                            formatCurrency(application.monthlyPayment) }}/mo</div>
+                        </div>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700 mb-2">Status & Timeline</h5>
+                        <div class="text-sm space-y-1">
+                          <div><span class="text-gray-600">Status:</span> {{ application.status }}</div>
+                          <div><span class="text-gray-600">Applied:</span> {{ application.applicationDate }}</div>
+                          <div v-if="application.decisionDate"><span class="text-gray-600">Decision:</span> {{
+                            application.decisionDate }}</div>
+                          <div v-if="application.fundingDate"><span class="text-gray-600">Funded:</span> {{
+                            application.fundingDate }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Progress Steps for Pending Applications -->
+                    <div v-if="application.status === 'Pending'" class="mb-6">
+                      <h5 class="text-sm font-medium text-gray-700 mb-3">Application Progress</h5>
+                      <div class="space-y-3">
+                        <div v-for="step in loanProcessSteps" :key="step.id"
+                          class="flex items-center space-x-3 p-3 rounded-lg" :class="getStepClass(step, application)">
+                          <div class="flex-shrink-0">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center"
+                              :class="getStepIconClass(step, application)">
+                              <span v-if="isStepCompleted(step, application)" class="text-white text-xs">✓</span>
+                              <span v-else-if="isStepInProgress(step, application)" class="text-white text-xs">⋯</span>
+                              <span v-else class="text-gray-400 text-xs">{{ step.id }}</span>
+                            </div>
+                          </div>
+                          <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                              <h6 class="font-medium text-sm">{{ step.icon }} {{ step.title }}</h6>
+                              <span class="text-xs" :class="getStepStatusClass(step, application)">
+                                {{ getStepStatus(step, application) }}
+                              </span>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1">{{ step.description }}</p>
+                            <div v-if="step.requirements && isStepInProgress(step, application)" class="mt-2">
+                              <div class="text-xs text-gray-500 mb-1">Required:</div>
+                              <ul class="text-xs space-y-1">
+                                <li v-for="req in step.requirements" :key="req" class="flex items-center space-x-1">
+                                  <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+                                  <span>{{ req }}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                      <button @click="viewApplicationDetails(application)"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                        View Full Details
+                      </button>
+                      <button v-if="application.status === 'Pending'" @click="updateLoanApplicationStatus(application)"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+                        Update Status
+                      </button>
+                      <button v-if="application.loanOfficer" @click="contactLoanOfficer(application)"
+                        class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700">
+                        Contact Officer
+                      </button>
+                      <button @click="generateLoanReport(application)"
+                        class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
+                        Generate Report
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-if="filteredLoanApplications.length === 0" class="text-center py-8 text-gray-500">
+              <span class="text-4xl">📄</span>
+              <p class="mt-2">No loan applications found matching your criteria</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1848,222 +2067,7 @@
   </div>
 
   <!-- Loan Applications Tab Content -->
-  <div v-show="activeTab === 'loans'">
-    <div class="text-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-900">📋 Loan Application Management</h2>
-      <p class="text-sm text-gray-500 mt-2">Track current applications and review lending history</p>
-    </div>
 
-    <!-- Summary Statistics -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-      <div class="p-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ allLoanApplications.length }}</div>
-            <div class="text-xs text-gray-600">Total Applications</div>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl font-bold text-orange-600">{{ pendingLoansCount }}</div>
-            <div class="text-xs text-gray-600">Pending Review</div>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl font-bold text-green-600">{{ approvedLoansCount }}</div>
-            <div class="text-xs text-gray-600">Approved Loans</div>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(totalLoanPipeline) }}</div>
-            <div class="text-xs text-gray-600">Pipeline Value</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filter Controls -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-      <div class="p-4">
-        <div class="flex flex-wrap items-center space-x-4">
-          <div>
-            <label class="text-sm font-medium text-gray-700">Status:</label>
-            <select v-model="loanStatusFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-              <option value="closed">Closed</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-700">Type:</label>
-            <select v-model="loanTypeFilter" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
-              <option value="all">All Types</option>
-              <option value="sba">SBA Loans</option>
-              <option value="commercial">Commercial</option>
-              <option value="real-estate">Real Estate</option>
-              <option value="equipment">Equipment</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-700">Sort by:</label>
-            <select v-model="loanSortBy" class="ml-2 border border-gray-300 rounded px-3 py-1 text-sm">
-              <option value="date">Application Date</option>
-              <option value="amount">Loan Amount</option>
-              <option value="status">Status</option>
-              <option value="type">Loan Type</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loan Applications List -->
-    <div class="space-y-4">
-      <div v-for="application in filteredLoanApplications" :key="application.id"
-        class="bg-white rounded-lg shadow-sm border border-gray-200">
-
-        <!-- Collapsed Header (Always Visible) -->
-        <div class="p-4 cursor-pointer" @click="toggleLoanApplication(application.id)">
-          <div class="flex items-center justify-between">
-            <div class="flex-1">
-              <div class="flex items-center space-x-3">
-                <h4 class="font-semibold text-gray-900">{{ application.loanType }}</h4>
-                <span class="text-lg font-bold text-blue-600">{{ formatCurrency(application.requestedAmount) }}</span>
-                <span class="px-2 py-1 text-xs font-medium rounded-full"
-                  :class="getLoanStatusClass(application.status)">
-                  {{ application.status }}
-                </span>
-                <span v-if="application.status === 'Pending' && application.completionPercentage"
-                  class="text-xs text-gray-500">
-                  {{ application.completionPercentage }}% Complete
-                </span>
-              </div>
-              <div class="mt-1 text-sm text-gray-600">
-                Applied: {{ application.applicationDate }}
-                <span v-if="application.loanOfficer" class="ml-3">Officer: {{ application.loanOfficer }}</span>
-                <span v-if="application.decisionDate" class="ml-3">Decision: {{ application.decisionDate }}</span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span v-if="application.status === 'Pending'" class="text-xs text-orange-600 font-medium">
-                Est. Closing: {{ application.estimatedClosing }}
-              </span>
-              <svg class="w-5 h-5 text-gray-400 transition-transform"
-                :class="{ 'rotate-180': expandedApplications.includes(application.id) }" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Expanded Content -->
-        <div v-show="expandedApplications.includes(application.id)" class="border-t border-gray-200">
-          <div class="p-4">
-
-            <!-- Application Details -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div>
-                <h5 class="text-sm font-medium text-gray-700 mb-2">Application Info</h5>
-                <div class="text-sm space-y-1">
-                  <div><span class="text-gray-600">ID:</span> {{ application.applicationId }}</div>
-                  <div><span class="text-gray-600">Term:</span> {{ application.termLength }}</div>
-                  <div v-if="application.interestRate"><span class="text-gray-600">Rate:</span> {{
-                    application.interestRate }}</div>
-                  <div v-if="application.collateral"><span class="text-gray-600">Collateral:</span> {{
-                    application.collateral }}</div>
-                </div>
-              </div>
-              <div>
-                <h5 class="text-sm font-medium text-gray-700 mb-2">Financial Details</h5>
-                <div class="text-sm space-y-1">
-                  <div><span class="text-gray-600">Requested:</span> {{ formatCurrency(application.requestedAmount) }}
-                  </div>
-                  <div v-if="application.approvedAmount"><span class="text-gray-600">Approved:</span> {{
-                    formatCurrency(application.approvedAmount) }}</div>
-                  <div v-if="application.outstandingBalance"><span class="text-gray-600">Outstanding:</span> {{
-                    formatCurrency(application.outstandingBalance) }}</div>
-                  <div v-if="application.monthlyPayment"><span class="text-gray-600">Payment:</span> {{
-                    formatCurrency(application.monthlyPayment) }}/mo</div>
-                </div>
-              </div>
-              <div>
-                <h5 class="text-sm font-medium text-gray-700 mb-2">Status & Timeline</h5>
-                <div class="text-sm space-y-1">
-                  <div><span class="text-gray-600">Status:</span> {{ application.status }}</div>
-                  <div><span class="text-gray-600">Applied:</span> {{ application.applicationDate }}</div>
-                  <div v-if="application.decisionDate"><span class="text-gray-600">Decision:</span> {{
-                    application.decisionDate }}</div>
-                  <div v-if="application.fundingDate"><span class="text-gray-600">Funded:</span> {{
-                    application.fundingDate }}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Progress Steps for Pending Applications -->
-            <div v-if="application.status === 'Pending'" class="mb-6">
-              <h5 class="text-sm font-medium text-gray-700 mb-3">Application Progress</h5>
-              <div class="space-y-3">
-                <div v-for="step in loanProcessSteps" :key="step.id" class="flex items-center space-x-3 p-3 rounded-lg"
-                  :class="getStepClass(step, application)">
-                  <div class="flex-shrink-0">
-                    <div class="w-6 h-6 rounded-full flex items-center justify-center"
-                      :class="getStepIconClass(step, application)">
-                      <span v-if="isStepCompleted(step, application)" class="text-white text-xs">✓</span>
-                      <span v-else-if="isStepInProgress(step, application)" class="text-white text-xs">⋯</span>
-                      <span v-else class="text-gray-400 text-xs">{{ step.id }}</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                      <h6 class="font-medium text-sm">{{ step.icon }} {{ step.title }}</h6>
-                      <span class="text-xs" :class="getStepStatusClass(step, application)">
-                        {{ getStepStatus(step, application) }}
-                      </span>
-                    </div>
-                    <p class="text-xs text-gray-600 mt-1">{{ step.description }}</p>
-                    <div v-if="step.requirements && isStepInProgress(step, application)" class="mt-2">
-                      <div class="text-xs text-gray-500 mb-1">Required:</div>
-                      <ul class="text-xs space-y-1">
-                        <li v-for="req in step.requirements" :key="req" class="flex items-center space-x-1">
-                          <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-                          <span>{{ req }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-2">
-              <button @click="viewApplicationDetails(application)"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-                View Full Details
-              </button>
-              <button v-if="application.status === 'Pending'" @click="updateApplicationStatus(application)"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
-                Update Status
-              </button>
-              <button v-if="application.loanOfficer" @click="contactLoanOfficer(application)"
-                class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700">
-                Contact Officer
-              </button>
-              <button @click="generateLoanReport(application)"
-                class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
-                Generate Report
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div v-if="filteredLoanApplications.length === 0" class="text-center py-8 text-gray-500">
-      <span class="text-4xl">📄</span>
-      <p class="mt-2">No loan applications found matching your criteria</p>
-    </div>
-  </div>
 
   <!-- Alert Modal -->
   <div v-if="showAlertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -2752,125 +2756,160 @@ const highRiskTrxVolume = computed(() => {
 const allLoanApplications = computed(() => {
   if (!clientData.value) return []
 
-  // Historical loan applications for Johnson Manufacturing LLC
-  return [
-    {
+  // Generate loan applications based on client data
+  const clientName = clientData.value.name
+  const portfolioValue = clientData.value.portfolioValue || 0
+
+  // Specific loan applications for Johnson Manufacturing LLC
+  if (clientName === 'Johnson Manufacturing LLC') {
+    return [
+      {
+        id: 'loan_001',
+        applicationId: 'SBA-2024-1892',
+        loanType: 'SBA 504 Commercial Real Estate Loan',
+        requestedAmount: 1500000,
+        approvedAmount: 1350000,
+        outstandingBalance: 1250000,
+        monthlyPayment: 7850,
+        applicationDate: 'Nov 28, 2024',
+        decisionDate: 'Dec 12, 2024',
+        fundingDate: null,
+        status: 'Pending',
+        completionPercentage: 65,
+        currentStep: 3,
+        estimatedClosing: 'Jan 15, 2025',
+        loanOfficer: 'Sarah Chen',
+        termLength: '20 years',
+        interestRate: '5.75%',
+        collateral: 'Commercial Property - 123 Industrial Blvd'
+      },
+      {
+        id: 'loan_002',
+        applicationId: 'COM-2024-0745',
+        loanType: 'Commercial Term Loan',
+        requestedAmount: 500000,
+        approvedAmount: 500000,
+        outstandingBalance: 385000,
+        monthlyPayment: 3950,
+        applicationDate: 'Jun 15, 2024',
+        decisionDate: 'Jul 2, 2024',
+        fundingDate: 'Jul 15, 2024',
+        status: 'Approved',
+        completionPercentage: 100,
+        loanOfficer: 'Michael Torres',
+        termLength: '5 years',
+        interestRate: '6.25%',
+        collateral: 'Equipment & Inventory'
+      },
+      {
+        id: 'loan_003',
+        applicationId: 'EQP-2023-2134',
+        loanType: 'Equipment Finance Loan',
+        requestedAmount: 250000,
+        approvedAmount: 250000,
+        outstandingBalance: 145000,
+        monthlyPayment: 2200,
+        applicationDate: 'Mar 8, 2023',
+        decisionDate: 'Mar 22, 2023',
+        fundingDate: 'Apr 5, 2023',
+        status: 'Approved',
+        completionPercentage: 100,
+        loanOfficer: 'Jennifer Park',
+        termLength: '7 years',
+        interestRate: '5.95%',
+        collateral: 'Manufacturing Equipment'
+      },
+      {
+        id: 'loan_004',
+        applicationId: 'LOC-2024-0892',
+        loanType: 'Business Line of Credit',
+        requestedAmount: 750000,
+        approvedAmount: 600000,
+        outstandingBalance: 320000,
+        monthlyPayment: 0, // Revolving credit
+        applicationDate: 'Jan 12, 2024',
+        decisionDate: 'Jan 28, 2024',
+        fundingDate: 'Feb 5, 2024',
+        status: 'Approved',
+        completionPercentage: 100,
+        loanOfficer: 'David Kim',
+        termLength: 'Revolving (3 year term)',
+        interestRate: 'Prime + 2.5%',
+        collateral: 'Business Assets'
+      },
+      {
+        id: 'loan_005',
+        applicationId: 'SBA-2025-0023',
+        loanType: 'SBA Express Loan',
+        requestedAmount: 350000,
+        applicationDate: 'Dec 5, 2024',
+        status: 'Pending',
+        completionPercentage: 25,
+        currentStep: 1,
+        estimatedClosing: 'Feb 20, 2025',
+        loanOfficer: 'Robert Chen',
+        termLength: '10 years',
+        interestRate: '8.25%',
+        collateral: 'Working Capital'
+      }
+    ]
+  }
+
+  // For other clients, generate basic loan applications
+  const applications = []
+
+  // All clients get at least some basic loan applications
+  if (portfolioValue >= 10000000) {
+    applications.push(
+      {
+        id: 'loan_001',
+        applicationId: `SBA-2024-${Math.floor(Math.random() * 9000) + 1000}`,
+        loanType: 'SBA Express Loan',
+        requestedAmount: 350000 + Math.floor(Math.random() * 200000),
+        applicationDate: 'Dec 5, 2024',
+        status: 'Pending',
+        completionPercentage: Math.floor(Math.random() * 50) + 25,
+        currentStep: Math.floor(Math.random() * 2) + 1,
+        estimatedClosing: 'Feb 20, 2025',
+        loanOfficer: 'Robert Chen',
+        termLength: '10 years',
+        interestRate: '8.25%',
+        collateral: 'Working Capital'
+      },
+      {
+        id: 'loan_002',
+        applicationId: `COM-2024-${Math.floor(Math.random() * 9000) + 1000}`,
+        loanType: 'Commercial Term Loan',
+        requestedAmount: 300000 + Math.floor(Math.random() * 500000),
+        applicationDate: 'Oct 8, 2024',
+        status: 'Approved',
+        completionPercentage: 100,
+        loanOfficer: 'Lisa Wang',
+        termLength: '5 years',
+        interestRate: '6.75%',
+        collateral: 'Business Equipment'
+      }
+    )
+  } else {
+    // Smaller clients get basic applications
+    applications.push({
       id: 'loan_001',
-      applicationId: 'SBA-2024-1892',
-      loanType: 'SBA 504 Commercial Real Estate Loan',
-      requestedAmount: 1500000,
-      approvedAmount: 1350000,
-      outstandingBalance: 1250000,
-      monthlyPayment: 7850,
-      applicationDate: 'Nov 28, 2024',
-      decisionDate: 'Dec 12, 2024',
-      fundingDate: null,
-      status: 'Pending',
-      completionPercentage: 65,
-      currentStep: 3,
-      estimatedClosing: 'Jan 15, 2025',
-      loanOfficer: 'Sarah Chen',
-      termLength: '20 years',
-      interestRate: '5.75%',
-      collateral: 'Commercial Property - 123 Industrial Blvd'
-    },
-    {
-      id: 'loan_002',
-      applicationId: 'COM-2024-0745',
-      loanType: 'Commercial Term Loan',
-      requestedAmount: 500000,
-      approvedAmount: 500000,
-      outstandingBalance: 385000,
-      monthlyPayment: 3950,
-      applicationDate: 'Jun 15, 2024',
-      decisionDate: 'Jul 2, 2024',
-      fundingDate: 'Jul 15, 2024',
-      status: 'Approved',
-      completionPercentage: 100,
-      loanOfficer: 'Michael Torres',
-      termLength: '5 years',
-      interestRate: '6.25%',
-      collateral: 'Equipment & Inventory'
-    },
-    {
-      id: 'loan_003',
-      applicationId: 'EQP-2023-2134',
-      loanType: 'Equipment Finance Loan',
-      requestedAmount: 250000,
-      approvedAmount: 250000,
-      outstandingBalance: 145000,
-      monthlyPayment: 2200,
-      applicationDate: 'Mar 8, 2023',
-      decisionDate: 'Mar 22, 2023',
-      fundingDate: 'Apr 5, 2023',
-      status: 'Approved',
-      completionPercentage: 100,
-      loanOfficer: 'Jennifer Park',
-      termLength: '7 years',
-      interestRate: '5.95%',
-      collateral: 'Manufacturing Equipment'
-    },
-    {
-      id: 'loan_004',
-      applicationId: 'LOC-2024-0892',
-      loanType: 'Business Line of Credit',
-      requestedAmount: 750000,
-      approvedAmount: 600000,
-      outstandingBalance: 320000,
-      monthlyPayment: 0, // Revolving credit
-      applicationDate: 'Jan 12, 2024',
-      decisionDate: 'Jan 28, 2024',
-      fundingDate: 'Feb 5, 2024',
-      status: 'Approved',
-      completionPercentage: 100,
-      loanOfficer: 'David Kim',
-      termLength: 'Revolving (3 year term)',
-      interestRate: 'Prime + 2.5%',
-      collateral: 'Business Assets'
-    },
-    {
-      id: 'loan_005',
-      applicationId: 'REF-2023-0156',
-      loanType: 'Commercial Mortgage Refinance',
-      requestedAmount: 2200000,
-      status: 'Rejected',
-      applicationDate: 'Sep 14, 2023',
-      decisionDate: 'Oct 12, 2023',
-      loanOfficer: 'Amanda Rodriguez',
-      termLength: '15 years',
-      interestRate: 'N/A'
-    },
-    {
-      id: 'loan_006',
-      applicationId: 'SBA-2025-0023',
+      applicationId: `SBA-2024-${Math.floor(Math.random() * 9000) + 1000}`,
       loanType: 'SBA Express Loan',
-      requestedAmount: 350000,
-      applicationDate: 'Dec 5, 2024',
+      requestedAmount: 150000 + Math.floor(Math.random() * 100000),
+      applicationDate: 'Nov 15, 2024',
       status: 'Pending',
-      completionPercentage: 25,
+      completionPercentage: Math.floor(Math.random() * 40) + 20,
       currentStep: 1,
-      estimatedClosing: 'Feb 20, 2025',
+      estimatedClosing: 'Feb 10, 2025',
       loanOfficer: 'Robert Chen',
-      termLength: '10 years',
-      interestRate: '8.25%',
+      termLength: '7 years',
+      interestRate: '8.75%',
       collateral: 'Working Capital'
-    },
-    {
-      id: 'loan_007',
-      applicationId: 'AUTO-2024-1567',
-      loanType: 'Auto/Fleet Financing',
-      requestedAmount: 180000,
-      applicationDate: 'Oct 8, 2024',
-      status: 'Pending',
-      completionPercentage: 40,
-      currentStep: 2,
-      estimatedClosing: 'Jan 8, 2025',
-      loanOfficer: 'Lisa Wang',
-      termLength: '5 years',
-      interestRate: '6.75%',
-      collateral: 'Fleet Vehicles (8 units)'
-    }
-  ]
+    })
+  }
+
+  return applications
 })
 
 const filteredLoanApplications = computed(() => {
@@ -4351,7 +4390,7 @@ const viewApplicationDetails = (application) => {
   setTimeout(() => showNotification.value = false, 3000)
 }
 
-const updateApplicationStatus = (application) => {
+const updateLoanApplicationStatus = (application) => {
   showNotification.value = true
   notificationMessage.value = `Status update initiated for ${application.applicationId}`
   setTimeout(() => showNotification.value = false, 3000)
@@ -4592,12 +4631,6 @@ const getStepStatus = (step, application) => {
   } else {
     return 'Pending'
   }
-}
-
-const updateLoanApplicationStatus = (application) => {
-  showNotification.value = true
-  notificationMessage.value = `Updating status for ${application.loanType}`
-  setTimeout(() => showNotification.value = false, 3000)
 }
 
 // Additional Alert Modal Methods
@@ -5377,4 +5410,3 @@ const generateRiskFlagData = (flagCategory) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 </style>
-npm
