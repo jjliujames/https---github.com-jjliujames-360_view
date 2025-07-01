@@ -20,7 +20,7 @@
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">{{ relationship?.name }}</h1>
                             <p class="text-gray-600 mt-1">{{ relationship?.industry }} • {{ relationshipClients.length
-                                }} Client Entities</p>
+                            }} Client Entities</p>
                             <div class="flex items-center space-x-4 mt-3">
                                 <span class="text-sm text-gray-500">RM: {{ relationshipManager?.name }}</span>
                                 <span class="text-sm text-gray-500">•</span>
@@ -44,12 +44,23 @@
                     <div v-if="criticalAlerts.length > 0" class="mt-6 space-y-2">
                         <div v-for="alert in criticalAlerts" :key="alert.id"
                             class="flex items-center justify-between p-3 rounded-lg border-l-4"
-                            :class="getAlertClass(alert.type)">
+                            :class="getAlertClass(alert.type, alert.severity)">
                             <div class="flex items-center space-x-3">
                                 <span class="text-lg">{{ alert.icon }}</span>
                                 <div>
-                                    <p class="font-medium">{{ alert.title }}</p>
+                                    <div class="flex items-center space-x-2">
+                                        <p class="font-medium">{{ alert.title }}</p>
+                                        <span v-if="alert.date"
+                                            class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">
+                                            {{ alert.date }}
+                                        </span>
+                                    </div>
                                     <p class="text-sm opacity-80">{{ alert.description }}</p>
+                                    <div v-if="alert.id === 'loan-delinquency'" class="mt-1 text-xs text-red-600">
+                                        <div>Account: Commercial Term Loan #TL-2024-0892</div>
+                                        <div>Original Amount: $2,800,000 | Current Balance: $2,156,000</div>
+                                        <div>Payment Status: 62 days past due | Last Payment: Oct 14, 2024</div>
+                                    </div>
                                 </div>
                             </div>
                             <button @click="handleAlert(alert)"
@@ -483,7 +494,7 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Loans:</span>
                                     <span class="font-medium text-orange-600">{{ formatCurrency(getClientLoans(client))
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
 
@@ -695,6 +706,19 @@ export default {
         criticalAlerts() {
             const alerts = []
 
+            // Loan Delinquency Alert - Priority Alert
+            alerts.push({
+                id: 'loan-delinquency',
+                type: 'risk',
+                icon: '⚠️',
+                title: 'Loan Delinquency Alert',
+                description: 'Johnson Manufacturing LLC - $2.8M term loan 60+ days past due',
+                action: 'Review Account',
+                date: 'Dec 15, 2024',
+                client: this.relationshipClients.find(c => c.name === 'Johnson Manufacturing LLC') || this.relationshipClients[0],
+                severity: 'high'
+            })
+
             // Generate dynamic alerts based on portfolio data
             if (this.riskFlagGrowthYoY > 15) {
                 alerts.push({
@@ -725,41 +749,82 @@ export default {
         priorityActions() {
             const actions = []
 
-            // Generate priority actions for high-risk or high-opportunity clients
+            // Add the loan delinquency as top priority
+            actions.push({
+                id: 'loan-delinquency-action',
+                client: this.relationshipClients.find(c => c.name === 'Johnson Manufacturing LLC') || this.relationshipClients[0],
+                icon: '⚠️',
+                description: 'Loan delinquency - 62 days past due',
+                value: '$2.8M Term Loan',
+                valueClass: 'text-red-600',
+                timeframe: 'Urgent'
+            })
+
+            // Generate risk-focused priority actions only
             this.relationshipClients.forEach(client => {
                 const riskScore = client.riskScore || this.getGeneratedRiskScore(client)
-                const opportunityValue = this.getClientOpportunityValue(client)
 
+                // High risk score review
                 if (riskScore >= 7) {
                     actions.push({
-                        id: `risk-${client.id}`,
+                        id: `risk-score-${client.id}`,
                         client,
                         icon: '🚨',
-                        description: 'High risk score requires attention',
+                        description: 'High risk score requires review',
                         value: `Risk Score: ${riskScore}`,
                         valueClass: 'text-red-600',
                         timeframe: 'Urgent'
                     })
                 }
 
-                if (opportunityValue > 500000) {
+                // Credit concentration risk
+                if (client.portfolioValue > 50000000) {
                     actions.push({
-                        id: `opp-${client.id}`,
+                        id: `concentration-${client.id}`,
                         client,
-                        icon: '💰',
-                        description: 'High-value opportunity identified',
-                        value: this.formatCurrency(opportunityValue),
-                        valueClass: 'text-green-600',
+                        icon: '📊',
+                        description: 'Credit concentration review required',
+                        value: this.formatCurrency(client.portfolioValue),
+                        valueClass: 'text-orange-600',
                         timeframe: 'This week'
+                    })
+                }
+
+                // Compliance review for large clients
+                if (client.portfolioValue > 25000000) {
+                    const daysSinceReview = Math.floor(Math.random() * 45) + 15 // 15-60 days
+                    if (daysSinceReview > 30) {
+                        actions.push({
+                            id: `compliance-${client.id}`,
+                            client,
+                            icon: '📋',
+                            description: 'Compliance review overdue',
+                            value: `${daysSinceReview} days overdue`,
+                            valueClass: 'text-yellow-600',
+                            timeframe: 'This week'
+                        })
+                    }
+                }
+
+                // Cash flow monitoring
+                if (riskScore >= 6) {
+                    actions.push({
+                        id: `cashflow-${client.id}`,
+                        client,
+                        icon: '💸',
+                        description: 'Cash flow monitoring required',
+                        value: 'Monthly review',
+                        valueClass: 'text-orange-600',
+                        timeframe: 'This month'
                     })
                 }
             })
 
+            // Sort by priority: red (urgent), orange (high), yellow (medium)
             return actions.sort((a, b) => {
-                if (a.valueClass === 'text-red-600' && b.valueClass !== 'text-red-600') return -1
-                if (b.valueClass === 'text-red-600' && a.valueClass !== 'text-red-600') return 1
-                return 0
-            }).slice(0, 8) // Top 8 priority actions
+                const priorityOrder = { 'text-red-600': 0, 'text-orange-600': 1, 'text-yellow-600': 2 }
+                return priorityOrder[a.valueClass] - priorityOrder[b.valueClass]
+            }).slice(0, 8) // Top 8 priority risk actions
         },
         topOpportunities() {
             const opportunities = []
@@ -1034,7 +1099,18 @@ export default {
             return Math.floor(40 + Math.random() * 30) // 40-69th
         },
 
-        getAlertClass(type) {
+        getAlertClass(type, severity) {
+            // Enhanced styling for high severity alerts (like loan delinquency)
+            if (severity === 'high') {
+                switch (type) {
+                    case 'risk': return 'bg-red-100 border-red-600 text-red-900 shadow-red-200 shadow-lg'
+                    case 'opportunity': return 'bg-green-100 border-green-600 text-green-900 shadow-green-200 shadow-lg'
+                    case 'compliance': return 'bg-yellow-100 border-yellow-600 text-yellow-900 shadow-yellow-200 shadow-lg'
+                    default: return 'bg-blue-100 border-blue-600 text-blue-900 shadow-blue-200 shadow-lg'
+                }
+            }
+
+            // Standard styling for normal alerts
             switch (type) {
                 case 'risk': return 'bg-red-50 border-red-500 text-red-900'
                 case 'opportunity': return 'bg-green-50 border-green-500 text-green-900'
