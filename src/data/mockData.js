@@ -2000,6 +2000,18 @@ export const clients = {
         riskScore: 5.2,
         lastReview: '2024-11-08',
         nextReview: '2025-02-08',
+        beneficialOwners: [
+            { name: 'Johnson Holdings Group', role: 'Parent Company', ownership: '100%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Robert Johnson', title: 'CEO (Parent)', signingAuthority: 'Unlimited' },
+            { name: 'Jennifer Martinez', title: 'Subsidiary GM', signingAuthority: '$300,000' },
+            { name: 'Thomas Lee', title: 'Controller', signingAuthority: '$150,000' }
+        ],
+        conductors: [
+            { name: 'Robert Johnson', role: 'Ultimate Business Conductor', relationship: 'Parent Owner' },
+            { name: 'Jennifer Martinez', role: 'Subsidiary Conductor', relationship: 'Manager' }
+        ],
         riskFlags: [
             { category: 'High Cash', severity: 'Watch', count: 2 },
             { category: 'UTRs', severity: 'Review', count: 1 }
@@ -2036,6 +2048,20 @@ export const clients = {
         riskScore: 4.8,
         lastReview: '2024-10-15',
         nextReview: '2025-01-15',
+        beneficialOwners: [
+            { name: 'Johnson Holdings Group', role: 'Parent Company', ownership: '85%', citizenshipCountry: 'USA' },
+            { name: 'Detroit Manufacturing Partners', role: 'Local Partner', ownership: '15%', citizenshipCountry: 'USA' }
+        ],
+        authorizedSigners: [
+            { name: 'Robert Johnson', title: 'CEO (Parent)', signingAuthority: 'Unlimited' },
+            { name: 'Michael Brown', title: 'Subsidiary President', signingAuthority: '$500,000' },
+            { name: 'Lisa Wang', title: 'CFO', signingAuthority: '$200,000' }
+        ],
+        conductors: [
+            { name: 'Robert Johnson', role: 'Ultimate Business Conductor', relationship: 'Parent Owner' },
+            { name: 'Michael Brown', role: 'Subsidiary Conductor', relationship: 'Manager' },
+            { name: 'Lisa Wang', role: 'Financial Conductor', relationship: 'Employee' }
+        ],
         riskFlags: [
             { category: 'Foreign ATM', severity: 'Review', count: 1 }
         ],

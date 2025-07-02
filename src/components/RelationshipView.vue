@@ -17,21 +17,41 @@
             <div class="mb-6">
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">{{ relationship?.name }}</h1>
-                            <p class="text-gray-600 mt-1">{{ relationship?.industry }} • {{ relationshipClients.length
-                                }} Client Entities</p>
-                            <div class="flex items-center space-x-4 mt-3">
-                                <span class="text-sm text-gray-500">RM: {{ relationshipManager?.name }}</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">Last Review: {{ lastReviewDate }}</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">Risk Level:
-                                    <span :class="getRiskLevelClass(portfolioRiskLevel)">{{ portfolioRiskLevel }}</span>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-4 mb-2">
+                                <h1 class="text-3xl font-bold text-gray-900">{{ relationship?.name }}</h1>
+                                <span class="px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+                                    {{ relationship?.tier || 'Platinum' }} Tier
                                 </span>
                             </div>
+                            <p class="text-gray-600 mb-3">{{ relationship?.industry }} • {{ relationshipClients.length
+                            }} Client Entities • {{ jurisdictionCount }} Jurisdictions</p>
+
+                            <!-- Enhanced Relationship Metadata -->
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
+                                <div class="text-sm">
+                                    <span class="text-gray-500">RM:</span>
+                                    <span class="font-medium text-gray-900 ml-1">{{ relationshipManager?.name }}</span>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-gray-500">Last Review:</span>
+                                    <span class="font-medium text-gray-900 ml-1">{{ lastReviewDate }}</span>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-gray-500">Risk Level:</span>
+                                    <span :class="getRiskLevelClass(portfolioRiskLevel)" class="font-medium ml-1">{{
+                                        portfolioRiskLevel }}</span>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-gray-500">Relationship Years:</span>
+                                    <span class="font-medium text-gray-900 ml-1">{{ averageRelationshipYears }}</span>
+                                </div>
+                            </div>
+
+
                         </div>
-                        <div class="text-right">
+
+                        <div class="text-right ml-6">
                             <div class="text-3xl font-bold text-green-600">{{ formatCurrency(totalPortfolioValue) }}
                             </div>
                             <div class="text-sm text-gray-500">Total Portfolio Value</div>
@@ -40,35 +60,32 @@
                         </div>
                     </div>
 
-                    <!-- Quick Action Alerts -->
-                    <div v-if="criticalAlerts.length > 0" class="mt-6 space-y-2">
-                        <div v-for="alert in criticalAlerts" :key="alert.id"
-                            class="flex items-center justify-between p-3 rounded-lg border-l-4"
-                            :class="getAlertClass(alert.type, alert.severity)">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-lg">{{ alert.icon }}</span>
-                                <div>
-                                    <div class="flex items-center space-x-2">
-                                        <p class="font-medium">{{ alert.title }}</p>
-                                        <span v-if="alert.date"
-                                            class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">
-                                            {{ alert.date }}
-                                        </span>
-                                    </div>
-                                    <p class="text-sm opacity-80">{{ alert.description }}</p>
-                                    <div v-if="alert.id === 'loan-delinquency'" class="mt-1 text-xs text-red-600">
-                                        <div>Account: Commercial Term Loan #TL-2024-0892</div>
-                                        <div>Original Amount: $2,800,000 | Current Balance: $2,156,000</div>
-                                        <div>Payment Status: 62 days past due | Last Payment: Oct 14, 2024</div>
-                                    </div>
+                    <!-- Alert Indicator Button -->
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="flex items-center space-x-3">
+                            <!-- Alert Indicator -->
+                            <button v-if="totalAlertCount > 0" @click="showAlertModal = true"
+                                class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                :class="alertIndicatorClass">
+                                <span class="text-lg">{{ alertIndicatorIcon }}</span>
+                                <span>{{ totalAlertCount }} Alert{{ totalAlertCount > 1 ? 's' : '' }}</span>
+                                <div v-if="hasCriticalAlerts" class="w-2 h-2 bg-red-500 rounded-full animate-pulse">
                                 </div>
-                            </div>
-                            <button @click="handleAlert(alert)"
-                                class="px-3 py-1 text-xs font-medium rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-colors">
-                                {{ alert.action }}
+                            </button>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button @click="generateRelationshipReport"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                                Generate Report
+                            </button>
+                            <button @click="scheduleReview"
+                                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                Schedule Review
                             </button>
                         </div>
                     </div>
+
+
                 </div>
             </div>
 
@@ -211,6 +228,27 @@
                         their connections</p>
                 </div>
                 <div class="p-4">
+                    <!-- Cross-Entity Intelligence -->
+                    <div class="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-medium text-blue-800">Cross-Entity Intelligence</h4>
+                        </div>
+                        <div class="flex items-center space-x-4 text-sm">
+                            <div class="flex items-center space-x-1">
+                                <span class="text-blue-600 font-medium">👥</span>
+                                <span class="text-blue-800">{{ totalBeneficialOwners }} Beneficial Owners</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-blue-600 font-medium">✍️</span>
+                                <span class="text-blue-800">{{ totalAuthorizedSigners }} Authorized Signers</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-blue-600 font-medium">🎯</span>
+                                <span class="text-blue-800">{{ totalConductors }} Conductors</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- D3 Organizational Chart -->
                     <OrgChart :orgData="johnsonHoldingsOrgData" @nodeClick="navigateToClient" />
 
@@ -291,60 +329,78 @@
                 </div>
             </div>
 
-            <!-- Risk & Opportunity Priority Dashboard -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- High Priority Actions -->
+            <!-- Expandable Priority Details -->
+            <div class="mb-6">
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="p-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">🎯 Priority Actions</h3>
-                            <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">{{
-                                priorityActions.length }} items</span>
+                            <h3 class="text-lg font-medium text-gray-900">Priority Action Details</h3>
                         </div>
                     </div>
-                    <div class="p-4 space-y-3 max-h-80 overflow-y-auto">
-                        <div v-for="action in priorityActions" :key="action.id"
-                            @click="drillDownToClient(action.client)"
-                            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-lg">{{ action.icon }}</span>
-                                <div>
-                                    <p class="font-medium text-gray-900">{{ action.client.name }}</p>
-                                    <p class="text-sm text-gray-600">{{ action.description }}</p>
+                    <div class="p-4 space-y-4">
+                        <!-- Critical Alerts Details -->
+                        <div>
+                            <h4 class="font-medium text-red-800 mb-3 flex items-center">
+                                <span class="text-lg mr-2">🚨</span>
+                                Critical Alerts - Immediate Action Required
+                            </h4>
+                            <div class="space-y-2">
+                                <div v-for="alert in priorityCriticalAlerts" :key="alert.id"
+                                    @click="drillDownToClient(alert.client)"
+                                    class="flex items-center justify-between p-3 bg-red-50 rounded-lg cursor-pointer hover:bg-red-100 transition-colors">
+                                    <div>
+                                        <p class="font-medium text-red-900">{{ alert.client.name }}</p>
+                                        <p class="text-sm text-red-700">{{ alert.description }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-medium text-red-600">{{ alert.value }}</div>
+                                        <div class="text-xs text-red-500">{{ alert.timeframe }}</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <div class="text-sm font-medium" :class="action.valueClass">{{ action.value }}</div>
-                                <div class="text-xs text-gray-500">{{ action.timeframe }}</div>
-                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Top Opportunities -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="p-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">💰 Top Opportunities</h3>
-                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">{{
-                                formatCurrency(totalOpportunityValue) }} potential</span>
-                        </div>
-                    </div>
-                    <div class="p-4 space-y-3 max-h-80 overflow-y-auto">
-                        <div v-for="opportunity in topOpportunities" :key="opportunity.id"
-                            @click="drillDownToClient(opportunity.client)"
-                            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-lg">{{ opportunity.icon }}</span>
-                                <div>
-                                    <p class="font-medium text-gray-900">{{ opportunity.client.name }}</p>
-                                    <p class="text-sm text-gray-600">{{ opportunity.description }}</p>
+                        <!-- Risk Reviews Details -->
+                        <div>
+                            <h4 class="font-medium text-orange-800 mb-3 flex items-center">
+                                <span class="text-lg mr-2">📊</span>
+                                Risk Reviews - Scheduled Assessments
+                            </h4>
+                            <div class="space-y-2">
+                                <div v-for="review in priorityRiskReviews" :key="review.id"
+                                    @click="drillDownToClient(review.client)"
+                                    class="flex items-center justify-between p-3 bg-orange-50 rounded-lg cursor-pointer hover:bg-orange-100 transition-colors">
+                                    <div>
+                                        <p class="font-medium text-orange-900">{{ review.client.name }}</p>
+                                        <p class="text-sm text-orange-700">{{ review.description }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-medium text-orange-600">{{ review.value }}</div>
+                                        <div class="text-xs text-orange-500">{{ review.timeframe }}</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <div class="text-sm font-medium text-green-600">{{ formatCurrency(opportunity.value) }}
+                        </div>
+
+                        <!-- Compliance Actions Details -->
+                        <div>
+                            <h4 class="font-medium text-blue-800 mb-3 flex items-center">
+                                <span class="text-lg mr-2">📋</span>
+                                Compliance Actions - Regulatory Requirements
+                            </h4>
+                            <div class="space-y-2">
+                                <div v-for="action in priorityComplianceActions" :key="action.id"
+                                    @click="drillDownToClient(action.client)"
+                                    class="flex items-center justify-between p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors">
+                                    <div>
+                                        <p class="font-medium text-blue-900">{{ action.client.name }}</p>
+                                        <p class="text-sm text-blue-700">{{ action.description }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-medium text-blue-600">{{ action.value }}</div>
+                                        <div class="text-xs text-blue-500">{{ action.timeframe }}</div>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500">{{ opportunity.probability }}% likely</div>
                             </div>
                         </div>
                     </div>
@@ -391,7 +447,7 @@
                                     Loans</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Risk Score</th>
+                                    Risk Flags</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Opportunities</th>
@@ -435,10 +491,12 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                        :class="getRiskScoreClass(client.riskScore)">
-                                        {{ client.riskScore || getGeneratedRiskScore(client) }}
-                                    </span>
+                                    <div class="flex items-center">
+                                        <span class="text-sm font-medium text-gray-900">
+                                            {{ (client.riskFlags || []).length || Math.floor(Math.random() * 3) + 1 }}
+                                        </span>
+                                        <span class="ml-2 text-xs text-gray-500">flags</span>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
@@ -474,10 +532,12 @@
                                     </div>
                                     <h4 class="text-sm font-medium text-gray-900">{{ client.name }}</h4>
                                 </div>
-                                <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                    :class="getRiskScoreClass(client.riskScore)">
-                                    {{ client.riskScore || getGeneratedRiskScore(client) }}
-                                </span>
+                                <div class="flex items-center">
+                                    <span class="text-sm font-medium text-gray-900">
+                                        {{ (client.riskFlags || []).length || Math.floor(Math.random() * 3) + 1 }}
+                                    </span>
+                                    <span class="ml-1 text-xs text-gray-500">flags</span>
+                                </div>
                             </div>
 
                             <!-- Key Metrics -->
@@ -494,7 +554,7 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Loans:</span>
                                     <span class="font-medium text-orange-600">{{ formatCurrency(getClientLoans(client))
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
 
@@ -515,6 +575,289 @@
             </div>
 
 
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div v-if="showAlertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click.self="showAlertModal = false">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                            ⚠️ Relationship Alerts - {{ relationship?.name }}
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">
+                            {{ totalAlertCount }} active alert{{ totalAlertCount > 1 ? 's' : '' }} across {{
+                                relationshipClients.length }} client{{ relationshipClients.length > 1 ? 's' : '' }}
+                        </p>
+                    </div>
+                    <button @click="showAlertModal = false" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Alert Tabs -->
+                <div class="mt-4 border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8" aria-label="Alert Tabs">
+                        <button @click="activeAlertTab = 'delinquency'" :class="[
+                            activeAlertTab === 'delinquency'
+                                ? 'border-red-500 text-red-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                            'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+                        ]">
+                            <span>🚨</span>
+                            <span>Loan Delinquency</span>
+                            <span v-if="relationshipLoanDelinquencyAlerts.length > 0"
+                                class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                                {{ relationshipLoanDelinquencyAlerts.length }}
+                            </span>
+                        </button>
+                        <button @click="activeAlertTab = 'overdraft'" :class="[
+                            activeAlertTab === 'overdraft'
+                                ? 'border-orange-500 text-orange-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                            'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+                        ]">
+                            <span>💰</span>
+                            <span>Overdraft</span>
+                            <span v-if="relationshipOverdraftAlerts.length > 0"
+                                class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                                {{ relationshipOverdraftAlerts.length }}
+                            </span>
+                        </button>
+                        <button @click="activeAlertTab = 'summary'" :class="[
+                            activeAlertTab === 'summary'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                            'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2'
+                        ]">
+                            <span>📊</span>
+                            <span>Alert Summary</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 max-h-96 overflow-y-auto">
+                <!-- Loan Delinquency Tab -->
+                <div v-show="activeAlertTab === 'delinquency'">
+                    <div v-if="relationshipLoanDelinquencyAlerts.length === 0" class="text-center py-8 text-gray-500">
+                        <span class="text-4xl">✅</span>
+                        <p class="mt-2">No loan delinquency alerts across the relationship</p>
+                    </div>
+                    <div v-else class="space-y-4">
+                        <div v-for="alert in relationshipLoanDelinquencyAlerts" :key="alert.id"
+                            class="border border-red-200 rounded-lg p-4 bg-red-50">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-3">
+                                        <h4 class="font-semibold text-red-900">{{ alert.loanType }}</h4>
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                                            {{ alert.daysPastDue }} days past due
+                                        </span>
+                                        <span
+                                            class="bg-red-200 text-red-900 text-xs px-2 py-1 rounded-full font-medium">
+                                            {{ alert.severity }}
+                                        </span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            {{ alert.clientName }}
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                                        <div>
+                                            <span class="text-gray-600">Account:</span>
+                                            <div class="font-medium">{{ alert.accountNumber }}</div>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Amount Due:</span>
+                                            <div class="font-medium text-red-600">{{ formatCurrency(alert.amountDue) }}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Last Payment:</span>
+                                            <div class="font-medium">{{ alert.lastPaymentDate }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="text-gray-600">Total Outstanding:</span>
+                                        <span class="font-medium text-red-700 ml-1">{{
+                                            formatCurrency(alert.totalOutstanding) }}</span>
+                                        <span class="text-gray-600 ml-3">Original Amount:</span>
+                                        <span class="font-medium ml-1">{{ formatCurrency(alert.originalAmount) }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col space-y-2 ml-4">
+                                    <button @click="handleDelinquencyAlert(alert)"
+                                        class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700">
+                                        Review Now
+                                    </button>
+                                    <button @click="scheduleCall(alert)"
+                                        class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">
+                                        Schedule Call
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overdraft Tab -->
+                <div v-show="activeAlertTab === 'overdraft'">
+                    <div v-if="relationshipOverdraftAlerts.length === 0" class="text-center py-8 text-gray-500">
+                        <span class="text-4xl">✅</span>
+                        <p class="mt-2">No overdraft alerts across the relationship</p>
+                    </div>
+                    <div v-else class="space-y-4">
+                        <div v-for="alert in relationshipOverdraftAlerts" :key="alert.id"
+                            class="border border-orange-200 rounded-lg p-4 bg-orange-50">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-3">
+                                        <h4 class="font-semibold text-orange-900">{{ alert.accountType }}</h4>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                                            {{ alert.severity }} Priority
+                                        </span>
+                                        <span
+                                            class="bg-orange-200 text-orange-900 text-xs px-2 py-1 rounded-full font-medium">
+                                            {{ alert.daysOverdrawn }} days overdrawn
+                                        </span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            {{ alert.clientName }}
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                                        <div>
+                                            <span class="text-gray-600">Account:</span>
+                                            <div class="font-medium">{{ alert.accountNumber }}</div>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Current Balance:</span>
+                                            <div class="font-medium text-orange-600">{{
+                                                formatCurrency(alert.currentBalance) }}</div>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Overdraft Amount:</span>
+                                            <div class="font-medium text-red-600">{{
+                                                formatCurrency(Math.abs(alert.currentBalance)) }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="text-gray-600">Overdraft Limit:</span>
+                                        <span class="font-medium ml-1">{{ formatCurrency(alert.overdraftLimit) }}</span>
+                                        <span class="text-gray-600 ml-3">Fee Accrued:</span>
+                                        <span class="font-medium text-red-600 ml-1">{{ formatCurrency(alert.feeAccrued)
+                                        }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col space-y-2 ml-4">
+                                    <button @click="handleOverdraftAlert(alert)"
+                                        class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700">
+                                        Review Account
+                                    </button>
+                                    <button @click="contactClient(alert)"
+                                        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                                        Contact Client
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Summary Tab -->
+                <div v-show="activeAlertTab === 'summary'">
+                    <div class="space-y-6">
+                        <!-- Summary Statistics -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-red-600">{{
+                                        relationshipLoanDelinquencyAlerts.length }}</div>
+                                    <div class="text-sm text-gray-600">Delinquent Loans</div>
+                                    <div class="text-xs text-red-600 mt-1">
+                                        {{ formatCurrency(totalDelinquencyAmount) }} at risk
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600">{{
+                                        relationshipOverdraftAlerts.length }}</div>
+                                    <div class="text-sm text-gray-600">Overdraft Accounts</div>
+                                    <div class="text-xs text-orange-600 mt-1">
+                                        {{ formatCurrency(totalOverdraftAmount) }} exposure
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-blue-600">{{ alertedClientsCount }}</div>
+                                    <div class="text-sm text-gray-600">Clients Affected</div>
+                                    <div class="text-xs text-blue-600 mt-1">
+                                        {{ Math.round((alertedClientsCount / relationshipClients.length) * 100) }}% of
+                                        relationship
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Breakdown -->
+                        <div>
+                            <h4 class="text-base font-medium text-gray-900 mb-3">Alert Breakdown by Client</h4>
+                            <div class="space-y-3">
+                                <div v-for="client in clientsWithAlerts" :key="client.id"
+                                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <div class="font-medium text-gray-900">{{ client.name }}</div>
+                                        <div class="text-sm text-gray-600">
+                                            <span v-if="client.delinquencyCount > 0" class="text-red-600">
+                                                {{ client.delinquencyCount }} delinquent loan{{ client.delinquencyCount
+                                                    > 1 ? 's' : '' }}
+                                            </span>
+                                            <span v-if="client.delinquencyCount > 0 && client.overdraftCount > 0"> •
+                                            </span>
+                                            <span v-if="client.overdraftCount > 0" class="text-orange-600">
+                                                {{ client.overdraftCount }} overdraft{{ client.overdraftCount > 1 ? 's'
+                                                    : '' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button @click="drillDownToClient(client)"
+                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        View Details →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Last updated: {{ new Date().toLocaleString() }}
+                    </div>
+                    <div class="flex space-x-3">
+                        <button @click="exportAlertReport"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                            Export Report
+                        </button>
+                        <button @click="showAlertModal = false"
+                            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm font-medium">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -541,6 +884,8 @@ export default {
         const chartKey = ref(0)
         const chartOptions = ref({})
         const chartSeries = ref([])
+        const showAlertModal = ref(false)
+        const activeAlertTab = ref('delinquency')
 
         return {
             clientViewType,
@@ -550,7 +895,9 @@ export default {
             selectedTrendClient,
             chartKey,
             chartOptions,
-            chartSeries
+            chartSeries,
+            showAlertModal,
+            activeAlertTab
         }
     },
     computed: {
@@ -666,6 +1013,87 @@ export default {
             return 85 - this.averageProductPenetration
         },
 
+        // Enhanced Header Metrics
+        jurisdictionCount() {
+            const jurisdictions = new Set()
+            this.relationshipClients.forEach(client => {
+                if (client.location) {
+                    const state = client.location.split(', ')[1] || client.location
+                    jurisdictions.add(state)
+                }
+            })
+            return jurisdictions.size || 3 // Default to 3 for Johnson Holdings
+        },
+
+        averageRelationshipYears() {
+            const totalYears = this.relationshipClients.reduce((sum, client) =>
+                sum + (client.relationshipYears || 5), 0)
+            return Math.round(totalYears / this.relationshipClients.length) || 6
+        },
+
+        totalBeneficialOwners() {
+            // Count all beneficial owners across all entities in the relationship
+            let totalCount = 0
+            this.relationshipClients.forEach(client => {
+                if (client.beneficialOwners && Array.isArray(client.beneficialOwners)) {
+                    totalCount += client.beneficialOwners.length
+                }
+            })
+            return totalCount
+        },
+
+        totalAuthorizedSigners() {
+            // Count all authorized signers across all entities in the relationship
+            let totalCount = 0
+            this.relationshipClients.forEach(client => {
+                if (client.authorizedSigners && Array.isArray(client.authorizedSigners)) {
+                    totalCount += client.authorizedSigners.length
+                }
+            })
+            return totalCount
+        },
+
+        totalConductors() {
+            // Count all conductors across all entities in the relationship
+            let totalCount = 0
+            this.relationshipClients.forEach(client => {
+                if (client.conductors && Array.isArray(client.conductors)) {
+                    totalCount += client.conductors.length
+                }
+            })
+            return totalCount
+        },
+
+        entityComplexityScore() {
+            // Calculate complexity score based on entity structure and relationships
+            let complexityScore = 0
+
+            // Base complexity from number of entities
+            complexityScore += this.relationshipClients.length * 10
+
+            // Add complexity from beneficial ownership structure
+            complexityScore += this.totalBeneficialOwners * 5
+
+            // Add complexity from authorized signers
+            complexityScore += this.totalAuthorizedSigners * 3
+
+            // Add complexity from conductors
+            complexityScore += this.totalConductors * 4
+
+            // Add complexity from cross-entity relationships
+            if (this.relationshipClients.length > 1) {
+                complexityScore += 15 // Multi-entity relationship bonus
+            }
+
+            // Add complexity from jurisdictions
+            complexityScore += this.jurisdictionCount * 8
+
+            // Cap the score at 100 for readability
+            return Math.min(100, complexityScore)
+        },
+
+
+
         // D3 Org Chart Data
         johnsonHoldingsOrgData() {
             return {
@@ -703,75 +1131,161 @@ export default {
             date.setDate(date.getDate() - Math.floor(Math.random() * 30 + 1)) // 1-30 days ago
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         },
-        criticalAlerts() {
+
+        // Simplified Priority Dashboard Counts
+        criticalAlertCount() {
+            return this.relationshipLoanDelinquencyAlerts.length + this.relationshipOverdraftAlerts.length
+        },
+        riskReviewCount() {
+            return this.highRiskFlagClients + this.concentrationRiskClients
+        },
+        complianceActionCount() {
+            return this.overdueReviews + this.beneficialOwnerUpdates
+        },
+
+        // Supporting metrics for priority cards
+        highRiskFlagClients() {
+            return this.relationshipClients.filter(client =>
+                (client.riskFlags || []).length >= 3 || Math.floor(Math.random() * 3) + 1 >= 3
+            ).length
+        },
+        concentrationRiskClients() {
+            return this.relationshipClients.filter(client => client.portfolioValue > 50000000).length
+        },
+        overdueReviews() {
+            return this.relationshipClients.filter(client => {
+                const daysSinceReview = Math.floor(Math.random() * 45) + 15
+                return client.portfolioValue > 25000000 && daysSinceReview > 30
+            }).length
+        },
+        beneficialOwnerUpdates() {
+            return Math.floor(this.relationshipClients.length * 0.3) // 30% need updates
+        },
+
+        // Detailed priority action arrays
+        priorityCriticalAlerts() {
             const alerts = []
 
-            // Loan Delinquency Alert - Priority Alert
-            alerts.push({
-                id: 'loan-delinquency',
-                type: 'risk',
-                icon: '⚠️',
-                title: 'Loan Delinquency Alert',
-                description: 'Johnson Manufacturing LLC - $2.8M term loan 60+ days past due',
-                action: 'Review Account',
-                date: 'Dec 15, 2024',
-                client: this.relationshipClients.find(c => c.name === 'Johnson Manufacturing LLC') || this.relationshipClients[0],
-                severity: 'high'
+            // Add delinquency alerts
+            this.relationshipLoanDelinquencyAlerts.forEach(alert => {
+                alerts.push({
+                    id: `delinq-${alert.clientId}`,
+                    client: this.relationshipClients.find(c => c.id === alert.clientId) || { name: alert.clientName },
+                    description: `${alert.daysOverdue} days past due`,
+                    value: this.formatCurrency(alert.currentBalance),
+                    timeframe: 'Immediate'
+                })
             })
 
-            // Generate dynamic alerts based on portfolio data
-            if (this.riskFlagGrowthYoY > 15) {
+            // Add overdraft alerts
+            this.relationshipOverdraftAlerts.forEach(alert => {
                 alerts.push({
-                    id: 'risk-spike',
-                    type: 'risk',
-                    icon: '🚨',
-                    title: 'Risk Flags Increasing',
-                    description: `Risk indicators up ${this.riskFlagGrowthYoY}% YoY across portfolio`,
-                    action: 'Review Now',
-                    client: this.relationshipClients.find(c => (c.riskScore || 5) >= 7)
+                    id: `overdraft-${alert.clientId}`,
+                    client: this.relationshipClients.find(c => c.id === alert.clientId) || { name: alert.clientName },
+                    description: `Account overdraft`,
+                    value: this.formatCurrency(Math.abs(alert.currentBalance)),
+                    timeframe: 'Today'
                 })
-            }
+            })
 
-            if (this.totalOpportunityValue > this.totalPortfolioValue * 0.2) {
-                alerts.push({
-                    id: 'high-opportunity',
-                    type: 'opportunity',
-                    icon: '💰',
-                    title: 'High Value Opportunities',
-                    description: `${this.formatCurrency(this.totalOpportunityValue)} potential identified`,
-                    action: 'Review Opportunities',
-                    client: this.relationshipClients[0]
-                })
-            }
-
-            return alerts.slice(0, 3) // Max 3 alerts
+            return alerts
         },
-        priorityActions() {
+        priorityRiskReviews() {
+            const reviews = []
+
+            this.relationshipClients.forEach(client => {
+                const riskFlagsCount = (client.riskFlags || []).length || Math.floor(Math.random() * 3) + 1
+
+                if (riskFlagsCount >= 3) {
+                    reviews.push({
+                        id: `risk-${client.id}`,
+                        client,
+                        description: 'Multiple risk flags review',
+                        value: `${riskFlagsCount} flags`,
+                        timeframe: 'This week'
+                    })
+                }
+
+                if (client.portfolioValue > 50000000) {
+                    reviews.push({
+                        id: `concentration-${client.id}`,
+                        client,
+                        description: 'Credit concentration review',
+                        value: this.formatCurrency(client.portfolioValue),
+                        timeframe: 'This month'
+                    })
+                }
+            })
+
+            return reviews.slice(0, 4)
+        },
+        priorityGrowthOpportunities() {
+            const opportunities = []
+
+            this.relationshipClients.forEach(client => {
+                const opportunityValue = this.getClientOpportunityValue(client)
+
+                if (opportunityValue > 100000) {
+                    opportunities.push({
+                        id: `growth-${client.id}`,
+                        client,
+                        description: 'Cross-sell expansion',
+                        value: opportunityValue,
+                        probability: Math.floor(60 + Math.random() * 35)
+                    })
+                }
+            })
+
+            return opportunities.sort((a, b) => b.value - a.value).slice(0, 4)
+        },
+        priorityComplianceActions() {
             const actions = []
 
-            // Add the loan delinquency as top priority
-            actions.push({
-                id: 'loan-delinquency-action',
-                client: this.relationshipClients.find(c => c.name === 'Johnson Manufacturing LLC') || this.relationshipClients[0],
-                icon: '⚠️',
-                description: 'Loan delinquency - 62 days past due',
-                value: '$2.8M Term Loan',
-                valueClass: 'text-red-600',
-                timeframe: 'Urgent'
+            this.relationshipClients.forEach(client => {
+                if (client.portfolioValue > 25000000) {
+                    const daysSinceReview = Math.floor(Math.random() * 45) + 15
+                    if (daysSinceReview > 30) {
+                        actions.push({
+                            id: `compliance-${client.id}`,
+                            client,
+                            description: 'Annual review overdue',
+                            value: `${daysSinceReview} days`,
+                            timeframe: 'This week'
+                        })
+                    }
+                }
+
+                // BOI updates for entities with complex ownership
+                if (Math.random() > 0.7) {
+                    actions.push({
+                        id: `boi-${client.id}`,
+                        client,
+                        description: 'BOI filing update required',
+                        value: 'Due 30 days',
+                        timeframe: 'This month'
+                    })
+                }
             })
+
+            return actions.slice(0, 3)
+        },
+
+        priorityActions() {
+            // Legacy computed property - kept for compatibility
+            const actions = []
 
             // Generate risk-focused priority actions only
             this.relationshipClients.forEach(client => {
-                const riskScore = client.riskScore || this.getGeneratedRiskScore(client)
+                const riskFlagsCount = (client.riskFlags || []).length || Math.floor(Math.random() * 3) + 1
 
-                // High risk score review
-                if (riskScore >= 7) {
+                // High risk flags review
+                if (riskFlagsCount >= 3) {
                     actions.push({
-                        id: `risk-score-${client.id}`,
+                        id: `risk-flags-${client.id}`,
                         client,
                         icon: '🚨',
-                        description: 'High risk score requires review',
-                        value: `Risk Score: ${riskScore}`,
+                        description: 'Multiple risk flags require review',
+                        value: `${riskFlagsCount} Risk Flags`,
                         valueClass: 'text-red-600',
                         timeframe: 'Urgent'
                     })
@@ -806,8 +1320,8 @@ export default {
                     }
                 }
 
-                // Cash flow monitoring
-                if (riskScore >= 6) {
+                // Cash flow monitoring for clients with multiple risk flags
+                if (riskFlagsCount >= 2) {
                     actions.push({
                         id: `cashflow-${client.id}`,
                         client,
@@ -1006,6 +1520,172 @@ export default {
         maxRiskFlags() {
             // Calculate max risk flags for chart scaling
             return Math.max(20, this.totalRiskFlags + 10)
+        },
+
+        // Relationship-Level Alert System
+        relationshipLoanDelinquencyAlerts() {
+            const alerts = []
+
+            // Generate delinquency alerts for specific clients in the relationship
+            this.relationshipClients.forEach(client => {
+                // Johnson Manufacturing LLC has specific delinquency
+                if (client.name === 'Johnson Manufacturing LLC') {
+                    alerts.push({
+                        id: `del_${client.id}_001`,
+                        clientId: client.id,
+                        clientName: client.name,
+                        loanType: 'Commercial Term Loan',
+                        accountNumber: 'TL-2024-0892',
+                        daysPastDue: 62,
+                        amountDue: 125000,
+                        totalOutstanding: 2156000,
+                        originalAmount: 2800000,
+                        lastPaymentDate: 'Oct 14, 2024',
+                        severity: 'Critical'
+                    })
+                }
+
+                // Generate additional delinquency alerts for other high-value clients
+                const portfolioValue = client.portfolioValue || 0
+                const clientRiskScore = client.riskScore || this.getGeneratedRiskScore(client)
+
+                if (portfolioValue > 25000000 && clientRiskScore >= 6 && Math.random() > 0.7) {
+                    alerts.push({
+                        id: `del_${client.id}_002`,
+                        clientId: client.id,
+                        clientName: client.name,
+                        loanType: 'SBA 504 Loan',
+                        accountNumber: `SBA-${Math.floor(Math.random() * 9000) + 1000}`,
+                        daysPastDue: Math.floor(Math.random() * 45) + 30, // 30-75 days
+                        amountDue: Math.floor(Math.random() * 75000) + 25000, // $25K-$100K
+                        totalOutstanding: Math.floor(portfolioValue * 0.15), // 15% of portfolio
+                        originalAmount: Math.floor(portfolioValue * 0.2), // 20% of portfolio
+                        lastPaymentDate: this.getRandomPastDate(30, 75),
+                        severity: Math.random() > 0.5 ? 'High' : 'Critical'
+                    })
+                }
+            })
+
+            return alerts
+        },
+
+        relationshipOverdraftAlerts() {
+            const alerts = []
+
+            this.relationshipClients.forEach(client => {
+                const portfolioValue = client.portfolioValue || 0
+                const clientRiskScore = client.riskScore || this.getGeneratedRiskScore(client)
+
+                // Johnson Manufacturing LLC has specific overdraft
+                if (client.name === 'Johnson Manufacturing LLC') {
+                    alerts.push({
+                        id: `od_${client.id}_001`,
+                        clientId: client.id,
+                        clientName: client.name,
+                        accountType: 'Business Checking',
+                        accountNumber: 'CHK-847291',
+                        currentBalance: -15250,
+                        overdraftLimit: 50000,
+                        feeAccrued: 275,
+                        severity: 'High',
+                        daysOverdrawn: 3
+                    })
+                }
+
+                // Generate overdraft alerts for medium to high-value clients
+                if (portfolioValue > 10000000 && Math.random() > 0.8) {
+                    const overdraftAmount = Math.floor(Math.random() * 25000) + 5000 // $5K-$30K
+                    alerts.push({
+                        id: `od_${client.id}_002`,
+                        clientId: client.id,
+                        clientName: client.name,
+                        accountType: 'Business Operating Account',
+                        accountNumber: `CHK-${Math.floor(Math.random() * 900000) + 100000}`,
+                        currentBalance: -overdraftAmount,
+                        overdraftLimit: Math.floor(portfolioValue * 0.001), // 0.1% of portfolio as limit
+                        feeAccrued: Math.floor(overdraftAmount * 0.02), // 2% fee
+                        severity: overdraftAmount > 15000 ? 'High' : 'Medium',
+                        daysOverdrawn: Math.floor(Math.random() * 10) + 1 // 1-10 days
+                    })
+                }
+            })
+
+            return alerts
+        },
+
+        // Alert Summary Computed Properties
+        totalAlertCount() {
+            return this.relationshipLoanDelinquencyAlerts.length + this.relationshipOverdraftAlerts.length
+        },
+
+        hasCriticalAlerts() {
+            return this.relationshipLoanDelinquencyAlerts.some(alert => alert.severity === 'Critical') ||
+                this.relationshipOverdraftAlerts.some(alert => alert.severity === 'High')
+        },
+
+        alertIndicatorClass() {
+            if (this.hasCriticalAlerts) {
+                return 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-300'
+            } else if (this.relationshipOverdraftAlerts.length > 0) {
+                return 'bg-orange-100 text-orange-800 hover:bg-orange-200 border border-orange-300'
+            } else {
+                return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border border-yellow-300'
+            }
+        },
+
+        alertIndicatorIcon() {
+            if (this.hasCriticalAlerts) return '🚨'
+            if (this.relationshipOverdraftAlerts.length > 0) return '⚠️'
+            return '⚠️'
+        },
+
+        totalDelinquencyAmount() {
+            return this.relationshipLoanDelinquencyAlerts.reduce((sum, alert) => sum + alert.totalOutstanding, 0)
+        },
+
+        totalOverdraftAmount() {
+            return this.relationshipOverdraftAlerts.reduce((sum, alert) => sum + Math.abs(alert.currentBalance), 0)
+        },
+
+        alertedClientsCount() {
+            const clientIds = new Set()
+            this.relationshipLoanDelinquencyAlerts.forEach(alert => clientIds.add(alert.clientId))
+            this.relationshipOverdraftAlerts.forEach(alert => clientIds.add(alert.clientId))
+            return clientIds.size
+        },
+
+        clientsWithAlerts() {
+            const alertMap = new Map()
+
+            // Initialize all clients with 0 alerts
+            this.relationshipClients.forEach(client => {
+                alertMap.set(client.id, {
+                    ...client,
+                    delinquencyCount: 0,
+                    overdraftCount: 0
+                })
+            })
+
+            // Count delinquency alerts by client
+            this.relationshipLoanDelinquencyAlerts.forEach(alert => {
+                const client = alertMap.get(alert.clientId)
+                if (client) {
+                    client.delinquencyCount++
+                }
+            })
+
+            // Count overdraft alerts by client
+            this.relationshipOverdraftAlerts.forEach(alert => {
+                const client = alertMap.get(alert.clientId)
+                if (client) {
+                    client.overdraftCount++
+                }
+            })
+
+            // Return only clients with alerts
+            return Array.from(alertMap.values()).filter(client =>
+                client.delinquencyCount > 0 || client.overdraftCount > 0
+            )
         }
     },
     methods: {
@@ -1037,6 +1717,8 @@ export default {
                 default: return 'text-gray-600'
             }
         },
+
+
 
         getRiskHeatMapColor(score) {
             if (!score) score = Math.floor(Math.random() * 4) + 3
@@ -1099,34 +1781,10 @@ export default {
             return Math.floor(40 + Math.random() * 30) // 40-69th
         },
 
-        getAlertClass(type, severity) {
-            // Enhanced styling for high severity alerts (like loan delinquency)
-            if (severity === 'high') {
-                switch (type) {
-                    case 'risk': return 'bg-red-100 border-red-600 text-red-900 shadow-red-200 shadow-lg'
-                    case 'opportunity': return 'bg-green-100 border-green-600 text-green-900 shadow-green-200 shadow-lg'
-                    case 'compliance': return 'bg-yellow-100 border-yellow-600 text-yellow-900 shadow-yellow-200 shadow-lg'
-                    default: return 'bg-blue-100 border-blue-600 text-blue-900 shadow-blue-200 shadow-lg'
-                }
-            }
 
-            // Standard styling for normal alerts
-            switch (type) {
-                case 'risk': return 'bg-red-50 border-red-500 text-red-900'
-                case 'opportunity': return 'bg-green-50 border-green-500 text-green-900'
-                case 'compliance': return 'bg-yellow-50 border-yellow-500 text-yellow-900'
-                default: return 'bg-blue-50 border-blue-500 text-blue-900'
-            }
-        },
-
-        handleAlert(alert) {
-            if (alert.client) {
-                this.drillDownToClient(alert.client)
-            }
-        },
 
         drillDownToClient(client) {
-            // Navigate to individual client detail view
+            // Use the full hierarchical route path with all required parameters
             this.$router.push({
                 name: 'ClientDetail',
                 params: {
@@ -1157,8 +1815,10 @@ export default {
         },
 
         goBackToRM() {
-            if (this.relationship) {
-                this.$router.push({ name: 'RelationshipManager', params: { rmId: this.relationship.rmId } })
+            // Find the RM ID from the relationship
+            const rmId = this.relationship?.rmId
+            if (rmId) {
+                this.$router.push(`/relationship-manager/${rmId}`)
             }
         },
 
@@ -1787,6 +2447,86 @@ export default {
                 risk: 'Risk flag trends help identify emerging compliance or operational concerns'
             }
             return insights[metric] || 'Select a metric to view detailed trend analysis'
+        },
+
+        // Alert-related methods
+        getRandomPastDate(minDays, maxDays) {
+            const now = new Date()
+            const randomDays = Math.floor(Math.random() * (maxDays - minDays + 1)) + minDays
+            const pastDate = new Date(now.getTime() - (randomDays * 24 * 60 * 60 * 1000))
+            return pastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        },
+
+        handleDelinquencyAlert(alert) {
+            console.log('Handling delinquency alert:', alert)
+            // In a real app, this would navigate to the specific loan details or open a review workflow
+            this.$router.push({
+                name: 'ClientDetail',
+                params: {
+                    ...this.$route.params,
+                    clientId: alert.clientId
+                }
+            })
+        },
+
+        handleOverdraftAlert(alert) {
+            console.log('Handling overdraft alert:', alert)
+            // In a real app, this would navigate to the specific account details
+            this.$router.push({
+                name: 'ClientDetail',
+                params: {
+                    ...this.$route.params,
+                    clientId: alert.clientId
+                }
+            })
+        },
+
+        scheduleCall(alert) {
+            console.log('Scheduling call for:', alert)
+            // In a real app, this would open a calendar scheduling interface
+            alert('Call scheduled for ' + alert.clientName)
+        },
+
+        contactClient(alert) {
+            console.log('Contacting client:', alert)
+            // In a real app, this would open contact management interface
+            alert('Contacting ' + alert.clientName)
+        },
+
+        generateRelationshipReport() {
+            console.log('Generating relationship report for:', this.relationship?.name)
+            // In a real app, this would generate a comprehensive relationship report
+            alert('Generating relationship report...')
+        },
+
+        scheduleReview() {
+            console.log('Scheduling review for:', this.relationship?.name)
+            // In a real app, this would open calendar to schedule relationship review
+            alert('Scheduling relationship review...')
+        },
+
+        exportAlertReport() {
+            console.log('Exporting alert report for relationship:', this.relationship?.name)
+            const alertData = {
+                relationship: this.relationship?.name,
+                totalAlerts: this.totalAlertCount,
+                delinquencyAlerts: this.relationshipLoanDelinquencyAlerts,
+                overdraftAlerts: this.relationshipOverdraftAlerts,
+                summary: {
+                    totalDelinquencyAmount: this.totalDelinquencyAmount,
+                    totalOverdraftAmount: this.totalOverdraftAmount,
+                    clientsAffected: this.alertedClientsCount
+                }
+            }
+
+            // In a real app, this would generate and download a report
+            const blob = new Blob([JSON.stringify(alertData, null, 2)], { type: 'application/json' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `${this.relationship?.name}_alert_report.json`
+            a.click()
+            URL.revokeObjectURL(url)
         }
     },
 
