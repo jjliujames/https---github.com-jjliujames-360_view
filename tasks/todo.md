@@ -1,3 +1,189 @@
+# RelationshipManagerView Comprehensive Redesign Plan
+
+## Project Overview
+Complete redesign of RelationshipManagerView to serve as a **comprehensive portfolio management and risk assessment dashboard** for Commercial Banking Relationship Managers, providing balanced coverage of growth opportunities, performance tracking, and risk management.
+
+## User Requirements Analysis
+Based on detailed requirements, the RM needs:
+1. **Portfolio Growth & Performance Tracking** - Portfolio value, revenue, relationship count, lead conversion
+2. **Risk Management & Assessment** - Risk scores, compliance status, problem accounts
+3. **Actionable Intelligence** - Clear priorities, trend insights, drill-down capabilities
+4. **Performance Benchmarking** - Regional/national comparisons, peer performance
+5. **Deep Dive Navigation** - Relationship → Client drill-down paths
+
+## TODO List
+
+### Phase 1: Enhanced Dashboard Foundation (PRIORITY)
+- [ ] **Task 1.1**: Create comprehensive RM scorecard header
+  - Overall performance score (composite of growth + risk + efficiency)
+  - Regional/national ranking and percentile
+  - YTD performance summary with trend indicators
+  - Quick access to key action items
+
+- [ ] **Task 1.2**: Redesign core KPI grid (6-8 key metrics)
+  - **Portfolio Value**: Current value, growth trend, vs targets
+  - **Annual Revenue**: Revenue performance, growth rate, vs targets  
+  - **Relationship Count**: Active relationships, new acquisitions, retention rate
+  - **Lead Conversion**: Pipeline value, conversion rate, closed opportunities
+  - **Risk Score**: Portfolio-weighted risk, trend, problem accounts
+  - **Compliance Status**: Review currency, UTR filings, regulatory alerts
+  - Each metric clickable for detailed trend analysis
+
+- [ ] **Task 1.3**: Add expandable trend analysis section
+  - Interactive charts for each KPI with multiple time periods (3M/6M/1Y)
+  - Variance analysis (MoM, YoY, QTD) with contributing factors
+  - Top relationships driving positive/negative variance
+  - Benchmarking against regional/national averages
+
+### Phase 2: Advanced Analytics & Intelligence
+- [ ] **Task 2.1**: Build relationship impact analysis
+  - Identify top relationships by portfolio value contribution
+  - Top relationships by revenue generation
+  - Top growth opportunities by potential value
+  - Relationships requiring immediate attention (risk/compliance)
+
+- [ ] **Task 2.2**: Add performance benchmarking module
+  - Regional average comparisons for all key metrics
+  - National average comparisons for all key metrics
+  - Peer ranking within region/national cohort
+  - Goal achievement tracking with progress indicators
+
+- [ ] **Task 2.3**: Create comprehensive opportunity management
+  - Active opportunities by value and probability
+  - Product cross-sell opportunities by relationship
+  - Lead pipeline with conversion funnel
+  - Closed opportunities this period with revenue impact
+
+### Phase 3: Risk Management & Compliance
+- [ ] **Task 3.1**: Build integrated risk dashboard
+  - Portfolio risk distribution and concentration analysis
+  - Problem accounts requiring immediate attention
+  - Early warning indicators and alerts
+  - Risk trend analysis with peer comparisons
+
+- [ ] **Task 3.2**: Add compliance monitoring system
+  - KYC/CDD review status across portfolio
+  - UTR filing tracking and suspicious activity monitoring
+  - Regulatory examination findings and remediation
+  - Compliance calendar with upcoming requirements
+
+### Phase 4: Action-Oriented Workflow
+- [ ] **Task 4.1**: Create intelligent priority engine
+  - Daily/weekly priority actions ranked by impact
+  - Mix of growth opportunities and risk mitigation
+  - Time-sensitive items with deadlines
+  - Client engagement recommendations
+
+- [ ] **Task 4.2**: Build relationship portfolio grid
+  - Sortable/filterable relationship overview
+  - Quick access to key metrics per relationship
+  - Visual indicators for performance, risk, and opportunities
+  - One-click navigation to detailed RelationshipView
+
+### Phase 5: Deep Dive Navigation & Context
+- [ ] **Task 5.1**: Implement seamless drill-down capabilities
+  - From RM dashboard → specific relationship → individual client
+  - Context preservation across navigation levels
+  - Breadcrumb navigation with quick return options
+  - Cross-relationship comparison tools
+
+- [ ] **Task 5.2**: Add relationship-specific trend analysis
+  - Individual relationship performance vs portfolio average
+  - Relationship ranking within RM portfolio
+  - Historical performance trends and projections
+  - Opportunity identification and risk assessment
+
+## Detailed Dashboard Layout Design
+
+### **Header: RM Performance Scorecard** 📊
+```
+Performance Score: 87/100 (Top 15% Nationally) | Portfolio: $234M (+8.2% YTD) | Relationships: 23 (+2 this quarter)
+Target Achievement: Revenue 103% | Growth 112% | Risk Management 94%
+```
+
+### **Row 1: Core KPI Cards (Clickable for Trends)** 🎯
+```
+📈 Portfolio Value        💰 Annual Revenue         🤝 Relationships         📊 Lead Pipeline
+$234M (+8.2% YTD)        $18.7M (+12.4% YTD)      23 Active (+2 new)       47 Opportunities
+vs Target: 112%          vs Target: 103%          Retention: 96.2%         $28.4M Pipeline Value
+Regional: 92nd %ile      Regional: 88th %ile      Regional: 85th %ile      Conversion: 32.1%
+
+⚠️ Risk Score           ✅ Compliance           🚀 Growth Rate           📞 Client Touch
+6.4/10 (Stable)         91% Current             +8.2% YTD                4.2 Touches/Month
+3 Problem Accounts      2 Reviews Pending       vs Regional: +5.1%       vs Target: 95%
+Regional: 78th %ile     Regional: 89th %ile     National: 84th %ile      Regional: 92nd %ile
+```
+
+### **Row 2: Expandable Trend Analysis** 📈
+- Interactive ApexCharts for selected KPI
+- Time period selector (3M/6M/1Y)
+- Variance analysis with contributing relationships
+- Regional/national benchmark overlays
+
+### **Row 3: Relationship Impact Analysis** 🎯
+```
+🌟 Top Portfolio Contributors     📈 Growth Drivers              ⚠️ Attention Required
+├── Johnson Holdings: $45M         ├── TechCorp: +$12M (YTD)      ├── Energy LLC: Risk Score 8.2
+├── Global Mfg: $38M              ├── Healthcare: +$8.4M         ├── Real Estate: Overdue Review
+├── TechCorp Ventures: $32M       ├── Construction: +$6.1M       ├── Trading Co: UTR Filing
+└── Energy Solutions: $28M        └── Maritime: +$4.8M           └── Retail Corp: Delinquent
+```
+
+### **Row 4: Action Priorities & Opportunities** 🚨
+```
+🚨 Today's Priorities                    🚀 Top Opportunities
+├── Review: Energy LLC Risk Score 8.2    ├── TechCorp Treasury Services: $2.1M
+├── Complete: Real Estate KYC Renewal    ├── Healthcare Equipment Loan: $1.8M  
+├── Call: Trading Co UTR Discussion      ├── Construction Line Increase: $1.5M
+└── Meeting: Johnson Holdings QBR        └── Maritime Cash Management: $900K
+```
+
+### **Row 5: Relationship Portfolio Overview** 📋
+- Sortable table/card view of all relationships
+- Key metrics, risk indicators, opportunity flags
+- Quick navigation to detailed RelationshipView
+- Filter capabilities (risk level, tier, industry, performance)
+
+## New Data Requirements
+
+### **Enhanced Metrics**
+1. **Lead Management**: Pipeline value, conversion rates, closed opportunities
+2. **Benchmarking**: Regional and national averages for all metrics
+3. **Performance Scoring**: Composite scores for portfolio, risk, efficiency
+4. **Goal Tracking**: Target vs actual for all key metrics
+5. **Touch Frequency**: Client engagement metrics and recommendations
+
+### **Advanced Analytics**
+6. **Variance Attribution**: Which relationships drive overall variance
+7. **Correlation Analysis**: Risk vs performance relationships
+8. **Trend Prediction**: Forward-looking performance indicators
+9. **Peer Comparison**: RM ranking within region/national cohort
+10. **Opportunity Scoring**: Probability-weighted opportunity values
+
+## Implementation Approach
+- **User-Centric Design**: Focus on daily RM workflow and decision-making
+- **Progressive Disclosure**: Summary → Details → Deep Dive navigation
+- **Balanced Perspective**: Equal weight to growth and risk management
+- **Actionable Intelligence**: Every metric leads to specific actions
+- **Context Preservation**: Maintain context during drill-down navigation
+
+## Success Criteria
+- RMs can quickly assess overall portfolio health and performance
+- Clear identification of top priorities for daily/weekly focus
+- Seamless navigation from portfolio → relationship → client levels
+- Performance benchmarking provides context for all metrics
+- Risk and opportunity identification drives proactive management
+
+## Validation Required
+- Confirm metric priorities and target ranges for different RM levels
+- Validate regional/national benchmarking data availability
+- Approve navigation flow and drill-down context preservation
+- Define alert thresholds and priority scoring algorithms
+
+---
+
+# Previous Plans (For Reference)
+
 # RelationshipManagerView Redesign Plan
 
 ## Project Overview

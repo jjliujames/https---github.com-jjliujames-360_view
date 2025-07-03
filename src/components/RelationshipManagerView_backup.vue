@@ -65,9 +65,6 @@
       </div>
     </div>
 
-    <!-- Key Metrics Component -->
-    <KeyMetrics :showHeader="false" @view-trend="() => { }" />
-
     <!-- Daily Action Summary -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
       <div class="metric-card bg-gradient-to-br from-red-50 to-red-100 border-red-200">
