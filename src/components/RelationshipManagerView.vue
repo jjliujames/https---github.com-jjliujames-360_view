@@ -65,8 +65,174 @@
       </div>
     </div>
 
-    <!-- Key Metrics Component -->
-    <KeyMetrics :showHeader="false" @view-trend="() => { }" />
+    <!-- Executive Performance Scorecard Header -->
+    <div class="card mb-8">
+      <div class="px-6 py-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-900">Portfolio Performance Dashboard</h2>
+            <p class="text-sm text-gray-500 mt-1">Comprehensive portfolio management and performance tracking</p>
+          </div>
+          <div class="text-right">
+            <div class="text-3xl font-bold text-td-green">87<span class="text-lg text-gray-500">/100</span></div>
+            <div class="text-sm text-gray-600 font-medium">Performance Score</div>
+            <div class="text-xs text-gray-500">Regional Rank: Top 15%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Executive Summary Row -->
+      <div class="px-6 py-4 bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">$234M</div>
+            <div class="text-sm text-gray-600">Portfolio Value</div>
+            <div class="text-xs text-blue-500 font-medium">+8.2% YTD</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">23</div>
+            <div class="text-sm text-gray-600">Active Relationships</div>
+            <div class="text-xs text-green-500 font-medium">+2 new this quarter</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-emerald-600">$18.7M</div>
+            <div class="text-sm text-gray-600">Annual Revenue</div>
+            <div class="text-xs text-emerald-500 font-medium">+12.4% YTD</div>
+          </div>
+        </div>
+
+        <!-- Target Achievement -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex items-center justify-center space-x-6 text-sm">
+            <div class="flex items-center space-x-2">
+              <span class="text-gray-600">Growth Target:</span>
+              <span class="font-semibold text-green-600">112%</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-gray-600">Revenue Target:</span>
+              <span class="font-semibold text-emerald-600">103%</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-gray-600">Risk Management:</span>
+              <span class="font-semibold text-blue-600">94%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced RM Performance Scorecard -->
+    <div class="card mb-8">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">Portfolio Performance Scorecard</h2>
+            <p class="text-sm text-gray-500">Comprehensive portfolio and risk management overview</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <!-- Benchmark Toggle -->
+            <div class="flex items-center space-x-2">
+              <label class="text-sm text-gray-600">Benchmark:</label>
+              <select v-model="benchmarkType"
+                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-td-green">
+                <option value="regional">Regional</option>
+                <option value="national">National</option>
+              </select>
+            </div>
+            <!-- Overall Performance Score -->
+            <div class="text-right">
+              <div class="text-2xl font-bold text-td-green">{{ overallScore }}/100</div>
+              <div class="text-xs text-gray-500">
+                {{ benchmarkType === 'regional' ? 'Regional Rank: ' + regionalRank : 'National Rank: ' + nationalRank }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal Metrics Bar -->
+      <div class="bg-gray-50 p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+          <!-- Active Relationships -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('relationships')">
+            <div class="text-3xl font-bold text-blue-600">{{ relationshipMetrics.active }}</div>
+            <div class="text-sm text-gray-600 mt-1">Total Accounts</div>
+            <div class="text-xs text-blue-500 font-medium">
+              {{ benchmarkType === 'regional' ? relationshipMetrics.regionalPercentile :
+                relationshipMetrics.nationalPercentile }}th percentile
+            </div>
+          </div>
+
+          <!-- Portfolio Value -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('portfolio')">
+            <div class="text-3xl font-bold text-green-600">{{ formatCurrency(portfolioSummary.totalDeposits) }}</div>
+            <div class="text-sm text-gray-600 mt-1">Total Deposit Balance</div>
+            <div class="text-xs text-green-500 font-medium">
+              {{ benchmarkType === 'regional' ? portfolioMetricsEnhanced.regionalPercentile :
+                portfolioMetricsEnhanced.nationalPercentile }}th percentile
+            </div>
+          </div>
+
+          <!-- Total Loans -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('loans')">
+            <div class="text-3xl font-bold text-orange-600">{{ formatCurrency(portfolioSummary.totalLoans) }}</div>
+            <div class="text-sm text-gray-600 mt-1">Total Loans</div>
+            <div class="text-xs text-orange-500 font-medium">
+              {{ benchmarkType === 'regional' ? portfolioMetricsEnhanced.regionalPercentile :
+                portfolioMetricsEnhanced.nationalPercentile }}th percentile
+            </div>
+          </div>
+
+          <!-- Loan Utility -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('utility')">
+            <div class="text-3xl font-bold text-purple-600">{{ Math.round((portfolioSummary.totalLoans /
+              portfolioSummary.totalDeposits) * 100) }}%</div>
+            <div class="text-sm text-gray-600 mt-1">Loan Utility %</div>
+            <div class="text-xs text-purple-500 font-medium">
+              {{ benchmarkType === 'regional' ? growthMetrics.regionalPercentile : growthMetrics.nationalPercentile }}nd
+              percentile
+            </div>
+          </div>
+
+          <!-- Annual Revenue -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('revenue')">
+            <div class="text-3xl font-bold text-blue-600">{{ formatCurrency(revenueMetrics.annual) }}</div>
+            <div class="text-sm text-gray-600 mt-1">Revenue</div>
+            <div class="text-xs text-blue-500 font-medium">
+              {{ benchmarkType === 'regional' ? revenueMetrics.regionalPercentile : revenueMetrics.nationalPercentile
+              }}nd percentile
+            </div>
+          </div>
+
+          <!-- Opportunities -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('pipeline')">
+            <div class="text-3xl font-bold text-blue-600">{{ pipelineMetrics.opportunityCount }}</div>
+            <div class="text-sm text-gray-600 mt-1">Opportunities</div>
+            <div class="text-xs text-blue-500 font-medium">
+              {{ benchmarkType === 'regional' ? pipelineMetrics.regionalPercentile : pipelineMetrics.nationalPercentile
+              }}th percentile
+            </div>
+          </div>
+
+          <!-- Risk Flags -->
+          <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
+            @click="expandKPI('risk')">
+            <div class="text-3xl font-bold text-red-600">{{ riskMetrics.problemAccounts }}</div>
+            <div class="text-sm text-gray-600 mt-1">Risk Flags</div>
+            <div class="text-xs text-red-500 font-medium">
+              {{ benchmarkType === 'regional' ? riskMetrics.regionalPercentile : riskMetrics.nationalPercentile }}th
+              percentile
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Daily Action Summary -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
@@ -552,11 +718,11 @@
           <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
             <div class="bg-blue-50 p-3 rounded-lg">
               <p class="text-blue-600 font-medium">Deposit Balance</p>
-              <p class="text-2xl font-bold text-blue-900">{{ formatCurrency(portfolioMetrics.totalDeposits) }}</p>
+              <p class="text-2xl font-bold text-blue-900">{{ formatCurrency(portfolioSummary.totalDeposits) }}</p>
             </div>
             <div class="bg-green-50 p-3 rounded-lg">
               <p class="text-green-600 font-medium">Lending Balance</p>
-              <p class="text-2xl font-bold text-green-900">{{ formatCurrency(portfolioMetrics.totalLoans) }}</p>
+              <p class="text-2xl font-bold text-green-900">{{ formatCurrency(portfolioSummary.totalLoans) }}</p>
             </div>
           </div>
         </div>
@@ -710,6 +876,7 @@ import LineChart from './charts/LineChart.vue'
 import DoughnutChart from './charts/DoughnutChart.vue'
 import BarChart from './charts/BarChart.vue'
 
+
 const props = defineProps({
   metroId: {
     type: String,
@@ -736,6 +903,76 @@ const searchQuery = ref('')
 const clientSort = ref('name')
 const actionFilter = ref('all')
 const transactionViewType = ref('all')
+
+// Benchmarking and performance scorecard data
+const benchmarkType = ref('regional')
+const overallScore = ref(87)
+const regionalRank = ref('Top 15%')
+const nationalRank = ref('Top 28%')
+
+// Enhanced KPI metrics with benchmarking
+const portfolioMetricsEnhanced = reactive({
+  totalValue: 234000000,
+  ytdGrowth: 8.2,
+  vsTarget: 112,
+  regionalPercentile: 85,
+  nationalPercentile: 72
+})
+
+const revenueMetrics = reactive({
+  annual: 18700000,
+  ytdGrowth: 12.4,
+  vsTarget: 103,
+  regionalPercentile: 78,
+  nationalPercentile: 65
+})
+
+const relationshipMetrics = reactive({
+  active: 23,
+  newThisYear: 2,
+  retention: 96,
+  regionalPercentile: 82,
+  nationalPercentile: 69
+})
+
+const pipelineMetrics = reactive({
+  opportunityCount: 47,
+  totalValue: 15200000,
+  conversionRate: 34,
+  regionalPercentile: 91,
+  nationalPercentile: 79
+})
+
+const riskMetrics = reactive({
+  score: 2.8,
+  status: 'Good',
+  problemAccounts: 1,
+  regionalPercentile: 88,
+  nationalPercentile: 75
+})
+
+const complianceMetrics = reactive({
+  currentRate: 94,
+  status: 'Excellent',
+  reviewsPending: 3,
+  regionalPercentile: 92,
+  nationalPercentile: 84
+})
+
+const growthMetrics = reactive({
+  ytdRate: 11.8,
+  vsRegional: 2.3,
+  vsNational: 4.1,
+  regionalPercentile: 89,
+  nationalPercentile: 81
+})
+
+const engagementMetrics = reactive({
+  touchesPerMonth: 8.4,
+  vsTarget: 115,
+  regionalPercentile: 87,
+  nationalPercentile: 73
+})
 
 const dailyActions = reactive({
   dueToday: 8,
@@ -856,8 +1093,8 @@ const intelligenceCards = reactive({
   }
 })
 
-// Portfolio Metrics
-const portfolioMetrics = reactive({
+// Portfolio Summary (Legacy)
+const portfolioSummary = reactive({
   totalDeposits: 245000000,
   totalLoans: 89000000,
   totalRevenue: 12400000,
@@ -1306,6 +1543,11 @@ onMounted(() => {
   console.log('RelationshipManagerView mounted for RM:', props.rmId)
   console.log('RM data:', rm.value)
 })
+
+const expandKPI = (kpiType) => {
+  console.log('Expanding KPI:', kpiType)
+  // TODO: Add KPI expansion logic in next chunk
+}
 </script>
 
 <style scoped>
@@ -1327,5 +1569,9 @@ onMounted(() => {
 
 .opportunity-client-card:hover {
   transform: translateY(-2px);
+}
+
+.kpi-card {
+  @apply bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-all duration-200;
 }
 </style>
