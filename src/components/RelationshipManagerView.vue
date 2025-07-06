@@ -153,81 +153,81 @@
       <!-- Horizontal Metrics Bar -->
       <div class="bg-gray-50 p-6">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-          <!-- Active Relationships -->
+          <!-- Total Accounts -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
-            @click="expandKPI('relationships')">
-            <div class="text-3xl font-bold text-blue-600">{{ relationshipMetrics.active }}</div>
+            @click="expandKPI('accounts')">
+            <div class="text-3xl font-bold text-blue-600">{{ metricsComparisons.accounts.current }}</div>
             <div class="text-sm text-gray-600 mt-1">Total Accounts</div>
-            <div class="text-xs text-blue-500 font-medium">
-              {{ benchmarkType === 'regional' ? relationshipMetrics.regionalPercentile :
-                relationshipMetrics.nationalPercentile }}th percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('accounts')"
+              @click.stop="cycleComparison('accounts')">
+              {{ getComparisonText('accounts') }}
             </div>
           </div>
 
-          <!-- Portfolio Value -->
+          <!-- Total Deposit Balance -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
-            @click="expandKPI('portfolio')">
-            <div class="text-3xl font-bold text-green-600">{{ formatCurrency(portfolioSummary.totalDeposits) }}</div>
+            @click="expandKPI('deposits')">
+            <div class="text-3xl font-bold text-green-600">{{ formatCurrency(metricsComparisons.deposits.current) }}
+            </div>
             <div class="text-sm text-gray-600 mt-1">Total Deposit Balance</div>
-            <div class="text-xs text-green-500 font-medium">
-              {{ benchmarkType === 'regional' ? portfolioMetricsEnhanced.regionalPercentile :
-                portfolioMetricsEnhanced.nationalPercentile }}th percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('deposits')"
+              @click.stop="cycleComparison('deposits')">
+              {{ getComparisonText('deposits') }}
             </div>
           </div>
 
           <!-- Total Loans -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
             @click="expandKPI('loans')">
-            <div class="text-3xl font-bold text-orange-600">{{ formatCurrency(portfolioSummary.totalLoans) }}</div>
+            <div class="text-3xl font-bold text-orange-600">{{ formatCurrency(metricsComparisons.loans.current) }}</div>
             <div class="text-sm text-gray-600 mt-1">Total Loans</div>
-            <div class="text-xs text-orange-500 font-medium">
-              {{ benchmarkType === 'regional' ? portfolioMetricsEnhanced.regionalPercentile :
-                portfolioMetricsEnhanced.nationalPercentile }}th percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('loans')"
+              @click.stop="cycleComparison('loans')">
+              {{ getComparisonText('loans') }}
             </div>
           </div>
 
-          <!-- Loan Utility -->
+          <!-- Loan Utility % -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
             @click="expandKPI('utility')">
-            <div class="text-3xl font-bold text-purple-600">{{ Math.round((portfolioSummary.totalLoans /
-              portfolioSummary.totalDeposits) * 100) }}%</div>
+            <div class="text-3xl font-bold text-purple-600">{{ metricsComparisons.utility.current }}%</div>
             <div class="text-sm text-gray-600 mt-1">Loan Utility %</div>
-            <div class="text-xs text-purple-500 font-medium">
-              {{ benchmarkType === 'regional' ? growthMetrics.regionalPercentile : growthMetrics.nationalPercentile }}nd
-              percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('utility')"
+              @click.stop="cycleComparison('utility')">
+              {{ getComparisonText('utility') }}
             </div>
           </div>
 
-          <!-- Annual Revenue -->
+          <!-- Revenue -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
             @click="expandKPI('revenue')">
-            <div class="text-3xl font-bold text-blue-600">{{ formatCurrency(revenueMetrics.annual) }}</div>
+            <div class="text-3xl font-bold text-blue-600">{{ formatCurrency(metricsComparisons.revenue.current) }}</div>
             <div class="text-sm text-gray-600 mt-1">Revenue</div>
-            <div class="text-xs text-blue-500 font-medium">
-              {{ benchmarkType === 'regional' ? revenueMetrics.regionalPercentile : revenueMetrics.nationalPercentile
-              }}nd percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('revenue')"
+              @click.stop="cycleComparison('revenue')">
+              {{ getComparisonText('revenue') }}
             </div>
           </div>
 
           <!-- Opportunities -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
-            @click="expandKPI('pipeline')">
-            <div class="text-3xl font-bold text-blue-600">{{ pipelineMetrics.opportunityCount }}</div>
+            @click="expandKPI('opportunities')">
+            <div class="text-3xl font-bold text-blue-600">{{ metricsComparisons.opportunities.current }}</div>
             <div class="text-sm text-gray-600 mt-1">Opportunities</div>
-            <div class="text-xs text-blue-500 font-medium">
-              {{ benchmarkType === 'regional' ? pipelineMetrics.regionalPercentile : pipelineMetrics.nationalPercentile
-              }}th percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('opportunities')"
+              @click.stop="cycleComparison('opportunities')">
+              {{ getComparisonText('opportunities') }}
             </div>
           </div>
 
           <!-- Risk Flags -->
           <div class="text-center cursor-pointer hover:bg-white rounded-lg p-4 transition-colors"
             @click="expandKPI('risk')">
-            <div class="text-3xl font-bold text-red-600">{{ riskMetrics.problemAccounts }}</div>
+            <div class="text-3xl font-bold text-red-600">{{ metricsComparisons.risk.current }}</div>
             <div class="text-sm text-gray-600 mt-1">Risk Flags</div>
-            <div class="text-xs text-red-500 font-medium">
-              {{ benchmarkType === 'regional' ? riskMetrics.regionalPercentile : riskMetrics.nationalPercentile }}th
-              percentile
+            <div class="text-xs font-medium cursor-pointer hover:underline" :class="getComparisonClass('risk')"
+              @click.stop="cycleComparison('risk')">
+              {{ getComparisonText('risk') }}
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@
     </div>
 
     <!-- Daily Action Summary -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
       <div class="metric-card bg-gradient-to-br from-red-50 to-red-100 border-red-200">
         <div class="flex items-center">
           <div class="p-2 bg-red-600 rounded-lg">
@@ -319,13 +319,213 @@
       </div>
     </div>
 
+    <!-- Top Contributors Analysis (Phase 2) - Compact Design -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+      <!-- Top Revenue Contributors -->
+      <div class="card">
+        <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-semibold text-gray-900">💰 Top Revenue Contributors</h3>
+            <span class="text-xs text-gray-600 font-medium">115.1% of portfolio</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <div class="space-y-2">
+            <div v-for="(relationship, index) in topContributors.byRevenue" :key="relationship.id"
+              class="flex items-center justify-between py-2 px-3 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+              @click="drillDownToRelationship(relationship)">
+              <div class="flex items-center space-x-3">
+                <span
+                  class="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center text-xs font-medium text-blue-600">#{{
+                    index + 1 }}</span>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h4 class="text-sm font-medium text-gray-900">{{ relationship.name }}</h4>
+                    <span class="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-600 rounded">{{ relationship.industry
+                    }}</span>
+                  </div>
+                  <div class="text-xs text-gray-500">
+                    {{ relationship.portfolioShare }}% • Risk {{ relationship.riskScore }}/10
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-bold text-green-600">{{ formatCurrency(relationship.revenue) }}</div>
+                <div class="text-xs text-green-500">+{{ relationship.revenueGrowth }}% YTD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Growth Contributors -->
+      <div class="card">
+        <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-semibold text-gray-900">📈 Top Growth Contributors</h3>
+            <span class="text-xs text-gray-600 font-medium">{{ formatCurrency(2305000) }} growth</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <div class="space-y-2">
+            <div v-for="(relationship, index) in topContributors.byGrowth" :key="relationship.id"
+              class="flex items-center justify-between py-2 px-3 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+              @click="drillDownToRelationship(relationship)">
+              <div class="flex items-center space-x-3">
+                <span
+                  class="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-medium text-emerald-600">#{{
+                    index + 1 }}</span>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h4 class="text-sm font-medium text-gray-900">{{ relationship.name }}</h4>
+                    <span class="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-600 rounded">{{ relationship.industry
+                    }}</span>
+                  </div>
+                  <div class="text-xs text-gray-500">
+                    {{ formatCurrency(relationship.revenue) }} • Risk {{ relationship.riskScore }}/10
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-bold text-emerald-600">+{{ relationship.revenueGrowth }}%</div>
+                <div class="text-xs text-emerald-500">{{ formatCurrency(relationship.growthValue) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attention Required Dashboard (Phase 2B) - Compact Design -->
+    <div class="card mb-6">
+      <div class="px-4 py-2 border-b border-gray-200 bg-red-50">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-semibold text-gray-900">🚨 Attention Required</h3>
+          <div class="flex space-x-1">
+            <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded font-medium">3 Critical</span>
+            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded font-medium">2 Review</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- Underperforming Relationships -->
+          <div class="bg-red-50 border border-red-200 rounded p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <div class="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 17h8m0 0V9m0 8l-8-8-4 4-6 6"></path>
+                  </svg>
+                </div>
+                <h4 class="text-xs font-semibold text-red-900">Underperforming</h4>
+              </div>
+              <span class="text-xs bg-red-200 text-red-800 px-1.5 py-0.5 rounded font-medium">2</span>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-white rounded p-2 border border-red-100">
+                <div class="flex justify-between items-start mb-1">
+                  <div>
+                    <h5 class="text-xs font-medium text-gray-900">Healthcare Solutions</h5>
+                    <p class="text-xs text-gray-500">Healthcare</p>
+                  </div>
+                  <span class="text-xs text-red-600 font-medium">-12%</span>
+                </div>
+                <div class="text-xs text-gray-600">{{ formatCurrency(2900000) }} vs {{ formatCurrency(3300000) }}</div>
+              </div>
+              <div class="bg-white rounded p-2 border border-red-100">
+                <div class="flex justify-between items-start mb-1">
+                  <div>
+                    <h5 class="text-xs font-medium text-gray-900">Regional Logistics</h5>
+                    <p class="text-xs text-gray-500">Transportation</p>
+                  </div>
+                  <span class="text-xs text-red-600 font-medium">-8%</span>
+                </div>
+                <div class="text-xs text-gray-600">{{ formatCurrency(1840000) }} vs {{ formatCurrency(2000000) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Concentration Alerts -->
+          <div class="bg-orange-50 border border-orange-200 rounded p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <div class="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+                  <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z">
+                    </path>
+                  </svg>
+                </div>
+                <h4 class="text-xs font-semibold text-orange-900">Risk Concentration</h4>
+              </div>
+              <span class="text-xs bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded font-medium">1</span>
+            </div>
+            <div class="bg-white rounded p-2 border border-orange-100">
+              <div class="flex justify-between items-start mb-1">
+                <div>
+                  <h5 class="text-xs font-medium text-gray-900">Energy Dynamics LLC</h5>
+                  <p class="text-xs text-gray-500">Energy Sector</p>
+                </div>
+                <span class="text-xs text-orange-600 font-medium">4.1/10</span>
+              </div>
+              <div class="text-xs text-gray-600 mb-1">12.0% portfolio share</div>
+              <div class="flex space-x-1">
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-1 py-0.5 rounded">High Cash</span>
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-1 py-0.5 rounded">Cross-Border</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compliance Priorities -->
+          <div class="bg-blue-50 border border-blue-200 rounded p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <div class="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                  <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <h4 class="text-xs font-semibold text-blue-900">Compliance</h4>
+              </div>
+              <span class="text-xs bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-medium">3</span>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-white rounded p-2 border border-blue-100">
+                <div class="flex justify-between items-start mb-1">
+                  <div>
+                    <h5 class="text-xs font-medium text-gray-900">TechCorp Industries</h5>
+                    <p class="text-xs text-gray-500">Annual Review</p>
+                  </div>
+                  <span class="text-xs text-blue-600 font-medium">Dec 15</span>
+                </div>
+                <div class="text-xs text-gray-600">Last: Jan 2024</div>
+              </div>
+              <div class="bg-white rounded p-2 border border-blue-100">
+                <div class="flex justify-between items-start mb-1">
+                  <div>
+                    <h5 class="text-xs font-medium text-gray-900">Global Manufacturing</h5>
+                    <p class="text-xs text-gray-500">Credit Review</p>
+                  </div>
+                  <span class="text-xs text-blue-600 font-medium">Dec 18</span>
+                </div>
+                <div class="text-xs text-gray-600">{{ formatCurrency(45000000) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Daily Action List -->
-    <div class="card mb-8">
-      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+    <div class="card mb-6">
+      <div class="px-4 py-3 border-b border-gray-200">
         <div class="flex justify-between items-center">
           <div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Today's Action List</h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Priority tasks and client interactions for today</p>
+            <h3 class="text-sm font-semibold text-gray-900">Today's Action List</h3>
+            <p class="text-xs text-gray-500">Priority tasks and client interactions for today</p>
           </div>
           <div class="flex space-x-2">
             <button @click="filterActions('all')"
@@ -343,10 +543,11 @@
           </div>
         </div>
       </div>
-      <div class="p-6">
-        <div class="space-y-4">
+      <div class="p-4">
+        <div class="space-y-3">
           <div v-for="action in filteredActions" :key="action.id"
-            class="flex items-center justify-between p-4 border rounded-lg" :class="getActionRowClass(action)">
+            class="flex items-center justify-between p-3 border rounded hover:bg-gray-50"
+            :class="getActionRowClass(action)">
             <div class="flex items-center space-x-4">
               <input type="checkbox" v-model="action.completed" @change="updateAction(action)"
                 class="h-4 w-4 text-td-green focus:ring-td-green border-gray-300 rounded">
@@ -382,15 +583,15 @@
     </div>
 
     <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
       <!-- Risk Alert Timeline -->
       <div class="card">
-        <div class="p-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Risk Alert Timeline</h3>
-          <p class="text-sm text-gray-500">30-day alert history</p>
+        <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
+          <h3 class="text-sm font-semibold text-gray-900">Risk Alert Timeline</h3>
+          <p class="text-xs text-gray-500">30-day alert history</p>
         </div>
-        <div class="p-4">
-          <div class="h-48">
+        <div class="p-3">
+          <div class="h-40">
             <LineChart v-if="riskTimelineData" :data="riskTimelineData" />
             <div v-else class="h-full bg-gray-100 rounded-lg flex items-center justify-center">
               <span class="text-gray-500">Loading chart...</span>
@@ -401,12 +602,12 @@
 
       <!-- Client Review Status -->
       <div class="card">
-        <div class="p-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Client Review Status</h3>
-          <p class="text-sm text-gray-500">Review completion status</p>
+        <div class="px-4 py-2 border-b border-gray-200 bg-gray-50">
+          <h3 class="text-sm font-semibold text-gray-900">Client Review Status</h3>
+          <p class="text-xs text-gray-500">Review completion status</p>
         </div>
-        <div class="p-4">
-          <div class="h-48">
+        <div class="p-3">
+          <div class="h-40">
             <DoughnutChart v-if="reviewStatusData" :data="reviewStatusData" />
             <div v-else class="h-full bg-gray-100 rounded-lg flex items-center justify-center">
               <span class="text-gray-500">Loading chart...</span>
@@ -972,6 +1173,202 @@ const engagementMetrics = reactive({
   vsTarget: 115,
   regionalPercentile: 87,
   nationalPercentile: 73
+})
+
+// Cycling comparison view states (0: percentile, 1: target, 2: regional, 3: national)
+const comparisonViews = reactive({
+  accounts: 0,
+  deposits: 0,
+  loans: 0,
+  utility: 0,
+  revenue: 0,
+  opportunities: 0,
+  risk: 0
+})
+
+// Enhanced metrics with target and average comparisons
+const metricsComparisons = reactive({
+  accounts: {
+    current: 23,
+    target: 25,
+    regionalAvg: 19,
+    nationalAvg: 17,
+    percentile: 82
+  },
+  deposits: {
+    current: 245000000,
+    target: 220000000,
+    regionalAvg: 189000000,
+    nationalAvg: 156000000,
+    percentile: 85
+  },
+  loans: {
+    current: 89000000,
+    target: 85000000,
+    regionalAvg: 67000000,
+    nationalAvg: 52000000,
+    percentile: 85
+  },
+  utility: {
+    current: 36.3, // calculated: loans/deposits * 100
+    target: 38.6,
+    regionalAvg: 35.4,
+    nationalAvg: 33.3,
+    percentile: 82
+  },
+  revenue: {
+    current: 18700000,
+    target: 18000000,
+    regionalAvg: 14200000,
+    nationalAvg: 12800000,
+    percentile: 78
+  },
+  opportunities: {
+    current: 47,
+    currentValue: 15200000,
+    target: 40,
+    targetValue: 12000000,
+    regionalAvg: 32,
+    regionalAvgValue: 9800000,
+    nationalAvg: 28,
+    nationalAvgValue: 8500000,
+    percentile: 91
+  },
+  risk: {
+    current: 3,
+    target: 2,
+    regionalAvg: 4,
+    nationalAvg: 5,
+    percentile: 49
+  }
+})
+
+// Top Contributors Data for Phase 2
+const topContributors = reactive({
+  byRevenue: [
+    {
+      id: 'rel-001',
+      name: 'TechCorp Industries',
+      industry: 'Technology',
+      revenue: 4200000,
+      revenueGrowth: 18.5,
+      portfolioValue: 89000000,
+      portfolioShare: 38.1,
+      riskScore: 2.1,
+      lastContact: '2 days ago',
+      nextAction: 'Quarterly Review',
+      actionDate: 'Dec 15'
+    },
+    {
+      id: 'rel-002',
+      name: 'Global Manufacturing Corp',
+      industry: 'Manufacturing',
+      revenue: 3800000,
+      revenueGrowth: 12.3,
+      portfolioValue: 67000000,
+      portfolioShare: 28.7,
+      riskScore: 3.2,
+      lastContact: '1 week ago',
+      nextAction: 'Credit Review',
+      actionDate: 'Dec 18'
+    },
+    {
+      id: 'rel-003',
+      name: 'Financial Services Group',
+      industry: 'Financial Services',
+      revenue: 3200000,
+      revenueGrowth: 24.1,
+      portfolioValue: 52000000,
+      portfolioShare: 22.3,
+      riskScore: 1.8,
+      lastContact: '3 days ago',
+      nextAction: 'Product Presentation',
+      actionDate: 'Dec 12'
+    },
+    {
+      id: 'rel-004',
+      name: 'Healthcare Solutions Inc',
+      industry: 'Healthcare',
+      revenue: 2900000,
+      revenueGrowth: 8.7,
+      portfolioValue: 34000000,
+      portfolioShare: 14.6,
+      riskScore: 2.9,
+      lastContact: '5 days ago',
+      nextAction: 'Treasury Consultation',
+      actionDate: 'Dec 20'
+    },
+    {
+      id: 'rel-005',
+      name: 'Energy Dynamics LLC',
+      industry: 'Energy',
+      revenue: 2400000,
+      revenueGrowth: 15.2,
+      portfolioValue: 28000000,
+      portfolioShare: 12.0,
+      riskScore: 4.1,
+      lastContact: '1 week ago',
+      nextAction: 'Risk Assessment',
+      actionDate: 'Dec 14'
+    }
+  ],
+  byGrowth: [
+    {
+      id: 'rel-003',
+      name: 'Financial Services Group',
+      industry: 'Financial Services',
+      revenue: 3200000,
+      revenueGrowth: 24.1,
+      portfolioValue: 52000000,
+      growthValue: 620000,
+      riskScore: 1.8,
+      lastContact: '3 days ago'
+    },
+    {
+      id: 'rel-001',
+      name: 'TechCorp Industries',
+      industry: 'Technology',
+      revenue: 4200000,
+      revenueGrowth: 18.5,
+      portfolioValue: 89000000,
+      growthValue: 780000,
+      riskScore: 2.1,
+      lastContact: '2 days ago'
+    },
+    {
+      id: 'rel-005',
+      name: 'Energy Dynamics LLC',
+      industry: 'Energy',
+      revenue: 2400000,
+      revenueGrowth: 15.2,
+      portfolioValue: 28000000,
+      growthValue: 365000,
+      riskScore: 4.1,
+      lastContact: '1 week ago'
+    },
+    {
+      id: 'rel-002',
+      name: 'Global Manufacturing Corp',
+      industry: 'Manufacturing',
+      revenue: 3800000,
+      revenueGrowth: 12.3,
+      portfolioValue: 67000000,
+      growthValue: 468000,
+      riskScore: 3.2,
+      lastContact: '1 week ago'
+    },
+    {
+      id: 'rel-004',
+      name: 'Healthcare Solutions Inc',
+      industry: 'Healthcare',
+      revenue: 2900000,
+      revenueGrowth: 8.7,
+      portfolioValue: 34000000,
+      growthValue: 252000,
+      riskScore: 2.9,
+      lastContact: '5 days ago'
+    }
+  ]
 })
 
 const dailyActions = reactive({
@@ -1544,10 +1941,111 @@ onMounted(() => {
   console.log('RM data:', rm.value)
 })
 
+// Cycling comparison functionality
+const cycleComparison = (metricKey) => {
+  comparisonViews[metricKey] = (comparisonViews[metricKey] + 1) % 4
+}
+
+const getComparisonText = (metricKey) => {
+  const metric = metricsComparisons[metricKey]
+  const view = comparisonViews[metricKey]
+
+  switch (view) {
+    case 0: // Percentile
+      return `${metric.percentile}th percentile`
+    case 1: // vs Target
+      if (metricKey === 'opportunities') {
+        const diff = metric.current - metric.target
+        const valueDiff = metric.currentValue - metric.targetValue
+        return `vs Target: ${diff > 0 ? '+' : ''}${diff} (${formatCurrency(valueDiff)})`
+      } else if (metricKey === 'utility') {
+        const diff = (metric.current - metric.target).toFixed(1)
+        return `vs Target: ${diff > 0 ? '+' : ''}${diff}%`
+      } else if (['deposits', 'loans', 'revenue'].includes(metricKey)) {
+        const diff = metric.current - metric.target
+        const pct = ((diff / metric.target) * 100).toFixed(1)
+        return `vs Target: ${pct > 0 ? '+' : ''}${pct}%`
+      } else {
+        const diff = metric.current - metric.target
+        return `vs Target: ${diff > 0 ? '+' : ''}${diff}`
+      }
+    case 2: // vs Regional
+      if (metricKey === 'opportunities') {
+        const diff = metric.current - metric.regionalAvg
+        const valueDiff = metric.currentValue - metric.regionalAvgValue
+        return `vs Regional: ${diff > 0 ? '+' : ''}${diff} (${formatCurrency(valueDiff)})`
+      } else if (metricKey === 'utility') {
+        const diff = (metric.current - metric.regionalAvg).toFixed(1)
+        return `vs Regional: ${diff > 0 ? '+' : ''}${diff}%`
+      } else if (['deposits', 'loans', 'revenue'].includes(metricKey)) {
+        const diff = metric.current - metric.regionalAvg
+        const pct = ((diff / metric.regionalAvg) * 100).toFixed(1)
+        return `vs Regional: ${pct > 0 ? '+' : ''}${pct}%`
+      } else {
+        const diff = metric.current - metric.regionalAvg
+        return `vs Regional: ${diff > 0 ? '+' : ''}${diff}`
+      }
+    case 3: // vs National
+      if (metricKey === 'opportunities') {
+        const diff = metric.current - metric.nationalAvg
+        const valueDiff = metric.currentValue - metric.nationalAvgValue
+        return `vs National: ${diff > 0 ? '+' : ''}${diff} (${formatCurrency(valueDiff)})`
+      } else if (metricKey === 'utility') {
+        const diff = (metric.current - metric.nationalAvg).toFixed(1)
+        return `vs National: ${diff > 0 ? '+' : ''}${diff}%`
+      } else if (['deposits', 'loans', 'revenue'].includes(metricKey)) {
+        const diff = metric.current - metric.nationalAvg
+        const pct = ((diff / metric.nationalAvg) * 100).toFixed(1)
+        return `vs National: ${pct > 0 ? '+' : ''}${pct}%`
+      } else {
+        const diff = metric.current - metric.nationalAvg
+        return `vs National: ${diff > 0 ? '+' : ''}${diff}`
+      }
+    default:
+      return `${metric.percentile}th percentile`
+  }
+}
+
+const getComparisonClass = (metricKey) => {
+  const metric = metricsComparisons[metricKey]
+  const view = comparisonViews[metricKey]
+
+  if (view === 0) return 'text-blue-500' // Percentile - neutral blue
+
+  let isPositive = false
+  switch (view) {
+    case 1: // vs Target
+      isPositive = metric.current > metric.target
+      break
+    case 2: // vs Regional
+      isPositive = metric.current > metric.regionalAvg
+      break
+    case 3: // vs National
+      isPositive = metric.current > metric.nationalAvg
+      break
+  }
+
+  // For risk, lower is better
+  if (metricKey === 'risk') {
+    isPositive = !isPositive
+  }
+
+  return isPositive ? 'text-green-500' : 'text-red-500'
+}
+
 const expandKPI = (kpiType) => {
   console.log('Expanding KPI:', kpiType)
   // TODO: Add KPI expansion logic in next chunk
 }
+
+// Computed properties for template calculations
+const totalGrowthValue = computed(() => {
+  return topContributors.byGrowth.reduce((sum, rel) => sum + rel.growthValue, 0)
+})
+
+const totalPortfolioShare = computed(() => {
+  return topContributors.byRevenue.reduce((sum, rel) => sum + rel.portfolioShare, 0)
+})
 </script>
 
 <style scoped>
