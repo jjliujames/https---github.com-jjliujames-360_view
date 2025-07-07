@@ -34,21 +34,20 @@
             </button>
           </div>
         </div>
-        <!-- Show Net-New Toggle on new line -->
-        <div class="mt-4 flex items-center">
+        <!-- Show Net-New and Date Range inline -->
+        <div class="mt-4 flex items-center space-x-8">
           <label class="flex items-center space-x-2 text-sm text-gray-700">
             <input type="checkbox" v-model="showNetNew" class="rounded border-gray-300">
             <span>Show Net-New</span>
           </label>
-        </div>
-        <!-- Date Range Filter (remains below) -->
-        <div class="mt-4 flex items-center">
-          <label class="text-sm text-gray-700 mr-3">Date Range:</label>
-          <select v-model="selectedDateRange" class="px-3 py-2 border border-gray-300 rounded-md text-sm">
-            <option value="ytd">YTD</option>
-            <option value="6m">Last 6 Months</option>
-            <option value="12m">Last 12 Months</option>
-          </select>
+          <div class="flex items-center">
+            <label class="text-sm text-gray-700 mr-3">Date Range:</label>
+            <select v-model="selectedDateRange" class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+              <option value="ytd">YTD</option>
+              <option value="6m">Last 6 Months</option>
+              <option value="12m">Last 12 Months</option>
+            </select>
+          </div>
         </div>
         <!-- RM Summary Banner -->
         <div class="mt-6 bg-gray-50 rounded-lg p-4 flex items-center justify-between border border-gray-200">
@@ -179,13 +178,13 @@
                 <!-- Legend for N/E -->
                 <div class="flex items-center mb-2 space-x-4">
                   <div class="flex items-center">
-                    <span class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center mr-2">
+                    <span class="h-8 w-8 rounded-full bg-green-800 flex items-center justify-center mr-2">
                       <span class="text-xs font-medium text-white">N</span>
                     </span>
                     <span class="text-xs text-gray-700">New Relationship</span>
                   </div>
                   <div class="flex items-center">
-                    <span class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center mr-2">
+                    <span class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center mr-2">
                       <span class="text-xs font-medium text-white">E</span>
                     </span>
                     <span class="text-xs text-gray-700">Existing Relationship</span>
@@ -200,35 +199,35 @@
                           @click="sortTable('name')">
                           Relationship
                           <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('depositsDelta')">
                           Deposits Δ
                           <span v-if="sortField === 'depositsDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('loansDelta')">
                           Loans Δ
                           <span v-if="sortField === 'loansDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('utilization')">
                           Util %
                           <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('revenueDelta')">
                           Revenue Δ
                           <span v-if="sortField === 'revenueDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -249,7 +248,7 @@
                           @click="sortTable('leadValue')">
                           Leads (# / $)
                           <span v-if="sortField === 'leadValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Relationship Type
@@ -266,7 +265,8 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                           <div class="flex items-center">
                             <div class="flex-shrink-0 h-8 w-8">
-                              <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
+                              <div class="h-8 w-8 rounded-full flex items-center justify-center"
+                                :class="isNewRelationship(relationship) ? 'bg-green-800' : 'bg-gray-500'">
                                 <span class="text-xs font-medium text-white">{{ isNewRelationship(relationship) ? 'N' :
                                   'E' }}</span>
                               </div>
@@ -476,10 +476,6 @@
                   <div class="text-2xl font-bold text-orange-600">{{ avgOpportunityValue }}</div>
                   <div class="text-xs text-gray-600">Avg Opportunity</div>
                 </div>
-                <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ opportunitiesConversionRate }}%</div>
-                  <div class="text-xs text-gray-600">Conversion Rate</div>
-                </div>
               </div>
               <!-- Opportunities Summary Table -->
               <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -553,29 +549,24 @@
                   <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Review Status Overview</h3>
                   <div class="grid grid-cols-5 gap-4">
                     <div class="text-center">
-                      <div class="text-2xl font-bold text-orange-600">{{ riskMetrics.pending }}</div>
+                      <div class="text-2xl font-bold text-orange-600">{{ riskMetrics.totalRiskFlags }}</div>
+                      <div class="text-xs text-gray-600">Total Risk Flags</div>
+                    </div>
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-green-600">{{ riskMetrics.pending }}</div>
                       <div class="text-xs text-gray-600">Pending</div>
-                      <div class="text-xs text-orange-500">Due ≤ 30 days</div>
                     </div>
                     <div class="text-center">
-                      <div class="text-2xl font-bold text-green-600">{{ riskMetrics.completed }}</div>
-                      <div class="text-xs text-gray-600">Completed</div>
-                      <div class="text-xs text-green-500">This quarter</div>
+                      <div class="text-2xl font-bold text-blue-600">{{ riskMetrics.reviewedWithAction }}</div>
+                      <div class="text-xs text-gray-600">Reviewed w/ Action</div>
                     </div>
                     <div class="text-center">
-                      <div class="text-2xl font-bold text-blue-600">{{ riskMetrics.withoutUTR }}</div>
-                      <div class="text-xs text-gray-600">w/o UTR</div>
-                      <div class="text-xs text-blue-500">No UTR required</div>
-                    </div>
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-purple-600">{{ riskMetrics.withUTR }}</div>
-                      <div class="text-xs text-gray-600">Closed w/ UTR</div>
-                      <div class="text-xs text-purple-500">UTR filed</div>
+                      <div class="text-2xl font-bold text-purple-600">{{ riskMetrics.reviewedWithoutAction }}</div>
+                      <div class="text-xs text-gray-600">Reviewed w/o Action</div>
                     </div>
                     <div class="text-center">
                       <div class="text-2xl font-bold text-cyan-600">{{ riskMetrics.avgTimeToClose }}</div>
                       <div class="text-xs text-gray-600">Avg Days</div>
-                      <div class="text-xs text-cyan-500">To close</div>
                     </div>
                   </div>
                 </div>
@@ -593,9 +584,6 @@
                             Relationship
                           </th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            RCI Score
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Risk Flags
                           </th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -605,7 +593,10 @@
                             Last Review
                           </th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Next Due
+                            Reviewed w/ Action
+                          </th>
+                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Reviewed w/o Action
                           </th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
@@ -636,11 +627,6 @@
                             </div>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="font-medium" :class="getRCIColor(relationship.rci)">
-                              {{ relationship.rci }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
                             <span v-if="relationship.riskFlags > 0"
                               class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
                               {{ relationship.riskFlags }}
@@ -657,9 +643,13 @@
                           <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                             {{ relationship.lastReviewDate }}
                           </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm"
-                            :class="relationship.daysToDue <= 7 ? 'text-red-600 font-bold' : relationship.daysToDue <= 30 ? 'text-orange-600' : 'text-gray-900'">
-                            {{ relationship.nextDueDate }}
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{{
+                              relationship.reviewedWithAction || 0 }}</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">{{
+                              relationship.reviewedWithoutAction || 0 }}</span>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-center">
                             <span
@@ -1058,10 +1048,10 @@ const leadFunnel = computed(() => [
 
 // Risk Metrics
 const riskMetrics = computed(() => ({
-  pending: 15,
-  completed: 42,
-  withoutUTR: 28,
-  withUTR: 14,
+  totalRiskFlags: relationships.value.reduce((sum, rel) => sum + Math.max(0, Math.floor(rel.rci) - 4), 0),
+  pending: relationships.value.reduce((sum, rel) => sum + rel.pendingReviews, 0),
+  reviewedWithAction: 12, // mock
+  reviewedWithoutAction: 8, // mock
   avgTimeToClose: 18
 }))
 
@@ -1236,9 +1226,9 @@ const accountLoanLegend = [
   { label: 'Business Savings', color: '#a1e57e' },
   { label: 'Money Market', color: '#dce4e0' },
   { label: 'Investment Account', color: '#5c7f6e' },
-  { label: 'Commercial Lending', color: '#26563f' },
-  { label: 'Term Loans', color: '#3b6554' },
-  { label: 'Equipment Financing', color: '#397a43' }
+  { label: 'Commercial Lending', color: '#e57373' },
+  { label: 'Term Loans', color: '#c62828' },
+  { label: 'Equipment Financing', color: '#ad1d1d' }
 ]
 
 // Green color palette for relationships from the image
@@ -1384,7 +1374,9 @@ const relationshipsWithRiskStats = computed(() => {
     lastReviewDate: '2024-05-15',
     nextDueDate: '2024-12-31',
     daysToDue: Math.floor(Math.random() * 60) + 1, // Mock: 1-60 days
-    riskStatus: rel.rci > 7 ? 'Critical' : rel.rci > 5 ? 'Moderate' : 'Low'
+    riskStatus: rel.rci > 7 ? 'Critical' : rel.rci > 5 ? 'Moderate' : 'Low',
+    reviewedWithAction: Math.floor(Math.random() * 3), // mock
+    reviewedWithoutAction: Math.floor(Math.random() * 2) // mock
   }))
 })
 
