@@ -220,14 +220,14 @@
                           @click="sortTable('name')">
                           Relationship Manager
                           <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
+                          }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('relationships')">
                           # Relationships
                           <span v-if="sortField === 'relationships'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
+                          }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -235,28 +235,28 @@
                           Portfolio Value
                           <span v-if="sortField === 'portfolioValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
                             '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('revenue')">
                           YTD Revenue
                           <span v-if="sortField === 'revenue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('utilization')">
                           Loan Utilization
                           <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('riskScore')">
                           Risk Score
                           <span v-if="sortField === 'riskScore'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
@@ -596,7 +596,7 @@ const sortDirection = ref('asc')
 
 // Regional Data
 const regionData = ref({
-  vpName: 'David Hargadon', // From the image
+  vpName: 'David Johnson',
   id: props.regionId || 'toronto-west',
   name: 'Toronto West'
 })
@@ -744,7 +744,7 @@ const revenueYoY = computed(() => {
 })
 const depositsGrowth = computed(() => 18) // Mock YoY growth
 
-// Growth metrics from the image
+
 const newCreditRelationships = computed(() => 7)
 const creditTarget = computed(() => 12)
 const newCommitments = computed(() => 20282018)
