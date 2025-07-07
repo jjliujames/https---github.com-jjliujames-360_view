@@ -358,22 +358,76 @@
               <!-- Revenue Trends by Relationship -->
               <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
                 <div class="p-6">
-                  <div class="flex items-center mb-2">
-                    <span class="text-2xl">📊</span>
-                    <h3 class="text-lg font-bold text-gray-900 ml-2">Revenue Trends by Relationship</h3>
+                  <div class="flex items-center mb-4 justify-between">
+                    <div class="flex items-center">
+                      <span class="text-2xl">📊</span>
+                      <h3 class="text-lg font-bold text-gray-900 ml-2">Revenue Trends by Relationship</h3>
+                    </div>
+                    <div>
+                      <label class="text-sm text-gray-700 mr-2">Filter by Relationship:</label>
+                      <select v-model="selectedRevenueRelationship"
+                        class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        <option value="all">All Relationships</option>
+                        <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}</option>
+                      </select>
+                    </div>
                   </div>
+                  <!-- Legend for revenue types -->
                   <div class="flex flex-wrap items-center mb-4">
-                    <div v-for="(rel, idx) in sortedRelationships" :key="rel.id"
-                      class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleRevenueTrendsLegend(rel.name)">
+                    <div v-for="(type, idx) in revenueTypeLegend" :key="type.label"
+                      class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleRevenueTypeLegend(type.label)">
                       <span
-                        :style="{ backgroundColor: revenuePalette[idx % revenuePalette.length], opacity: revenueTrendsActiveLegends.includes(rel.name) ? 1 : 0.3 }"
+                        :style="{ backgroundColor: type.color, opacity: revenueTypeActiveLegends.includes(type.label) ? 1 : 0.3 }"
                         class="w-4 h-4 rounded-full inline-block mr-2"></span>
-                      <span class="text-xs text-gray-700">{{ rel.name }}</span>
+                      <span class="text-xs text-gray-700">{{ type.label }}</span>
                     </div>
                   </div>
                   <div class="h-96">
-                    <BarChart v-if="revenueTrendsStackedChartData" :data="revenueTrendsStackedChartData"
-                      :options="revenueTrendsStackedChartOptions" />
+                    <BarChart v-if="revenueTypeStackedChartData" :data="revenueTypeStackedChartData"
+                      :options="revenueTypeStackedChartOptions" />
+                  </div>
+                  <!-- Summary Table -->
+                  <div class="mt-8">
+                    <h4 class="text-md font-semibold text-gray-900 mb-2">Revenue Summary</h4>
+                    <div class="overflow-x-auto">
+                      <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Relationship</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Total Revenue</th>
+                            <th v-for="type in revenueTypeLegend" :key="type.label"
+                              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{
+                              type.label }}</th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                          <tr v-for="rel in revenueSummaryRelationships" :key="rel.id"
+                            class="hover:bg-green-50 cursor-pointer transition-colors"
+                            @click="drillDownToRelationship(rel)">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="flex items-center">
+                                <div class="flex-shrink-0 h-8 w-8">
+                                  <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
+                                    <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
+                                  </div>
+                                </div>
+                                <div class="ml-4">
+                                  <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
+                                  <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-bold">{{
+                              formatCurrency(getRelationshipTotalRevenue(rel)) }}</td>
+                            <td v-for="type in revenueTypeLegend" :key="type.label"
+                              class="px-6 py-4 whitespace-nowrap text-right">{{
+                                formatCurrency(getRelationshipRevenueByType(rel, type.label)) }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1353,6 +1407,103 @@ const getStatusColor = (status) => {
     case 'Low': return 'bg-green-100 text-green-800'
     default: return 'bg-gray-100 text-gray-800'
   }
+}
+
+// Add after other chart data
+const revenueTypeLegend = [
+  { label: 'Loan Fee', color: '#ABE3C4' },
+  { label: 'TMS Fee', color: '#577564' },
+  { label: 'NII', color: '#6A8E7C' },
+  { label: 'Loan NII', color: '#122A2C' }
+]
+const selectedRevenueRelationship = ref('all')
+const revenueTypeActiveLegends = ref(revenueTypeLegend.map(t => t.label))
+const toggleRevenueTypeLegend = (label) => {
+  if (revenueTypeActiveLegends.value.includes(label)) {
+    revenueTypeActiveLegends.value = revenueTypeActiveLegends.value.filter(l => l !== label)
+  } else {
+    revenueTypeActiveLegends.value.push(label)
+  }
+}
+// Mock revenue data by type per relationship per month
+const revenueTypeData = computed(() => {
+  // 12 months
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date()
+    date.setMonth(date.getMonth() - (11 - i))
+    return date.toLocaleDateString('en-US', { month: 'short' })
+  })
+  // For each relationship, generate revenue by type
+  return sortedRelationships.value.map((rel, idx) => {
+    const base = rel.revenue / 12
+    return {
+      id: rel.id,
+      name: rel.name,
+      industry: rel.industry,
+      months,
+      data: months.map(() => ({
+        'Loan Fee': Math.floor(base * 0.25 * (0.9 + Math.random() * 0.2)),
+        'TMS Fee': Math.floor(base * 0.18 * (0.9 + Math.random() * 0.2)),
+        'NII': Math.floor(base * 0.32 * (0.9 + Math.random() * 0.2)),
+        'Loan NII': Math.floor(base * 0.25 * (0.9 + Math.random() * 0.2)),
+      }))
+    }
+  })
+})
+// Chart data for stacked bar
+const revenueTypeStackedChartData = computed(() => {
+  const rels = selectedRevenueRelationship.value === 'all'
+    ? revenueTypeData.value
+    : revenueTypeData.value.filter(r => r.id === selectedRevenueRelationship.value)
+  if (!rels.length) return null
+  const months = rels[0].months
+  // For each revenue type, sum across relationships (if all), or just one
+  return {
+    labels: months,
+    datasets: revenueTypeLegend
+      .filter(type => revenueTypeActiveLegends.value.includes(type.label))
+      .map(type => ({
+        label: type.label,
+        backgroundColor: type.color,
+        data: months.map((_, i) => rels.reduce((sum, rel) => sum + rel.data[i][type.label], 0))
+      }))
+  }
+})
+const revenueTypeStackedChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: { display: false },
+    tooltip: { mode: 'index', intersect: false }
+  },
+  scales: {
+    x: { stacked: true },
+    y: {
+      stacked: true,
+      beginAtZero: true,
+      ticks: {
+        callback: function (value) {
+          return `$${Math.abs(value / 1e6).toFixed(0)}M`;
+        }
+      }
+    }
+  }
+}
+// Table helpers
+const revenueSummaryRelationships = computed(() => {
+  return selectedRevenueRelationship.value === 'all'
+    ? sortedRelationships.value
+    : sortedRelationships.value.filter(r => r.id === selectedRevenueRelationship.value)
+})
+const getRelationshipTotalRevenue = (rel) => {
+  // Sum all types for all months
+  const relData = revenueTypeData.value.find(r => r.id === rel.id)
+  if (!relData) return 0
+  return relData.data.reduce((sum, month) => sum + Object.values(month).reduce((s, v) => s + v, 0), 0)
+}
+const getRelationshipRevenueByType = (rel, type) => {
+  const relData = revenueTypeData.value.find(r => r.id === rel.id)
+  if (!relData) return 0
+  return relData.data.reduce((sum, month) => sum + (month[type] || 0), 0)
 }
 
 onMounted(() => {
