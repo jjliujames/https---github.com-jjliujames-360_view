@@ -58,8 +58,8 @@
                                     <p class="text-xs text-gray-500 mt-1">Relationship ID: {{ relationshipData?.id ||
                                         'N/A' }}</p>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                        :class="getTierBadgeClass(relationshipTier)">
-                                        {{ relationshipTier }}
+                                        :class="getRelationshipTypeClass(relationshipType)">
+                                        {{ relationshipType }}
                                     </span>
                                 </div>
                             </div>
@@ -2225,6 +2225,24 @@ const exportAlertReport = () => {
 onMounted(() => {
     console.log('RelationshipView mounted for relationship:', props.relationshipId)
 })
+
+const relationshipType = computed(() => {
+    const hasDeposits = relationshipData.value?.deposits > 0
+    const hasLoans = relationshipData.value?.loans > 0
+    if (hasDeposits && hasLoans) return 'Deposit and Loan Relationship'
+    if (hasDeposits) return 'Deposit Only'
+    if (hasLoans) return 'Loan Only'
+    return 'Deposit and Loan Relationship'
+})
+
+const getRelationshipTypeClass = (type) => {
+    switch (type) {
+        case 'Deposit and Loan Relationship': return 'bg-green-100 text-green-800'
+        case 'Deposit Only': return 'bg-blue-100 text-blue-800'
+        case 'Loan Only': return 'bg-orange-100 text-orange-800'
+        default: return 'bg-gray-100 text-gray-800'
+    }
+}
 </script>
 
 <style scoped>

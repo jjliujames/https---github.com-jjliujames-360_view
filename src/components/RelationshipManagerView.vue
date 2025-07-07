@@ -113,9 +113,11 @@
 
           <!-- Revenue YoY -->
           <div class="text-center">
-            <div class="text-xl font-bold text-cyan-600">{{ revenueYoY }}%</div>
-            <div class="text-xs text-gray-600">Revenue YoY</div>
-            <div class="text-xs text-cyan-500 font-medium">{{ formatCurrency(totalRevenue) }} YTD</div>
+            <div class="text-xl font-bold text-cyan-600">{{ formatCurrency(totalRevenue) }}</div>
+            <div class="text-xs text-gray-600">Revenue YTD</div>
+            <div class="text-xs font-medium mt-1" :class="revenueYoY >= 0 ? 'text-green-500' : 'text-red-500'">
+              {{ revenueYoY >= 0 ? '+' : '' }}{{ revenueYoY }}% YoY
+            </div>
           </div>
 
           <!-- # Leads -->
@@ -146,7 +148,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="p-8">
+    <div class="px-1 py-5">
       <!-- Tab Navigation -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="border-b border-gray-200">
@@ -174,6 +176,21 @@
               <!-- Relationship Table -->
               <div>
                 <h3 class="text-lg font-medium text-gray-900 mb-4">🏢 Relationship Portfolio</h3>
+                <!-- Legend for N/E -->
+                <div class="flex items-center mb-2 space-x-4">
+                  <div class="flex items-center">
+                    <span class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center mr-2">
+                      <span class="text-xs font-medium text-white">N</span>
+                    </span>
+                    <span class="text-xs text-gray-700">New Relationship</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center mr-2">
+                      <span class="text-xs font-medium text-white">E</span>
+                    </span>
+                    <span class="text-xs text-gray-700">Existing Relationship</span>
+                  </div>
+                </div>
                 <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -235,6 +252,9 @@
                           }}</span>
                         </th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Relationship Type
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -247,7 +267,8 @@
                           <div class="flex items-center">
                             <div class="flex-shrink-0 h-8 w-8">
                               <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                <span class="text-xs font-medium text-white">{{ relationship.name.charAt(0) }}</span>
+                                <span class="text-xs font-medium text-white">{{ isNewRelationship(relationship) ? 'N' :
+                                  'E' }}</span>
                               </div>
                             </div>
                             <div class="ml-4">
@@ -290,6 +311,12 @@
                           {{ relationship.leadCount }} / {{ formatCurrency(relationship.leadValue) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
+                          <span class="px-2 py-1 text-xs font-medium rounded-full"
+                            :class="getRelationshipTypeClass(getRelationshipType(relationship))">
+                            {{ getRelationshipType(relationship) }}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
                           <span class="text-td-green font-medium">View Details ›</span>
                         </td>
                       </tr>
@@ -300,7 +327,7 @@
 
               <!-- Account & Loan Portfolio Balance -->
               <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                <div class="p-6">
+                <div class="p-4">
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center space-x-2">
                       <span class="text-2xl">📊</span>
@@ -315,20 +342,8 @@
                   <div class="text-sm text-gray-500 mb-4">Account balances (positive) vs loan utilization (negative)
                   </div>
 
-                  <!-- Segmentation Toggle -->
-                  <div class="mb-4 flex items-center space-x-4">
-                    <button @click="accountLoanSegment = 'relationship'"
-                      :class="['px-3 py-1 rounded', accountLoanSegment === 'relationship' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700']">
-                      By Relationship
-                    </button>
-                    <button @click="accountLoanSegment = 'account'"
-                      :class="['px-3 py-1 rounded', accountLoanSegment === 'account' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700']">
-                      By Account Type
-                    </button>
-                  </div>
-
-                  <!-- Relationship Filter (only show when segmented by account type) -->
-                  <div v-if="accountLoanSegment === 'account'" class="mb-4">
+                  <!-- Relationship Filter (always show) -->
+                  <div class="mb-4">
                     <label class="text-sm text-gray-700 mr-3">Filter by Relationship:</label>
                     <select v-model="selectedRelationshipFilter"
                       class="px-3 py-2 border border-gray-300 rounded-md text-sm">
@@ -337,8 +352,8 @@
                     </select>
                   </div>
 
-                  <!-- Legend (only show when segmented by account type) -->
-                  <div v-if="accountLoanSegment === 'account'" class="flex flex-wrap items-center mb-4">
+                  <!-- Legend (always show) -->
+                  <div class="flex flex-wrap items-center mb-4">
                     <div v-for="(item, idx) in accountLoanLegend" :key="item.label"
                       class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleAccountLoanLegend(item.label)">
                       <span
@@ -348,7 +363,7 @@
                     </div>
                   </div>
 
-                  <div class="h-96">
+                  <div class="h-64 p-4">
                     <BarChart v-if="accountLoanPortfolioChartData" :data="accountLoanPortfolioChartData"
                       :options="accountLoanPortfolioChartOptions" />
                   </div>
@@ -382,7 +397,7 @@
                       <span class="text-xs text-gray-700">{{ type.label }}</span>
                     </div>
                   </div>
-                  <div class="h-96">
+                  <div class="h-60 px-10">
                     <BarChart v-if="revenueTypeStackedChartData" :data="revenueTypeStackedChartData"
                       :options="revenueTypeStackedChartOptions" />
                   </div>
@@ -399,7 +414,11 @@
                               Total Revenue</th>
                             <th v-for="type in revenueTypeLegend" :key="type.label"
                               class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{
-                              type.label }}</th>
+                                type.label }}</th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Relationship Type
+                            </th>
                           </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -424,6 +443,12 @@
                             <td v-for="type in revenueTypeLegend" :key="type.label"
                               class="px-6 py-4 whitespace-nowrap text-right">{{
                                 formatCurrency(getRelationshipRevenueByType(rel, type.label)) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                :class="getRelationshipTypeClass(getRelationshipType(rel))">
+                                {{ getRelationshipType(rel) }}
+                              </span>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -473,6 +498,8 @@
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Avg Confidence</th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Relationship Type</th>
+                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions</th>
                         </tr>
                       </thead>
@@ -499,6 +526,12 @@
                             formatCurrency(getRelationshipOpportunityValue(rel)) }}</td>
                           <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-purple-600 font-bold">{{
                             getRelationshipAvgConfidence(rel) }}%</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getRelationshipTypeClass(getRelationshipType(rel))">
+                              {{ getRelationshipType(rel) }}
+                            </span>
+                          </td>
                           <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                             <span class="text-td-green font-medium">View Details ›</span>
                           </td>
@@ -578,6 +611,9 @@
                             Status
                           </th>
                           <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Relationship Type
+                          </th>
+                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions
                           </th>
                         </tr>
@@ -632,62 +668,13 @@
                             </span>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="text-td-green font-medium">View Details ›</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Alert Queue with Bulk Actions -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6">
-                  <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">📋 Alert Queue</h3>
-                    <div class="flex space-x-2">
-                      <button class="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
-                        Bulk Close
-                      </button>
-                      <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
-                        Bulk Assign
-                      </button>
-                    </div>
-                  </div>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            <input type="checkbox" class="rounded border-gray-300">
-                          </th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alert</th>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Relationship</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Severity</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Days Open</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="relationship in highRCIRelationships" :key="`alert-${relationship.id}`"
-                          class="hover:bg-gray-50">
-                          <td class="px-6 py-4">
-                            <input type="checkbox" class="rounded border-gray-300">
-                          </td>
-                          <td class="px-6 py-4 text-sm text-gray-900">High RCI Score Alert</td>
-                          <td class="px-6 py-4 text-sm text-gray-900">{{ relationship.name }}</td>
-                          <td class="px-6 py-4 text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                              Critical
+                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getRelationshipTypeClass(getRelationshipType(relationship))">
+                              {{ getRelationshipType(relationship) }}
                             </span>
                           </td>
-                          <td class="px-6 py-4 text-center text-sm text-gray-900">14</td>
-                          <td class="px-6 py-4 text-center">
-                            <button @click="reviewRisk(relationship)"
-                              class="text-blue-600 hover:text-blue-900 text-sm font-medium">
-                              Review
-                            </button>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="text-td-green font-medium">View Details ›</span>
                           </td>
                         </tr>
                       </tbody>
@@ -1354,10 +1341,11 @@ const accountLoanPortfolioChartOptions = {
     tooltip: { mode: 'index', intersect: false }
   },
   scales: {
-    x: { stacked: true },
+    x: { stacked: true, grid: { display: false } },
     y: {
       stacked: true,
       beginAtZero: true,
+      grid: { display: false },
       ticks: {
         callback: function (value) {
           return `$${Math.abs(value / 1e6).toFixed(0)}M`;
@@ -1374,10 +1362,11 @@ const revenueTrendsStackedChartOptions = {
     tooltip: { mode: 'index', intersect: false }
   },
   scales: {
-    x: { stacked: true },
+    x: { stacked: true, grid: { display: false } },
     y: {
       stacked: true,
       beginAtZero: true,
+      grid: { display: false },
       ticks: {
         callback: function (value) {
           return `$${Math.abs(value / 1e6).toFixed(0)}M`;
@@ -1476,10 +1465,11 @@ const revenueTypeStackedChartOptions = {
     tooltip: { mode: 'index', intersect: false }
   },
   scales: {
-    x: { stacked: true },
+    x: { stacked: true, grid: { display: false } },
     y: {
       stacked: true,
       beginAtZero: true,
+      grid: { display: false },
       ticks: {
         callback: function (value) {
           return `$${Math.abs(value / 1e6).toFixed(0)}M`;
@@ -1504,6 +1494,30 @@ const getRelationshipRevenueByType = (rel, type) => {
   const relData = revenueTypeData.value.find(r => r.id === rel.id)
   if (!relData) return 0
   return relData.data.reduce((sum, month) => sum + (month[type] || 0), 0)
+}
+
+// Add helper for relationship type
+const getRelationshipType = (rel) => {
+  const hasDeposits = rel.deposits > 0
+  const hasLoans = rel.loans > 0
+  if (hasDeposits && hasLoans) return 'Deposit and Loan Relationship'
+  if (hasDeposits) return 'Deposit Only'
+  if (hasLoans) return 'Loan Only'
+  return 'No Products'
+}
+const getRelationshipTypeClass = (type) => {
+  switch (type) {
+    case 'Deposit and Loan Relationship': return 'bg-green-100 text-green-800'
+    case 'Deposit Only': return 'bg-blue-100 text-blue-800'
+    case 'Loan Only': return 'bg-orange-100 text-orange-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+// Add helper in <script setup>
+const isNewRelationship = (rel) => {
+  // Mock logic: new if depositsDelta > 0 or loansDelta > 0
+  return rel.depositsDelta > 0 || rel.loansDelta > 0
 }
 
 onMounted(() => {

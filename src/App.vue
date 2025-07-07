@@ -16,7 +16,7 @@
             </div>
           </div>
           <div class="flex items-center">
-            <span class="text-sm text-gray-600">Client 360 Portfolio Management</span>
+            <span class="text-sm text-emerald-600">AMCB One Commercial</span>
           </div>
         </div>
       </div>
