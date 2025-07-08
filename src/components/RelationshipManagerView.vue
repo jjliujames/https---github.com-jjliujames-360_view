@@ -348,255 +348,359 @@
             <div class="space-y-6">
               <!-- Relationship Table -->
               <div>
-                <h3 class="text-lg font-medium text-gray-900 mb-4">🏢 Relationship Portfolio</h3>
-                <!-- Legend for N/E -->
-                <div class="flex items-center mb-2 space-x-4">
-                  <div class="flex items-center">
-                    <span class="h-8 w-8 rounded-full bg-green-800 flex items-center justify-center mr-2">
-                      <span class="text-xs font-medium text-white">N</span>
-                    </span>
-                    <span class="text-xs text-gray-700">New Relationship</span>
-                  </div>
-                  <div class="flex items-center">
-                    <span class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center mr-2">
-                      <span class="text-xs font-medium text-white">E</span>
-                    </span>
-                    <span class="text-xs text-gray-700">Existing Relationship</span>
-                  </div>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-900">🏢 Relationship Portfolio</h3>
+                  <button @click="isPortfolioSectionCollapsed = !isPortfolioSectionCollapsed"
+                    class="flex items-center text-sm text-gray-500 hover:text-gray-700">
+                    <span>{{ isPortfolioSectionCollapsed ? 'Expand' : 'Collapse' }}</span>
+                    <svg
+                      :class="['ml-1 h-4 w-4 transform transition-transform', { 'rotate-180': !isPortfolioSectionCollapsed }]"
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
                 </div>
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('name')">
-                          Relationship
-                          <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
+                <div v-show="!isPortfolioSectionCollapsed">
+                  <!-- Legend for N/E -->
+                  <div class="flex items-center mb-2 space-x-4">
+                    <div class="flex items-center">
+                      <span class="h-8 w-8 rounded-full bg-green-800 flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium text-white">N</span>
+                      </span>
+                      <span class="text-xs text-gray-700">New Relationship</span>
+                    </div>
+                    <div class="flex items-center">
+                      <span class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium text-white">E</span>
+                      </span>
+                      <span class="text-xs text-gray-700">Existing Relationship</span>
+                    </div>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('name')">
+                            Relationship
+                            <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
                             }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('depositsDelta')">
-                          Deposits Δ
-                          <span v-if="sortField === 'depositsDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
+                          </th>
+                          <th
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('depositsDelta')">
+                            Deposits Δ
+                            <span v-if="sortField === 'depositsDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
+                              '↓'
                             }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('loansDelta')">
-                          Loans Δ
-                          <span v-if="sortField === 'loansDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('utilization')">
-                          Util %
-                          <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('revenueDelta')">
-                          Revenue Δ
-                          <span v-if="sortField === 'revenueDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('crossSellIndex')">
-                          Cross-Sell Index
-                          <span v-if="sortField === 'crossSellIndex'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                            '↓' }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('pendingReviews')">
-                          Pending Reviews
-                          <span v-if="sortField === 'pendingReviews'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                            '↓' }}</span>
-                        </th>
-                        <th
-                          class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                          @click="sortTable('leadValue')">
-                          Leads (# / $)
-                          <span v-if="sortField === 'leadValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
-                        </th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Relationship Type
-                        </th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="relationship in sortedRelationships" :key="relationship.id"
-                        class="hover:bg-green-50 cursor-pointer transition-colors"
-                        @click="drillDownToRelationship(relationship)">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-8 w-8">
-                              <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                                :class="isNewRelationship(relationship) ? 'bg-green-800' : 'bg-gray-500'">
-                                <span class="text-xs font-medium text-white">{{ isNewRelationship(relationship) ? 'N' :
-                                  'E' }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('loansDelta')">
+                            Loans Δ
+                            <span v-if="sortField === 'loansDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
+                            }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('utilization')">
+                            Util %
+                            <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
+                            }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('revenueDelta')">
+                            Revenue Δ
+                            <span v-if="sortField === 'revenueDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
+                              '↓'
+                            }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('crossSellIndex')">
+                            Cross-Sell Index
+                            <span v-if="sortField === 'crossSellIndex'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
+                              '↓' }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('pendingReviews')">
+                            Pending Reviews
+                            <span v-if="sortField === 'pendingReviews'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
+                              '↓' }}</span>
+                          </th>
+                          <th
+                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                            @click="sortTable('leadValue')">
+                            Leads (# / $)
+                            <span v-if="sortField === 'leadValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
+                            }}</span>
+                          </th>
+                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Relationship Type
+                          </th>
+                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="relationship in sortedRelationships" :key="relationship.id"
+                          class="hover:bg-green-50 cursor-pointer transition-colors"
+                          @click="drillDownToRelationship(relationship)">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-8 w-8">
+                                <div class="h-8 w-8 rounded-full flex items-center justify-center"
+                                  :class="isNewRelationship(relationship) ? 'bg-green-800' : 'bg-gray-500'">
+                                  <span class="text-xs font-medium text-white">{{ isNewRelationship(relationship) ? 'N'
+                                    :
+                                    'E' }}</span>
+                                </div>
+                              </div>
+                              <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
+                                <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
                               </div>
                             </div>
-                            <div class="ml-4">
-                              <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
-                              <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                          :class="relationship.depositsDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                          {{ relationship.depositsDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.depositsDelta)
-                          }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                          :class="relationship.loansDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                          {{ relationship.loansDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.loansDelta) }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                          <span class="font-medium" :class="getUtilizationColor(relationship.utilization)">
-                            {{ relationship.utilization }}%
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                          :class="relationship.revenueDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                          {{ relationship.revenueDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.revenueDelta) }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                          <span class="font-medium" :class="getCrossSellColor(relationship.crossSellIndex)">
-                            {{ relationship.crossSellIndex }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                          <span v-if="relationship.pendingReviews > 0"
-                            class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                            {{ relationship.pendingReviews }}
-                          </span>
-                          <span v-else class="text-gray-400">-</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                          {{ relationship.leadCount }} / {{ formatCurrency(relationship.leadValue) }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                          <span class="px-2 py-1 text-xs font-medium rounded-full"
-                            :class="getRelationshipTypeClass(getRelationshipType(relationship))">
-                            {{ getRelationshipType(relationship) }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                          <span class="text-td-green font-medium">View Details ›</span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- Account & Loan Portfolio Balance -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                <div class="p-4">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center space-x-2">
-                      <span class="text-2xl">📊</span>
-                      <h3 class="text-lg font-bold text-gray-900">Account & Loan Portfolio Balance</h3>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                      <span
-                        class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Deposits</span>
-                      <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Loans</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-500 mb-4">Account balances (positive) vs loan utilization (negative)
-                  </div>
-
-                  <!-- Relationship Filter (always show) -->
-                  <div class="mb-4">
-                    <label class="text-sm text-gray-700 mr-3">Filter by Relationship:</label>
-                    <select v-model="selectedRelationshipFilter"
-                      class="px-3 py-2 border border-gray-300 rounded-md text-sm">
-                      <option value="all">All Relationships</option>
-                      <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}</option>
-                    </select>
-                  </div>
-
-                  <!-- Legend (always show) -->
-                  <div class="flex flex-wrap items-center mb-4">
-                    <div v-for="(item, idx) in accountLoanLegend" :key="item.label"
-                      class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleAccountLoanLegend(item.label)">
-                      <span
-                        :style="{ backgroundColor: item.color, opacity: accountLoanActiveLegends.includes(item.label) ? 1 : 0.3 }"
-                        class="w-4 h-4 rounded-full inline-block mr-2"></span>
-                      <span class="text-xs text-gray-700">{{ item.label }}</span>
-                    </div>
-                  </div>
-
-                  <div class="h-64 p-4">
-                    <BarChart v-if="accountLoanPortfolioChartData" :data="accountLoanPortfolioChartData"
-                      :options="accountLoanPortfolioChartOptions" />
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
+                            :class="relationship.depositsDelta > 0 ? 'text-green-600' : 'text-red-600'">
+                            {{ relationship.depositsDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.depositsDelta)
+                            }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
+                            :class="relationship.loansDelta > 0 ? 'text-green-600' : 'text-red-600'">
+                            {{ relationship.loansDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.loansDelta) }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                            <span class="font-medium" :class="getUtilizationColor(relationship.utilization)">
+                              {{ relationship.utilization }}%
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
+                            :class="relationship.revenueDelta > 0 ? 'text-green-600' : 'text-red-600'">
+                            {{ relationship.revenueDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.revenueDelta)
+                            }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                            <span class="font-medium" :class="getCrossSellColor(relationship.crossSellIndex)">
+                              {{ relationship.crossSellIndex }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span v-if="relationship.pendingReviews > 0"
+                              class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                              {{ relationship.pendingReviews }}
+                            </span>
+                            <span v-else class="text-gray-400">-</span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                            {{ relationship.leadCount }} / {{ formatCurrency(relationship.leadValue) }}
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                              :class="getRelationshipTypeClass(getRelationshipType(relationship))">
+                              {{ getRelationshipType(relationship) }}
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="text-td-green font-medium">View Details ›</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-              </div>
 
-              <!-- Revenue Trends by Relationship -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                <div class="p-6">
-                  <div class="flex items-center mb-4 justify-between">
-                    <div class="flex items-center">
-                      <span class="text-2xl">📊</span>
-                      <h3 class="text-lg font-bold text-gray-900 ml-2">Revenue Trends by Relationship</h3>
+                <!-- Account & Loan Portfolio Balance -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+                  <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center space-x-2">
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-lg font-bold text-gray-900">Account & Loan Portfolio Balance</h3>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span
+                          class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Deposits</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Loans</span>
+                      </div>
                     </div>
-                    <div>
-                      <label class="text-sm text-gray-700 mr-2">Filter by Relationship:</label>
-                      <select v-model="selectedRevenueRelationship"
+                    <div class="text-sm text-gray-500 mb-4">Account balances (positive) vs loan utilization (negative)
+                    </div>
+
+                    <!-- Relationship Filter (always show) -->
+                    <div class="mb-4">
+                      <label class="text-sm text-gray-700 mr-3">Filter by Relationship:</label>
+                      <select v-model="selectedRelationshipFilter"
                         class="px-3 py-2 border border-gray-300 rounded-md text-sm">
                         <option value="all">All Relationships</option>
                         <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}</option>
                       </select>
                     </div>
-                  </div>
-                  <!-- Legend for revenue types -->
-                  <div class="flex flex-wrap items-center mb-4">
-                    <div v-for="(type, idx) in revenueTypeLegend" :key="type.label"
-                      class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleRevenueTypeLegend(type.label)">
-                      <span
-                        :style="{ backgroundColor: type.color, opacity: revenueTypeActiveLegends.includes(type.label) ? 1 : 0.3 }"
-                        class="w-4 h-4 rounded-full inline-block mr-2"></span>
-                      <span class="text-xs text-gray-700">{{ type.label }}</span>
+
+                    <!-- Legend (always show) -->
+                    <div class="flex flex-wrap items-center mb-4">
+                      <div v-for="(item, idx) in accountLoanLegend" :key="item.label"
+                        class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleAccountLoanLegend(item.label)">
+                        <span
+                          :style="{ backgroundColor: item.color, opacity: accountLoanActiveLegends.includes(item.label) ? 1 : 0.3 }"
+                          class="w-4 h-4 rounded-full inline-block mr-2"></span>
+                        <span class="text-xs text-gray-700">{{ item.label }}</span>
+                      </div>
+                    </div>
+
+                    <div class="h-64 p-4">
+                      <BarChart v-if="accountLoanPortfolioChartData" :data="accountLoanPortfolioChartData"
+                        :options="accountLoanPortfolioChartOptions" />
                     </div>
                   </div>
-                  <div class="h-60 px-10">
-                    <BarChart v-if="revenueTypeStackedChartData" :data="revenueTypeStackedChartData"
-                      :options="revenueTypeStackedChartOptions" />
+                </div>
+
+                <!-- Revenue Trends by Relationship -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+                  <div class="p-6">
+                    <div class="flex items-center mb-4 justify-between">
+                      <div class="flex items-center">
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-lg font-bold text-gray-900 ml-2">Revenue Trends by Relationship</h3>
+                      </div>
+                      <div>
+                        <label class="text-sm text-gray-700 mr-2">Filter by Relationship:</label>
+                        <select v-model="selectedRevenueRelationship"
+                          class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                          <option value="all">All Relationships</option>
+                          <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Legend for revenue types -->
+                    <div class="flex flex-wrap items-center mb-4">
+                      <div v-for="(type, idx) in revenueTypeLegend" :key="type.label"
+                        class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleRevenueTypeLegend(type.label)">
+                        <span
+                          :style="{ backgroundColor: type.color, opacity: revenueTypeActiveLegends.includes(type.label) ? 1 : 0.3 }"
+                          class="w-4 h-4 rounded-full inline-block mr-2"></span>
+                        <span class="text-xs text-gray-700">{{ type.label }}</span>
+                      </div>
+                    </div>
+                    <div class="h-60 px-10">
+                      <BarChart v-if="revenueTypeStackedChartData" :data="revenueTypeStackedChartData"
+                        :options="revenueTypeStackedChartOptions" />
+                    </div>
+                    <!-- Summary Table -->
+                    <div class="mt-8">
+                      <h4 class="text-md font-semibold text-gray-900 mb-2">Revenue Summary</h4>
+                      <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                          <thead class="bg-gray-50">
+                            <tr>
+                              <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Relationship</th>
+                              <th
+                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Total Revenue</th>
+                              <th v-for="type in revenueTypeLegend" :key="type.label"
+                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{
+                                  type.label }}</th>
+                              <th
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Relationship Type
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="rel in revenueSummaryRelationships" :key="rel.id"
+                              class="hover:bg-green-50 cursor-pointer transition-colors"
+                              @click="drillDownToRelationship(rel)">
+                              <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 h-8 w-8">
+                                    <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
+                                      <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
+                                    </div>
+                                  </div>
+                                  <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
+                                    <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4 whitespace-nowrap text-right font-bold">{{
+                                formatCurrency(getRelationshipTotalRevenue(rel)) }}</td>
+                              <td v-for="type in revenueTypeLegend" :key="type.label"
+                                class="px-6 py-4 whitespace-nowrap text-right">{{
+                                  formatCurrency(getRelationshipRevenueByType(rel, type.label)) }}</td>
+                              <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                  :class="getRelationshipTypeClass(getRelationshipType(rel))">
+                                  {{ getRelationshipType(rel) }}
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                  <!-- Summary Table -->
-                  <div class="mt-8">
-                    <h4 class="text-md font-semibold text-gray-900 mb-2">Revenue Summary</h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- Opportunities Tab -->
+            <div v-if="activeTab === 'opportunities'">
+              <div class="space-y-6">
+                <!-- Opportunities Summary -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ filteredOpportunitiesCount }}</div>
+                    <div class="text-xs text-gray-600">Total Opportunities</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">{{ formatCurrency(filteredOpportunitiesValue) }}
+                    </div>
+                    <div class="text-xs text-gray-600">Total Value</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-2xl font-bold text-orange-600">{{ avgOpportunityValue }}</div>
+                    <div class="text-xs text-gray-600">Avg Opportunity</div>
+                  </div>
+                </div>
+                <!-- Opportunities Summary Table -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                  <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Relationship Opportunities Summary</h3>
                     <div class="overflow-x-auto">
                       <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                           <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                               Relationship</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Total Revenue</th>
-                            <th v-for="type in revenueTypeLegend" :key="type.label"
-                              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{
-                                type.label }}</th>
                             <th
                               class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Relationship Type
-                            </th>
+                              Opportunities</th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Potential Value</th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Avg Confidence</th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Relationship Type</th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions</th>
                           </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                          <tr v-for="rel in revenueSummaryRelationships" :key="rel.id"
+                          <tr v-for="rel in sortedRelationships" :key="rel.id"
                             class="hover:bg-green-50 cursor-pointer transition-colors"
                             @click="drillDownToRelationship(rel)">
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -612,102 +716,25 @@
                                 </div>
                               </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right font-bold">{{
-                              formatCurrency(getRelationshipTotalRevenue(rel)) }}</td>
-                            <td v-for="type in revenueTypeLegend" :key="type.label"
-                              class="px-6 py-4 whitespace-nowrap text-right">{{
-                                formatCurrency(getRelationshipRevenueByType(rel, type.label)) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-blue-600 font-bold">{{
+                              getRelationshipOpportunityCount(rel) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-green-600 font-bold">{{
+                              formatCurrency(getRelationshipOpportunityValue(rel)) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-purple-600 font-bold">{{
+                              getRelationshipAvgConfidence(rel) }}%</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                               <span class="px-2 py-1 text-xs font-medium rounded-full"
                                 :class="getRelationshipTypeClass(getRelationshipType(rel))">
                                 {{ getRelationshipType(rel) }}
                               </span>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                              <span class="text-td-green font-medium">View Details ›</span>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Opportunities Tab -->
-          <div v-if="activeTab === 'opportunities'">
-            <div class="space-y-6">
-              <!-- Opportunities Summary -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="text-center">
-                  <div class="text-2xl font-bold text-blue-600">{{ filteredOpportunitiesCount }}</div>
-                  <div class="text-xs text-gray-600">Total Opportunities</div>
-                </div>
-                <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ formatCurrency(filteredOpportunitiesValue) }}</div>
-                  <div class="text-xs text-gray-600">Total Value</div>
-                </div>
-                <div class="text-center">
-                  <div class="text-2xl font-bold text-orange-600">{{ avgOpportunityValue }}</div>
-                  <div class="text-xs text-gray-600">Avg Opportunity</div>
-                </div>
-              </div>
-              <!-- Opportunities Summary Table -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6">
-                  <h3 class="text-lg font-medium text-gray-900 mb-4">Relationship Opportunities Summary</h3>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Relationship</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Opportunities</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Potential Value</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Avg Confidence</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Relationship Type</th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="rel in sortedRelationships" :key="rel.id"
-                          class="hover:bg-green-50 cursor-pointer transition-colors"
-                          @click="drillDownToRelationship(rel)">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                              <div class="flex-shrink-0 h-8 w-8">
-                                <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                  <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                                </div>
-                              </div>
-                              <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                                <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-blue-600 font-bold">{{
-                            getRelationshipOpportunityCount(rel) }}</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-green-600 font-bold">{{
-                            formatCurrency(getRelationshipOpportunityValue(rel)) }}</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-purple-600 font-bold">{{
-                            getRelationshipAvgConfidence(rel) }}%</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full"
-                              :class="getRelationshipTypeClass(getRelationshipType(rel))">
-                              {{ getRelationshipType(rel) }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                            <span class="text-td-green font-medium">View Details ›</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </div>
               </div>
@@ -720,129 +747,151 @@
               <!-- Review Status Counters -->
               <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-6">
-                  <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Review Status Overview</h3>
-                  <div class="grid grid-cols-5 gap-4">
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-orange-600">{{ riskMetrics.totalRiskFlags }}</div>
-                      <div class="text-xs text-gray-600">Total Risk Flags</div>
-                    </div>
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-green-600">{{ riskMetrics.pending }}</div>
-                      <div class="text-xs text-gray-600">Pending</div>
-                    </div>
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-blue-600">{{ riskMetrics.reviewedWithAction }}</div>
-                      <div class="text-xs text-gray-600">Reviewed w/ Action</div>
-                    </div>
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-purple-600">{{ riskMetrics.reviewedWithoutAction }}</div>
-                      <div class="text-xs text-gray-600">Reviewed w/o Action</div>
-                    </div>
-                    <div class="text-center">
-                      <div class="text-2xl font-bold text-cyan-600">{{ riskMetrics.avgTimeToClose }}</div>
-                      <div class="text-xs text-gray-600">Avg Days</div>
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">🚨 Review Status Overview</h3>
+                    <button @click="isRiskAppetiteCollapsed = !isRiskAppetiteCollapsed"
+                      class="flex items-center text-sm text-gray-500 hover:text-gray-700">
+                      <span>{{ isRiskAppetiteCollapsed ? 'Expand' : 'Collapse' }}</span>
+                      <svg
+                        :class="['ml-1 h-4 w-4 transform transition-transform', { 'rotate-180': !isRiskAppetiteCollapsed }]"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <div v-show="!isRiskAppetiteCollapsed">
+                    <div class="grid grid-cols-5 gap-4">
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-orange-600">{{ riskMetrics.totalRiskFlags }}</div>
+                        <div class="text-xs text-gray-600">Total Risk Flags</div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">{{ riskMetrics.pending }}</div>
+                        <div class="text-xs text-gray-600">Pending</div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">{{ riskMetrics.reviewedWithAction }}</div>
+                        <div class="text-xs text-gray-600">Reviewed w/ Action</div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600">{{ riskMetrics.reviewedWithoutAction }}</div>
+                        <div class="text-xs text-gray-600">Reviewed w/o Action</div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-cyan-600">{{ riskMetrics.avgTimeToClose }}</div>
+                        <div class="text-xs text-gray-600">Avg Days</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Risk Statistics by Relationship Table -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6">
-                  <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Statistics by Relationship</h3>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Relationship
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Risk Flags
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Pending Reviews
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Last Review
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Reviewed w/ Action
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Reviewed w/o Action
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Relationship Type
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="relationship in relationshipsWithRiskStats" :key="relationship.id"
-                          class="hover:bg-green-50 cursor-pointer transition-colors"
-                          @click="drillDownToRelationship(relationship)">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                              <div class="flex-shrink-0 h-8 w-8">
-                                <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                  <span class="text-xs font-medium text-white">{{ relationship.name.charAt(0) }}</span>
+                <!-- Risk Statistics by Relationship Table -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                  <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Statistics by Relationship</h3>
+                    <div class="overflow-x-auto">
+                      <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Relationship
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Risk Flags
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Pending Reviews
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Last Review
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Reviewed w/ Action
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Reviewed w/o Action
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Status
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Relationship Type
+                            </th>
+                            <th
+                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                          <tr v-for="relationship in relationshipsWithRiskStats" :key="relationship.id"
+                            class="hover:bg-green-50 cursor-pointer transition-colors"
+                            @click="drillDownToRelationship(relationship)">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="flex items-center">
+                                <div class="flex-shrink-0 h-8 w-8">
+                                  <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
+                                    <span class="text-xs font-medium text-white">{{ relationship.name.charAt(0)
+                                    }}</span>
+                                  </div>
+                                </div>
+                                <div class="ml-4">
+                                  <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
+                                  <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
                                 </div>
                               </div>
-                              <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
-                                <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span v-if="relationship.riskFlags > 0"
-                              class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-                              {{ relationship.riskFlags }}
-                            </span>
-                            <span v-else class="text-gray-400">-</span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span v-if="relationship.pendingReviews > 0"
-                              class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                              {{ relationship.pendingReviews }}
-                            </span>
-                            <span v-else class="text-gray-400">-</span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                            {{ relationship.lastReviewDate }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{{
-                              relationship.reviewedWithAction || 0 }}</span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">{{
-                              relationship.reviewedWithoutAction || 0 }}</span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span
-                              :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusColor(relationship.riskStatus)]">
-                              {{ relationship.riskStatus }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full"
-                              :class="getRelationshipTypeClass(getRelationshipType(relationship))">
-                              {{ getRelationshipType(relationship) }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="text-td-green font-medium">View Details ›</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span v-if="relationship.riskFlags > 0"
+                                class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                                {{ relationship.riskFlags }}
+                              </span>
+                              <span v-else class="text-gray-400">-</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span v-if="relationship.pendingReviews > 0"
+                                class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                {{ relationship.pendingReviews }}
+                              </span>
+                              <span v-else class="text-gray-400">-</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                              {{ relationship.lastReviewDate }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{{
+                                relationship.reviewedWithAction || 0 }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">{{
+                                relationship.reviewedWithoutAction || 0 }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span
+                                :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusColor(relationship.riskStatus)]">
+                                {{ relationship.riskStatus }}
+                              </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                :class="getRelationshipTypeClass(getRelationshipType(relationship))">
+                                {{ getRelationshipType(relationship) }}
+                              </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                              <span class="text-td-green font-medium">View Details ›</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1158,7 +1207,8 @@
             <div class="text-xs text-green-500 font-medium">+12% vs peers</div>
           </div>
           <div class="bg-green-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-green-600">{{ Math.round((totalRevenue * 0.32 / totalRevenue) * 100) }}%
+            <div class="text-2xl font-bold text-green-600">{{ Math.round((totalRevenue * 0.32 / totalRevenue) * 100)
+            }}%
             </div>
             <div class="text-sm text-gray-600">Revenue Concentration</div>
             <div class="text-xs text-gray-500">Top 3 relationships</div>
@@ -1432,54 +1482,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Relationship Health Matrix -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📊 Relationship Health Matrix</h4>
-            <div class="h-64 mb-4">
-              <BarChart v-if="relationshipHealthData" :data="relationshipHealthData"
-                :options="relationshipHealthOptions" />
-            </div>
-            <!-- Health Score Legend -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Health Score Components</h5>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div>Revenue Growth: 25%</div>
-                <div>Engagement Level: 20%</div>
-                <div>Product Penetration: 20%</div>
-                <div>Payment History: 15%</div>
-                <div>Cross-sell Success: 10%</div>
-                <div>Tenure: 10%</div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Engagement Analytics -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📞 Engagement Analytics</h4>
-            <div class="h-64 mb-4">
-              <LineChart v-if="engagementTrendsData" :data="engagementTrendsData" :options="engagementTrendsOptions" />
-            </div>
-            <!-- Engagement Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Engagement Insights</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Avg Meetings/Month:</span>
-                  <span class="font-medium text-blue-600">2.4</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Response Rate:</span>
-                  <span class="font-medium text-green-600">94%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Last Contact:</span>
-                  <span class="font-medium text-gray-900">3.2 days avg</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Detailed Relationship Performance Table -->
         <div class="mt-6 bg-white rounded-lg border border-gray-200">
@@ -1493,20 +1496,14 @@
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Relationship
                   </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Health Score
-                  </th>
                   <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Revenue per Rel
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Engagement Score
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Product Penetration
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship Depth
+                    Deposit & Loan
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Growth Trend
@@ -1532,32 +1529,15 @@
                       </div>
                     </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <div class="flex items-center justify-center">
-                      <div class="text-sm font-bold" :class="getHealthScoreColor(rel.healthScore)">
-                        {{ rel.healthScore }}
-                      </div>
-                      <div class="w-12 bg-gray-200 rounded-full h-2 ml-2">
-                        <div class="h-2 rounded-full" :class="getHealthScoreBarColor(rel.healthScore)"
-                          :style="{ width: rel.healthScore + '%' }"></div>
-                      </div>
-                    </div>
-                  </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-blue-600">
                     {{ formatCurrency(rel.revenue) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium" :class="getEngagementColor(rel.engagementScore)">
-                      {{ rel.engagementScore }}/10
-                    </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
                     <span class="font-medium text-purple-600">{{ rel.productPenetration }}/6</span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getRelationshipDepthClass(rel.relationshipDepth)">
-                      {{ rel.relationshipDepth }}
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                      Deposit & Loan
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -1580,7 +1560,7 @@
         <!-- Regional Performance Comparison -->
         <div class="mt-6 bg-gray-50 p-4 rounded-lg">
           <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Relationship Performance Ranking</h4>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 gap-4">
             <!-- Relationship Count Ranking -->
             <div class="bg-white rounded border">
               <div class="p-3 border-b border-gray-200">
@@ -1603,49 +1583,7 @@
               </div>
             </div>
 
-            <!-- Relationship Quality Ranking -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Avg Health Score</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-2">
-                  <div v-for="(rm, index) in relationshipQualityRanking" :key="rm.name"
-                    class="flex justify-between items-center p-2 rounded"
-                    :class="rm.isYou ? 'bg-blue-100' : 'bg-gray-50'">
-                    <div class="flex items-center">
-                      <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
-                      <span class="text-sm" :class="rm.isYou ? 'font-bold text-blue-700' : 'text-gray-900'">
-                        {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
-                      </span>
-                    </div>
-                    <div class="text-sm font-medium">{{ rm.score }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Engagement Ranking -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Engagement Score</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-2">
-                  <div v-for="(rm, index) in engagementRanking" :key="rm.name"
-                    class="flex justify-between items-center p-2 rounded"
-                    :class="rm.isYou ? 'bg-blue-100' : 'bg-gray-50'">
-                    <div class="flex items-center">
-                      <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
-                      <span class="text-sm" :class="rm.isYou ? 'font-bold text-blue-700' : 'text-gray-900'">
-                        {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
-                      </span>
-                    </div>
-                    <div class="text-sm font-medium">{{ rm.engagement }}/10</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -1809,9 +1747,6 @@
                     Deposit Stability
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Market Share %
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Peer Rank
                   </th>
                 </tr>
@@ -1855,9 +1790,6 @@
                       {{ rel.depositStability }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ rel.marketShare }}%
-                  </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
                     <span class="px-2 py-1 text-xs font-medium rounded-full"
                       :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
@@ -1884,7 +1816,7 @@
               <div>
                 <span class="text-gray-600">Strongest Growth:</span>
                 <span class="font-medium text-green-600 ml-1">Johnson Holdings (+{{ Math.round(depositsGrowth * 1.2)
-                  }}%)</span>
+                }}%)</span>
               </div>
               <div>
                 <span class="text-gray-600">Most Stable:</span>
@@ -2326,7 +2258,8 @@
         <div class="mt-6 bg-white rounded-lg border border-gray-200">
           <div class="p-4 border-b border-gray-200">
             <h4 class="font-medium text-gray-900">🏢 Credit Analysis by Relationship</h4>
-            <p class="text-sm text-gray-500 mt-1">Comprehensive credit exposure with Johnson Holdings Group highlighted
+            <p class="text-sm text-gray-500 mt-1">Comprehensive credit exposure with Johnson Holdings Group
+              highlighted
             </p>
           </div>
           <div class="overflow-x-auto">
@@ -2458,7 +2391,8 @@
                     {{ formatCurrency(rm.totalCommitments) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="getUtilizationColor(rm.utilization)">{{ rm.utilization }}%</span>
+                    <span class="font-medium" :class="getUtilizationColor(rm.utilization)">{{ rm.utilization
+                    }}%</span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
                     {{ formatCurrency(rm.avgCreditPerRel) }}
@@ -2659,7 +2593,7 @@
             <div class="text-2xl font-bold text-red-600">{{ totalRiskReviews }}</div>
             <div class="text-sm text-gray-600">Total Risk Reviews</div>
             <div class="text-xs text-red-500 font-medium">{{ Math.floor(totalRiskReviews / totalRelationships * 100)
-              }}% of portfolio</div>
+            }}% of portfolio</div>
           </div>
           <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
             <div class="text-2xl font-bold text-orange-600">{{ totalRiskFlags }}</div>
@@ -2669,13 +2603,15 @@
           <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
             <div class="text-2xl font-bold text-blue-600">{{ reviewedWithAction }}</div>
             <div class="text-sm text-gray-600">Reviewed with Action</div>
-            <div class="text-xs text-blue-500 font-medium">{{ Math.floor(reviewedWithAction / totalRiskFlags * 100) }}%
+            <div class="text-xs text-blue-500 font-medium">{{ Math.floor(reviewedWithAction / totalRiskFlags * 100)
+            }}%
               of flags</div>
           </div>
           <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
             <div class="text-2xl font-bold text-green-600">{{ reviewedWithoutAction }}</div>
             <div class="text-sm text-gray-600">Reviewed without Action</div>
-            <div class="text-xs text-green-500 font-medium">{{ Math.floor(reviewedWithoutAction / totalRiskFlags * 100)
+            <div class="text-xs text-green-500 font-medium">{{ Math.floor(reviewedWithoutAction / totalRiskFlags *
+              100)
             }}% of flags</div>
           </div>
         </div>
@@ -2733,7 +2669,8 @@
         <div class="mt-6 bg-white rounded-lg border border-gray-200">
           <div class="p-4 border-b border-gray-200">
             <h4 class="font-medium text-gray-900">🔍 Detailed Risk Analysis by Relationship</h4>
-            <p class="text-sm text-gray-500 mt-1">Comprehensive risk assessment with Johnson Holdings Group highlighted
+            <p class="text-sm text-gray-500 mt-1">Comprehensive risk assessment with Johnson Holdings Group
+              highlighted
             </p>
           </div>
           <div class="overflow-x-auto">
@@ -2869,7 +2806,8 @@
                     <div class="text-xs text-gray-600">Risk Transactions</div>
                   </div>
                   <div class="text-center p-2 bg-orange-50 rounded">
-                    <div class="text-lg font-bold text-orange-600">{{ formatCurrency(johnsonRiskMetrics.totalAmount) }}
+                    <div class="text-lg font-bold text-orange-600">{{ formatCurrency(johnsonRiskMetrics.totalAmount)
+                    }}
                     </div>
                     <div class="text-xs text-gray-600">Total Risk Amount</div>
                   </div>
@@ -2966,6 +2904,10 @@ const showROEModal = ref(false)
 const showReferralModal = ref(false)
 const showRiskModal = ref(false)
 const showCreditModal = ref(false)
+
+// Collapsible sections state
+const isPortfolioSectionCollapsed = ref(true)
+const isRiskAppetiteCollapsed = ref(true)
 
 // Alert system states
 const activeAlertTab = ref('delinquency')

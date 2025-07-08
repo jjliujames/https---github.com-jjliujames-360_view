@@ -16,7 +16,7 @@
                                 'Relationship Profile' }}</h1>
                             <p class="text-gray-600 mt-1">{{ breadcrumb }}</p>
                         </div>
-                    </div>
+        </div>
 
                     <!-- Action Buttons -->
                     <div class="flex items-center space-x-2">
@@ -60,8 +60,8 @@
                                     <span class="px-2 py-1 text-xs font-medium rounded-full"
                                         :class="getRelationshipTypeClass(relationshipType)">
                                         {{ relationshipType }}
-                                    </span>
-                                </div>
+                                </span>
+                            </div>
                             </div>
 
                             <div class="space-y-3">
@@ -83,8 +83,8 @@
                                     <p class="text-sm text-gray-900">{{ relationshipManager?.name || 'N/A' }}</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
                     <!-- Key Contacts & Parties -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -99,7 +99,7 @@
                                         <div class="text-xs text-blue-600">{{ relationshipData.ultimateParent.ownership
                                             }}% ownership</div>
                                     </div>
-                                </div>
+                        </div>
 
                                 <div v-if="keyContacts?.length">
                                     <h4 class="text-xs font-medium text-gray-500 mb-2">Key Signers & Beneficiaries</h4>
@@ -109,10 +109,10 @@
                                             <div>
                                                 <div class="text-sm font-medium text-gray-900">{{ contact.name }}</div>
                                                 <div class="text-xs text-gray-500">{{ contact.role }}</div>
-                                            </div>
+                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
 
                                 <div class="mt-4 pt-3 border-t border-gray-200">
                                     <h4 class="text-xs font-medium text-gray-500 mb-2">Complexity Score</h4>
@@ -120,11 +120,11 @@
                                         <div class="flex-1 bg-gray-200 rounded-full h-2">
                                             <div class="bg-orange-500 h-2 rounded-full transition-all duration-500"
                                                 :style="{ width: (complexityIndex / 10 * 100) + '%' }"></div>
-                                        </div>
+                                </div>
                                         <span class="text-sm font-medium" :class="getComplexityColor(complexityIndex)">
                                             {{ complexityIndex }}/10
                                         </span>
-                                    </div>
+                        </div>
                                     <div class="text-xs text-gray-500 mt-1">
                                         Based on entity structure, beneficial ownership, and transaction patterns
                                     </div>
@@ -135,7 +135,7 @@
 
 
 
-                </div>
+            </div>
 
                 <!-- Right Column - Aggregated Analytics -->
                 <div class="lg:col-span-3 space-y-6">
@@ -145,53 +145,53 @@
                         <h2 class="text-2xl font-bold text-gray-900">📊 Relationship Portfolio Analysis</h2>
                         <p class="text-sm text-gray-500 mt-2">Aggregated view across {{ totalClients }} client entities
                             with drill-down capability</p>
-                    </div>
+                </div>
 
                     <!-- Executive Summary KPIs -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
+                <div class="p-4">
                             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-blue-600">{{ totalClients }}</div>
                                     <div class="text-xs text-gray-600">Total Clients</div>
 
-                                </div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-green-600">{{ formatCurrency(aggregateDeposits)
                                     }}</div>
                                     <div class="text-xs text-gray-600">Deposits</div>
-                                    <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
-                                        getOrdinalSuffix(depositsPercentile) }} percentile</div>
-                                </div>
+                            <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
+                                getOrdinalSuffix(depositsPercentile) }} percentile</div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-orange-600">{{ formatCurrency(aggregateLoans) }}
                                     </div>
                                     <div class="text-xs text-gray-600">Loan Committed</div>
-                                    <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
-                                        getOrdinalSuffix(loansPercentile) }} percentile</div>
-                                </div>
+                            <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
+                                getOrdinalSuffix(loansPercentile) }} percentile</div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-purple-600">{{ loanUtilization }}%</div>
                                     <div class="text-xs text-gray-600">Loan Utilization</div>
 
-                                </div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-cyan-600">{{ formatCurrency(annualRevenue) }}
-                                    </div>
+                            </div>
                                     <div class="text-xs text-gray-600">Revenue</div>
                                     <div class="text-xs text-cyan-500 font-medium">{{ revenuePercentile }}{{
                                         getOrdinalSuffix(revenuePercentile) }} percentile</div>
-                                </div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-indigo-600">{{ crossSellIndex }}</div>
                                     <div class="text-xs text-gray-600">Cross-Sell Index</div>
                                     <div class="text-xs text-indigo-500 font-medium">Target: ≥ 3.0</div>
-                                </div>
+                        </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-yellow-600">{{ totalUnreviewed }}</div>
                                     <div class="text-xs text-gray-600">Pending Risk reviewed</div>
 
-                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -203,21 +203,21 @@
                                 <button @click="activeTab = 'clients'"
                                     :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'clients' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                     Clients & Portfolio
-                                </button>
+                                    </button>
                                 <button @click="activeTab = 'risk'"
                                     :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'risk' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                     Risk Review ({{ totalPendingRiskReviews }})
-                                </button>
+                                    </button>
                                 <button @click="activeTab = 'opportunities'"
                                     :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'opportunities' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                     Opportunities ({{ totalOpportunities }})
-                                </button>
+                                    </button>
                                 <button @click="activeTab = 'loans'"
                                     :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'loans' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                     Loan Applications
                                 </button>
                             </nav>
-                        </div>
+                                </div>
 
                         <!-- Tab Content -->
                         <div class="p-6">
@@ -269,8 +269,8 @@
                                                                         class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
                                                                         <span class="text-xs font-medium text-white">{{
                                                                             client.name.charAt(0) }}</span>
-                                                                    </div>
-                                                                </div>
+                            </div>
+                        </div>
                                                                 <div class="ml-4">
                                                                     <div class="text-sm font-medium text-gray-900">{{
                                                                         client.name }}</div>
@@ -319,8 +319,8 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
 
                                     <!-- Product Penetration Heat Map with Client Tabs -->
                                     <div>
@@ -337,7 +337,7 @@
                                                         {{ client.name }}
                                                     </button>
                                                 </nav>
-                                            </div>
+                                </div>
 
                                             <!-- Client Product Portfolio -->
                                             <div class="p-6">
@@ -370,8 +370,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                        </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Debit
                                                                             Cards</span>
@@ -409,9 +409,9 @@
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                    </div>
+                </div>
+            </div>
 
                                                             <!-- Business Lending Product -->
                                                             <div
@@ -432,8 +432,8 @@
                                                                                     d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                </div>
+                        </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Loans and
                                                                             Lines of Credit</span>
@@ -445,8 +445,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                            </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span
                                                                             class="text-sm text-gray-700">Securities-Based
@@ -486,9 +486,9 @@
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                            </div>
+                        </div>
+                    </div>
 
                                                             <!-- Commercial Lending Solutions -->
                                                             <div
@@ -509,8 +509,8 @@
                                                                                     d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                            </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Commercial
                                                                             Lending</span>
@@ -522,8 +522,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                        </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Commercial
                                                                             Real Estate</span>
@@ -535,8 +535,8 @@
                                                                                     d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                        </div>
+                    </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Equipment
                                                                             Finance</span>
@@ -548,10 +548,10 @@
                                                                                     d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
+                            </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
+                            </div>
+                        </div>
 
                                                             <!-- Treasury & Cash Management -->
                                                             <div
@@ -572,8 +572,8 @@
                                                                                     d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                            </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span
                                                                             class="text-sm text-gray-700">Payables</span>
@@ -585,8 +585,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                        </div>
+                            </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span
                                                                             class="text-sm text-gray-700">Receivables</span>
@@ -598,8 +598,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                        </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Fraud
                                                                             Control</span>
@@ -611,8 +611,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                            </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Information
                                                                             Services</span>
@@ -637,10 +637,10 @@
                                                                                     d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                                                             <!-- Business Services & Support -->
                                                             <div
@@ -650,7 +650,7 @@
                                                                     🟦 Business Services & Support
                                                                 </h5>
                                                                 <div class="space-y-2">
-                                                                    <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Online
                                                                             Banking</span>
                                                                         <div
@@ -661,8 +661,8 @@
                                                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                        </div>
+                    </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Online
                                                                             Accounting</span>
@@ -674,8 +674,8 @@
                                                                                     d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                                    </div>
+                                    </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span
                                                                             class="text-sm text-gray-700">Payroll</span>
@@ -753,9 +753,9 @@
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                </div>
+                            </div>
+                        </div>
 
                                                             <!-- Wealth & Investment Services -->
                                                             <div
@@ -764,7 +764,7 @@
                                                                     class="text-sm font-semibold text-purple-900 mb-3 flex items-center">
                                                                     🟦 Wealth & Investment Services
                                                                 </h5>
-                                                                <div class="space-y-2">
+                            <div class="space-y-2">
                                                                     <div class="flex items-center justify-between">
                                                                         <span
                                                                             class="text-sm text-gray-700">Investments</span>
@@ -776,8 +776,8 @@
                                                                                     d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
-                                                                        </div>
-                                                                    </div>
+                                    </div>
+                                    </div>
                                                                     <div class="flex items-center justify-between">
                                                                         <span class="text-sm text-gray-700">Wealth &
                                                                             Retirement Planning</span>
@@ -803,9 +803,9 @@
                                                                                     clip-rule="evenodd"></path>
                                                                             </svg>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                </div>
+                            </div>
+                        </div>
 
 
                                                         </div>
@@ -877,7 +877,7 @@
                                             </div>
                                         </div>
 
-                                        <div>
+                        <div>
                                             <h3 class="text-lg font-medium text-gray-900 mb-4">💰 Account & Loan
                                                 Portfolio Balance</h3>
                                             <div class="h-80">
@@ -885,21 +885,21 @@
                                                     :data="accountPortfolioTimeSeriesData" />
                                             </div>
                                         </div>
-                                        <div>
+                                    <div>
                                             <h3 class="text-lg font-medium text-gray-900 mb-4">📈 Transaction Volume
                                                 Trend</h3>
                                             <div class="h-80">
                                                 <BarChart v-if="transactionVolumeTimeSeriesData"
                                                     :data="transactionVolumeTimeSeriesData" />
-                                            </div>
-                                        </div>
+                                    </div>
+                                    </div>
                                         <div>
                                             <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Monthly Revenue Trend
                                             </h3>
                                             <div class="h-80">
                                                 <BarChart v-if="revenueTimeSeriesData" :data="revenueTimeSeriesData" />
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -928,30 +928,30 @@
                                                 <div class="text-center">
                                                     <div class="text-2xl font-bold text-green-600">3</div>
                                                     <div class="text-sm text-gray-600">Closed w/o UTR</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                                     <!-- Risk Portfolio Summary -->
-                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                                        <div class="p-6 border-b border-gray-200">
-                                            <div class="flex items-center justify-between">
-                                                <div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
                                                     <h3 class="text-lg font-medium text-gray-900">⚠️ Risk Portfolio
                                                         Summary</h3>
                                                     <p class="text-sm text-gray-500 mt-1">Client risk breakdown with
                                                         drill-down capability</p>
-                                                </div>
+                        </div>
                                                 <div class="flex bg-gray-100 rounded-lg p-1">
                                                     <button @click="riskPortfolioView = 'card'"
                                                         :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', riskPortfolioView === 'card' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
                                                         Card View
-                                                    </button>
+                            </button>
                                                     <button @click="riskPortfolioView = 'table'"
                                                         :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', riskPortfolioView === 'table' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
                                                         Table View
-                                                    </button>
+                            </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -988,56 +988,56 @@
                                                             <span class="font-medium">{{ getClientLastReview(client.id)
                                                             }}</span>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        </div>
+                    </div>
+                </div>
 
                                             <!-- Risk Table View -->
                                             <div v-if="riskPortfolioView === 'table'" class="overflow-x-auto">
-                                                <table class="min-w-full divide-y divide-gray-200">
-                                                    <thead class="bg-gray-50">
-                                                        <tr>
-                                                            <th
-                                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Client</th>
-                                                            <th
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Client</th>
+                                <th
                                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                                 Risk Flags</th>
-                                                            <th
+                                <th
                                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                                 RCI Score</th>
-                                                            <th
+                                <th
                                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                                 Last Review</th>
-                                                            <th
+                                <th
                                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                                 Next Review</th>
-                                                            <th
+                                <th
                                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="bg-white divide-y divide-gray-200">
-                                                        <tr v-for="client in relationshipClients" :key="client.id"
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="client in relationshipClients" :key="client.id"
                                                             class="hover:bg-gray-50">
-                                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                                <div class="flex items-center">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
                                                                     <div class="flex-shrink-0 h-8 w-8">
                                                                         <div
                                                                             class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                                                                             <span
                                                                                 class="text-xs font-medium text-gray-700">{{
                                                                                     client.name.charAt(0) }}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="ml-4">
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
                                                                         <div class="text-sm font-medium text-gray-900">
                                                                             {{ client.name }}</div>
                                                                         <div class="text-xs text-gray-500">{{
                                                                             client.industry }}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
+                                        </div>
+                                    </div>
+                                </td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                                                 <span v-if="client.riskFlags > 0"
                                                                     class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
@@ -1045,32 +1045,32 @@
                                                                 </span>
                                                                 <span v-else
                                                                     class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
-                                                            </td>
+                                </td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                                                 <span class="font-medium"
                                                                     :class="getComplexityColor(client.rci)">{{
                                                                         client.rci }}/10</span>
-                                                            </td>
+                                </td>
                                                             <td
                                                                 class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                                                 {{ getClientLastReview(client.id) }}
-                                                            </td>
+                                </td>
                                                             <td
                                                                 class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                                                 {{ getClientNextReview(client.id) }}
-                                                            </td>
+                                </td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                                                 <button @click="drillDownToClientRisk(client)"
                                                                     class="text-td-green hover:text-green-600 font-medium">
                                                                     View Risk Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                                             </div>
                                         </div>
-                                    </div>
+                </div>
 
                                     <!-- Loan Delinquency & Overdraft Trend -->
                                     <div>
@@ -1096,7 +1096,7 @@
                                             <BarChart v-if="riskTrendByCompanyTimeSeriesData"
                                                 :data="riskTrendByCompanyTimeSeriesData" />
                                         </div> -->
-                                    </div>
+                                </div>
                                 </div>
                             </div>
 
@@ -1147,7 +1147,7 @@
                                                             <span
                                                                 class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
                                                                 {{ recommendation.confidence }}% confidence
-                                                            </span>
+                                    </span>
                                                         </div>
                                                         <p class="text-sm text-blue-700 mb-2">{{
                                                             recommendation.recommendation }}</p>
@@ -1163,8 +1163,8 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
 
                                     <!-- Opportunities Portfolio Summary -->
                                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1203,18 +1203,18 @@
                                                         </span>
                                                     </div>
                                                     <div class="space-y-1 text-sm text-gray-600">
-                                                        <div class="flex justify-between">
+                                <div class="flex justify-between">
                                                             <span>Product Gaps:</span>
                                                             <span class="font-medium text-orange-600">{{
                                                                 getClientProductGaps(client) }}</span>
-                                                        </div>
-                                                        <div class="flex justify-between">
+                                </div>
+                                <div class="flex justify-between">
                                                             <span>Potential Value:</span>
-                                                            <span class="font-medium text-green-600">{{
+                                    <span class="font-medium text-green-600">{{
                                                                 formatCurrency(getClientOpportunityValue(client))
                                                             }}</span>
-                                                        </div>
-                                                        <div class="flex justify-between">
+                                </div>
+                                <div class="flex justify-between">
                                                             <span>Next Action:</span>
                                                             <span class="font-medium text-blue-600">{{
                                                                 getClientNextAction(client) }}</span>
@@ -1282,7 +1282,7 @@
                                                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                                                 <span class="font-medium text-green-600">{{
                                                                     formatCurrency(getClientOpportunityValue(client))
-                                                                    }}</span>
+                                    }}</span>
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                                                 <span class="px-2 py-1 text-xs font-medium rounded-full"
@@ -1300,8 +1300,8 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
 
                                     <!-- Cross-Sell Gap Matrix -->
                                     <div>
@@ -1315,17 +1315,17 @@
                                                         <h4 class="font-medium text-gray-900">{{ gap.product }}</h4>
                                                         <span class="text-sm font-medium text-red-600">{{
                                                             gap.missingCount }} missing</span>
-                                                    </div>
+                                </div>
                                                     <div class="text-sm text-gray-600 mb-2">{{ gap.potentialRevenue }}
                                                     </div>
                                                     <div class="text-xs text-gray-500">{{ gap.clients.join(', ') }}
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                             <!-- Loan Applications Tab -->
                             <div v-if="activeTab === 'loans'">
@@ -1386,32 +1386,32 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
+    </div>
 
         <!-- Alerts Modal -->
         <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
             <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
                 <div class="mt-3">
-                    <!-- Modal Header -->
+            <!-- Modal Header -->
                     <div class="flex items-center justify-between mb-4">
-                        <div>
+                    <div>
                             <h3 class="text-lg font-medium text-gray-900 flex items-center">
                                 <span class="text-2xl mr-2">⚠️</span>
                                 Client Alerts - {{ relationshipData?.name }}
                             </h3>
                             <p class="text-sm text-gray-600 mt-1">{{ totalActiveAlerts }} active alerts requiring
                                 attention</p>
-                        </div>
-                        <button @click="closeAlertsModal" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
                     </div>
+                        <button @click="closeAlertsModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
 
-                    <!-- Alert Tabs -->
+                <!-- Alert Tabs -->
                     <div class="border-b border-gray-200 mb-4">
                         <nav class="flex space-x-8" aria-label="Alert Tabs">
                             <button @click="activeAlertTab = 'delinquency'"
@@ -1421,7 +1421,7 @@
                                 <span
                                     class="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{
                                         loanDelinquencyAlerts.length }}</span>
-                            </button>
+                        </button>
                             <button @click="activeAlertTab = 'overdraft'"
                                 :class="['flex items-center whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium', activeAlertTab === 'overdraft' ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                 <span class="text-lg mr-2">💰</span>
@@ -1429,7 +1429,7 @@
                                 <span
                                     class="ml-2 bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{
                                         overdraftAlerts.length }}</span>
-                            </button>
+                        </button>
                             <button @click="activeAlertTab = 'other'"
                                 :class="['flex items-center whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium', activeAlertTab === 'other' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                                 <span class="text-lg mr-2">⚠️</span>
@@ -1437,16 +1437,16 @@
                                 <span
                                     class="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{
                                         otherAlerts.length }}</span>
-                            </button>
-                        </nav>
-                    </div>
+                        </button>
+                    </nav>
+            </div>
 
                     <!-- Alert Content -->
                     <div class="max-h-96 overflow-y-auto">
-                        <!-- Loan Delinquency Tab -->
+                <!-- Loan Delinquency Tab -->
                         <div v-if="activeAlertTab === 'delinquency'" class="space-y-4">
                             <div v-for="alert in loanDelinquencyAlerts" :key="alert.id"
-                                class="border border-red-200 rounded-lg p-4 bg-red-50">
+                            class="border border-red-200 rounded-lg p-4 bg-red-50">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center space-x-3">
                                         <h4 class="font-medium text-red-900">{{ alert.loanType }}</h4>
@@ -1467,23 +1467,23 @@
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                    <div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Account:</span>
                                         <p class="text-gray-600">{{ alert.accountNumber }}</p>
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Amount Due:</span>
                                         <p class="text-red-600 font-semibold">{{ formatCurrency(alert.amountDue) }}</p>
-                                    </div>
+                                            </div>
                                     <div>
                                         <span class="font-medium text-gray-700">Last Payment:</span>
                                         <p class="text-gray-600">{{ alert.lastPayment }}</p>
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Client:</span>
                                         <p class="text-gray-600">{{ alert.clientName }}</p>
+                                        </div>
                                     </div>
-                                </div>
                                 <div class="mt-3 pt-3 border-t border-red-200">
                                     <div class="flex justify-between text-sm">
                                         <span><strong>Total Outstanding:</strong> <span class="text-red-600">{{
@@ -1511,43 +1511,43 @@
                                     <div class="flex space-x-2">
                                         <button @click="reviewAlert(alert)"
                                             class="px-3 py-1 bg-yellow-600 text-white text-sm rounded-md hover:bg-yellow-700">
-                                            Review Now
-                                        </button>
-                                        <button @click="scheduleCall(alert)"
+                                        Review Now
+                                    </button>
+                                    <button @click="scheduleCall(alert)"
                                             class="px-3 py-1 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700">
-                                            Schedule Call
-                                        </button>
-                                    </div>
+                                        Schedule Call
+                                    </button>
                                 </div>
+                            </div>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                     <div>
                                         <span class="font-medium text-gray-700">Account:</span>
                                         <p class="text-gray-600">{{ alert.accountNumber }}</p>
-                                    </div>
-                                    <div>
+                        </div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Overdraft Amount:</span>
                                         <p class="text-yellow-600 font-semibold">{{
                                             formatCurrency(alert.overdraftAmount) }}</p>
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Available Balance:</span>
                                         <p class="text-gray-600">{{ formatCurrency(alert.availableBalance) }}</p>
-                                    </div>
-                                    <div>
+                                        </div>
+                                        <div>
                                         <span class="font-medium text-gray-700">Client:</span>
                                         <p class="text-gray-600">{{ alert.clientName }}</p>
+                                        </div>
                                     </div>
-                                </div>
                                 <div class="mt-3 pt-3 border-t border-yellow-200">
                                     <div class="flex justify-between text-sm">
                                         <span><strong>Overdraft Limit:</strong> {{ formatCurrency(alert.overdraftLimit)
-                                            }}</span>
+                                        }}</span>
                                         <span><strong>Fees Accumulated:</strong> <span class="text-yellow-600">{{
                                             formatCurrency(alert.feesAccumulated) }}</span></span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
                         <!-- Other Alerts Tab -->
                         <div v-if="activeAlertTab === 'other'" class="space-y-4">
@@ -1570,40 +1570,40 @@
                                             class="px-3 py-1 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700">
                                             Contact Client
                                         </button>
-                                    </div>
                                 </div>
+                            </div>
                                 <div class="text-sm text-blue-800 mb-3">
                                     <p>{{ alert.description }}</p>
-                                </div>
+                                    </div>
                                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                                     <div>
                                         <span class="font-medium text-gray-700">Client:</span>
                                         <p class="text-gray-600">{{ alert.clientName }}</p>
-                                    </div>
+                                </div>
                                     <div>
                                         <span class="font-medium text-gray-700">Due Date:</span>
                                         <p class="text-gray-600">{{ alert.dueDate }}</p>
-                                    </div>
-                                    <div>
+                            </div>
+                        <div>
                                         <span class="font-medium text-gray-700">Priority:</span>
                                         <p class="text-gray-600">{{ alert.priority }}</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Modal Footer -->
+            <!-- Modal Footer -->
                     <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex space-x-3">
+                    <div class="flex space-x-3">
                             <button @click="markAllAsReviewed"
                                 class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                                 Mark All as Reviewed
                             </button>
-                            <button @click="exportAlertReport"
+                        <button @click="exportAlertReport"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                Export Report
-                            </button>
+                            Export Report
+                        </button>
                         </div>
                         <button @click="closeAlertsModal"
                             class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
@@ -1784,9 +1784,9 @@ const crossSellGaps = computed(() => {
                 missingCount: clientsWithoutProduct.length,
                 potentialRevenue: `$${(clientsWithoutProduct.length * 150000).toLocaleString()} annually`,
                 clients: clientsWithoutProduct.map(c => c.name)
+                    })
+                }
             })
-        }
-    })
 
     return gaps.slice(0, 3) // Show top 3 gaps
 })
@@ -1902,11 +1902,11 @@ const loanDelinquencyAlerts = computed(() => [
     {
         id: 1,
         clientName: 'Johnson Manufacturing LLC',
-        loanType: 'Commercial Term Loan',
-        daysPastDue: 62,
+                        loanType: 'Commercial Term Loan',
+                        daysPastDue: 62,
         severity: 'Critical',
         accountNumber: 'TL-2024-0892',
-        amountDue: 125000,
+                        amountDue: 125000,
         lastPayment: 'Oct 14, 2024',
         totalOutstanding: 2200000,
         originalAmount: 2800000
@@ -2092,31 +2092,31 @@ const getCoverageColor = (percentage) => {
 }
 
 const getOrdinalSuffix = (num) => {
-    const j = num % 10
-    const k = num % 100
-    if (j === 1 && k !== 11) return 'st'
-    if (j === 2 && k !== 12) return 'nd'
-    if (j === 3 && k !== 13) return 'rd'
-    return 'th'
+            const j = num % 10
+            const k = num % 100
+            if (j === 1 && k !== 11) return 'st'
+            if (j === 2 && k !== 12) return 'nd'
+            if (j === 3 && k !== 13) return 'rd'
+            return 'th'
 }
 
 const drillDownToClient = (client) => {
     router.push({
-        name: 'ClientDetail',
-        params: {
+                name: 'ClientDetail',
+                params: {
             metroId: props.metroId,
             marketId: props.marketId,
             regionId: props.regionId,
             rmId: props.rmId,
-            clientId: client.id
-        }
-    })
+                    clientId: client.id
+                }
+            })
 }
 
 const drillDownToClientRisk = (client) => {
     router.push({
-        name: 'ClientDetail',
-        params: {
+                name: 'ClientDetail',
+                params: {
             metroId: props.metroId,
             marketId: props.marketId,
             regionId: props.regionId,
