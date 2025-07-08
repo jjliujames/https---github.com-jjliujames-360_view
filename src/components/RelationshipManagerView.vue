@@ -685,47 +685,275 @@
 
     <!-- Alerts Modal -->
     <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-gray-900">🚨 Urgent Alerts</h3>
+      <div
+        class="relative top-10 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 xl:w-3/4 shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">⚠️</span>
+            <h3 class="text-xl font-bold text-gray-900">Client Alerts - Johnson Holdings Group</h3>
+          </div>
           <button @click="showAlertsModal = false" class="text-gray-400 hover:text-gray-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
-        <div class="space-y-4">
-          <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <div class="flex items-center">
-              <span class="text-red-500 text-lg mr-2">⚠️</span>
-              <div>
-                <h4 class="font-medium text-red-900">Global Retail Corp - Overdraft Alert</h4>
-                <p class="text-sm text-red-700">Account exceeded limit by $2.3M. Immediate attention required.</p>
+
+        <!-- Alert Summary -->
+        <div class="mb-6 text-gray-700">
+          <span class="font-medium">{{ totalActiveAlerts }} active alerts requiring attention</span>
+        </div>
+
+        <!-- Alert Tabs -->
+        <div class="border-b border-gray-200 mb-6">
+          <nav class="flex space-x-8" aria-label="Alert Tabs">
+            <button v-for="tab in alertTabs" :key="tab.id" @click="activeAlertTab = tab.id" :class="['flex items-center space-x-2 whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium',
+              activeAlertTab === tab.id
+                ? 'border-red-500 text-red-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
+              <span :class="tab.iconClass">{{ tab.icon }}</span>
+              <span>{{ tab.name }}</span>
+              <span v-if="tab.count > 0" :class="['ml-2 px-2 py-0.5 text-xs font-bold rounded-full', tab.badgeClass]">
+                {{ tab.count }}
+              </span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Alert Content -->
+        <div class="space-y-6">
+          <!-- Loan Delinquency Tab -->
+          <div v-if="activeAlertTab === 'delinquency'" class="space-y-4">
+            <div v-for="alert in delinquencyAlerts" :key="alert.id"
+              class="bg-red-50 border border-red-200 rounded-lg p-6">
+              <!-- Alert Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getRiskLevelClass(alert.riskLevel)">
+                      {{ alert.riskLevel }}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 class="text-lg font-semibold text-red-900">{{ alert.loanType }}</h4>
+                    <p class="text-sm text-red-700">{{ alert.daysOverdue }} days past due</p>
+                  </div>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="reviewAlert(alert)"
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                    Review Now
+                  </button>
+                  <button @click="scheduleCall(alert)"
+                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                    Schedule Call
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alert Details Grid -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Account:</div>
+                  <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Amount Due:</div>
+                  <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.amountDue) }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Last Payment:</div>
+                  <div class="text-sm text-gray-900">{{ alert.lastPayment }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Client:</div>
+                  <div class="text-sm text-gray-900">{{ alert.clientName }}</div>
+                </div>
+              </div>
+
+              <!-- Financial Summary -->
+              <div class="bg-white rounded-lg p-4 border border-red-200">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <div class="text-sm font-medium text-gray-700">Total Outstanding:</div>
+                    <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.totalOutstanding) }}</div>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-700">Original Amount:</div>
+                    <div class="text-lg font-bold text-gray-900">{{ formatCurrency(alert.originalAmount) }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Analysis -->
+              <div class="mt-4 bg-white rounded-lg p-4 border border-red-200">
+                <h5 class="font-medium text-gray-900 mb-2">Risk Analysis</h5>
+                <div class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Payment History Score:</span>
+                    <span :class="getScoreColor(alert.paymentHistoryScore)">{{ alert.paymentHistoryScore }}/100</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Covenant Compliance:</span>
+                    <span :class="alert.covenantCompliance ? 'text-green-600' : 'text-red-600'">
+                      {{ alert.covenantCompliance ? 'Compliant' : 'Non-Compliant' }}
+                    </span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Estimated Recovery:</span>
+                    <span class="text-gray-900">{{ alert.estimatedRecovery }}%</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <div class="flex items-center">
-              <span class="text-yellow-500 text-lg mr-2">⚠️</span>
-              <div>
-                <h4 class="font-medium text-yellow-900">Johnson Holdings Group - Covenant Breach</h4>
-                <p class="text-sm text-yellow-700">Debt-to-equity ratio exceeded 3.5x threshold.</p>
+
+          <!-- Overdraft Tab -->
+          <div v-if="activeAlertTab === 'overdraft'" class="space-y-4">
+            <div v-for="alert in overdraftAlerts" :key="alert.id"
+              class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <!-- Alert Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getRiskLevelClass(alert.riskLevel)">
+                      {{ alert.riskLevel }}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 class="text-lg font-semibold text-yellow-900">{{ alert.accountType }}</h4>
+                    <p class="text-sm text-yellow-700">Overdraft limit exceeded</p>
+                  </div>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="reviewAlert(alert)"
+                    class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+                    Review Now
+                  </button>
+                  <button @click="scheduleCall(alert)"
+                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                    Schedule Call
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alert Details Grid -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Account:</div>
+                  <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Overdraft Amount:</div>
+                  <div class="text-lg font-bold text-yellow-600">{{ formatCurrency(alert.overdraftAmount) }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Limit:</div>
+                  <div class="text-sm text-gray-900">{{ formatCurrency(alert.overdraftLimit) }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Days Overdrawn:</div>
+                  <div class="text-sm text-gray-900">{{ alert.daysOverdrawn }}</div>
+                </div>
+              </div>
+
+              <!-- Account Activity -->
+              <div class="bg-white rounded-lg p-4 border border-yellow-200">
+                <h5 class="font-medium text-gray-900 mb-2">Recent Activity</h5>
+                <div class="space-y-2">
+                  <div v-for="transaction in alert.recentTransactions" :key="transaction.id"
+                    class="flex justify-between text-sm">
+                    <span class="text-gray-600">{{ transaction.date }} - {{ transaction.description }}</span>
+                    <span :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
+                      {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(Math.abs(transaction.amount)) }}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-            <div class="flex items-center">
-              <span class="text-orange-500 text-lg mr-2">⚠️</span>
-              <div>
-                <h4 class="font-medium text-orange-900">TechCorp Industries - Review Overdue</h4>
-                <p class="text-sm text-orange-700">Annual risk review is 15 days overdue.</p>
+
+          <!-- Other Alerts Tab -->
+          <div v-if="activeAlertTab === 'other'" class="space-y-4">
+            <div v-for="alert in otherAlerts" :key="alert.id" class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <!-- Alert Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getRiskLevelClass(alert.riskLevel)">
+                      {{ alert.riskLevel }}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 class="text-lg font-semibold text-blue-900">{{ alert.alertType }}</h4>
+                    <p class="text-sm text-blue-700">{{ alert.description }}</p>
+                  </div>
+                </div>
+                <div class="flex space-x-2">
+                  <button @click="reviewAlert(alert)"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    Review Now
+                  </button>
+                  <button @click="scheduleCall(alert)"
+                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                    Schedule Call
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alert Details -->
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Priority:</div>
+                  <div class="text-sm font-semibold" :class="getPriorityColor(alert.priority)">{{ alert.priority }}
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Date Created:</div>
+                  <div class="text-sm text-gray-900">{{ alert.dateCreated }}</div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Due Date:</div>
+                  <div class="text-sm text-gray-900">{{ alert.dueDate }}</div>
+                </div>
+              </div>
+
+              <!-- Additional Details -->
+              <div class="bg-white rounded-lg p-4 border border-blue-200">
+                <h5 class="font-medium text-gray-900 mb-2">Details</h5>
+                <p class="text-sm text-gray-700">{{ alert.details }}</p>
+                <div v-if="alert.recommendations" class="mt-3">
+                  <h6 class="text-sm font-medium text-gray-900 mb-1">Recommended Actions:</h6>
+                  <ul class="text-sm text-gray-700 space-y-1">
+                    <li v-for="rec in alert.recommendations" :key="rec" class="flex items-start">
+                      <span class="text-blue-500 mr-2">•</span>
+                      <span>{{ rec }}</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="mt-6 flex justify-end">
+
+        <!-- Modal Actions -->
+        <div class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200">
+          <div class="flex space-x-3">
+            <button @click="markAllAsReviewed"
+              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+              Mark All as Reviewed
+            </button>
+            <button @click="exportAlertReport"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+              Export Report
+            </button>
+          </div>
           <button @click="showAlertsModal = false"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
             Close
           </button>
         </div>
@@ -1124,6 +1352,9 @@ const showROEModal = ref(false)
 const showReferralModal = ref(false)
 const showRiskModal = ref(false)
 
+// Alert system states
+const activeAlertTab = ref('delinquency')
+
 // Sorting state
 const sortField = ref('')
 const sortDirection = ref('asc')
@@ -1157,8 +1388,8 @@ const lastReviewDate = computed(() => {
   return '2024-05-15';
 })
 const urgentAlertCount = computed(() => {
-  // Mock: count of urgent alerts (delinquency + overdraft + urgent tasks)
-  return 3;
+  // Count of urgent alerts from the enhanced alert system
+  return totalActiveAlerts.value;
 })
 
 // Computed properties
@@ -2074,6 +2305,213 @@ const depositsMonthlyChartOptions = {
 onMounted(() => {
   console.log('RelationshipManagerView mounted for RM:', props.rmId)
 })
+
+// Alert data
+const delinquencyAlerts = computed(() => [
+  {
+    id: 'del-001',
+    loanType: 'Commercial Term Loan',
+    daysOverdue: 62,
+    riskLevel: 'Critical',
+    accountNumber: 'TL-2024-0892',
+    amountDue: 125000,
+    lastPayment: 'Oct 14, 2024',
+    clientName: 'Johnson Manufacturing LLC',
+    totalOutstanding: 2200000,
+    originalAmount: 2800000,
+    paymentHistoryScore: 42,
+    covenantCompliance: false,
+    estimatedRecovery: 65
+  },
+  {
+    id: 'del-002',
+    loanType: 'Equipment Financing',
+    daysOverdue: 45,
+    riskLevel: 'High',
+    accountNumber: 'EF-2024-0445',
+    amountDue: 85000,
+    lastPayment: 'Oct 28, 2024',
+    clientName: 'Johnson Holdings Group - Subsidiary A',
+    totalOutstanding: 1800000,
+    originalAmount: 2100000,
+    paymentHistoryScore: 58,
+    covenantCompliance: true,
+    estimatedRecovery: 78
+  }
+])
+
+const overdraftAlerts = computed(() => [
+  {
+    id: 'od-001',
+    accountType: 'Business Operating Account',
+    riskLevel: 'Medium',
+    accountNumber: 'BOA-2024-1234',
+    overdraftAmount: 450000,
+    overdraftLimit: 300000,
+    daysOverdrawn: 12,
+    clientName: 'TechCorp Industries',
+    recentTransactions: [
+      { id: 't1', date: '2024-12-10', description: 'Payroll Processing', amount: -125000 },
+      { id: 't2', date: '2024-12-09', description: 'Supplier Payment', amount: -85000 },
+      { id: 't3', date: '2024-12-08', description: 'Customer Deposit', amount: 45000 },
+      { id: 't4', date: '2024-12-07', description: 'Equipment Purchase', amount: -95000 }
+    ]
+  },
+  {
+    id: 'od-002',
+    accountType: 'Business Checking',
+    riskLevel: 'Low',
+    accountNumber: 'BC-2024-5678',
+    overdraftAmount: 25000,
+    overdraftLimit: 50000,
+    daysOverdrawn: 3,
+    clientName: 'Global Retail Corp',
+    recentTransactions: [
+      { id: 't5', date: '2024-12-11', description: 'Inventory Payment', amount: -35000 },
+      { id: 't6', date: '2024-12-10', description: 'Sales Deposit', amount: 15000 },
+      { id: 't7', date: '2024-12-09', description: 'Rent Payment', amount: -12000 }
+    ]
+  }
+])
+
+const otherAlerts = computed(() => [
+  {
+    id: 'oth-001',
+    alertType: 'Compliance Review',
+    description: 'Annual AML compliance review required',
+    riskLevel: 'Medium',
+    priority: 'High',
+    dateCreated: '2024-11-15',
+    dueDate: '2024-12-31',
+    details: 'Annual Anti-Money Laundering compliance review is due for Johnson Holdings Group. This review is required by regulatory guidelines and must be completed before year-end.',
+    recommendations: [
+      'Schedule meeting with compliance team',
+      'Gather required documentation',
+      'Review transaction patterns for past 12 months',
+      'Update risk assessment profile'
+    ]
+  },
+  {
+    id: 'oth-002',
+    alertType: 'Credit Review',
+    description: 'Credit facility review overdue',
+    riskLevel: 'High',
+    priority: 'Critical',
+    dateCreated: '2024-10-01',
+    dueDate: '2024-11-30',
+    details: 'TechCorp Industries credit facility review is 15 days overdue. Client has requested credit line increase which requires updated financial analysis.',
+    recommendations: [
+      'Request updated financial statements',
+      'Analyze cash flow projections',
+      'Review industry outlook',
+      'Schedule credit committee presentation'
+    ]
+  },
+  {
+    id: 'oth-003',
+    alertType: 'Covenant Monitoring',
+    description: 'Debt service coverage ratio approaching threshold',
+    riskLevel: 'Medium',
+    priority: 'Medium',
+    dateCreated: '2024-12-01',
+    dueDate: '2024-12-15',
+    details: 'Global Retail Corp debt service coverage ratio has declined to 1.35x, approaching the 1.25x covenant threshold. Requires immediate attention and potential restructuring discussion.',
+    recommendations: [
+      'Analyze recent financial performance',
+      'Discuss operational improvements with client',
+      'Consider covenant modification',
+      'Prepare contingency plans'
+    ]
+  }
+])
+
+const totalActiveAlerts = computed(() => {
+  return delinquencyAlerts.value.length + overdraftAlerts.value.length + otherAlerts.value.length
+})
+
+// Alert Tabs
+const alertTabs = computed(() => [
+  {
+    id: 'delinquency',
+    name: 'Loan Delinquency',
+    icon: '📋',
+    iconClass: 'text-red-500',
+    count: delinquencyAlerts.value.length,
+    badgeClass: 'bg-red-500 text-white'
+  },
+  {
+    id: 'overdraft',
+    name: 'Overdraft',
+    icon: '💰',
+    iconClass: 'text-yellow-500',
+    count: overdraftAlerts.value.length,
+    badgeClass: 'bg-yellow-500 text-white'
+  },
+  {
+    id: 'other',
+    name: 'Other Alerts',
+    icon: '⚠️',
+    iconClass: 'text-blue-500',
+    count: otherAlerts.value.length,
+    badgeClass: 'bg-blue-500 text-white'
+  }
+])
+
+// Alert system helper functions
+const getRiskLevelClass = (riskLevel) => {
+  switch (riskLevel) {
+    case 'Critical': return 'bg-red-100 text-red-800'
+    case 'High': return 'bg-orange-100 text-orange-800'
+    case 'Medium': return 'bg-yellow-100 text-yellow-800'
+    case 'Low': return 'bg-green-100 text-green-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getScoreColor = (score) => {
+  if (score >= 80) return 'text-green-600 font-medium'
+  if (score >= 60) return 'text-yellow-600 font-medium'
+  if (score >= 40) return 'text-orange-600 font-medium'
+  return 'text-red-600 font-medium'
+}
+
+const getPriorityColor = (priority) => {
+  switch (priority) {
+    case 'Critical': return 'text-red-600'
+    case 'High': return 'text-orange-600'
+    case 'Medium': return 'text-yellow-600'
+    case 'Low': return 'text-green-600'
+    default: return 'text-gray-600'
+  }
+}
+
+const reviewAlert = (alert) => {
+  console.log('Reviewing alert:', alert)
+  // Navigate to detailed alert review page or open detailed modal
+  // This could integrate with the client detail view for risk metrics
+  router.push({
+    name: 'AlertReview',
+    params: { alertId: alert.id }
+  })
+}
+
+const scheduleCall = (alert) => {
+  console.log('Scheduling call for alert:', alert)
+  // Integrate with calendar system
+  // Could open a scheduling modal or redirect to calendar application
+}
+
+const markAllAsReviewed = () => {
+  console.log('Marking all alerts as reviewed')
+  // Update alert status in backend
+  // Refresh alert data
+}
+
+const exportAlertReport = () => {
+  console.log('Exporting alert report')
+  // Generate and download alert report
+  // Could be PDF or Excel format with detailed alert information
+}
 </script>
 
 <style scoped>
