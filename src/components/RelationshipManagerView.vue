@@ -204,35 +204,35 @@
                           @click="sortTable('name')">
                           Relationship
                           <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
+                          }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('depositsDelta')">
                           Deposits Δ
                           <span v-if="sortField === 'depositsDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
+                          }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('loansDelta')">
                           Loans Δ
                           <span v-if="sortField === 'loansDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('utilization')">
                           Util %
                           <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                           @click="sortTable('revenueDelta')">
                           Revenue Δ
                           <span v-if="sortField === 'revenueDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th
                           class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -253,7 +253,7 @@
                           @click="sortTable('leadValue')">
                           Leads (# / $)
                           <span v-if="sortField === 'leadValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                          }}</span>
+                            }}</span>
                         </th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Relationship Type

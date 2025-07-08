@@ -54,7 +54,7 @@
                             <div class="mb-4">
                                 <div>
                                     <h2 class="text-lg font-semibold text-gray-900">{{ relationshipData?.name || 'N/A'
-                                        }}</h2>
+                                    }}</h2>
                                     <p class="text-xs text-gray-500 mt-1">Relationship ID: {{ relationshipData?.id ||
                                         'N/A' }}</p>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full"
@@ -97,7 +97,7 @@
                                         <div class="text-sm font-medium text-blue-900">{{
                                             relationshipData.ultimateParent.name }}</div>
                                         <div class="text-xs text-blue-600">{{ relationshipData.ultimateParent.ownership
-                                        }}% ownership</div>
+                                            }}% ownership</div>
                                     </div>
                                 </div>
 
@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="text-center">
                                     <div class="text-xl font-bold text-green-600">{{ formatCurrency(aggregateDeposits)
-                                        }}</div>
+                                    }}</div>
                                     <div class="text-xs text-gray-600">Deposits</div>
                                     <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
                                         getOrdinalSuffix(depositsPercentile) }} percentile</div>
@@ -986,7 +986,7 @@
                                                         <div class="flex justify-between">
                                                             <span>Last Review:</span>
                                                             <span class="font-medium">{{ getClientLastReview(client.id)
-                                                                }}</span>
+                                                            }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1111,7 +1111,7 @@
                                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                 <div class="text-center">
                                                     <div class="text-2xl font-bold text-blue-600">{{ totalOpportunities
-                                                    }}</div>
+                                                        }}</div>
                                                     <div class="text-sm text-gray-600">Total Opportunities</div>
                                                 </div>
                                                 <div class="text-center">
@@ -1212,7 +1212,7 @@
                                                             <span>Potential Value:</span>
                                                             <span class="font-medium text-green-600">{{
                                                                 formatCurrency(getClientOpportunityValue(client))
-                                                                }}</span>
+                                                            }}</span>
                                                         </div>
                                                         <div class="flex justify-between">
                                                             <span>Next Action:</span>
@@ -1489,7 +1489,7 @@
                                         <span><strong>Total Outstanding:</strong> <span class="text-red-600">{{
                                             formatCurrency(alert.totalOutstanding) }}</span></span>
                                         <span><strong>Original Amount:</strong> {{ formatCurrency(alert.originalAmount)
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                 </div>
                             </div>
