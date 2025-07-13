@@ -322,8 +322,8 @@
 
     <!-- Main Content -->
     <div class="px-1 py-5">
-      <!-- Tab Navigation -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <!-- Tab Navigation - HIDDEN -->
+      <!-- <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="border-b border-gray-200">
           <nav class="flex space-x-8 px-6" aria-label="Tabs">
             <button @click="activeTab = 'portfolio'"
@@ -2572,7 +2572,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Enhanced Risk Analytics Modal -->
     <div v-if="showRiskModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
