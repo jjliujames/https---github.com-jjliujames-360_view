@@ -1,144 +1,236 @@
 <template>
-    <div class="min-h-screen bg-gray-50">
-        <!-- Header -->
-        <div class="bg-white shadow-sm border-b border-gray-200">
-            <div class="px-8 py-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <button @click="$router.go(-1)" class="text-gray-500 hover:text-gray-700">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
+    <BaseDetailView>
+        <!-- Header Section -->
+        <template #header>
+            <DetailViewHeader 
+                :title="relationshipData?.name || 'Relationship Profile'"
+                :breadcrumb="breadcrumb"
+                @generate-report="relationshipAction('generate-report')"
+            >
+                <!-- Risk Alert Indicator -->
+                <template #alerts>
+                    <AlertIndicator
+                        v-if="totalRiskFlags > 0"
+                        :critical-count="criticalRiskCount"
+                        :high-count="highRiskCount"
+                        :medium-count="mediumRiskCount"
+                        :low-count="lowRiskCount"
+                        alert-type="Risk"
+                        @click="showRiskDetails"
+                    />
+                </template>
+                
+                <!-- Additional Action Buttons -->
+                <template #actions>
+                    <button @click="relationshipAction('add-client')"
+                        class="px-4 py-2 bg-td-green text-white rounded-lg hover:bg-green-600 transition-colors">
+                        Add Client
+                    </button>
+                    <button @click="relationshipAction('generate-report')"
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        Generate Group Report
+                    </button>
+                </template>
+            </DetailViewHeader>
+        </template>
+
+        <!-- Left Column - Enhanced Relationship Profile and Consolidated Parties -->
+        <template #left-column>
+
+            <!-- Enhanced Relationship Profile -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4">
+                    <div class="mb-4">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">{{ relationshipData?.name ||
-                                'Relationship Profile' }}</h1>
-                            <p class="text-gray-600 mt-1">{{ breadcrumb }}</p>
+                            <h2 class="text-lg font-semibold text-gray-900">{{ relationshipData?.name || 'N/A' }}</h2>
+                            <p class="text-xs text-gray-500 mt-1">Relationship ID: {{ relationshipData?.id || 'N/A' }}</p>
+                            <div class="mt-2">
+                                <RiskBadge 
+                                    :value="relationshipTier" 
+                                    type="tier" 
+                                    size="sm"
+                                />
+                            </div>
                         </div>
-        </div>
+                    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex items-center space-x-2">
-                        <!-- Risk Alert Indicator -->
-                        <button v-if="totalRiskFlags > 0" @click="showRiskDetails"
-                            class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                            :class="riskIndicatorClass">
-                            <span class="text-lg">{{ riskIndicatorIcon }}</span>
-                            <span>{{ totalRiskFlags }} Alert{{ totalRiskFlags > 1 ? 's' : '' }}</span>
-                            <div v-if="hasCriticalRisks" class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        </button>
-
-                        <button @click="relationshipAction('add-client')"
-                            class="px-4 py-2 bg-td-green text-white rounded-lg hover:bg-green-600 transition-colors">
-                            Add Client
-                        </button>
-                        <button @click="relationshipAction('generate-report')"
-                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                            Generate Group Report
-                        </button>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Primary Industry</p>
+                            <p class="text-sm text-gray-900">{{ relationshipData?.primaryIndustry || 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">HQ Location</p>
+                            <p class="text-sm text-gray-900">{{ relationshipData?.hqLocation || 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Client Entities</p>
+                            <p class="text-sm text-gray-900">{{ totalClients || 0 }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Primary RM</p>
+                            <p class="text-sm text-gray-900">{{ relationshipManager?.name || 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Relationship Health</p>
+                            <div class="flex items-center space-x-2">
+                                <RiskBadge 
+                                    :value="relationshipHealthScore" 
+                                    type="score" 
+                                    size="sm"
+                                    :show-score="true"
+                                />
+                                <span class="text-xs text-gray-500">/10</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="p-8">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                <!-- Left Column - Relationship Profile, Key Contacts, Risk Summary -->
-                <div class="lg:col-span-1 space-y-4">
-
-                    <!-- Relationship Profile -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <div class="mb-4">
-                                <div>
-                                    <h2 class="text-lg font-semibold text-gray-900">{{ relationshipData?.name || 'N/A'
-                                    }}</h2>
-                                    <p class="text-xs text-gray-500 mt-1">Relationship ID: {{ relationshipData?.id ||
-                                        'N/A' }}</p>
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                        :class="getRelationshipTypeClass(relationshipType)">
-                                        {{ relationshipType }}
-                                </span>
-                            </div>
-                            </div>
-
-                            <div class="space-y-3">
-                                <div>
-                                    <p class="text-xs font-medium text-gray-500">Primary Industry</p>
-                                    <p class="text-sm text-gray-900">{{ relationshipData?.primaryIndustry || 'N/A' }}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-medium text-gray-500">HQ Location</p>
-                                    <p class="text-sm text-gray-900">{{ relationshipData?.hqLocation || 'N/A' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-medium text-gray-500">Client Entities</p>
-                                    <p class="text-sm text-gray-900">{{ totalClients || 0 }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-medium text-gray-500">Primary RM</p>
-                                    <p class="text-sm text-gray-900">{{ relationshipManager?.name || 'N/A' }}</p>
-                                </div>
-                            </div>
-                                </div>
-                            </div>
-
-                    <!-- Key Contacts & Parties -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <h3 class="text-sm font-medium text-gray-900 mb-3">👥 Key Contacts & Parties</h3>
-                            <div class="space-y-3">
-                                <div v-if="relationshipData?.ultimateParent">
-                                    <h4 class="text-xs font-medium text-gray-500 mb-2">Ultimate Parent Entity</h4>
-                                    <div class="p-2 bg-blue-50 rounded-lg">
-                                        <div class="text-sm font-medium text-blue-900">{{
-                                            relationshipData.ultimateParent.name }}</div>
-                                        <div class="text-xs text-blue-600">{{ relationshipData.ultimateParent.ownership
-                                            }}% ownership</div>
-                                    </div>
-                        </div>
-
-                                <div v-if="keyContacts?.length">
-                                    <h4 class="text-xs font-medium text-gray-500 mb-2">Key Signers & Beneficiaries</h4>
-                                    <div class="space-y-2">
-                                        <div v-for="contact in keyContacts" :key="contact.id"
-                                            class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ contact.name }}</div>
-                                                <div class="text-xs text-gray-500">{{ contact.role }}</div>
-                            </div>
-                                        </div>
+            <!-- Consolidated Parties Section -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-3 border-b border-gray-200">
+                    <h3 class="text-base font-medium text-gray-900">👥 Consolidated Relationship Parties</h3>
+                    <p class="text-xs text-gray-500 mt-1">Aggregated across {{ totalClients }} client entities</p>
+                </div>
+                <div class="p-4">
+                    <!-- Ultimate Parent Entity -->
+                    <div v-if="relationshipData?.ultimateParent" class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">🏢 Ultimate Parent Structure</h4>
+                        <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="text-sm font-medium text-blue-900">{{ relationshipData.ultimateParent.name }}</div>
+                            <div class="text-xs text-blue-600">{{ relationshipData.ultimateParent.ownership }}% ownership</div>
+                            <div class="text-xs text-blue-500 mt-1">Controls {{ totalClients }} entities</div>
                         </div>
                     </div>
 
-                                <div class="mt-4 pt-3 border-t border-gray-200">
-                                    <h4 class="text-xs font-medium text-gray-500 mb-2">Complexity Score</h4>
-                                    <div class="flex items-center space-x-2">
-                                        <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                            <div class="bg-orange-500 h-2 rounded-full transition-all duration-500"
-                                                :style="{ width: (complexityIndex / 10 * 100) + '%' }"></div>
+                    <!-- Consolidated Beneficial Owners -->
+                    <div v-if="consolidatedBeneficialOwners?.length" class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">💎 Beneficial Owners ({{ consolidatedBeneficialOwners.length }} unique)</h4>
+                        <div class="space-y-2">
+                            <div v-for="owner in consolidatedBeneficialOwners.slice(0, 3)" :key="owner.id"
+                                class="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
+                                <div>
+                                    <div class="text-sm font-medium text-purple-900">{{ owner.name }}</div>
+                                    <div class="text-xs text-purple-600">{{ owner.entityCount }} entities • {{ owner.avgOwnership }}% avg ownership</div>
                                 </div>
-                                        <span class="text-sm font-medium" :class="getComplexityColor(complexityIndex)">
-                                            {{ complexityIndex }}/10
-                                        </span>
-                        </div>
-                                    <div class="text-xs text-gray-500 mt-1">
-                                        Based on entity structure, beneficial ownership, and transaction patterns
-                                    </div>
-                                </div>
+                            </div>
+                            <div v-if="consolidatedBeneficialOwners.length > 3" class="text-xs text-gray-500 text-center py-1">
+                                +{{ consolidatedBeneficialOwners.length - 3 }} more beneficial owners
                             </div>
                         </div>
                     </div>
 
+                    <!-- Consolidated Authorized Signers -->
+                    <div v-if="consolidatedAuthorizedSigners?.length" class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">✍️ Authorized Signers ({{ consolidatedAuthorizedSigners.length }} unique)</h4>
+                        <div class="space-y-2">
+                            <div v-for="signer in consolidatedAuthorizedSigners.slice(0, 2)" :key="signer.id"
+                                class="flex items-center justify-between p-2 bg-green-50 rounded-lg">
+                                <div>
+                                    <div class="text-sm font-medium text-green-900">{{ signer.name }}</div>
+                                    <div class="text-xs text-green-600">Authority across {{ signer.entityCount }} entities</div>
+                                </div>
+                            </div>
+                            <div v-if="consolidatedAuthorizedSigners.length > 2" class="text-xs text-gray-500 text-center py-1">
+                                +{{ consolidatedAuthorizedSigners.length - 2 }} more authorized signers
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Business Conductors -->
+                    <div v-if="consolidatedConductors?.length" class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">🎯 Business Conductors ({{ consolidatedConductors.length }})</h4>
+                        <div class="space-y-2">
+                            <div v-for="conductor in consolidatedConductors.slice(0, 2)" :key="conductor.id"
+                                class="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
+                                <div>
+                                    <div class="text-sm font-medium text-orange-900">{{ conductor.name }}</div>
+                                    <div class="text-xs text-orange-600">{{ conductor.role }} • {{ conductor.entityCount }} entities</div>
+                                </div>
+                            </div>
+                            <div v-if="consolidatedConductors.length > 2" class="text-xs text-gray-500 text-center py-1">
+                                +{{ consolidatedConductors.length - 2 }} more conductors
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Geographic Footprint -->
+                    <div class="pt-3 border-t border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">🌍 Geographic Footprint</h4>
+                        <div class="flex flex-wrap gap-1">
+                            <RiskBadge 
+                                v-for="location in geographicFootprint" 
+                                :key="location"
+                                :value="location" 
+                                type="category" 
+                                color="blue"
+                                size="xs"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-                <!-- Right Column - Aggregated Analytics -->
-                <div class="lg:col-span-3 space-y-6">
+            <!-- Enhanced Complexity Assessment -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">🧠 Relationship Intelligence</h3>
+                    
+                    <!-- Complexity Score -->
+                    <div class="mb-4">
+                        <h4 class="text-xs font-medium text-gray-500 mb-2">Complexity Index</h4>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 h-2 rounded-full transition-all duration-500"
+                                    :style="{ width: (complexityIndex / 10 * 100) + '%' }"></div>
+                            </div>
+                            <RiskBadge 
+                                :value="complexityIndex" 
+                                type="score" 
+                                size="sm"
+                                :show-score="true"
+                            />
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            Multi-factor: structure, ownership, geography, transactions
+                        </div>
+                    </div>
+
+                    <!-- Risk Heat Map -->
+                    <div class="mb-4">
+                        <h4 class="text-xs font-medium text-gray-500 mb-2">Risk Distribution</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-center p-2 bg-red-50 rounded">
+                                <div class="text-lg font-bold text-red-600">{{ highRiskCount }}</div>
+                                <div class="text-xs text-red-600">High Risk</div>
+                            </div>
+                            <div class="text-center p-2 bg-yellow-50 rounded">
+                                <div class="text-lg font-bold text-yellow-600">{{ mediumRiskCount }}</div>
+                                <div class="text-xs text-yellow-600">Medium Risk</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Burden -->
+                    <div>
+                        <h4 class="text-xs font-medium text-gray-500 mb-2">Compliance Burden</h4>
+                        <div class="flex items-center space-x-2">
+                            <RiskBadge 
+                                :value="complianceBurdenScore" 
+                                type="status" 
+                                :color="getComplianceBurdenColor(complianceBurdenScore)"
+                                size="sm"
+                            />
+                            <span class="text-xs text-gray-500">{{ complianceBurdenDescription }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Right Column - Enhanced Analytics -->
+        <template #right-column>
 
                     <!-- Section Title -->
                     <div class="text-center mb-6">
@@ -147,54 +239,82 @@
                             with drill-down capability</p>
                 </div>
 
-                    <!-- Executive Summary KPIs -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <!-- Enhanced Executive Summary KPIs -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-4">
-                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-blue-600">{{ totalClients }}</div>
-                                    <div class="text-xs text-gray-600">Total Clients</div>
-
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-green-600">{{ formatCurrency(aggregateDeposits)
-                                    }}</div>
-                                    <div class="text-xs text-gray-600">Deposits</div>
-                            <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
-                                getOrdinalSuffix(depositsPercentile) }} percentile</div>
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-orange-600">{{ formatCurrency(aggregateLoans) }}
-                                    </div>
-                                    <div class="text-xs text-gray-600">Loan Committed</div>
-                            <div class="text-xs text-orange-500 font-medium">{{ loansPercentile }}{{
-                                getOrdinalSuffix(loansPercentile) }} percentile</div>
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-purple-600">{{ loanUtilization }}%</div>
-                                    <div class="text-xs text-gray-600">Loan Utilization</div>
-
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-cyan-600">{{ formatCurrency(annualRevenue) }}
-                            </div>
-                                    <div class="text-xs text-gray-600">Revenue</div>
-                                    <div class="text-xs text-cyan-500 font-medium">{{ revenuePercentile }}{{
-                                        getOrdinalSuffix(revenuePercentile) }} percentile</div>
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-indigo-600">{{ crossSellIndex }}</div>
-                                    <div class="text-xs text-gray-600">Cross-Sell Index</div>
-                                    <div class="text-xs text-indigo-500 font-medium">Target: ≥ 3.0</div>
-                        </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-yellow-600">{{ totalUnreviewed }}</div>
-                                    <div class="text-xs text-gray-600">Pending Risk reviewed</div>
-
-                            </div>
-                            </div>
-                        </div>
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">📈 Relationship Performance Metrics</h3>
+                        <p class="text-sm text-gray-500">Aggregated across {{ totalClients }} client entities with percentile rankings</p>
                     </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                        <KPICard
+                            :value="totalClients"
+                            label="Total Clients"
+                            color="blue"
+                            :percentile="clientsPercentile"
+                            format-type="number"
+                        />
+                        
+                        <KPICard
+                            :value="aggregateDeposits"
+                            label="Aggregate Deposits"
+                            color="green"
+                            :percentile="depositsPercentile"
+                            format-type="currency"
+                        />
+                        
+                        <KPICard
+                            :value="aggregateLoans"
+                            label="Loan Commitments"
+                            color="orange"
+                            :percentile="loansPercentile"
+                            format-type="currency"
+                        />
+                        
+                        <KPICard
+                            :value="loanUtilization"
+                            label="Loan Utilization"
+                            color="purple"
+                            :percentile="utilizationPercentile"
+                            format-type="percentage"
+                        />
+                        
+                        <KPICard
+                            :value="annualRevenue"
+                            label="Annual Revenue"
+                            color="cyan"
+                            :percentile="revenuePercentile"
+                            format-type="currency"
+                        />
+                        
+                        <KPICard
+                            :value="crossSellIndex"
+                            label="Cross-Sell Index"
+                            color="indigo"
+                            format-type="text"
+                        >
+                            <template #additional-info>
+                                <div class="text-xs text-indigo-500 font-medium mt-1">Target: ≥ 3.0</div>
+                            </template>
+                        </KPICard>
+                        
+                        <KPICard
+                            :value="relationshipProfitabilityRank"
+                            label="Profitability Rank"
+                            color="pink"
+                            format-type="text"
+                        />
+                        
+                        <KPICard
+                            :value="totalRiskFlags"
+                            label="Risk Flags"
+                            color="red"
+                            :percentile="riskFlagsPercentile"
+                            format-type="number"
+                        />
+                    </div>
+                </div>
+            </div>
 
                     <!-- Tab Navigation -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1384,16 +1504,16 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-        </div>
-    </div>
+        </template>
 
-        <!-- Alerts Modal -->
-        <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
-                <div class="mt-3">
-            <!-- Modal Header -->
+        <!-- Modals Section -->
+        <template #modals>
+            <!-- Alerts Modal -->
+            <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+                    <div class="mt-3">
+                        <!-- Modal Header -->
                     <div class="flex items-center justify-between mb-4">
                     <div>
                             <h3 class="text-lg font-medium text-gray-900 flex items-center">
@@ -1610,19 +1730,25 @@
                             Close
                         </button>
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </BaseDetailView>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { formatCurrency, clients, relationships, relationshipManagers } from '../data/mockData.js'
-import LineChart from './charts/LineChart.vue'
-import DoughnutChart from './charts/DoughnutChart.vue'
+import { clients, relationships } from '../data/mockData.js'
+// Import chart components
 import BarChart from './charts/BarChart.vue'
+// Import new shared components
+import BaseDetailView from './shared/BaseDetailView.vue'
+import DetailViewHeader from './shared/DetailViewHeader.vue'
+import KPICard from './shared/KPICard.vue'
+import AlertIndicator from './shared/AlertIndicator.vue'
+import RiskBadge from './shared/RiskBadge.vue'
 
 const props = defineProps({
     metroId: String,
@@ -1660,6 +1786,19 @@ const relationshipManager = ref({
     name: 'Sarah Johnson',
     id: 'rm-001'
 })
+
+// Utility function for currency formatting
+const formatCurrency = (value) => {
+    if (value >= 1e9) {
+        return `$${(value / 1e9).toFixed(1)}B`
+    } else if (value >= 1e6) {
+        return `$${(value / 1e6).toFixed(1)}M`
+    } else if (value >= 1e3) {
+        return `$${(value / 1e3).toFixed(0)}K`
+    } else {
+        return `$${value?.toLocaleString() || 0}`
+    }
+}
 
 // Computed properties
 const breadcrumb = computed(() => {
@@ -2235,6 +2374,170 @@ const relationshipType = computed(() => {
     return 'Deposit and Loan Relationship'
 })
 
+// Enhanced computed properties for consolidated parties
+const consolidatedBeneficialOwners = computed(() => {
+    const ownersMap = new Map()
+    
+    relationshipClients.value.forEach(client => {
+        const clientData = clients[client.id]
+        if (clientData?.beneficialOwners) {
+            clientData.beneficialOwners.forEach(owner => {
+                const key = owner.name
+                if (ownersMap.has(key)) {
+                    const existing = ownersMap.get(key)
+                    existing.entityCount += 1
+                    existing.totalOwnership += parseFloat(owner.ownership?.replace('%', '') || 0)
+                } else {
+                    ownersMap.set(key, {
+                        id: owner.name.replace(/\s+/g, '-').toLowerCase(),
+                        name: owner.name,
+                        entityCount: 1,
+                        totalOwnership: parseFloat(owner.ownership?.replace('%', '') || 0),
+                        role: owner.role
+                    })
+                }
+            })
+        }
+    })
+    
+    return Array.from(ownersMap.values()).map(owner => ({
+        ...owner,
+        avgOwnership: (owner.totalOwnership / owner.entityCount).toFixed(1)
+    }))
+})
+
+const consolidatedAuthorizedSigners = computed(() => {
+    const signersMap = new Map()
+    
+    relationshipClients.value.forEach(client => {
+        const clientData = clients[client.id]
+        if (clientData?.authorizedSigners) {
+            clientData.authorizedSigners.forEach(signer => {
+                const key = signer.name
+                if (signersMap.has(key)) {
+                    signersMap.get(key).entityCount += 1
+                } else {
+                    signersMap.set(key, {
+                        id: signer.name.replace(/\s+/g, '-').toLowerCase(),
+                        name: signer.name,
+                        entityCount: 1,
+                        role: signer.role || 'Authorized Signer'
+                    })
+                }
+            })
+        }
+    })
+    
+    return Array.from(signersMap.values())
+})
+
+const consolidatedConductors = computed(() => {
+    const conductorsMap = new Map()
+    
+    relationshipClients.value.forEach(client => {
+        const clientData = clients[client.id]
+        if (clientData?.conductors) {
+            clientData.conductors.forEach(conductor => {
+                const key = conductor.name
+                if (conductorsMap.has(key)) {
+                    conductorsMap.get(key).entityCount += 1
+                } else {
+                    conductorsMap.set(key, {
+                        id: conductor.name.replace(/\s+/g, '-').toLowerCase(),
+                        name: conductor.name,
+                        entityCount: 1,
+                        role: conductor.role || 'Business Conductor'
+                    })
+                }
+            })
+        }
+    })
+    
+    return Array.from(conductorsMap.values())
+})
+
+const geographicFootprint = computed(() => {
+    const locations = new Set()
+    
+    relationshipClients.value.forEach(client => {
+        const clientData = clients[client.id]
+        if (clientData?.location) {
+            locations.add(clientData.location)
+        }
+    })
+    
+    // Add headquarters location
+    if (relationshipData.value?.hqLocation) {
+        locations.add(relationshipData.value.hqLocation)
+    }
+    
+    return Array.from(locations)
+})
+
+// Enhanced risk and intelligence metrics
+const relationshipHealthScore = computed(() => {
+    const baseScore = 8.5
+    const riskPenalty = Math.min(totalRiskFlags.value * 0.2, 2)
+    const complexityPenalty = Math.max((parseFloat(complexityIndex.value) - 5) * 0.1, 0)
+    return Math.max(baseScore - riskPenalty - complexityPenalty, 1).toFixed(1)
+})
+
+const criticalRiskCount = computed(() => {
+    return relationshipClients.value.filter(client => client.rci >= 8).length
+})
+
+const highRiskCount = computed(() => {
+    return relationshipClients.value.filter(client => client.rci >= 6 && client.rci < 8).length
+})
+
+const mediumRiskCount = computed(() => {
+    return relationshipClients.value.filter(client => client.rci >= 4 && client.rci < 6).length
+})
+
+const lowRiskCount = computed(() => {
+    return relationshipClients.value.filter(client => client.rci < 4).length
+})
+
+const complianceBurdenScore = computed(() => {
+    const factorCount = (
+        (consolidatedBeneficialOwners.value.length > 5 ? 1 : 0) +
+        (geographicFootprint.value.length > 3 ? 1 : 0) +
+        (totalClients.value > 5 ? 1 : 0) +
+        (totalRiskFlags.value > 3 ? 1 : 0)
+    )
+    
+    if (factorCount >= 3) return 'High'
+    if (factorCount >= 2) return 'Medium'
+    return 'Low'
+})
+
+const complianceBurdenDescription = computed(() => {
+    const descriptions = {
+        'High': 'Complex structure requiring enhanced due diligence',
+        'Medium': 'Moderate oversight and periodic review needed',
+        'Low': 'Standard compliance monitoring sufficient'
+    }
+    return descriptions[complianceBurdenScore.value]
+})
+
+const relationshipProfitabilityRank = computed(() => {
+    // Mock profitability ranking based on revenue percentile
+    if (revenuePercentile.value >= 95) return 'Top 5%'
+    if (revenuePercentile.value >= 90) return 'Top 10%'
+    if (revenuePercentile.value >= 75) return 'Top 25%'
+    return `${revenuePercentile.value}th percentile`
+})
+
+// Helper functions
+const getComplianceBurdenColor = (score) => {
+    const colorMap = {
+        'High': 'red',
+        'Medium': 'yellow',
+        'Low': 'green'
+    }
+    return colorMap[score] || 'gray'
+}
+
 const getRelationshipTypeClass = (type) => {
     switch (type) {
         case 'Deposit and Loan Relationship': return 'bg-green-100 text-green-800'
@@ -2247,7 +2550,10 @@ const getRelationshipTypeClass = (type) => {
 
 <style scoped>
 .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid rgb(229, 231, 235);
 }
 
 .scrollbar-hide {

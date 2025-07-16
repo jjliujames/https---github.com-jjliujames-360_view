@@ -147,7 +147,39 @@
     <!-- YTD Performance Score Dashboard -->
     <div class="px-8 py-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-gray-200">
       <h4 class="font-medium text-purple-900 mb-4">🎯 YTD Performance Score Dashboard</h4>
-      <div class="grid grid-cols-4 gap-4 mb-4">
+      <div class="grid grid-cols-5 gap-4 mb-4">
+        <!-- Revenue FYTD -->
+        <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
+          <div class="flex items-center justify-center mb-2">
+            <div class="text-lg font-bold text-purple-600">{{ formatCurrency(performanceMetrics.revenueFYTD.actual) }}</div>
+            <div class="ml-2">
+              <svg v-if="performanceMetrics.revenueFYTD.achieved" class="w-5 h-5 text-green-500" fill="currentColor"
+                viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="text-sm text-gray-600">Revenue FYTD</div>
+          <div class="text-xs text-gray-500 mt-1">Target: {{ formatCurrency(performanceMetrics.revenueFYTD.target) }}</div>
+          <div class="mt-2">
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-cyan-500 h-2 rounded-full"
+                :style="`width: ${Math.min(100, performanceMetrics.revenueFYTD.achievementPercent)}%`"></div>
+            </div>
+            <div class="text-xs mt-1"
+              :class="performanceMetrics.revenueFYTD.achieved ? 'text-green-600' : 'text-orange-600'">
+              {{ performanceMetrics.revenueFYTD.achievementPercent }}% of target
+            </div>
+          </div>
+        </div>
+
         <!-- Net New Commitments -->
         <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
           <div class="flex items-center justify-center mb-2">
@@ -320,945 +352,384 @@
       </div>
     </div>
 
+    <!-- Enhanced Summary Statistics Table -->
+    <div class="px-8 py-6 bg-white border-b border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-gray-900">📊 Relationships Summary</h4>
+        <div class="flex items-center space-x-4">
+          <!-- Comparison Toggle -->
+          <div class="flex items-center bg-gray-100 rounded-lg p-1">
+            <button 
+              @click="comparisonMode = 'target'"
+              :class="comparisonMode === 'target' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'"
+              class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+            >
+              vs Target
+            </button>
+            <button 
+              @click="comparisonMode = 'yoy'"
+              :class="comparisonMode === 'yoy' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'"
+              class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+            >
+              vs YoY
+            </button>
+          </div>
+          <!-- Export Button -->
+          <button @click="exportSummaryData" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Simplified KPI Summary Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-3 px-4 font-medium text-gray-900">Relationship</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900">Revenue FYTD</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900">Net New Commitments</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900">Net New Deposits</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900">New Credit Relationships</th>
+              <th class="text-center py-3 px-4 font-medium text-gray-900">Risk Flags</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <!-- Individual Relationships -->
+            <tr v-for="relationship in sortedRelationships" :key="relationship.id" 
+                class="hover:bg-gray-50 cursor-pointer"
+                @click="viewRelationshipDetail(relationship)">
+              <!-- Relationship Name -->
+              <td class="py-3 px-4">
+                <div class="font-medium text-gray-900">{{ relationship.name }}</div>
+                <div class="text-sm text-gray-500">{{ relationship.type }} • {{ relationship.industry }}</div>
+              </td>
+
+              <!-- Revenue FYTD -->
+              <td class="text-right py-3 px-4">
+                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.revenue) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs" 
+                     :class="getPerformanceClass(relationship.revenue, relationship.revenueTarget || relationship.revenue * 0.8)">
+                  {{ Math.round((relationship.revenue / (relationship.revenueTarget || relationship.revenue * 0.8)) * 100) }}% of target
+                </div>
+                <div v-else class="text-xs"
+                     :class="getGrowthClass(relationship.revenueGrowth || 5)">
+                  {{ relationship.revenueGrowth >= 0 ? '+' : '' }}{{ relationship.revenueGrowth || 5 }}% YoY
+                </div>
+              </td>
+
+              <!-- Net New Commitments -->
+              <td class="text-right py-3 px-4">
+                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewCommitments || relationship.loans * 0.3) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs" 
+                     :class="getPerformanceClass(relationship.netNewCommitments || relationship.loans * 0.3, relationship.commitmentsTarget || relationship.loans * 0.25)">
+                  {{ Math.round(((relationship.netNewCommitments || relationship.loans * 0.3) / (relationship.commitmentsTarget || relationship.loans * 0.25)) * 100) }}% of target
+                </div>
+                <div v-else class="text-xs"
+                     :class="getGrowthClass(relationship.commitmentsGrowth || 8)">
+                  {{ relationship.commitmentsGrowth >= 0 ? '+' : '' }}{{ relationship.commitmentsGrowth || 8 }}% YoY
+                </div>
+              </td>
+
+              <!-- Net New Deposits -->
+              <td class="text-right py-3 px-4">
+                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewDeposits || relationship.deposits * 0.2) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs"
+                     :class="getPerformanceClass(relationship.netNewDeposits || relationship.deposits * 0.2, relationship.newDepositsTarget || relationship.deposits * 0.15)">
+                  {{ Math.round(((relationship.netNewDeposits || relationship.deposits * 0.2) / (relationship.newDepositsTarget || relationship.deposits * 0.15)) * 100) }}% of target
+                </div>
+                <div v-else class="text-xs"
+                     :class="getGrowthClass(relationship.newDepositsGrowth || 12)">
+                  {{ relationship.newDepositsGrowth >= 0 ? '+' : '' }}{{ relationship.newDepositsGrowth || 12 }}% YoY
+                </div>
+              </td>
+
+              <!-- New Credit Relationships -->
+              <td class="text-right py-3 px-4">
+                <div class="text-gray-900 font-medium">{{ relationship.newCreditRelationships || Math.floor(Math.random() * 3) + 1 }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs"
+                     :class="getPerformanceClass(relationship.newCreditRelationships || 2, relationship.creditRelTarget || 2)">
+                  {{ Math.round(((relationship.newCreditRelationships || 2) / (relationship.creditRelTarget || 2)) * 100) }}% of target
+                </div>
+                <div v-else class="text-xs"
+                     :class="getGrowthClass(relationship.creditRelGrowth || 50)">
+                  {{ relationship.creditRelGrowth >= 0 ? '+' : '' }}{{ relationship.creditRelGrowth || 50 }}% YoY
+                </div>
+              </td>
+
+              <!-- Risk Flags -->
+              <td class="text-center py-3 px-4">
+                <div class="flex items-center justify-center">
+                  <span v-if="relationship.riskFlags && relationship.riskFlags.length > 0" 
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        :class="getRelationshipRiskClass(relationship.riskFlags)">
+                    {{ relationship.riskFlags.length }}
+                  </span>
+                  <span v-else class="text-green-600 text-sm">✓</span>
+                </div>
+                <div v-if="relationship.pendingReviews > 0" class="text-xs text-orange-600 mt-1">
+                  {{ relationship.pendingReviews }} pending
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Total Row -->
+            <tr class="border-t-2 border-gray-300 bg-gray-50 font-semibold">
+              <td class="py-4 px-4 text-gray-900">
+                <div class="font-bold">Portfolio Totals</div>
+                <div class="text-sm font-normal text-gray-600">{{ totalRelationships }} relationships</div>
+              </td>
+              
+              <!-- Revenue FYTD Total -->
+              <td class="text-right py-4 px-4 text-gray-900">
+                <div class="font-bold">{{ formatCurrency(totalRevenue) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                     :class="getPerformanceClass(totalRevenue, 15000000)">
+                  {{ Math.round((totalRevenue / 15000000) * 100) }}% of target
+                </div>
+                <div v-else class="text-xs font-normal"
+                     :class="getGrowthClass(revenueYoY)">
+                  {{ revenueYoY >= 0 ? '+' : '' }}{{ revenueYoY }}% YoY
+                </div>
+              </td>
+              
+              <!-- Net New Commitments Total -->
+              <td class="text-right py-4 px-4 text-gray-900">
+                <div class="font-bold">{{ formatCurrency(performanceMetrics.netNewCommitments.actual) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                     :class="getPerformanceClass(performanceMetrics.netNewCommitments.actual, performanceMetrics.netNewCommitments.target)">
+                  {{ performanceMetrics.netNewCommitments.achievementPercent }}% of target
+                </div>
+                <div v-else class="text-xs font-normal text-green-600">
+                  +23% YoY
+                </div>
+              </td>
+              
+              <!-- Net New Deposits Total -->
+              <td class="text-right py-4 px-4 text-gray-900">
+                <div class="font-bold">{{ formatCurrency(performanceMetrics.netNewDeposits.actual) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                     :class="getPerformanceClass(performanceMetrics.netNewDeposits.actual, performanceMetrics.netNewDeposits.target)">
+                  {{ performanceMetrics.netNewDeposits.achievementPercent }}% of target
+                </div>
+                <div v-else class="text-xs font-normal text-green-600">
+                  +25% YoY
+                </div>
+              </td>
+              
+              <!-- New Credit Relationships Total -->
+              <td class="text-right py-4 px-4 text-gray-900">
+                <div class="font-bold">{{ performanceMetrics.netNewCreditRelationships.actual }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                     :class="getPerformanceClass(performanceMetrics.netNewCreditRelationships.actual, performanceMetrics.netNewCreditRelationships.target)">
+                  {{ performanceMetrics.netNewCreditRelationships.achievementPercent }}% of target
+                </div>
+                <div v-else class="text-xs font-normal text-yellow-600">
+                  -30% YoY
+                </div>
+              </td>
+              
+              <!-- Risk Flags Total -->
+              <td class="text-center py-4 px-4 text-gray-900">
+                <div class="font-bold">{{ totalRiskFlags }}</div>
+                <div class="text-xs font-normal text-gray-600">{{ totalPendingReviews }} pending</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Main Content -->
-    <div class="px-1 py-5">
-      <!-- Tab Navigation - HIDDEN -->
-      <!-- <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="border-b border-gray-200">
-          <nav class="flex space-x-8 px-6" aria-label="Tabs">
-            <button @click="activeTab = 'portfolio'"
-              :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'portfolio' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-              Portfolio
-            </button>
-            <button @click="activeTab = 'opportunities'"
-              :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'opportunities' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-              Product Opportunities
-            </button>
-            <button @click="activeTab = 'risk'"
-              :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'risk' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-              Risk Appetite Review
-            </button>
-          </nav>
-        </div>
 
-        <!-- Tab Content -->
-        <div class="p-6">
-          <!-- Portfolio Tab -->
-          <div v-if="activeTab === 'portfolio'">
-            <div class="space-y-6">
-              <!-- Relationship Table -->
+  </div>
+
+  <!-- Alerts Modal -->
+  <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-10 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 xl:w-3/4 shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-3">
+          <span class="text-2xl">⚠️</span>
+          <h3 class="text-xl font-bold text-gray-900">Client Alerts - Johnson Holdings Group</h3>
+        </div>
+        <button @click="showAlertsModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Alert Summary -->
+      <div class="mb-6 text-gray-700">
+        <span class="font-medium">{{ totalActiveAlerts }} active alerts requiring attention</span>
+      </div>
+
+      <!-- Alert Tabs -->
+      <div class="border-b border-gray-200 mb-6">
+        <nav class="flex space-x-8" aria-label="Alert Tabs">
+          <button v-for="tab in alertTabs" :key="tab.id" @click="activeAlertTab = tab.id" :class="['flex items-center space-x-2 whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium',
+            activeAlertTab === tab.id
+              ? 'border-red-500 text-red-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
+            <span :class="tab.iconClass">{{ tab.icon }}</span>
+            <span>{{ tab.name }}</span>
+            <span v-if="tab.count > 0" :class="['ml-2 px-2 py-0.5 text-xs font-bold rounded-full', tab.badgeClass]">
+              {{ tab.count }}
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Alert Content -->
+      <div class="space-y-6">
+        <!-- Loan Delinquency Tab -->
+        <div v-if="activeAlertTab === 'delinquency'" class="space-y-4">
+          <div v-for="alert in delinquencyAlerts" :key="alert.id"
+            class="bg-red-50 border border-red-200 rounded-lg p-6">
+            <!-- Alert Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getRiskLevelClass(alert.riskLevel)">
+                    {{ alert.riskLevel }}
+                  </span>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold text-red-900">{{ alert.loanType }}</h4>
+                  <p class="text-sm text-red-700">{{ alert.daysOverdue }} days past due</p>
+                </div>
+              </div>
+              <div class="flex space-x-2">
+                <button @click="reviewAlert(alert)"
+                  class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                  Review Now
+                </button>
+                <button @click="scheduleCall(alert)"
+                  class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                  Schedule Call
+                </button>
+              </div>
+            </div>
+
+            <!-- Alert Details Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
               <div>
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-lg font-medium text-gray-900">🏢 Relationship Portfolio</h3>
-                  <button @click="isPortfolioSectionCollapsed = !isPortfolioSectionCollapsed"
-                    class="flex items-center text-sm text-gray-500 hover:text-gray-700">
-                    <span>{{ isPortfolioSectionCollapsed ? 'Expand' : 'Collapse' }}</span>
-                    <svg
-                      :class="['ml-1 h-4 w-4 transform transition-transform', { 'rotate-180': !isPortfolioSectionCollapsed }]"
-                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
+                <div class="text-sm font-medium text-gray-700">Account:</div>
+                <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Amount Due:</div>
+                <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.amountDue) }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Last Payment:</div>
+                <div class="text-sm text-gray-900">{{ alert.lastPayment }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Client:</div>
+                <div class="text-sm text-gray-900">{{ alert.clientName }}</div>
+              </div>
+            </div>
+
+            <!-- Financial Summary -->
+            <div class="bg-white rounded-lg p-4 border border-red-200">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Total Outstanding:</div>
+                  <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.totalOutstanding) }}</div>
                 </div>
-                <div v-show="!isPortfolioSectionCollapsed">
-                  <!-- Legend for N/E -->
-                  <div class="flex items-center mb-2 space-x-4">
-                    <div class="flex items-center">
-                      <span class="h-8 w-8 rounded-full bg-green-800 flex items-center justify-center mr-2">
-                        <span class="text-xs font-medium text-white">N</span>
-                      </span>
-                      <span class="text-xs text-gray-700">New Relationship</span>
-                    </div>
-                    <div class="flex items-center">
-                      <span class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center mr-2">
-                        <span class="text-xs font-medium text-white">E</span>
-                      </span>
-                      <span class="text-xs text-gray-700">Existing Relationship</span>
-                    </div>
-                  </div>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('name')">
-                            Relationship
-                            <span v-if="sortField === 'name'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('depositsDelta')">
-                            Deposits Δ
-                            <span v-if="sortField === 'depositsDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                              '↓'
-                            }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('loansDelta')">
-                            Loans Δ
-                            <span v-if="sortField === 'loansDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('utilization')">
-                            Util %
-                            <span v-if="sortField === 'utilization'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('revenueDelta')">
-                            Revenue Δ
-                            <span v-if="sortField === 'revenueDelta'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                              '↓'
-                            }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('crossSellIndex')">
-                            Cross-Sell Index
-                            <span v-if="sortField === 'crossSellIndex'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                              '↓' }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('pendingReviews')">
-                            Pending Reviews
-                            <span v-if="sortField === 'pendingReviews'" class="ml-1">{{ sortDirection === 'asc' ? '↑' :
-                              '↓' }}</span>
-                          </th>
-                          <th
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            @click="sortTable('leadValue')">
-                            Leads (# / $)
-                            <span v-if="sortField === 'leadValue'" class="ml-1">{{ sortDirection === 'asc' ? '↑' : '↓'
-                            }}</span>
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Relationship Type
-                          </th>
-                          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="relationship in sortedRelationships" :key="relationship.id"
-                          class="hover:bg-green-50 cursor-pointer transition-colors"
-                          @click="drillDownToRelationship(relationship)">
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                              <div class="flex-shrink-0 h-8 w-8">
-                                <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                                  :class="isNewRelationship(relationship) ? 'bg-green-800' : 'bg-gray-500'">
-                                  <span class="text-xs font-medium text-white">{{ isNewRelationship(relationship) ? 'N'
-                                    :
-                                    'E' }}</span>
-                                </div>
-                              </div>
-                              <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
-                                <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                            :class="relationship.depositsDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                            {{ relationship.depositsDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.depositsDelta)
-                            }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                            :class="relationship.loansDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                            {{ relationship.loansDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.loansDelta) }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                            <span class="font-medium" :class="getUtilizationColor(relationship.utilization)">
-                              {{ relationship.utilization }}%
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm"
-                            :class="relationship.revenueDelta > 0 ? 'text-green-600' : 'text-red-600'">
-                            {{ relationship.revenueDelta > 0 ? '+' : '' }}{{ formatCurrency(relationship.revenueDelta)
-                            }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                            <span class="font-medium" :class="getCrossSellColor(relationship.crossSellIndex)">
-                              {{ relationship.crossSellIndex }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span v-if="relationship.pendingReviews > 0"
-                              class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                              {{ relationship.pendingReviews }}
-                            </span>
-                            <span v-else class="text-gray-400">-</span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                            {{ relationship.leadCount }} / {{ formatCurrency(relationship.leadValue) }}
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full"
-                              :class="getRelationshipTypeClass(getRelationshipType(relationship))">
-                              {{ getRelationshipType(relationship) }}
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="text-td-green font-medium">View Details ›</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <!-- Account & Loan Portfolio Balance -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                  <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                      <div class="flex items-center space-x-2">
-                        <span class="text-2xl">📊</span>
-                        <h3 class="text-lg font-bold text-gray-900">Account & Loan Portfolio Balance</h3>
-                      </div>
-                      <div class="flex items-center space-x-2">
-                        <span
-                          class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Deposits</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Loans</span>
-                      </div>
-                    </div>
-                    <div class="text-sm text-gray-500 mb-4">Account balances (positive) vs loan utilization (negative)
-                    </div>
-
-                    <!-- Relationship Filter (always show) -->
-                    <div class="mb-4">
-                      <label class="text-sm text-gray-700 mr-3">Filter by Relationship:</label>
-                      <select v-model="selectedRelationshipFilter"
-                        class="px-3 py-2 border border-gray-300 rounded-md text-sm">
-                        <option value="all">All Relationships</option>
-                        <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}</option>
-                      </select>
-                    </div>
-
-                    <!-- Legend (always show) -->
-                    <div class="flex flex-wrap items-center mb-4">
-                      <div v-for="(item, idx) in accountLoanLegend" :key="item.label"
-                        class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleAccountLoanLegend(item.label)">
-                        <span
-                          :style="{ backgroundColor: item.color, opacity: accountLoanActiveLegends.includes(item.label) ? 1 : 0.3 }"
-                          class="w-4 h-4 rounded-full inline-block mr-2"></span>
-                        <span class="text-xs text-gray-700">{{ item.label }}</span>
-                      </div>
-                    </div>
-
-                    <div class="h-64 p-4">
-                      <BarChart v-if="accountLoanPortfolioChartData" :data="accountLoanPortfolioChartData"
-                        :options="accountLoanPortfolioChartOptions" />
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Revenue Trends by Relationship -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                  <div class="p-6">
-                    <div class="flex items-center mb-4 justify-between">
-                      <div class="flex items-center">
-                        <span class="text-2xl">📊</span>
-                        <h3 class="text-lg font-bold text-gray-900 ml-2">Revenue Trends by Relationship</h3>
-                      </div>
-                      <div>
-                        <label class="text-sm text-gray-700 mr-2">Filter by Relationship:</label>
-                        <select v-model="selectedRevenueRelationship"
-                          class="px-3 py-2 border border-gray-300 rounded-md text-sm">
-                          <option value="all">All Relationships</option>
-                          <option v-for="rel in sortedRelationships" :key="rel.id" :value="rel.id">{{ rel.name }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- Legend for revenue types -->
-                    <div class="flex flex-wrap items-center mb-4">
-                      <div v-for="(type, idx) in revenueTypeLegend" :key="type.label"
-                        class="flex items-center mr-6 mb-2 cursor-pointer" @click="toggleRevenueTypeLegend(type.label)">
-                        <span
-                          :style="{ backgroundColor: type.color, opacity: revenueTypeActiveLegends.includes(type.label) ? 1 : 0.3 }"
-                          class="w-4 h-4 rounded-full inline-block mr-2"></span>
-                        <span class="text-xs text-gray-700">{{ type.label }}</span>
-                      </div>
-                    </div>
-                    <div class="h-60 px-10">
-                      <BarChart v-if="revenueTypeStackedChartData" :data="revenueTypeStackedChartData"
-                        :options="revenueTypeStackedChartOptions" />
-                    </div>
-                    <!-- Summary Table -->
-                    <div class="mt-8">
-                      <h4 class="text-md font-semibold text-gray-900 mb-2">Revenue Summary</h4>
-                      <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                          <thead class="bg-gray-50">
-                            <tr>
-                              <th
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Relationship</th>
-                              <th
-                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Total Revenue</th>
-                              <th v-for="type in revenueTypeLegend" :key="type.label"
-                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{
-                                  type.label }}</th>
-                              <th
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Relationship Type
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="rel in revenueSummaryRelationships" :key="rel.id"
-                              class="hover:bg-green-50 cursor-pointer transition-colors"
-                              @click="drillDownToRelationship(rel)">
-                              <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 h-8 w-8">
-                                    <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                      <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                                    </div>
-                                  </div>
-                                  <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                                    <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td class="px-6 py-4 whitespace-nowrap text-right font-bold">{{
-                                formatCurrency(getRelationshipTotalRevenue(rel)) }}</td>
-                              <td v-for="type in revenueTypeLegend" :key="type.label"
-                                class="px-6 py-4 whitespace-nowrap text-right">{{
-                                  formatCurrency(getRelationshipRevenueByType(rel, type.label)) }}</td>
-                              <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                  :class="getRelationshipTypeClass(getRelationshipType(rel))">
-                                  {{ getRelationshipType(rel) }}
-                                </span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">Original Amount:</div>
+                  <div class="text-lg font-bold text-gray-900">{{ formatCurrency(alert.originalAmount) }}</div>
                 </div>
               </div>
             </div>
 
-            <!-- Opportunities Tab -->
-            <div v-if="activeTab === 'opportunities'">
-              <div class="space-y-6">
-                <!-- Opportunities Summary -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ filteredOpportunitiesCount }}</div>
-                    <div class="text-xs text-gray-600">Total Opportunities</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600">{{ formatCurrency(filteredOpportunitiesValue) }}
-                    </div>
-                    <div class="text-xs text-gray-600">Total Value</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="text-2xl font-bold text-orange-600">{{ avgOpportunityValue }}</div>
-                    <div class="text-xs text-gray-600">Avg Opportunity</div>
-                  </div>
+            <!-- Risk Analysis -->
+            <div class="mt-4 bg-white rounded-lg p-4 border border-red-200">
+              <h5 class="font-medium text-gray-900 mb-2">Risk Analysis</h5>
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Payment History Score:</span>
+                  <span :class="getScoreColor(alert.paymentHistoryScore)">{{ alert.paymentHistoryScore }}/100</span>
                 </div>
-                <!-- Opportunities Summary Table -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                  <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Relationship Opportunities Summary</h3>
-                    <div class="overflow-x-auto">
-                      <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Relationship</th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Opportunities</th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Potential Value</th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Avg Confidence</th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Relationship Type</th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                          <tr v-for="rel in sortedRelationships" :key="rel.id"
-                            class="hover:bg-green-50 cursor-pointer transition-colors"
-                            @click="drillDownToRelationship(rel)">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="flex items-center">
-                                <div class="flex-shrink-0 h-8 w-8">
-                                  <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                    <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                                  </div>
-                                </div>
-                                <div class="ml-4">
-                                  <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                                  <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-blue-600 font-bold">{{
-                              getRelationshipOpportunityCount(rel) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-green-600 font-bold">{{
-                              formatCurrency(getRelationshipOpportunityValue(rel)) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-purple-600 font-bold">{{
-                              getRelationshipAvgConfidence(rel) }}%</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                :class="getRelationshipTypeClass(getRelationshipType(rel))">
-                                {{ getRelationshipType(rel) }}
-                              </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                              <span class="text-td-green font-medium">View Details ›</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Covenant Compliance:</span>
+                  <span :class="alert.covenantCompliance ? 'text-green-600' : 'text-red-600'">
+                    {{ alert.covenantCompliance ? 'Compliant' : 'Non-Compliant' }}
+                  </span>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Risk Appetite Review Tab -->
-          <div v-if="activeTab === 'risk'">
-            <div class="space-y-6">
-              <!-- Review Status Counters -->
-              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6">
-                  <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">🚨 Review Status Overview</h3>
-                    <button @click="isRiskAppetiteCollapsed = !isRiskAppetiteCollapsed"
-                      class="flex items-center text-sm text-gray-500 hover:text-gray-700">
-                      <span>{{ isRiskAppetiteCollapsed ? 'Expand' : 'Collapse' }}</span>
-                      <svg
-                        :class="['ml-1 h-4 w-4 transform transition-transform', { 'rotate-180': !isRiskAppetiteCollapsed }]"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                    </button>
-                  </div>
-                  <div v-show="!isRiskAppetiteCollapsed">
-                    <div class="grid grid-cols-5 gap-4">
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-orange-600">{{ riskMetrics.totalRiskFlags }}</div>
-                        <div class="text-xs text-gray-600">Total Risk Flags</div>
-                      </div>
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600">{{ riskMetrics.pending }}</div>
-                        <div class="text-xs text-gray-600">Pending</div>
-                      </div>
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600">{{ riskMetrics.reviewedWithAction }}</div>
-                        <div class="text-xs text-gray-600">Reviewed w/ Action</div>
-                      </div>
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600">{{ riskMetrics.reviewedWithoutAction }}</div>
-                        <div class="text-xs text-gray-600">Reviewed w/o Action</div>
-                      </div>
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-cyan-600">{{ riskMetrics.avgTimeToClose }}</div>
-                        <div class="text-xs text-gray-600">Avg Days</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Risk Statistics by Relationship Table -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                  <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Statistics by Relationship</h3>
-                    <div class="overflow-x-auto">
-                      <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Relationship
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Risk Flags
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Pending Reviews
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Last Review
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Reviewed w/ Action
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Reviewed w/o Action
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Status
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Relationship Type
-                            </th>
-                            <th
-                              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Actions
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                          <tr v-for="relationship in relationshipsWithRiskStats" :key="relationship.id"
-                            class="hover:bg-green-50 cursor-pointer transition-colors"
-                            @click="drillDownToRelationship(relationship)">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="flex items-center">
-                                <div class="flex-shrink-0 h-8 w-8">
-                                  <div class="h-8 w-8 rounded-full bg-td-green flex items-center justify-center">
-                                    <span class="text-xs font-medium text-white">{{ relationship.name.charAt(0)
-                                    }}</span>
-                                  </div>
-                                </div>
-                                <div class="ml-4">
-                                  <div class="text-sm font-medium text-gray-900">{{ relationship.name }}</div>
-                                  <div class="text-xs text-gray-500">{{ relationship.industry }}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span v-if="relationship.riskFlags > 0"
-                                class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-                                {{ relationship.riskFlags }}
-                              </span>
-                              <span v-else class="text-gray-400">-</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span v-if="relationship.pendingReviews > 0"
-                                class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                                {{ relationship.pendingReviews }}
-                              </span>
-                              <span v-else class="text-gray-400">-</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                              {{ relationship.lastReviewDate }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{{
-                                relationship.reviewedWithAction || 0 }}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">{{
-                                relationship.reviewedWithoutAction || 0 }}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span
-                                :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusColor(relationship.riskStatus)]">
-                                {{ relationship.riskStatus }}
-                              </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                :class="getRelationshipTypeClass(getRelationshipType(relationship))">
-                                {{ getRelationshipType(relationship) }}
-                              </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                              <span class="text-td-green font-medium">View Details ›</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Alerts Modal -->
-    <div v-if="showAlertsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-10 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 xl:w-3/4 shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center space-x-3">
-            <span class="text-2xl">⚠️</span>
-            <h3 class="text-xl font-bold text-gray-900">Client Alerts - Johnson Holdings Group</h3>
-          </div>
-          <button @click="showAlertsModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Alert Summary -->
-        <div class="mb-6 text-gray-700">
-          <span class="font-medium">{{ totalActiveAlerts }} active alerts requiring attention</span>
-        </div>
-
-        <!-- Alert Tabs -->
-        <div class="border-b border-gray-200 mb-6">
-          <nav class="flex space-x-8" aria-label="Alert Tabs">
-            <button v-for="tab in alertTabs" :key="tab.id" @click="activeAlertTab = tab.id" :class="['flex items-center space-x-2 whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium',
-              activeAlertTab === tab.id
-                ? 'border-red-500 text-red-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-              <span :class="tab.iconClass">{{ tab.icon }}</span>
-              <span>{{ tab.name }}</span>
-              <span v-if="tab.count > 0" :class="['ml-2 px-2 py-0.5 text-xs font-bold rounded-full', tab.badgeClass]">
-                {{ tab.count }}
-              </span>
-            </button>
-          </nav>
-        </div>
-
-        <!-- Alert Content -->
-        <div class="space-y-6">
-          <!-- Loan Delinquency Tab -->
-          <div v-if="activeAlertTab === 'delinquency'" class="space-y-4">
-            <div v-for="alert in delinquencyAlerts" :key="alert.id"
-              class="bg-red-50 border border-red-200 rounded-lg p-6">
-              <!-- Alert Header -->
-              <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getRiskLevelClass(alert.riskLevel)">
-                      {{ alert.riskLevel }}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 class="text-lg font-semibold text-red-900">{{ alert.loanType }}</h4>
-                    <p class="text-sm text-red-700">{{ alert.daysOverdue }} days past due</p>
-                  </div>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="reviewAlert(alert)"
-                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
-                    Review Now
-                  </button>
-                  <button @click="scheduleCall(alert)"
-                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
-                    Schedule Call
-                  </button>
-                </div>
-              </div>
-
-              <!-- Alert Details Grid -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Account:</div>
-                  <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Amount Due:</div>
-                  <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.amountDue) }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Last Payment:</div>
-                  <div class="text-sm text-gray-900">{{ alert.lastPayment }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Client:</div>
-                  <div class="text-sm text-gray-900">{{ alert.clientName }}</div>
-                </div>
-              </div>
-
-              <!-- Financial Summary -->
-              <div class="bg-white rounded-lg p-4 border border-red-200">
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <div class="text-sm font-medium text-gray-700">Total Outstanding:</div>
-                    <div class="text-lg font-bold text-red-600">{{ formatCurrency(alert.totalOutstanding) }}</div>
-                  </div>
-                  <div>
-                    <div class="text-sm font-medium text-gray-700">Original Amount:</div>
-                    <div class="text-lg font-bold text-gray-900">{{ formatCurrency(alert.originalAmount) }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Risk Analysis -->
-              <div class="mt-4 bg-white rounded-lg p-4 border border-red-200">
-                <h5 class="font-medium text-gray-900 mb-2">Risk Analysis</h5>
-                <div class="space-y-2">
-                  <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Payment History Score:</span>
-                    <span :class="getScoreColor(alert.paymentHistoryScore)">{{ alert.paymentHistoryScore }}/100</span>
-                  </div>
-                  <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Covenant Compliance:</span>
-                    <span :class="alert.covenantCompliance ? 'text-green-600' : 'text-red-600'">
-                      {{ alert.covenantCompliance ? 'Compliant' : 'Non-Compliant' }}
-                    </span>
-                  </div>
-                  <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Estimated Recovery:</span>
-                    <span class="text-gray-900">{{ alert.estimatedRecovery }}%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Overdraft Tab -->
-          <div v-if="activeAlertTab === 'overdraft'" class="space-y-4">
-            <div v-for="alert in overdraftAlerts" :key="alert.id"
-              class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <!-- Alert Header -->
-              <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getRiskLevelClass(alert.riskLevel)">
-                      {{ alert.riskLevel }}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 class="text-lg font-semibold text-yellow-900">{{ alert.accountType }}</h4>
-                    <p class="text-sm text-yellow-700">Overdraft limit exceeded</p>
-                  </div>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="reviewAlert(alert)"
-                    class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
-                    Review Now
-                  </button>
-                  <button @click="scheduleCall(alert)"
-                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
-                    Schedule Call
-                  </button>
-                </div>
-              </div>
-
-              <!-- Alert Details Grid -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Account:</div>
-                  <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Overdraft Amount:</div>
-                  <div class="text-lg font-bold text-yellow-600">{{ formatCurrency(alert.overdraftAmount) }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Limit:</div>
-                  <div class="text-sm text-gray-900">{{ formatCurrency(alert.overdraftLimit) }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Days Overdrawn:</div>
-                  <div class="text-sm text-gray-900">{{ alert.daysOverdrawn }}</div>
-                </div>
-              </div>
-
-              <!-- Account Activity -->
-              <div class="bg-white rounded-lg p-4 border border-yellow-200">
-                <h5 class="font-medium text-gray-900 mb-2">Recent Activity</h5>
-                <div class="space-y-2">
-                  <div v-for="transaction in alert.recentTransactions" :key="transaction.id"
-                    class="flex justify-between text-sm">
-                    <span class="text-gray-600">{{ transaction.date }} - {{ transaction.description }}</span>
-                    <span :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(Math.abs(transaction.amount)) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Other Alerts Tab -->
-          <div v-if="activeAlertTab === 'other'" class="space-y-4">
-            <div v-for="alert in otherAlerts" :key="alert.id" class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <!-- Alert Header -->
-              <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="getRiskLevelClass(alert.riskLevel)">
-                      {{ alert.riskLevel }}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 class="text-lg font-semibold text-blue-900">{{ alert.alertType }}</h4>
-                    <p class="text-sm text-blue-700">{{ alert.description }}</p>
-                  </div>
-                </div>
-                <div class="flex space-x-2">
-                  <button @click="reviewAlert(alert)"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    Review Now
-                  </button>
-                  <button @click="scheduleCall(alert)"
-                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
-                    Schedule Call
-                  </button>
-                </div>
-              </div>
-
-              <!-- Alert Details -->
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Priority:</div>
-                  <div class="text-sm font-semibold" :class="getPriorityColor(alert.priority)">{{ alert.priority }}
-                  </div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Date Created:</div>
-                  <div class="text-sm text-gray-900">{{ alert.dateCreated }}</div>
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-700">Due Date:</div>
-                  <div class="text-sm text-gray-900">{{ alert.dueDate }}</div>
-                </div>
-              </div>
-
-              <!-- Additional Details -->
-              <div class="bg-white rounded-lg p-4 border border-blue-200">
-                <h5 class="font-medium text-gray-900 mb-2">Details</h5>
-                <p class="text-sm text-gray-700">{{ alert.details }}</p>
-                <div v-if="alert.recommendations" class="mt-3">
-                  <h6 class="text-sm font-medium text-gray-900 mb-1">Recommended Actions:</h6>
-                  <ul class="text-sm text-gray-700 space-y-1">
-                    <li v-for="rec in alert.recommendations" :key="rec" class="flex items-start">
-                      <span class="text-blue-500 mr-2">•</span>
-                      <span>{{ rec }}</span>
-                    </li>
-                  </ul>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Estimated Recovery:</span>
+                  <span class="text-gray-900">{{ alert.estimatedRecovery }}%</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Modal Actions -->
-        <div class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200">
-          <div class="flex space-x-3">
-            <button @click="markAllAsReviewed"
-              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-              Mark All as Reviewed
-            </button>
-            <button @click="exportAlertReport"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-              Export Report
-            </button>
-          </div>
-          <button @click="showAlertsModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Enhanced Revenue Modal -->
-    <div v-if="showRevenueModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">💰 Revenue Analytics Command Center</h3>
-          <button @click="showRevenueModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Revenue Performance Overview -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-cyan-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-cyan-600">{{ formatCurrency(totalRevenue) }}</div>
-            <div class="text-sm text-gray-600">Total Revenue FYTD</div>
-            <div class="text-xs font-medium mt-1" :class="revenueYoY >= 0 ? 'text-green-500' : 'text-red-500'">
-              {{ revenueYoY >= 0 ? '+' : '' }}{{ revenueYoY }}% YoY
-            </div>
-          </div>
-          <div class="bg-blue-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(Math.round(totalRevenue /
-              totalRelationships)) }}</div>
-            <div class="text-sm text-gray-600">Revenue per Relationship</div>
-            <div class="text-xs text-green-500 font-medium">+12% vs peers</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-green-600">{{ Math.round((totalRevenue * 0.32 / totalRevenue) * 100)
-            }}%
-            </div>
-            <div class="text-sm text-gray-600">Revenue Concentration</div>
-            <div class="text-xs text-gray-500">Top 3 relationships</div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-purple-600">🥇 #2</div>
-            <div class="text-sm text-gray-600">Regional Ranking</div>
-            <div class="text-xs text-green-500">of 12 RMs</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Revenue Trends Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📈 24-Month Revenue Trends</h4>
-            <div class="h-64 mb-4">
-              <LineChart v-if="enhanced24MonthRevenueData" :data="enhanced24MonthRevenueData"
-                :options="enhanced24MonthRevenueOptions" />
-            </div>
-            <!-- Seasonality Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Seasonal Patterns</h5>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div>
-                  <span class="text-gray-600">Peak Quarter:</span>
-                  <span class="font-medium text-green-600 ml-1">Q4 (+18%)</span>
+        <!-- Overdraft Tab -->
+        <div v-if="activeAlertTab === 'overdraft'" class="space-y-4">
+          <div v-for="alert in overdraftAlerts" :key="alert.id"
+            class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <!-- Alert Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getRiskLevelClass(alert.riskLevel)">
+                    {{ alert.riskLevel }}
+                  </span>
                 </div>
                 <div>
-                  <span class="text-gray-600">Low Quarter:</span>
-                  <span class="font-medium text-orange-600 ml-1">Q1 (-8%)</span>
+                  <h4 class="text-lg font-semibold text-yellow-900">{{ alert.accountType }}</h4>
+                  <p class="text-sm text-yellow-700">Overdraft limit exceeded</p>
                 </div>
               </div>
+              <div class="flex space-x-2">
+                <button @click="reviewAlert(alert)"
+                  class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+                  Review Now
+                </button>
+                <button @click="scheduleCall(alert)"
+                  class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                  Schedule Call
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Revenue Composition Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">🎯 Revenue by Product Type</h4>
-            <div class="h-64 mb-4">
-              <DoughnutChart v-if="revenueCompositionData" :data="revenueCompositionData"
-                :options="revenueCompositionOptions" />
+            <!-- Alert Details Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4">
+              <div>
+                <div class="text-sm font-medium text-gray-700">Account:</div>
+                <div class="text-sm text-gray-900 font-mono">{{ alert.accountNumber }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Overdraft Amount:</div>
+                <div class="text-lg font-bold text-yellow-600">{{ formatCurrency(alert.overdraftAmount) }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Limit:</div>
+                <div class="text-sm text-gray-900">{{ formatCurrency(alert.overdraftLimit) }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Days Overdrawn:</div>
+                <div class="text-sm text-gray-900">{{ alert.daysOverdrawn }}</div>
+              </div>
             </div>
-            <!-- Product Performance -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Product Performance</h5>
-              <div class="space-y-1">
-                <div v-for="product in topRevenueProducts" :key="product.name" class="flex justify-between text-xs">
-                  <span class="text-gray-600">{{ product.name }}:</span>
-                  <span class="font-medium" :class="product.growth >= 0 ? 'text-green-600' : 'text-red-600'">
-                    {{ product.growth >= 0 ? '+' : '' }}{{ product.growth }}%
+
+            <!-- Account Activity -->
+            <div class="bg-white rounded-lg p-4 border border-yellow-200">
+              <h5 class="font-medium text-gray-900 mb-2">Recent Activity</h5>
+              <div class="space-y-2">
+                <div v-for="transaction in alert.recentTransactions" :key="transaction.id"
+                  class="flex justify-between text-sm">
+                  <span class="text-gray-600">{{ transaction.date }} - {{ transaction.description }}</span>
+                  <span :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(Math.abs(transaction.amount)) }}
                   </span>
                 </div>
               </div>
@@ -1266,1610 +737,1779 @@
           </div>
         </div>
 
-        <!-- Detailed Revenue Breakdown Table -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">📊 Detailed Revenue Analysis by Relationship</h4>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Revenue FYTD
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Loan Fee
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    TMS Fee
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Deposit NII
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Loan NII
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    YoY Growth %
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Market Share
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Peer Rank
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rel, index) in enhancedRevenueAnalysis" :key="rel.id"
-                  class="hover:bg-green-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full bg-cyan-600 flex items-center justify-center">
-                          <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                        <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-cyan-600">
-                    {{ formatCurrency(rel.totalRevenue) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rel.loanFee) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rel.tmsFee) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rel.depositNII) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rel.loanNII) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium" :class="rel.yoyGrowth >= 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ rel.yoyGrowth >= 0 ? '+' : '' }}{{ rel.yoyGrowth }}%
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ rel.marketShare }}%
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
-                      #{{ index + 1 }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Regional RM Performance Comparison -->
-        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Revenue Ranking & Benchmarking</h4>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Ranking Table -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Revenue Performance Ranking</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-2">
-                  <div v-for="(rm, index) in regionalRMRanking" :key="rm.name"
-                    class="flex justify-between items-center p-2 rounded"
-                    :class="rm.isYou ? 'bg-cyan-100' : 'bg-gray-50'">
-                    <div class="flex items-center">
-                      <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
-                      <span class="text-sm" :class="rm.isYou ? 'font-bold text-cyan-700' : 'text-gray-900'">
-                        {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
-                      </span>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-sm font-medium">{{ formatCurrency(rm.revenue) }}</div>
-                      <div class="text-xs text-gray-500">{{ rm.relationships }} rels</div>
-                    </div>
-                  </div>
+        <!-- Other Alerts Tab -->
+        <div v-if="activeAlertTab === 'other'" class="space-y-4">
+          <div v-for="alert in otherAlerts" :key="alert.id" class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <!-- Alert Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getRiskLevelClass(alert.riskLevel)">
+                    {{ alert.riskLevel }}
+                  </span>
                 </div>
+                <div>
+                  <h4 class="text-lg font-semibold text-blue-900">{{ alert.alertType }}</h4>
+                  <p class="text-sm text-blue-700">{{ alert.description }}</p>
+                </div>
+              </div>
+              <div class="flex space-x-2">
+                <button @click="reviewAlert(alert)"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                  Review Now
+                </button>
+                <button @click="scheduleCall(alert)"
+                  class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                  Schedule Call
+                </button>
               </div>
             </div>
 
-            <!-- Performance Metrics -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Performance vs Peers</h5>
+            <!-- Alert Details -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
+              <div>
+                <div class="text-sm font-medium text-gray-700">Priority:</div>
+                <div class="text-sm font-semibold" :class="getPriorityColor(alert.priority)">{{ alert.priority }}
+                </div>
               </div>
-              <div class="p-3 space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Revenue per Relationship:</span>
-                  <span class="text-sm font-medium text-green-600">+12% above avg</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Revenue Growth YoY:</span>
-                  <span class="text-sm font-medium text-green-600">+{{ revenueYoY }}% vs +8% avg</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Product Diversification:</span>
-                  <span class="text-sm font-medium text-green-600">4.2 vs 3.1 avg</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Client Retention Rate:</span>
-                  <span class="text-sm font-medium text-green-600">96% vs 92% avg</span>
-                </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Date Created:</div>
+                <div class="text-sm text-gray-900">{{ alert.dateCreated }}</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-700">Due Date:</div>
+                <div class="text-sm text-gray-900">{{ alert.dueDate }}</div>
+              </div>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="bg-white rounded-lg p-4 border border-blue-200">
+              <h5 class="font-medium text-gray-900 mb-2">Details</h5>
+              <p class="text-sm text-gray-700">{{ alert.details }}</p>
+              <div v-if="alert.recommendations" class="mt-3">
+                <h6 class="text-sm font-medium text-gray-900 mb-1">Recommended Actions:</h6>
+                <ul class="text-sm text-gray-700 space-y-1">
+                  <li v-for="rec in alert.recommendations" :key="rec" class="flex items-start">
+                    <span class="text-blue-500 mr-2">•</span>
+                    <span>{{ rec }}</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Best Practice Insights -->
-        <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 class="font-medium text-blue-900 mb-3">💡 Revenue Optimization Insights</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Top Opportunities</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• TechCorp Industries: +$450K potential from treasury expansion</li>
-                <li>• Johnson Holdings: +$320K from FX services cross-sell</li>
-                <li>• Global Retail: +$280K from lending restructure</li>
-              </ul>
-            </div>
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Best Practices from Top Performers</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Focus on treasury solutions for tech sector clients</li>
-                <li>• Quarterly business reviews drive 23% higher revenue</li>
-                <li>• Cross-selling ratio of 3.5+ products per relationship</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-          <button @click="showRevenueModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Enhanced Relationships Modal -->
-    <div v-if="showRelationshipsModal"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">👥 Relationship Portfolio Analytics</h3>
-          <button @click="showRelationshipsModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+      <!-- Modal Actions -->
+      <div class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200">
+        <div class="flex space-x-3">
+          <button @click="markAllAsReviewed"
+            class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+            Mark All as Reviewed
+          </button>
+          <button @click="exportAlertReport"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            Export Report
           </button>
         </div>
-
-        <!-- Relationship Portfolio Overview -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-blue-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ totalRelationships }}</div>
-            <div class="text-sm text-gray-600">Total Relationships</div>
-            <div class="text-xs text-green-500 font-medium">+{{ relationshipsDelta }} FYTD</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-green-600">{{ Math.round(totalRelationships * 0.87) }}</div>
-            <div class="text-sm text-gray-600">Credit Relationships</div>
-            <div class="text-xs text-green-500 font-medium">87% penetration</div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-purple-600">{{ formatCurrency(Math.round(totalRevenue /
-              totalRelationships)) }}</div>
-            <div class="text-sm text-gray-600">Avg Revenue per Rel</div>
-            <div class="text-xs text-green-500 font-medium">+12% vs peers</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-orange-600">96%</div>
-            <div class="text-sm text-gray-600">Retention Rate</div>
-            <div class="text-xs text-green-500 font-medium">+4% vs peers</div>
-          </div>
-        </div>
-
-
-
-        <!-- Detailed Relationship Performance Table -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">📈 Detailed Relationship Performance & Rankings</h4>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Revenue per Rel
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Product Penetration
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Deposit & Loan
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Growth Trend
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Peer Rank
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rel, index) in enhancedRelationshipAnalysis" :key="rel.id"
-                  class="hover:bg-blue-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-                          <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                        <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-blue-600">
-                    {{ formatCurrency(rel.revenue) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium text-purple-600">{{ rel.productPenetration }}/6</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                      Deposit & Loan
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium" :class="rel.growthTrend >= 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ rel.growthTrend >= 0 ? '+' : '' }}{{ rel.growthTrend }}%
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
-                      #{{ index + 1 }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Regional Performance Comparison -->
-        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Relationship Performance Ranking</h4>
-          <div class="grid grid-cols-1 gap-4">
-            <!-- Relationship Count Ranking -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Total Relationships</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-2">
-                  <div v-for="(rm, index) in relationshipCountRanking" :key="rm.name"
-                    class="flex justify-between items-center p-2 rounded"
-                    :class="rm.isYou ? 'bg-blue-100' : 'bg-gray-50'">
-                    <div class="flex items-center">
-                      <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
-                      <span class="text-sm" :class="rm.isYou ? 'font-bold text-blue-700' : 'text-gray-900'">
-                        {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
-                      </span>
-                    </div>
-                    <div class="text-sm font-medium">{{ rm.count }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-
-        <!-- Best Practice Insights -->
-        <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 class="font-medium text-blue-900 mb-3">💡 Relationship Management Best Practices</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">High-Impact Actions</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Schedule quarterly business reviews with top 5 relationships</li>
-                <li>• Increase touchpoints with TechCorp (last contact 8 days ago)</li>
-                <li>• Introduce Global Retail to treasury team for cross-sell</li>
-              </ul>
-            </div>
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Relationship Optimization</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Top performers average 2.8 meetings/month per relationship</li>
-                <li>• 94% of high-growth relationships have 4+ product penetration</li>
-                <li>• Executive-level contacts drive 35% higher revenue growth</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-          <button @click="showRelationshipsModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
-        </div>
+        <button @click="showAlertsModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+          Close
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Enhanced Deposits Modal -->
-    <div v-if="showDepositsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">💰 Deposits Portfolio Analytics</h3>
-          <button @click="showDepositsModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
+  <!-- Enhanced Revenue Modal -->
+  <div v-if="showRevenueModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">💰 Revenue Analytics Command Center</h3>
+        <button @click="showRevenueModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
 
-        <!-- Deposits Performance Overview -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-green-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
-            <div class="text-sm text-gray-600">Total Deposits</div>
-            <div class="text-xs font-medium mt-1" :class="depositsGrowth >= 0 ? 'text-green-500' : 'text-red-500'">
-              {{ depositsGrowth >= 0 ? '+' : '' }}{{ depositsGrowth }}% YoY
-            </div>
-          </div>
-          <div class="bg-blue-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(Math.round(totalDeposits /
-              totalRelationships)) }}</div>
-            <div class="text-sm text-gray-600">Avg Deposits per Rel</div>
-            <div class="text-xs text-green-500 font-medium">+18% vs peers</div>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-purple-600">2.4%</div>
-            <div class="text-sm text-gray-600">Avg Interest Rate</div>
-            <div class="text-xs text-green-500 font-medium">Market competitive</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg text-center">
-            <div class="text-2xl font-bold text-orange-600">🥇 #1</div>
-            <div class="text-sm text-gray-600">Regional Ranking</div>
-            <div class="text-xs text-green-500">of 12 RMs</div>
+      <!-- Revenue Performance Overview -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-cyan-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-cyan-600">{{ formatCurrency(totalRevenue) }}</div>
+          <div class="text-sm text-gray-600">Total Revenue FYTD</div>
+          <div class="text-xs font-medium mt-1" :class="revenueYoY >= 0 ? 'text-green-500' : 'text-red-500'">
+            {{ revenueYoY >= 0 ? '+' : '' }}{{ revenueYoY }}% YoY
           </div>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Deposit Composition Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📊 Deposit Portfolio Composition</h4>
-            <div class="h-64 mb-4">
-              <DoughnutChart v-if="depositCompositionData" :data="depositCompositionData"
-                :options="depositCompositionOptions" />
-            </div>
-            <!-- Composition Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Portfolio Balance</h5>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div>
-                  <span class="text-gray-600">Operating Accounts:</span>
-                  <span class="font-medium text-blue-600 ml-1">42%</span>
-                </div>
-                <div>
-                  <span class="text-gray-600">Investment Accounts:</span>
-                  <span class="font-medium text-green-600 ml-1">35%</span>
-                </div>
-                <div>
-                  <span class="text-gray-600">Money Market:</span>
-                  <span class="font-medium text-purple-600 ml-1">18%</span>
-                </div>
-                <div>
-                  <span class="text-gray-600">Savings:</span>
-                  <span class="font-medium text-orange-600 ml-1">5%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interest Rate Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📈 Interest Rate & Spread Analysis</h4>
-            <div class="h-64 mb-4">
-              <LineChart v-if="interestRateAnalysisData" :data="interestRateAnalysisData"
-                :options="interestRateAnalysisOptions" />
-            </div>
-            <!-- Rate Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Rate Performance</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Avg Rate Paid:</span>
-                  <span class="font-medium text-blue-600">2.4%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Net Interest Margin:</span>
-                  <span class="font-medium text-green-600">3.2%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Rate Sensitivity:</span>
-                  <span class="font-medium text-purple-600">Medium</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="bg-blue-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(Math.round(totalRevenue /
+            totalRelationships)) }}</div>
+          <div class="text-sm text-gray-600">Revenue per Relationship</div>
+          <div class="text-xs text-green-500 font-medium">+12% vs peers</div>
         </div>
-
-        <!-- Detailed Deposits Analysis Table -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">📈 Detailed Deposits Analysis & Performance Rankings</h4>
+        <div class="bg-green-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-green-600">{{ Math.round((totalRevenue * 0.32 / totalRevenue) * 100)
+          }}%
           </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Deposits
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Growth FYTD
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Avg Interest Rate
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Account Types
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Deposit Stability
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Peer Rank
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rel, index) in enhancedDepositsAnalysis" :key="rel.id"
-                  class="hover:bg-green-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center">
-                          <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
-                        <div class="text-xs text-gray-500">{{ rel.industry }}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-green-600">
-                    {{ formatCurrency(rel.deposits) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right">
-                    <span class="font-medium" :class="rel.depositsDelta >= 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ rel.depositsDelta >= 0 ? '+' : '' }}{{ formatCurrency(rel.depositsDelta) }}
-                    </span>
-                    <div class="text-xs text-gray-500">
-                      {{ rel.depositGrowthPercent >= 0 ? '+' : '' }}{{ rel.depositGrowthPercent }}%
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium text-blue-600">{{ rel.avgInterestRate }}%</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="font-medium text-purple-600">{{ rel.accountTypes }}</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getDepositStabilityClass(rel.depositStability)">
-                      {{ rel.depositStability }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
-                      #{{ index + 1 }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="text-sm text-gray-600">Revenue Concentration</div>
+          <div class="text-xs text-gray-500">Top 3 relationships</div>
         </div>
+        <div class="bg-purple-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-purple-600">🥇 #2</div>
+          <div class="text-sm text-gray-600">Regional Ranking</div>
+          <div class="text-xs text-green-500">of 12 RMs</div>
+        </div>
+      </div>
 
-        <!-- Deposit Trends Analysis -->
-        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-medium text-gray-900 mb-3">📈 24-Month Deposit Trends by Relationship</h4>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Revenue Trends Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📈 24-Month Revenue Trends</h4>
           <div class="h-64 mb-4">
-            <BarChart v-if="enhanced24MonthDepositsData" :data="enhanced24MonthDepositsData"
-              :options="enhanced24MonthDepositsOptions" />
+            <LineChart v-if="enhanced24MonthRevenueData" :data="enhanced24MonthRevenueData"
+              :options="enhanced24MonthRevenueOptions" />
           </div>
-          <!-- Trend Insights -->
+          <!-- Seasonality Insights -->
           <div class="bg-white p-3 rounded border">
-            <h5 class="text-sm font-medium text-gray-900 mb-2">Trend Analysis</h5>
-            <div class="grid grid-cols-3 gap-4 text-xs">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Seasonal Patterns</h5>
+            <div class="grid grid-cols-2 gap-2 text-xs">
               <div>
-                <span class="text-gray-600">Strongest Growth:</span>
-                <span class="font-medium text-green-600 ml-1">Johnson Holdings (+{{ Math.round(depositsGrowth * 1.2)
-                }}%)</span>
-              </div>
-              <div>
-                <span class="text-gray-600">Most Stable:</span>
-                <span class="font-medium text-blue-600 ml-1">TechCorp Industries</span>
+                <span class="text-gray-600">Peak Quarter:</span>
+                <span class="font-medium text-green-600 ml-1">Q4 (+18%)</span>
               </div>
               <div>
-                <span class="text-gray-600">Seasonal Pattern:</span>
-                <span class="font-medium text-purple-600 ml-1">Q4 peak (+15%)</span>
+                <span class="text-gray-600">Low Quarter:</span>
+                <span class="font-medium text-orange-600 ml-1">Q1 (-8%)</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Regional Performance Comparison -->
-        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Deposits Performance Ranking</h4>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Deposits Ranking -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Total Deposits Ranking</h5>
+        <!-- Revenue Composition Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">🎯 Revenue by Product Type</h4>
+          <div class="h-64 mb-4">
+            <DoughnutChart v-if="revenueCompositionData" :data="revenueCompositionData"
+              :options="revenueCompositionOptions" />
+          </div>
+          <!-- Product Performance -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Product Performance</h5>
+            <div class="space-y-1">
+              <div v-for="product in topRevenueProducts" :key="product.name" class="flex justify-between text-xs">
+                <span class="text-gray-600">{{ product.name }}:</span>
+                <span class="font-medium" :class="product.growth >= 0 ? 'text-green-600' : 'text-red-600'">
+                  {{ product.growth >= 0 ? '+' : '' }}{{ product.growth }}%
+                </span>
               </div>
-              <div class="p-3">
-                <div class="space-y-2">
-                  <div v-for="(rm, index) in depositsRanking" :key="rm.name"
-                    class="flex justify-between items-center p-2 rounded"
-                    :class="rm.isYou ? 'bg-green-100' : 'bg-gray-50'">
-                    <div class="flex items-center">
-                      <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
-                      <span class="text-sm" :class="rm.isYou ? 'font-bold text-green-700' : 'text-gray-900'">
-                        {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
-                      </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Revenue Breakdown Table -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">📊 Detailed Revenue Analysis by Relationship</h4>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationship
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Revenue FYTD
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Loan Fee
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  TMS Fee
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Deposit NII
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Loan NII
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  YoY Growth %
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Market Share
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Peer Rank
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rel, index) in enhancedRevenueAnalysis" :key="rel.id"
+                class="hover:bg-green-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full bg-cyan-600 flex items-center justify-center">
+                        <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
+                      </div>
                     </div>
-                    <div class="text-right">
-                      <div class="text-sm font-medium">{{ formatCurrency(rm.deposits) }}</div>
-                      <div class="text-xs text-gray-500">{{ rm.growth }}% growth</div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
+                      <div class="text-xs text-gray-500">{{ rel.industry }}</div>
                     </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-cyan-600">
+                  {{ formatCurrency(rel.totalRevenue) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rel.loanFee) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rel.tmsFee) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rel.depositNII) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rel.loanNII) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="font-medium" :class="rel.yoyGrowth >= 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ rel.yoyGrowth >= 0 ? '+' : '' }}{{ rel.yoyGrowth }}%
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ rel.marketShare }}%
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
+                    #{{ index + 1 }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Regional RM Performance Comparison -->
+      <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Revenue Ranking & Benchmarking</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Ranking Table -->
+          <div class="bg-white rounded border">
+            <div class="p-3 border-b border-gray-200">
+              <h5 class="text-sm font-medium text-gray-900">Revenue Performance Ranking</h5>
+            </div>
+            <div class="p-3">
+              <div class="space-y-2">
+                <div v-for="(rm, index) in regionalRMRanking" :key="rm.name"
+                  class="flex justify-between items-center p-2 rounded"
+                  :class="rm.isYou ? 'bg-cyan-100' : 'bg-gray-50'">
+                  <div class="flex items-center">
+                    <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
+                    <span class="text-sm" :class="rm.isYou ? 'font-bold text-cyan-700' : 'text-gray-900'">
+                      {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
+                    </span>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-medium">{{ formatCurrency(rm.revenue) }}</div>
+                    <div class="text-xs text-gray-500">{{ rm.relationships }} rels</div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Performance Metrics -->
-            <div class="bg-white rounded border">
-              <div class="p-3 border-b border-gray-200">
-                <h5 class="text-sm font-medium text-gray-900">Performance vs Peers</h5>
+          <!-- Performance Metrics -->
+          <div class="bg-white rounded border">
+            <div class="p-3 border-b border-gray-200">
+              <h5 class="text-sm font-medium text-gray-900">Performance vs Peers</h5>
+            </div>
+            <div class="p-3 space-y-3">
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Revenue per Relationship:</span>
+                <span class="text-sm font-medium text-green-600">+12% above avg</span>
               </div>
-              <div class="p-3 space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Deposits per Relationship:</span>
-                  <span class="text-sm font-medium text-green-600">+18% above avg</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Deposit Growth YoY:</span>
-                  <span class="text-sm font-medium text-green-600">+{{ depositsGrowth }}% vs +8% avg</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Interest Rate Competitiveness:</span>
-                  <span class="text-sm font-medium text-green-600">Market rate +0.1%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">Account Diversification:</span>
-                  <span class="text-sm font-medium text-green-600">3.8 vs 2.9 avg types</span>
-                </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Revenue Growth YoY:</span>
+                <span class="text-sm font-medium text-green-600">+{{ revenueYoY }}% vs +8% avg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Product Diversification:</span>
+                <span class="text-sm font-medium text-green-600">4.2 vs 3.1 avg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Client Retention Rate:</span>
+                <span class="text-sm font-medium text-green-600">96% vs 92% avg</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Best Practice Insights -->
-        <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 class="font-medium text-blue-900 mb-3">💡 Deposit Growth Optimization</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Growth Opportunities</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Global Retail Corp: Introduce sweep accounts for cash optimization</li>
-                <li>• TechCorp Industries: Treasury management for subsidiary accounts</li>
-                <li>• Johnson Holdings: Investment account upgrade for excess liquidity</li>
-              </ul>
-            </div>
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Best Practices</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Top performers maintain 3.5+ account types per relationship</li>
-                <li>• Quarterly liquidity reviews drive 25% higher deposit growth</li>
-                <li>• Operating account sweeps increase deposits by avg 40%</li>
-              </ul>
-            </div>
+      <!-- Best Practice Insights -->
+      <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 class="font-medium text-blue-900 mb-3">💡 Revenue Optimization Insights</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Top Opportunities</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• TechCorp Industries: +$450K potential from treasury expansion</li>
+              <li>• Johnson Holdings: +$320K from FX services cross-sell</li>
+              <li>• Global Retail: +$280K from lending restructure</li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Best Practices from Top Performers</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Focus on treasury solutions for tech sector clients</li>
+              <li>• Quarterly business reviews drive 23% higher revenue</li>
+              <li>• Cross-selling ratio of 3.5+ products per relationship</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div class="mt-6 flex justify-end">
-          <button @click="showDepositsModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
-        </div>
+      <div class="mt-6 flex justify-end">
+        <button @click="showRevenueModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Enhanced ROE Analytics Modal -->
-    <div v-if="showROEModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">📊 ROE Performance Analytics & Peer Comparison</h3>
-          <button @click="showROEModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+  <!-- Enhanced Relationships Modal -->
+  <div v-if="showRelationshipsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">👥 Relationship Portfolio Analytics</h3>
+        <button @click="showRelationshipsModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Relationship Portfolio Overview -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-blue-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-blue-600">{{ totalRelationships }}</div>
+          <div class="text-sm text-gray-600">Total Relationships</div>
+          <div class="text-xs text-green-500 font-medium">+{{ relationshipsDelta }} FYTD</div>
         </div>
-
-        <!-- ROE Performance Overview -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-purple-50 p-4 rounded-lg text-center border border-purple-200">
-            <div class="text-2xl font-bold text-purple-600">{{ roe }}%</div>
-            <div class="text-sm text-gray-600">Your ROE</div>
-            <div class="text-xs font-medium mt-1" :class="roeChange >= 0 ? 'text-green-500' : 'text-red-500'">
-              {{ roeChange >= 0 ? '+' : '' }}{{ roeChange }}% vs peers
-            </div>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200">
-            <div class="text-2xl font-bold text-gray-600">{{ peerAverageROE }}%</div>
-            <div class="text-sm text-gray-600">Regional Average</div>
-            <div class="text-xs text-gray-500">12 RMs</div>
-          </div>
-          <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-            <div class="text-2xl font-bold text-orange-600">{{ Math.round((totalExpenses / totalRevenue) * 100) }}%
-            </div>
-            <div class="text-sm text-gray-600">Expense Ratio</div>
-            <div class="text-xs text-orange-500">vs 78% industry avg</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-            <div class="text-2xl font-bold text-green-600">🥈 #2</div>
-            <div class="text-sm text-gray-600">Regional Ranking</div>
-            <div class="text-xs text-green-500">Top 17% performance</div>
-          </div>
+        <div class="bg-green-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-green-600">{{ Math.round(totalRelationships * 0.87) }}</div>
+          <div class="text-sm text-gray-600">Credit Relationships</div>
+          <div class="text-xs text-green-500 font-medium">87% penetration</div>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- ROE Trend Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📈 12-Month ROE Trends</h4>
-            <div class="h-64 mb-4">
-              <LineChart v-if="roeTrendAnalysisData" :data="roeTrendAnalysisData" :options="roeTrendAnalysisOptions" />
-            </div>
-            <!-- Performance Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Performance Insights</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Peak Month:</span>
-                  <span class="font-medium text-green-600">Nov 2024 ({{ roe + 2 }}%)</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Improvement:</span>
-                  <span class="font-medium text-purple-600">+{{ Math.abs(roeChange) }}% vs last year</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Trend:</span>
-                  <span class="font-medium text-green-600">Consistent growth</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Peer Comparison Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">👥 Peer vs You Comparison</h4>
-            <div class="h-64 mb-4">
-              <BarChart v-if="roePeerComparisonData" :data="roePeerComparisonData"
-                :options="roePeerComparisonOptions" />
-            </div>
-            <!-- Competitive Analysis -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Competitive Position</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Above Average RMs:</span>
-                  <span class="font-medium text-green-600">8 out of 12</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Gap to #1:</span>
-                  <span class="font-medium text-orange-600">-3.2%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Lead over #3:</span>
-                  <span class="font-medium text-green-600">+4.8%</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="bg-purple-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-purple-600">{{ formatCurrency(Math.round(totalRevenue /
+            totalRelationships)) }}</div>
+          <div class="text-sm text-gray-600">Avg Revenue per Rel</div>
+          <div class="text-xs text-green-500 font-medium">+12% vs peers</div>
         </div>
+        <div class="bg-orange-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-orange-600">96%</div>
+          <div class="text-sm text-gray-600">Retention Rate</div>
+          <div class="text-xs text-green-500 font-medium">+4% vs peers</div>
+        </div>
+      </div>
 
-        <!-- Detailed RM Ranking Table -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">🏆 Regional RM Performance Ranking</h4>
-            <p class="text-sm text-gray-500 mt-1">ROE performance comparison with relationship ranking factors</p>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Rank & RM Name
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ROE %
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Revenue
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationships
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Avg Revenue/Rel
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Expense Ratio
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    YoY Change
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Portfolio Quality
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rm, index) in roeRankingAnalysis" :key="rm.id"
-                  :class="rm.name === 'Sarah Johnson' ? 'bg-purple-50' : 'hover:bg-gray-50'"
-                  class="cursor-pointer transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                          :class="rm.name === 'Sarah Johnson' ? 'bg-purple-600' : 'bg-gray-600'">
-                          <span class="text-xs font-medium text-white">{{ rm.rank }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ rm.name }}
-                          <span v-if="rm.name === 'Sarah Johnson'"
-                            class="ml-2 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                            You
-                          </span>
-                        </div>
-                        <div class="text-xs text-gray-500">{{ rm.region }}</div>
+
+
+      <!-- Detailed Relationship Performance Table -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">📈 Detailed Relationship Performance & Rankings</h4>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationship
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Revenue per Rel
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Product Penetration
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Deposit & Loan
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Growth Trend
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Peer Rank
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rel, index) in enhancedRelationshipAnalysis" :key="rel.id"
+                class="hover:bg-blue-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                        <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
                       </div>
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="text-sm font-bold" :class="getRoeColor(rm.roe)">{{ rm.roe }}%</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ formatCurrency(rm.totalRevenue) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ rm.relationshipCount }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ formatCurrency(rm.avgRevenuePerRel) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="getExpenseRatioColor(rm.expenseRatio)">{{ rm.expenseRatio
-                    }}%</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="rm.yoyChange >= 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ rm.yoyChange >= 0 ? '+' : '' }}{{ rm.yoyChange }}%
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getPortfolioQualityClass(rm.portfolioQuality)">
-                      {{ rm.portfolioQuality }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
+                      <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-blue-600">
+                  {{ formatCurrency(rel.revenue) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="font-medium text-purple-600">{{ rel.productPenetration }}/6</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                    Deposit & Loan
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="font-medium" :class="rel.growthTrend >= 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ rel.growthTrend >= 0 ? '+' : '' }}{{ rel.growthTrend }}%
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
+                    #{{ index + 1 }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Best Practice Insights -->
-        <div class="mt-6 bg-green-50 p-4 rounded-lg border border-green-200">
-          <h4 class="font-medium text-green-900 mb-3">💡 ROE Optimization Insights</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Your Strengths</h5>
-              <ul class="text-sm text-gray-700 space-y-1">
-                <li class="flex items-start">
-                  <span class="text-green-500 mr-2">✓</span>
-                  <span>Revenue per relationship 12% above peer average</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-green-500 mr-2">✓</span>
-                  <span>Expense ratio below industry benchmark</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-green-500 mr-2">✓</span>
-                  <span>Consistent quarter-over-quarter improvement</span>
-                </li>
-              </ul>
+      <!-- Regional Performance Comparison -->
+      <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Relationship Performance Ranking</h4>
+        <div class="grid grid-cols-1 gap-4">
+          <!-- Relationship Count Ranking -->
+          <div class="bg-white rounded border">
+            <div class="p-3 border-b border-gray-200">
+              <h5 class="text-sm font-medium text-gray-900">Total Relationships</h5>
             </div>
-            <div>
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Growth Opportunities</h5>
-              <ul class="text-sm text-gray-700 space-y-1">
-                <li class="flex items-start">
-                  <span class="text-orange-500 mr-2">→</span>
-                  <span>Cross-sell ratio improvement potential</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-orange-500 mr-2">→</span>
-                  <span>Focus on relationship quality enhancement</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-orange-500 mr-2">→</span>
-                  <span>Learn from top performer's fee income strategies</span>
-                </li>
-              </ul>
+            <div class="p-3">
+              <div class="space-y-2">
+                <div v-for="(rm, index) in relationshipCountRanking" :key="rm.name"
+                  class="flex justify-between items-center p-2 rounded"
+                  :class="rm.isYou ? 'bg-blue-100' : 'bg-gray-50'">
+                  <div class="flex items-center">
+                    <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
+                    <span class="text-sm" :class="rm.isYou ? 'font-bold text-blue-700' : 'text-gray-900'">
+                      {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
+                    </span>
+                  </div>
+                  <div class="text-sm font-medium">{{ rm.count }}</div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="mt-6 flex justify-end">
-          <button @click="showROEModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
+
         </div>
+      </div>
+
+      <!-- Best Practice Insights -->
+      <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 class="font-medium text-blue-900 mb-3">💡 Relationship Management Best Practices</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">High-Impact Actions</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Schedule quarterly business reviews with top 5 relationships</li>
+              <li>• Increase touchpoints with TechCorp (last contact 8 days ago)</li>
+              <li>• Introduce Global Retail to treasury team for cross-sell</li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Relationship Optimization</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Top performers average 2.8 meetings/month per relationship</li>
+              <li>• 94% of high-growth relationships have 4+ product penetration</li>
+              <li>• Executive-level contacts drive 35% higher revenue growth</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="showRelationshipsModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Enhanced Credit Commitments Analytics Modal -->
-    <div v-if="showCreditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">🏦 Credit Commitments Portfolio Analytics</h3>
-          <button @click="showCreditModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
+  <!-- Enhanced Deposits Modal -->
+  <div v-if="showDepositsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">💰 Deposits Portfolio Analytics</h3>
+        <button @click="showDepositsModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
 
-        <!-- Credit Portfolio Overview -->
-        <div class="grid grid-cols-5 gap-4 mb-6">
-          <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-            <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalCreditCommitments) }}</div>
-            <div class="text-sm text-gray-600">Total Credit Commitments</div>
-            <div class="text-xs font-medium mt-1 text-green-500">+12% YoY growth</div>
-          </div>
-          <div class="bg-emerald-50 p-4 rounded-lg text-center border border-emerald-200">
-            <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(fytdNewCommitments) }}</div>
-            <div class="text-sm text-gray-600">FYTD New Commitments</div>
-            <div class="text-xs font-medium mt-1 text-emerald-500">{{ newCommitmentsGrowth }}% vs target</div>
-          </div>
-          <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
-            <div class="text-2xl font-bold text-red-600">{{ creditUtilizationRate }}%</div>
-            <div class="text-sm text-gray-600">Utilization Rate</div>
-            <div class="text-xs text-red-500">{{ creditUtilizationRate - 68 }}% above optimal</div>
-          </div>
-          <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
-            <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(avgCreditPerRelationship) }}</div>
-            <div class="text-sm text-gray-600">Avg Credit per Relationship</div>
-            <div class="text-xs text-blue-500">18% above peer average</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-            <div class="text-2xl font-bold text-green-600">🥈 #2</div>
-            <div class="text-sm text-gray-600">Regional Ranking</div>
-            <div class="text-xs text-green-500">Credit portfolio quality</div>
+      <!-- Deposits Performance Overview -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-green-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalDeposits) }}</div>
+          <div class="text-sm text-gray-600">Total Deposits</div>
+          <div class="text-xs font-medium mt-1" :class="depositsGrowth >= 0 ? 'text-green-500' : 'text-red-500'">
+            {{ depositsGrowth >= 0 ? '+' : '' }}{{ depositsGrowth }}% YoY
           </div>
         </div>
+        <div class="bg-blue-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(Math.round(totalDeposits /
+            totalRelationships)) }}</div>
+          <div class="text-sm text-gray-600">Avg Deposits per Rel</div>
+          <div class="text-xs text-green-500 font-medium">+18% vs peers</div>
+        </div>
+        <div class="bg-purple-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-purple-600">2.4%</div>
+          <div class="text-sm text-gray-600">Avg Interest Rate</div>
+          <div class="text-xs text-green-500 font-medium">Market competitive</div>
+        </div>
+        <div class="bg-orange-50 p-4 rounded-lg text-center">
+          <div class="text-2xl font-bold text-orange-600">🥇 #1</div>
+          <div class="text-sm text-gray-600">Regional Ranking</div>
+          <div class="text-xs text-green-500">of 12 RMs</div>
+        </div>
+      </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Credit Trend Analysis -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📈 12-Month Credit Trends</h4>
-            <div class="h-64 mb-4">
-              <BarChart v-if="creditTrendAnalysisData" :data="creditTrendAnalysisData"
-                :options="creditTrendAnalysisOptions" />
-            </div>
-            <!-- Credit Growth Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Credit Growth Analysis</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Peak Growth Month:</span>
-                  <span class="font-medium text-green-600">Oct 2024 (+8.2%)</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Avg Monthly Growth:</span>
-                  <span class="font-medium text-blue-600">2.1%</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Credit Quality Trend:</span>
-                  <span class="font-medium text-green-600">Improving</span>
-                </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Deposit Composition Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📊 Deposit Portfolio Composition</h4>
+          <div class="h-64 mb-4">
+            <DoughnutChart v-if="depositCompositionData" :data="depositCompositionData"
+              :options="depositCompositionOptions" />
+          </div>
+          <!-- Composition Insights -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Portfolio Balance</h5>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span class="text-gray-600">Operating Accounts:</span>
+                <span class="font-medium text-blue-600 ml-1">42%</span>
               </div>
-            </div>
-          </div>
-
-          <!-- Credit Type Distribution -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">🎯 Credit Type Distribution</h4>
-            <div class="h-64 mb-4">
-              <DoughnutChart v-if="creditTypeDistributionData" :data="creditTypeDistributionData"
-                :options="creditTypeDistributionOptions" />
-            </div>
-            <!-- Credit Type Performance -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Type Performance</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Highest Growth:</span>
-                  <span class="font-medium text-green-600">SBA Loans (+28%)</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Highest Yield:</span>
-                  <span class="font-medium text-blue-600">Equipment Finance (6.8%)</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Concentration Risk:</span>
-                  <span class="font-medium text-orange-600">{{ creditConcentration }}% (Top 3)</span>
-                </div>
+              <div>
+                <span class="text-gray-600">Investment Accounts:</span>
+                <span class="font-medium text-green-600 ml-1">35%</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Money Market:</span>
+                <span class="font-medium text-purple-600 ml-1">18%</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Savings:</span>
+                <span class="font-medium text-orange-600 ml-1">5%</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Detailed Credit Analysis Table -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">🏢 Credit Analysis by Relationship</h4>
-            <p class="text-sm text-gray-500 mt-1">Comprehensive credit exposure with Johnson Holdings Group
-              highlighted
-            </p>
+        <!-- Interest Rate Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📈 Interest Rate & Spread Analysis</h4>
+          <div class="h-64 mb-4">
+            <LineChart v-if="interestRateAnalysisData" :data="interestRateAnalysisData"
+              :options="interestRateAnalysisOptions" />
           </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Commitment
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Outstanding Balance
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    FYTD New Commitment
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Utilization %
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Profitability Ratio
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rel, index) in enhancedCreditAnalysis" :key="rel.id"
-                  :class="rel.name === 'Johnson Holdings Group' ? 'bg-orange-50 hover:bg-orange-100' : 'hover:bg-gray-50'"
-                  class="cursor-pointer transition-colors" @click="drillDownToRelationshipCredit(rel)">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                          :class="rel.name === 'Johnson Holdings Group' ? 'bg-orange-600' : 'bg-gray-600'">
-                          <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ rel.name }}
-                          <span v-if="rel.name === 'Johnson Holdings Group'"
-                            class="ml-2 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
-                            Primary Focus
-                          </span>
-                        </div>
-                        <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+          <!-- Rate Insights -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Rate Performance</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Avg Rate Paid:</span>
+                <span class="font-medium text-blue-600">2.4%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Net Interest Margin:</span>
+                <span class="font-medium text-green-600">3.2%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Rate Sensitivity:</span>
+                <span class="font-medium text-purple-600">Medium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Deposits Analysis Table -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">📈 Detailed Deposits Analysis & Performance Rankings</h4>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationship
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Deposits
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Growth FYTD
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Avg Interest Rate
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Account Types
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Deposit Stability
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Peer Rank
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rel, index) in enhancedDepositsAnalysis" :key="rel.id"
+                class="hover:bg-green-50 cursor-pointer transition-colors" @click="drillDownToRelationship(rel)">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center">
+                        <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
                       </div>
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
-                    {{ formatCurrency(rel.totalCommitment) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rel.loans) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
-                    <span :class="rel.fytdNewCommitment > 0 ? 'text-green-600' : 'text-gray-500'">
-                      {{ formatCurrency(rel.fytdNewCommitment) }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="getUtilizationColor(rel.utilizationRate)">
-                      {{ rel.utilizationRate }}%
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="rel.profitability >= 0.02 ? 'text-green-600' : 'text-red-600'">
-                      {{ rel.profitability.toFixed(2) }}%
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ rel.name }}</div>
+                      <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-green-600">
+                  {{ formatCurrency(rel.deposits) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <span class="font-medium" :class="rel.depositsDelta >= 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ rel.depositsDelta >= 0 ? '+' : '' }}{{ formatCurrency(rel.depositsDelta) }}
+                  </span>
+                  <div class="text-xs text-gray-500">
+                    {{ rel.depositGrowthPercent >= 0 ? '+' : '' }}{{ rel.depositGrowthPercent }}%
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="font-medium text-blue-600">{{ rel.avgInterestRate }}%</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="font-medium text-purple-600">{{ rel.accountTypes }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="getDepositStabilityClass(rel.depositStability)">
+                    {{ rel.depositStability }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="index === 0 ? 'bg-yellow-100 text-yellow-800' : index === 1 ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'">
+                    #{{ index + 1 }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Regional RM Credit Performance Ranking -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">🏆 Regional Credit Portfolio Ranking</h4>
-            <p class="text-sm text-gray-500 mt-1">Credit management performance comparison among regional RMs</p>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Rank & RM Name
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Commitments
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Utilization %
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Avg Credit/Rel
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Credit Growth %
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="rm in creditRankingAnalysis" :key="rm.id"
-                  :class="rm.name === 'Sarah Johnson' ? 'bg-orange-50' : 'hover:bg-gray-50'"
-                  class="cursor-pointer transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-8 w-8">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                          :class="rm.name === 'Sarah Johnson' ? 'bg-orange-600' : 'bg-gray-600'">
-                          <span class="text-xs font-medium text-white">{{ rm.rank }}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ rm.name }}
-                          <span v-if="rm.name === 'Sarah Johnson'"
-                            class="ml-2 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
-                            You
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
-                    {{ formatCurrency(rm.totalCommitments) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="getUtilizationColor(rm.utilization)">{{ rm.utilization
-                    }}%</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                    {{ formatCurrency(rm.avgCreditPerRel) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="font-medium" :class="rm.creditGrowth >= 10 ? 'text-green-600' : 'text-orange-600'">
-                      +{{ rm.creditGrowth }}%
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <!-- Deposit Trends Analysis -->
+      <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h4 class="font-medium text-gray-900 mb-3">📈 24-Month Deposit Trends by Relationship</h4>
+        <div class="h-64 mb-4">
+          <BarChart v-if="enhanced24MonthDepositsData" :data="enhanced24MonthDepositsData"
+            :options="enhanced24MonthDepositsOptions" />
         </div>
-
-        <!-- Johnson Holdings Group - Detailed Credit Profile -->
-        <div class="mt-6 bg-orange-50 p-4 rounded-lg border border-orange-200">
-          <h4 class="font-medium text-orange-900 mb-3">🔍 Johnson Holdings Group - Credit Portfolio Details</h4>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Credit Facilities Breakdown -->
-            <div class="bg-white rounded border border-orange-200">
-              <div class="p-3 border-b border-orange-200">
-                <h5 class="text-sm font-medium text-gray-900">Credit Facilities Breakdown</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-3">
-                  <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">Term Loan A</div>
-                      <div class="text-xs text-gray-600">Maturity: Dec 2027 • Rate: 5.75%</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-sm font-bold text-orange-600">{{ formatCurrency(111000000) }}</div>
-                      <div class="text-xs text-gray-500">Outstanding</div>
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">Revolving Credit Line</div>
-                      <div class="text-xs text-gray-600">Maturity: Jun 2026 • Rate: SOFR+275</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-sm font-bold text-orange-600">{{ formatCurrency(55500000) }}</div>
-                      <div class="text-xs text-gray-500">Available</div>
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">Equipment Finance</div>
-                      <div class="text-xs text-gray-600">Maturity: Mar 2029 • Rate: 6.25%</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-sm font-bold text-orange-600">{{ formatCurrency(18500000) }}</div>
-                      <div class="text-xs text-gray-500">Outstanding</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Credit Performance Metrics -->
-            <div class="bg-white rounded border border-orange-200">
-              <div class="p-3 border-b border-orange-200">
-                <h5 class="text-sm font-medium text-gray-900">Performance Metrics</h5>
-              </div>
-              <div class="p-3 space-y-3">
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="text-center p-2 bg-green-50 rounded">
-                    <div class="text-lg font-bold text-green-600">A+</div>
-                    <div class="text-xs text-gray-600">Credit Rating</div>
-                  </div>
-                  <div class="text-center p-2 bg-blue-50 rounded">
-                    <div class="text-lg font-bold text-blue-600">1.85x</div>
-                    <div class="text-xs text-gray-600">DSCR Ratio</div>
-                  </div>
-                </div>
-                <div class="border-t pt-3">
-                  <div class="space-y-2 text-xs">
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Payment History:</span>
-                      <span class="font-medium text-green-600">Excellent (98.5%)</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Covenant Compliance:</span>
-                      <span class="font-medium text-green-600">All Current</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Last Review Date:</span>
-                      <span class="font-medium text-blue-600">Nov 15, 2024</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Profitability Score:</span>
-                      <span class="font-medium text-green-600">1.73% ROA</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Credit Management Best Practices -->
-        <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 class="font-medium text-blue-900 mb-3">💡 Credit Portfolio Optimization Insights</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Trend Insights -->
+        <div class="bg-white p-3 rounded border">
+          <h5 class="text-sm font-medium text-gray-900 mb-2">Trend Analysis</h5>
+          <div class="grid grid-cols-3 gap-4 text-xs">
             <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Portfolio Strengths</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Credit quality above regional average (AA+ vs AA)</li>
-                <li>• Strong covenant compliance across all relationships</li>
-                <li>• Diversified credit type distribution</li>
-                <li>• Johnson Holdings Group excellent payment history</li>
-              </ul>
+              <span class="text-gray-600">Strongest Growth:</span>
+              <span class="font-medium text-green-600 ml-1">Johnson Holdings (+{{ Math.round(depositsGrowth * 1.2)
+              }}%)</span>
             </div>
             <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Growth Opportunities</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Consider SBA loan expansion for manufacturing clients</li>
-                <li>• Cross-sell equipment financing to existing relationships</li>
-                <li>• Optimize utilization rates for better fee income</li>
-                <li>• Focus on covenant-light structures for premium clients</li>
-              </ul>
+              <span class="text-gray-600">Most Stable:</span>
+              <span class="font-medium text-blue-600 ml-1">TechCorp Industries</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Seasonal Pattern:</span>
+              <span class="font-medium text-purple-600 ml-1">Q4 peak (+15%)</span>
             </div>
           </div>
         </div>
+      </div>
 
+      <!-- Regional Performance Comparison -->
+      <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h4 class="font-medium text-gray-900 mb-3">🏆 Regional RM Deposits Performance Ranking</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Deposits Ranking -->
+          <div class="bg-white rounded border">
+            <div class="p-3 border-b border-gray-200">
+              <h5 class="text-sm font-medium text-gray-900">Total Deposits Ranking</h5>
+            </div>
+            <div class="p-3">
+              <div class="space-y-2">
+                <div v-for="(rm, index) in depositsRanking" :key="rm.name"
+                  class="flex justify-between items-center p-2 rounded"
+                  :class="rm.isYou ? 'bg-green-100' : 'bg-gray-50'">
+                  <div class="flex items-center">
+                    <span class="text-sm font-medium mr-2">{{ index + 1 }}.</span>
+                    <span class="text-sm" :class="rm.isYou ? 'font-bold text-green-700' : 'text-gray-900'">
+                      {{ rm.name }}{{ rm.isYou ? ' (You)' : '' }}
+                    </span>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-medium">{{ formatCurrency(rm.deposits) }}</div>
+                    <div class="text-xs text-gray-500">{{ rm.growth }}% growth</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-
-        <div class="mt-6 flex justify-end">
-          <button @click="showCreditModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
+          <!-- Performance Metrics -->
+          <div class="bg-white rounded border">
+            <div class="p-3 border-b border-gray-200">
+              <h5 class="text-sm font-medium text-gray-900">Performance vs Peers</h5>
+            </div>
+            <div class="p-3 space-y-3">
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Deposits per Relationship:</span>
+                <span class="text-sm font-medium text-green-600">+18% above avg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Deposit Growth YoY:</span>
+                <span class="text-sm font-medium text-green-600">+{{ depositsGrowth }}% vs +8% avg</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Interest Rate Competitiveness:</span>
+                <span class="text-sm font-medium text-green-600">Market rate +0.1%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Account Diversification:</span>
+                <span class="text-sm font-medium text-green-600">3.8 vs 2.9 avg types</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Best Practice Insights -->
+      <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 class="font-medium text-blue-900 mb-3">💡 Deposit Growth Optimization</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Growth Opportunities</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Global Retail Corp: Introduce sweep accounts for cash optimization</li>
+              <li>• TechCorp Industries: Treasury management for subsidiary accounts</li>
+              <li>• Johnson Holdings: Investment account upgrade for excess liquidity</li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Best Practices</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Top performers maintain 3.5+ account types per relationship</li>
+              <li>• Quarterly liquidity reviews drive 25% higher deposit growth</li>
+              <li>• Operating account sweeps increase deposits by avg 40%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="showDepositsModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Referral Modal -->
-    <div v-if="showReferralModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-gray-900">🤝 Referral Details</h3>
-          <button @click="showReferralModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="space-y-4">
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold text-blue-600">{{ wealthReferrals }}</div>
-              <div class="text-sm text-gray-600">Wealth Referrals</div>
-            </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <div class="text-2xl font-bold text-green-600">{{ commercialReferrals }}</div>
-              <div class="text-sm text-gray-600">Commercial Referrals</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <div class="text-2xl font-bold text-purple-600">{{ retailReferrals }}</div>
-              <div class="text-sm text-gray-600">Retail Referrals</div>
-            </div>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-2">Referral Performance</h4>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-indigo-600">{{ referralRate }}%</div>
-              <div class="text-sm text-gray-600">Overall referral conversion rate</div>
-              <div class="text-xs text-gray-500 mt-1">{{ totalReferrals }} total referrals this period</div>
-            </div>
+  <!-- Enhanced ROE Analytics Modal -->
+  <div v-if="showROEModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">📊 ROE Performance Analytics & Peer Comparison</h3>
+        <button @click="showROEModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ROE Performance Overview -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-purple-50 p-4 rounded-lg text-center border border-purple-200">
+          <div class="text-2xl font-bold text-purple-600">{{ roe }}%</div>
+          <div class="text-sm text-gray-600">Your ROE</div>
+          <div class="text-xs font-medium mt-1" :class="roeChange >= 0 ? 'text-green-500' : 'text-red-500'">
+            {{ roeChange >= 0 ? '+' : '' }}{{ roeChange }}% vs peers
           </div>
         </div>
-        <div class="mt-6 flex justify-end">
-          <button @click="showReferralModal = false"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            Close
-          </button>
+        <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200">
+          <div class="text-2xl font-bold text-gray-600">{{ peerAverageROE }}%</div>
+          <div class="text-sm text-gray-600">Regional Average</div>
+          <div class="text-xs text-gray-500">12 RMs</div>
+        </div>
+        <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
+          <div class="text-2xl font-bold text-orange-600">{{ Math.round((totalExpenses / totalRevenue) * 100) }}%
+          </div>
+          <div class="text-sm text-gray-600">Expense Ratio</div>
+          <div class="text-xs text-orange-500">vs 78% industry avg</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
+          <div class="text-2xl font-bold text-green-600">🥈 #2</div>
+          <div class="text-sm text-gray-600">Regional Ranking</div>
+          <div class="text-xs text-green-500">Top 17% performance</div>
         </div>
       </div>
-    </div> -->
 
-    <!-- Enhanced Risk Analytics Modal -->
-    <div v-if="showRiskModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div
-        class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">🚨 Risk Analytics & Review Dashboard</h3>
-          <button @click="showRiskModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Risk Overview Dashboard -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
-            <div class="text-2xl font-bold text-red-600">{{ totalRiskReviews }}</div>
-            <div class="text-sm text-gray-600">Total Risk Reviews</div>
-            <div class="text-xs text-red-500 font-medium">{{ Math.floor(totalRiskReviews / totalRelationships * 100)
-            }}% of portfolio</div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- ROE Trend Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📈 12-Month ROE Trends</h4>
+          <div class="h-64 mb-4">
+            <LineChart v-if="roeTrendAnalysisData" :data="roeTrendAnalysisData" :options="roeTrendAnalysisOptions" />
           </div>
-          <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-            <div class="text-2xl font-bold text-orange-600">{{ totalRiskFlags }}</div>
-            <div class="text-sm text-gray-600">Pending Review</div>
-            <div class="text-xs text-orange-500 font-medium">{{ riskFlagsPercentile }}th percentile</div>
-          </div>
-          <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
-            <div class="text-2xl font-bold text-blue-600">{{ reviewedWithAction }}</div>
-            <div class="text-sm text-gray-600">Reviewed with Action</div>
-            <div class="text-xs text-blue-500 font-medium">{{ Math.floor(reviewedWithAction / totalRiskFlags * 100)
-            }}%
-              of flags</div>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-            <div class="text-2xl font-bold text-green-600">{{ reviewedWithoutAction }}</div>
-            <div class="text-sm text-gray-600">Reviewed without Action</div>
-            <div class="text-xs text-green-500 font-medium">{{ Math.floor(reviewedWithoutAction / totalRiskFlags *
-              100)
-            }}% of flags</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Risk Review Distribution -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📊 Risk Review Distribution</h4>
-            <div class="h-64 mb-4">
-              <DoughnutChart v-if="riskReviewDistributionData" :data="riskReviewDistributionData"
-                :options="riskReviewDistributionOptions" />
-            </div>
-            <!-- Risk Review Legend -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Review Categories</h5>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div v-for="review in riskReviewCategories" :key="review.name" class="flex justify-between">
-                  <span class="text-gray-600">{{ review.name }}:</span>
-                  <span class="font-medium" :class="review.color">{{ review.count }}</span>
-                </div>
+          <!-- Performance Insights -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Performance Insights</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Peak Month:</span>
+                <span class="font-medium text-green-600">Nov 2024 ({{ roe + 2 }}%)</span>
               </div>
-            </div>
-          </div>
-
-          <!-- Risk Review Trends -->
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-medium text-gray-900 mb-3">📈 Risk Review Trends</h4>
-            <div class="h-64 mb-4">
-              <BarChart v-if="riskReviewTrendData" :data="riskReviewTrendData" :options="riskReviewTrendOptions" />
-            </div>
-            <!-- Risk Review Insights -->
-            <div class="bg-white p-3 rounded border">
-              <h5 class="text-sm font-medium text-gray-900 mb-2">Review Trend Insights</h5>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Peak Review Month:</span>
-                  <span class="font-medium text-red-600">{{ peakRiskMonth }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Review Trend:</span>
-                  <span class="font-medium"
-                    :class="riskTrendDirection === 'Increasing' ? 'text-red-600' : 'text-green-600'">{{
-                      riskTrendDirection }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Avg Resolution Time:</span>
-                  <span class="font-medium text-blue-600">{{ avgResolutionTime }} days</span>
-                </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Improvement:</span>
+                <span class="font-medium text-purple-600">+{{ Math.abs(roeChange) }}% vs last year</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Trend:</span>
+                <span class="font-medium text-green-600">Consistent growth</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Detailed Risk Analysis by Relationship -->
-        <div class="mt-6 bg-white rounded-lg border border-gray-200">
-          <div class="p-4 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">🔍 Detailed Risk Analysis by Relationship</h4>
-            <p class="text-sm text-gray-500 mt-1">Comprehensive risk assessment with Johnson Holdings Group
-              highlighted
-            </p>
+        <!-- Peer Comparison Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">👥 Peer vs You Comparison</h4>
+          <div class="h-64 mb-4">
+            <BarChart v-if="roePeerComparisonData" :data="roePeerComparisonData" :options="roePeerComparisonOptions" />
           </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Relationship
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Active Reviews
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Pending Reviews
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    UTRs Filed
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Reviewed with Action
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Reviewed without Action
-                  </th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(rel, index) in enhancedRiskAnalysis" :key="rel.id" class="cursor-pointer transition-colors"
-                  :class="rel.name === 'Johnson Holdings Group' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50'"
-                  @click="drillDownToRelationshipRisk(rel)">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div>
+          <!-- Competitive Analysis -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Competitive Position</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Above Average RMs:</span>
+                <span class="font-medium text-green-600">8 out of 12</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Gap to #1:</span>
+                <span class="font-medium text-orange-600">-3.2%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Lead over #3:</span>
+                <span class="font-medium text-green-600">+4.8%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed RM Ranking Table -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">🏆 Regional RM Performance Ranking</h4>
+          <p class="text-sm text-gray-500 mt-1">ROE performance comparison with relationship ranking factors</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Rank & RM Name
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ROE %
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Revenue
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationships
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Avg Revenue/Rel
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Expense Ratio
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  YoY Change
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Portfolio Quality
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rm, index) in roeRankingAnalysis" :key="rm.id"
+                :class="rm.name === 'Sarah Johnson' ? 'bg-purple-50' : 'hover:bg-gray-50'"
+                class="cursor-pointer transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full flex items-center justify-center"
+                        :class="rm.name === 'Sarah Johnson' ? 'bg-purple-600' : 'bg-gray-600'">
+                        <span class="text-xs font-medium text-white">{{ rm.rank }}</span>
+                      </div>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ rm.name }}
+                        <span v-if="rm.name === 'Sarah Johnson'"
+                          class="ml-2 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
+                          You
+                        </span>
+                      </div>
+                      <div class="text-xs text-gray-500">{{ rm.region }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="text-sm font-bold" :class="getRoeColor(rm.roe)">{{ rm.roe }}%</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ formatCurrency(rm.totalRevenue) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ rm.relationshipCount }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ formatCurrency(rm.avgRevenuePerRel) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="getExpenseRatioColor(rm.expenseRatio)">{{ rm.expenseRatio
+                  }}%</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="rm.yoyChange >= 0 ? 'text-green-600' : 'text-red-600'">
+                    {{ rm.yoyChange >= 0 ? '+' : '' }}{{ rm.yoyChange }}%
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="getPortfolioQualityClass(rm.portfolioQuality)">
+                    {{ rm.portfolioQuality }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Best Practice Insights -->
+      <div class="mt-6 bg-green-50 p-4 rounded-lg border border-green-200">
+        <h4 class="font-medium text-green-900 mb-3">💡 ROE Optimization Insights</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Your Strengths</h5>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">✓</span>
+                <span>Revenue per relationship 12% above peer average</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">✓</span>
+                <span>Expense ratio below industry benchmark</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">✓</span>
+                <span>Consistent quarter-over-quarter improvement</span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Growth Opportunities</h5>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li class="flex items-start">
+                <span class="text-orange-500 mr-2">→</span>
+                <span>Cross-sell ratio improvement potential</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-orange-500 mr-2">→</span>
+                <span>Focus on relationship quality enhancement</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-orange-500 mr-2">→</span>
+                <span>Learn from top performer's fee income strategies</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="showROEModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Credit Commitments Analytics Modal -->
+  <div v-if="showCreditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">🏦 Credit Commitments Portfolio Analytics</h3>
+        <button @click="showCreditModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Credit Portfolio Overview -->
+      <div class="grid grid-cols-5 gap-4 mb-6">
+        <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
+          <div class="text-2xl font-bold text-orange-600">{{ formatCurrency(totalCreditCommitments) }}</div>
+          <div class="text-sm text-gray-600">Total Credit Commitments</div>
+          <div class="text-xs font-medium mt-1 text-green-500">+12% YoY growth</div>
+        </div>
+        <div class="bg-emerald-50 p-4 rounded-lg text-center border border-emerald-200">
+          <div class="text-2xl font-bold text-emerald-600">{{ formatCurrency(fytdNewCommitments) }}</div>
+          <div class="text-sm text-gray-600">FYTD New Commitments</div>
+          <div class="text-xs font-medium mt-1 text-emerald-500">{{ newCommitmentsGrowth }}% vs target</div>
+        </div>
+        <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+          <div class="text-2xl font-bold text-red-600">{{ creditUtilizationRate }}%</div>
+          <div class="text-sm text-gray-600">Utilization Rate</div>
+          <div class="text-xs text-red-500">{{ creditUtilizationRate - 68 }}% above optimal</div>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+          <div class="text-2xl font-bold text-blue-600">{{ formatCurrency(avgCreditPerRelationship) }}</div>
+          <div class="text-sm text-gray-600">Avg Credit per Relationship</div>
+          <div class="text-xs text-blue-500">18% above peer average</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
+          <div class="text-2xl font-bold text-green-600">🥈 #2</div>
+          <div class="text-sm text-gray-600">Regional Ranking</div>
+          <div class="text-xs text-green-500">Credit portfolio quality</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Credit Trend Analysis -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📈 12-Month Credit Trends</h4>
+          <div class="h-64 mb-4">
+            <BarChart v-if="creditTrendAnalysisData" :data="creditTrendAnalysisData"
+              :options="creditTrendAnalysisOptions" />
+          </div>
+          <!-- Credit Growth Insights -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Credit Growth Analysis</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Peak Growth Month:</span>
+                <span class="font-medium text-green-600">Oct 2024 (+8.2%)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Avg Monthly Growth:</span>
+                <span class="font-medium text-blue-600">2.1%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Credit Quality Trend:</span>
+                <span class="font-medium text-green-600">Improving</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit Type Distribution -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">🎯 Credit Type Distribution</h4>
+          <div class="h-64 mb-4">
+            <DoughnutChart v-if="creditTypeDistributionData" :data="creditTypeDistributionData"
+              :options="creditTypeDistributionOptions" />
+          </div>
+          <!-- Credit Type Performance -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Type Performance</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Highest Growth:</span>
+                <span class="font-medium text-green-600">SBA Loans (+28%)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Highest Yield:</span>
+                <span class="font-medium text-blue-600">Equipment Finance (6.8%)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Concentration Risk:</span>
+                <span class="font-medium text-orange-600">{{ creditConcentration }}% (Top 3)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Credit Analysis Table -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">🏢 Credit Analysis by Relationship</h4>
+          <p class="text-sm text-gray-500 mt-1">Comprehensive credit exposure with Johnson Holdings Group
+            highlighted
+          </p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationship
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Commitment
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Outstanding Balance
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  FYTD New Commitment
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Utilization %
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Profitability Ratio
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rel, index) in enhancedCreditAnalysis" :key="rel.id"
+                :class="rel.name === 'Johnson Holdings Group' ? 'bg-orange-50 hover:bg-orange-100' : 'hover:bg-gray-50'"
+                class="cursor-pointer transition-colors" @click="drillDownToRelationshipCredit(rel)">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full flex items-center justify-center"
+                        :class="rel.name === 'Johnson Holdings Group' ? 'bg-orange-600' : 'bg-gray-600'">
+                        <span class="text-xs font-medium text-white">{{ rel.name.charAt(0) }}</span>
+                      </div>
+                    </div>
+                    <div class="ml-4">
                       <div class="text-sm font-medium text-gray-900">
                         {{ rel.name }}
                         <span v-if="rel.name === 'Johnson Holdings Group'"
-                          class="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
-                          Primary Client
+                          class="ml-2 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
+                          Primary Focus
                         </span>
                       </div>
                       <div class="text-xs text-gray-500">{{ rel.industry }}</div>
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span v-if="rel.riskFlags > 0"
-                      class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                      {{ rel.riskFlags }}
-                    </span>
-                    <span v-else class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span v-if="rel.pendingReviews > 0"
-                      class="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
-                      {{ rel.pendingReviews }}
-                    </span>
-                    <span v-else class="text-gray-400">-</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span v-if="rel.utrs > 0"
-                      class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-                      {{ rel.utrs }}
-                    </span>
-                    <span v-else class="text-gray-400">0</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                      {{ rel.reviewedWithAction || 0 }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                      {{ rel.reviewedWithoutAction || 0 }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <div class="flex space-x-2">
-                      <button @click.stop="reviewRisk(rel)"
-                        class="text-blue-600 hover:text-blue-800 text-xs font-medium">
-                        Review
-                      </button>
-                      <button @click.stop="viewRiskDetails(rel)"
-                        class="text-green-600 hover:text-green-800 text-xs font-medium">
-                        Details
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
+                  {{ formatCurrency(rel.totalCommitment) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rel.loans) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
+                  <span :class="rel.fytdNewCommitment > 0 ? 'text-green-600' : 'text-gray-500'">
+                    {{ formatCurrency(rel.fytdNewCommitment) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="getUtilizationColor(rel.utilizationRate)">
+                    {{ rel.utilizationRate }}%
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="rel.profitability >= 0.02 ? 'text-green-600' : 'text-red-600'">
+                    {{ rel.profitability.toFixed(2) }}%
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Johnson Holdings Group - Detailed Risk Profile -->
-        <div class="mt-6 bg-red-50 p-4 rounded-lg border border-red-200">
-          <h4 class="font-medium text-red-900 mb-3">🔍 Johnson Holdings Group - Detailed Risk Profile</h4>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Risk Flag Details -->
-            <div class="bg-white rounded border border-red-200">
-              <div class="p-3 border-b border-red-200">
-                <h5 class="text-sm font-medium text-gray-900">Active Risk Flags</h5>
-              </div>
-              <div class="p-3">
-                <div class="space-y-3">
-                  <div v-for="flag in johnsonRiskFlags" :key="flag.id" class="flex items-start space-x-3">
-                    <div class="flex-shrink-0">
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                        :class="flag.severityClass">
-                        {{ flag.severity }}
-                      </span>
+      <!-- Regional RM Credit Performance Ranking -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">🏆 Regional Credit Portfolio Ranking</h4>
+          <p class="text-sm text-gray-500 mt-1">Credit management performance comparison among regional RMs</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Rank & RM Name
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Commitments
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Utilization %
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Avg Credit/Rel
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Credit Growth %
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="rm in creditRankingAnalysis" :key="rm.id"
+                :class="rm.name === 'Sarah Johnson' ? 'bg-orange-50' : 'hover:bg-gray-50'"
+                class="cursor-pointer transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <div class="h-8 w-8 rounded-full flex items-center justify-center"
+                        :class="rm.name === 'Sarah Johnson' ? 'bg-orange-600' : 'bg-gray-600'">
+                        <span class="text-xs font-medium text-white">{{ rm.rank }}</span>
+                      </div>
                     </div>
-                    <div class="flex-1">
-                      <div class="text-sm font-medium text-gray-900">{{ flag.category }}</div>
-                      <div class="text-xs text-gray-600">{{ flag.description }}</div>
-                      <div class="text-xs text-gray-500 mt-1">{{ flag.dateIdentified }} • {{ flag.amount ?
-                        formatCurrency(flag.amount) : 'N/A' }}</div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ rm.name }}
+                        <span v-if="rm.name === 'Sarah Johnson'"
+                          class="ml-2 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
+                          You
+                        </span>
+                      </div>
                     </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
+                  {{ formatCurrency(rm.totalCommitments) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="getUtilizationColor(rm.utilization)">{{ rm.utilization
+                  }}%</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                  {{ formatCurrency(rm.avgCreditPerRel) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                  <span class="font-medium" :class="rm.creditGrowth >= 10 ? 'text-green-600' : 'text-orange-600'">
+                    +{{ rm.creditGrowth }}%
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Johnson Holdings Group - Detailed Credit Profile -->
+      <div class="mt-6 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h4 class="font-medium text-orange-900 mb-3">🔍 Johnson Holdings Group - Credit Portfolio Details</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Credit Facilities Breakdown -->
+          <div class="bg-white rounded border border-orange-200">
+            <div class="p-3 border-b border-orange-200">
+              <h5 class="text-sm font-medium text-gray-900">Credit Facilities Breakdown</h5>
+            </div>
+            <div class="p-3">
+              <div class="space-y-3">
+                <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">Term Loan A</div>
+                    <div class="text-xs text-gray-600">Maturity: Dec 2027 • Rate: 5.75%</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-bold text-orange-600">{{ formatCurrency(111000000) }}</div>
+                    <div class="text-xs text-gray-500">Outstanding</div>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">Revolving Credit Line</div>
+                    <div class="text-xs text-gray-600">Maturity: Jun 2026 • Rate: SOFR+275</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-bold text-orange-600">{{ formatCurrency(55500000) }}</div>
+                    <div class="text-xs text-gray-500">Available</div>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center p-2 bg-orange-50 rounded">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">Equipment Finance</div>
+                    <div class="text-xs text-gray-600">Maturity: Mar 2029 • Rate: 6.25%</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-bold text-orange-600">{{ formatCurrency(18500000) }}</div>
+                    <div class="text-xs text-gray-500">Outstanding</div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Risk Metrics & Analytics -->
-            <div class="bg-white rounded border border-red-200">
-              <div class="p-3 border-b border-red-200">
-                <h5 class="text-sm font-medium text-gray-900">Risk Analytics</h5>
-              </div>
-              <div class="p-3 space-y-3">
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="text-center p-2 bg-red-50 rounded">
-                    <div class="text-lg font-bold text-red-600">{{ johnsonRiskMetrics.totalTransactions }}</div>
-                    <div class="text-xs text-gray-600">Risk Transactions</div>
-                  </div>
-                  <div class="text-center p-2 bg-orange-50 rounded">
-                    <div class="text-lg font-bold text-orange-600">{{ formatCurrency(johnsonRiskMetrics.totalAmount)
-                    }}
-                    </div>
-                    <div class="text-xs text-gray-600">Total Risk Amount</div>
-                  </div>
+          <!-- Credit Performance Metrics -->
+          <div class="bg-white rounded border border-orange-200">
+            <div class="p-3 border-b border-orange-200">
+              <h5 class="text-sm font-medium text-gray-900">Performance Metrics</h5>
+            </div>
+            <div class="p-3 space-y-3">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-2 bg-green-50 rounded">
+                  <div class="text-lg font-bold text-green-600">A+</div>
+                  <div class="text-xs text-gray-600">Credit Rating</div>
                 </div>
-                <div class="border-t pt-3">
-                  <div class="space-y-2 text-xs">
-
-                  </div>
+                <div class="text-center p-2 bg-blue-50 rounded">
+                  <div class="text-lg font-bold text-blue-600">1.85x</div>
+                  <div class="text-xs text-gray-600">DSCR Ratio</div>
                 </div>
               </div>
+              <div class="border-t pt-3">
+                <div class="space-y-2 text-xs">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Payment History:</span>
+                    <span class="font-medium text-green-600">Excellent (98.5%)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Covenant Compliance:</span>
+                    <span class="font-medium text-green-600">All Current</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Last Review Date:</span>
+                    <span class="font-medium text-blue-600">Nov 15, 2024</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Profitability Score:</span>
+                    <span class="font-medium text-green-600">1.73% ROA</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Risk Management Actions -->
-        <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 class="font-medium text-blue-900 mb-3">🎯 Risk Management Actions & Recommendations</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Immediate Actions Required</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Complete Johnson Holdings Group risk assessment (2 days overdue)</li>
-                <li>• Review TechCorp Industries high-cash transaction patterns</li>
-                <li>• Update Global Retail Corp compliance documentation</li>
-                <li>• File pending UTR for Johnson Holdings crypto activity</li>
-              </ul>
-            </div>
-            <div>
-              <h5 class="text-sm font-medium text-blue-800 mb-2">Strategic Risk Mitigation</h5>
-              <ul class="text-sm text-blue-700 space-y-1">
-                <li>• Implement enhanced monitoring for manufacturing sector clients</li>
-                <li>• Schedule quarterly risk reviews for high-exposure relationships</li>
-                <li>• Update risk appetite framework for portfolio concentration</li>
-                <li>• Enhance due diligence procedures for cash-intensive businesses</li>
-              </ul>
-            </div>
+      <!-- Credit Management Best Practices -->
+      <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 class="font-medium text-blue-900 mb-3">💡 Credit Portfolio Optimization Insights</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Portfolio Strengths</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Credit quality above regional average (AA+ vs AA)</li>
+              <li>• Strong covenant compliance across all relationships</li>
+              <li>• Diversified credit type distribution</li>
+              <li>• Johnson Holdings Group excellent payment history</li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Growth Opportunities</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Consider SBA loan expansion for manufacturing clients</li>
+              <li>• Cross-sell equipment financing to existing relationships</li>
+              <li>• Optimize utilization rates for better fee income</li>
+              <li>• Focus on covenant-light structures for premium clients</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div class="mt-6 flex justify-between items-center">
-          <div class="flex space-x-3">
-            <button @click="generateRiskReport"
-              class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
-              Generate Risk Report
-            </button>
-            <button @click="scheduleRiskReview"
-              class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium">
-              Schedule Reviews
-            </button>
-            <button @click="exportRiskData"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-              Export Data
-            </button>
-          </div>
-          <button @click="showRiskModal = false"
-            class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
-            Close
-          </button>
-        </div>
+
+
+      <div class="mt-6 flex justify-end">
+        <button @click="showCreditModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- Referral Modal -->
+  <div v-if="showReferralModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-900">🤝 Referral Details</h3>
+        <button @click="showReferralModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-600">{{ wealthReferrals }}</div>
+            <div class="text-sm text-gray-600">Wealth Referrals</div>
+          </div>
+          <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-2xl font-bold text-green-600">{{ commercialReferrals }}</div>
+            <div class="text-sm text-gray-600">Commercial Referrals</div>
+          </div>
+          <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="text-2xl font-bold text-purple-600">{{ retailReferrals }}</div>
+            <div class="text-sm text-gray-600">Retail Referrals</div>
+          </div>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-2">Referral Performance</h4>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-indigo-600">{{ referralRate }}%</div>
+            <div class="text-sm text-gray-600">Overall referral conversion rate</div>
+            <div class="text-xs text-gray-500 mt-1">{{ totalReferrals }} total referrals this period</div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button @click="showReferralModal = false"
+          class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Enhanced Risk Analytics Modal -->
+  <div v-if="showRiskModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div
+      class="relative top-5 mx-auto p-5 border w-11/12 md:w-5/6 lg:w-4/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">🚨 Risk Analytics & Review Dashboard</h3>
+        <button @click="showRiskModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Risk Overview Dashboard -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+          <div class="text-2xl font-bold text-red-600">{{ totalRiskReviews }}</div>
+          <div class="text-sm text-gray-600">Total Risk Reviews</div>
+          <div class="text-xs text-red-500 font-medium">{{ Math.floor(totalRiskReviews / totalRelationships * 100)
+          }}% of portfolio</div>
+        </div>
+        <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
+          <div class="text-2xl font-bold text-orange-600">{{ totalRiskFlags }}</div>
+          <div class="text-sm text-gray-600">Pending Review</div>
+          <div class="text-xs text-orange-500 font-medium">{{ riskFlagsPercentile }}th percentile</div>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+          <div class="text-2xl font-bold text-blue-600">{{ reviewedWithAction }}</div>
+          <div class="text-sm text-gray-600">Reviewed with Action</div>
+          <div class="text-xs text-blue-500 font-medium">{{ Math.floor(reviewedWithAction / totalRiskFlags * 100)
+          }}%
+            of flags</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
+          <div class="text-2xl font-bold text-green-600">{{ reviewedWithoutAction }}</div>
+          <div class="text-sm text-gray-600">Reviewed without Action</div>
+          <div class="text-xs text-green-500 font-medium">{{ Math.floor(reviewedWithoutAction / totalRiskFlags *
+            100)
+          }}% of flags</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Risk Review Distribution -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📊 Risk Review Distribution</h4>
+          <div class="h-64 mb-4">
+            <DoughnutChart v-if="riskReviewDistributionData" :data="riskReviewDistributionData"
+              :options="riskReviewDistributionOptions" />
+          </div>
+          <!-- Risk Review Legend -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Review Categories</h5>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div v-for="review in riskReviewCategories" :key="review.name" class="flex justify-between">
+                <span class="text-gray-600">{{ review.name }}:</span>
+                <span class="font-medium" :class="review.color">{{ review.count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Review Trends -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-900 mb-3">📈 Risk Review Trends</h4>
+          <div class="h-64 mb-4">
+            <BarChart v-if="riskReviewTrendData" :data="riskReviewTrendData" :options="riskReviewTrendOptions" />
+          </div>
+          <!-- Risk Review Insights -->
+          <div class="bg-white p-3 rounded border">
+            <h5 class="text-sm font-medium text-gray-900 mb-2">Review Trend Insights</h5>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Peak Review Month:</span>
+                <span class="font-medium text-red-600">{{ peakRiskMonth }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Review Trend:</span>
+                <span class="font-medium"
+                  :class="riskTrendDirection === 'Increasing' ? 'text-red-600' : 'text-green-600'">{{
+                    riskTrendDirection }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Avg Resolution Time:</span>
+                <span class="font-medium text-blue-600">{{ avgResolutionTime }} days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Risk Analysis by Relationship -->
+      <div class="mt-6 bg-white rounded-lg border border-gray-200">
+        <div class="p-4 border-b border-gray-200">
+          <h4 class="font-medium text-gray-900">🔍 Detailed Risk Analysis by Relationship</h4>
+          <p class="text-sm text-gray-500 mt-1">Comprehensive risk assessment with Johnson Holdings Group
+            highlighted
+          </p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Relationship
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Active Reviews
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Pending Reviews
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  UTRs Filed
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Reviewed with Action
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Reviewed without Action
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(rel, index) in enhancedRiskAnalysis" :key="rel.id" class="cursor-pointer transition-colors"
+                :class="rel.name === 'Johnson Holdings Group' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50'"
+                @click="drillDownToRelationshipRisk(rel)">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ rel.name }}
+                      <span v-if="rel.name === 'Johnson Holdings Group'"
+                        class="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+                        Primary Client
+                      </span>
+                    </div>
+                    <div class="text-xs text-gray-500">{{ rel.industry }}</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span v-if="rel.riskFlags > 0"
+                    class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                    {{ rel.riskFlags }}
+                  </span>
+                  <span v-else class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span v-if="rel.pendingReviews > 0"
+                    class="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
+                    {{ rel.pendingReviews }}
+                  </span>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span v-if="rel.utrs > 0"
+                    class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                    {{ rel.utrs }}
+                  </span>
+                  <span v-else class="text-gray-400">0</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                    {{ rel.reviewedWithAction || 0 }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                    {{ rel.reviewedWithoutAction || 0 }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <div class="flex space-x-2">
+                    <button @click.stop="reviewRisk(rel)" class="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                      Review
+                    </button>
+                    <button @click.stop="viewRiskDetails(rel)"
+                      class="text-green-600 hover:text-green-800 text-xs font-medium">
+                      Details
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Johnson Holdings Group - Detailed Risk Profile -->
+      <div class="mt-6 bg-red-50 p-4 rounded-lg border border-red-200">
+        <h4 class="font-medium text-red-900 mb-3">🔍 Johnson Holdings Group - Detailed Risk Profile</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Risk Flag Details -->
+          <div class="bg-white rounded border border-red-200">
+            <div class="p-3 border-b border-red-200">
+              <h5 class="text-sm font-medium text-gray-900">Active Risk Flags</h5>
+            </div>
+            <div class="p-3">
+              <div class="space-y-3">
+                <div v-for="flag in johnsonRiskFlags" :key="flag.id" class="flex items-start space-x-3">
+                  <div class="flex-shrink-0">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                      :class="flag.severityClass">
+                      {{ flag.severity }}
+                    </span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium text-gray-900">{{ flag.category }}</div>
+                    <div class="text-xs text-gray-600">{{ flag.description }}</div>
+                    <div class="text-xs text-gray-500 mt-1">{{ flag.dateIdentified }} • {{ flag.amount ?
+                      formatCurrency(flag.amount) : 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Metrics & Analytics -->
+          <div class="bg-white rounded border border-red-200">
+            <div class="p-3 border-b border-red-200">
+              <h5 class="text-sm font-medium text-gray-900">Risk Analytics</h5>
+            </div>
+            <div class="p-3 space-y-3">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-2 bg-red-50 rounded">
+                  <div class="text-lg font-bold text-red-600">{{ johnsonRiskMetrics.totalTransactions }}</div>
+                  <div class="text-xs text-gray-600">Risk Transactions</div>
+                </div>
+                <div class="text-center p-2 bg-orange-50 rounded">
+                  <div class="text-lg font-bold text-orange-600">{{ formatCurrency(johnsonRiskMetrics.totalAmount)
+                  }}
+                  </div>
+                  <div class="text-xs text-gray-600">Total Risk Amount</div>
+                </div>
+              </div>
+              <div class="border-t pt-3">
+                <div class="space-y-2 text-xs">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Management Actions -->
+      <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 class="font-medium text-blue-900 mb-3">🎯 Risk Management Actions & Recommendations</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Immediate Actions Required</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Complete Johnson Holdings Group risk assessment (2 days overdue)</li>
+              <li>• Review TechCorp Industries high-cash transaction patterns</li>
+              <li>• Update Global Retail Corp compliance documentation</li>
+              <li>• File pending UTR for Johnson Holdings crypto activity</li>
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-sm font-medium text-blue-800 mb-2">Strategic Risk Mitigation</h5>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Implement enhanced monitoring for manufacturing sector clients</li>
+              <li>• Schedule quarterly risk reviews for high-exposure relationships</li>
+              <li>• Update risk appetite framework for portfolio concentration</li>
+              <li>• Enhance due diligence procedures for cash-intensive businesses</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-between items-center">
+        <div class="flex space-x-3">
+          <button @click="generateRiskReport"
+            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+            Generate Risk Report
+          </button>
+          <button @click="scheduleRiskReview"
+            class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium">
+            Schedule Reviews
+          </button>
+          <button @click="exportRiskData"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            Export Data
+          </button>
+        </div>
+        <button @click="showRiskModal = false"
+          class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -2904,6 +2544,9 @@ const showROEModal = ref(false)
 const showReferralModal = ref(false)
 const showRiskModal = ref(false)
 const showCreditModal = ref(false)
+
+// Summary table controls
+const comparisonMode = ref('target')
 
 // Collapsible sections state
 const isPortfolioSectionCollapsed = ref(true)
@@ -3344,6 +2987,148 @@ const exportData = () => {
   // Implement export logic
 }
 
+const exportSummaryData = () => {
+  // Create CSV data for relationship summary table
+  const headers = ['Relationship', 'Revenue FYTD', 'Deposits', 'Loans', 'Risk Score', 'Performance Score', 'Risk Flags']
+  const data = relationships.value.map(rel => [
+    rel.name,
+    formatCurrency(rel.revenue),
+    formatCurrency(rel.deposits),
+    formatCurrency(rel.loans),
+    `${rel.riskScore}/10`,
+    `${calculateRelationshipPerformance(rel)}%`,
+    rel.riskFlags ? rel.riskFlags.length.toString() : '0'
+  ])
+  
+  // Convert to CSV format
+  const csvContent = [headers, ...data]
+    .map(row => row.map(field => `"${field}"`).join(','))
+    .join('\n')
+  
+  // Download CSV
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `rm-relationships-summary-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+}
+
+// Helper functions for relationship table styling
+const getRelationshipRiskClass = (riskFlags) => {
+  if (!riskFlags || riskFlags.length === 0) return ''
+  if (riskFlags.length >= 3) return 'bg-red-100 text-red-800'
+  if (riskFlags.length >= 2) return 'bg-orange-100 text-orange-800'
+  return 'bg-yellow-100 text-yellow-800'
+}
+
+const getPerformanceClass = (actual, target) => {
+  const percent = (actual / target) * 100
+  if (percent >= 100) return 'text-green-600'
+  if (percent >= 80) return 'text-yellow-600'
+  return 'text-red-600'
+}
+
+const getGrowthClass = (growth) => {
+  if (growth >= 0) return 'text-green-600'
+  if (growth >= -5) return 'text-yellow-600'
+  return 'text-red-600'
+}
+
+const getRiskScoreClass = (score) => {
+  if (score <= 3) return 'bg-green-100 text-green-800'
+  if (score <= 6) return 'bg-yellow-100 text-yellow-800'
+  return 'bg-red-100 text-red-800'
+}
+
+const getOverallPerformanceClass = (score) => {
+  if (score >= 85) return 'bg-green-100 text-green-800'
+  if (score >= 70) return 'bg-yellow-100 text-yellow-800'
+  return 'bg-red-100 text-red-800'
+}
+
+const calculateRelationshipPerformance = (relationship) => {
+  // Calculate performance score based on multiple factors
+  let score = 70 // Base score
+  
+  // Revenue performance (30% weight)
+  const revenueTarget = relationship.revenueTarget || relationship.revenue * 0.8
+  const revenuePerformance = (relationship.revenue / revenueTarget) * 100
+  score += Math.min(30, (revenuePerformance - 100) * 0.3)
+  
+  // Deposits performance (20% weight)
+  const depositsTarget = relationship.depositsTarget || relationship.deposits * 0.85
+  const depositsPerformance = (relationship.deposits / depositsTarget) * 100
+  score += Math.min(20, (depositsPerformance - 100) * 0.2)
+  
+  // Risk adjustment (negative impact)
+  score -= (relationship.riskScore || 5) * 2
+  score -= (relationship.pendingReviews || 0) * 5
+  
+  // Growth adjustment
+  const revenueGrowth = relationship.revenueGrowth || 5
+  score += Math.min(10, revenueGrowth)
+  
+  return Math.max(0, Math.min(100, Math.round(score)))
+}
+
+const getTrendIcon = (relationship) => {
+  if (comparisonMode.value === 'target') {
+    const revenueTarget = relationship.revenueTarget || relationship.revenue * 0.8
+    const performance = (relationship.revenue / revenueTarget) * 100
+    if (performance >= 100) return 'text-green-500'
+    if (performance >= 80) return 'text-yellow-500'
+    return 'text-red-500'
+  } else {
+    const growth = relationship.revenueGrowth || 5
+    if (growth >= 0) return 'text-green-500'
+    return 'text-red-500'
+  }
+}
+
+const getTrendSymbol = (relationship) => {
+  if (comparisonMode.value === 'target') {
+    const revenueTarget = relationship.revenueTarget || relationship.revenue * 0.8
+    const performance = (relationship.revenue / revenueTarget) * 100
+    if (performance >= 100) return '↗'
+    if (performance >= 80) return '→'
+    return '↘'
+  } else {
+    const growth = relationship.revenueGrowth || 5
+    if (growth > 5) return '↗'
+    if (growth >= 0) return '→'
+    return '↘'
+  }
+}
+
+const viewRelationshipDetail = (relationship) => {
+  router.push({
+    name: 'Relationship',
+    params: {
+      metroId: props.metroId,
+      marketId: props.marketId,
+      regionId: props.regionId,
+      rmId: props.rmId,
+      relationshipId: relationship.id
+    }
+  })
+}
+
+const scheduleClientMeeting = (relationship) => {
+  console.log('Scheduling meeting for:', relationship.name)
+  // Implement meeting scheduling logic
+}
+
+const scheduleRiskReview = (relationship) => {
+  console.log('Scheduling risk review for:', relationship.name)
+  // Implement risk review scheduling logic
+}
+
 const sortTable = (field) => {
   if (sortField.value === field) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
@@ -3378,7 +3163,11 @@ const reviewRisk = (relationship) => {
 
 // Enhanced Risk Modal Data
 const totalRiskFlags = computed(() => {
-  return relationships.value.reduce((sum, rel) => sum + Math.max(0, Math.floor(rel.rci) - 4), 0)
+  return relationships.value.reduce((sum, rel) => sum + (rel.riskFlags ? rel.riskFlags.length : 0), 0)
+})
+
+const totalPendingReviews = computed(() => {
+  return relationships.value.reduce((sum, rel) => sum + (rel.pendingReviews || 0), 0)
 })
 
 const riskFlagsPercentile = computed(() => {
@@ -3689,10 +3478,6 @@ const generateRiskReport = () => {
   // Implement risk report generation
 }
 
-const scheduleRiskReview = () => {
-  console.log('Scheduling risk reviews...')
-  // Implement risk review scheduling
-}
 
 const exportRiskData = () => {
   console.log('Exporting risk analytics data...')
@@ -5254,6 +5039,12 @@ const performanceMetrics = computed(() => ({
     target: 25,
     achieved: true,
     achievementPercent: Math.round((28 / 25) * 100)
+  },
+  revenueFYTD: {
+    actual: totalRevenue.value,
+    target: 15000000, // $15M target
+    achieved: totalRevenue.value >= 15000000,
+    achievementPercent: Math.round((totalRevenue.value / 15000000) * 100)
   }
 }))
 
