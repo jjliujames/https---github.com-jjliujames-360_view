@@ -1304,6 +1304,49 @@ export const clients = {
             merchant: { accounts: 3, balance: 2100000, revenue: 78000 },
             wealth: { accounts: 2, balance: 950000, revenue: 24000 }
         },
+        productHoldings: {
+            // Business Deposit Products
+            'checking': { hasProduct: true, balance: 8500000, revenue: 285000, isRecommended: false },
+            'debit-cards': { hasProduct: true, balance: 0, revenue: 25000, isRecommended: false },
+            'cds': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Manufacturing needs liquidity mgmt
+            'savings-money-market': { hasProduct: true, balance: 4000000, revenue: 115000, isRecommended: false },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: true, balance: 450000, revenue: 38000, isRecommended: false },
+            'loans-lines-credit': { hasProduct: true, balance: 8450000, revenue: 342000, isRecommended: false },
+            'securities-based-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Not applicable for manufacturing
+            'real-estate-financing': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'ppp': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // PPP program ended
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Manufacturing inventory financing
+            'commercial-lending': { hasProduct: true, balance: 5200000, revenue: 195000, isRecommended: false },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'equipment-finance': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Manufacturing equipment needs
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: true, balance: 2100000, revenue: 78000, isRecommended: false },
+            'payables': { hasProduct: true, balance: 1800000, revenue: 65000, isRecommended: false },
+            'receivables': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Manufacturing AR financing
+            'fraud-control': { hasProduct: true, balance: 0, revenue: 8000, isRecommended: false },
+            'information-services': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'treasury-overview': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            
+            // Business Services & Support
+            'online-banking': { hasProduct: true, balance: 0, revenue: 12000, isRecommended: false },
+            'online-accounting': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - use own system
+            'payroll': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Recommended for payroll automation
+            'business-payment-suite': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'overdraft-services': { hasProduct: true, balance: 0, revenue: 5000, isRecommended: false },
+            'merchant-solutions': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - B2B manufacturing
+            'new-to-small-business': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - established business
+            'healthcare-professionals': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - wrong industry
+            
+            // Wealth & Investment Services
+            'investments': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Parent company handles investments
+            'wealth-retirement-planning': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }
+        },
         rankings: {
             risk: { rank: 15, percentile: 85 },
             revenue: { rank: 8, percentile: 92 },
@@ -1341,6 +1384,37 @@ export const clients = {
             merchant: { accounts: 2, balance: 280000, revenue: 45000 },
             wealth: { accounts: 1, balance: 20000, revenue: 15000 }
         },
+        productHoldings: {
+            // Business Deposit Products
+            'business-checking': { hasProduct: true, balance: 5800000, revenue: 280000 },
+            'debit-cards': { hasProduct: true, balance: 0, revenue: 18000 },
+            'cds': { hasProduct: true, balance: 1500000, revenue: 45000 },
+            'savings-money-market': { hasProduct: true, balance: 900000, revenue: 37000 },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: false, balance: 0, revenue: 0 },
+            'loans-lines-credit': { hasProduct: true, balance: 4900000, revenue: 220000 },
+            'equipment-finance': { hasProduct: true, balance: 1200000, revenue: 55000 },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'commercial-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'sba-loans': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: true, balance: 1200000, revenue: 72000 },
+            'payables': { hasProduct: true, balance: 400000, revenue: 28000 },
+            'receivables': { hasProduct: true, balance: 200000, revenue: 20000 },
+            'fx-services': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Additional Products
+            'new-to-small-business-checking': { hasProduct: false, balance: 0, revenue: 0 },
+            'healthcare-professionals': { hasProduct: true, balance: 850000, revenue: 42000 },
+            'investments': { hasProduct: true, balance: 1200000, revenue: 85000 },
+            'wealth-retirement-planning': { hasProduct: false, balance: 0, revenue: 0 },
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0 }
+        },
         rankings: {
             risk: { rank: 89, percentile: 11 },
             revenue: { rank: 3, percentile: 97 },
@@ -1376,6 +1450,37 @@ export const clients = {
             treasury: { accounts: 2, balance: 1400000, revenue: 85000 },
             merchant: { accounts: 2, balance: 180000, revenue: 45000 },
             wealth: { accounts: 1, balance: 20000, revenue: 15000 }
+        },
+        productHoldings: {
+            // Business Deposit Products
+            'business-checking': { hasProduct: true, balance: 4200000, revenue: 125000 },
+            'debit-cards': { hasProduct: false, balance: 0, revenue: 0 },
+            'cds': { hasProduct: false, balance: 0, revenue: 0 },
+            'savings-money-market': { hasProduct: true, balance: 1000000, revenue: 55000 },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: false, balance: 0, revenue: 0 },
+            'loans-lines-credit': { hasProduct: true, balance: 2100000, revenue: 95000 },
+            'equipment-finance': { hasProduct: false, balance: 0, revenue: 0 },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'commercial-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'sba-loans': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: true, balance: 800000, revenue: 45000 },
+            'payables': { hasProduct: true, balance: 600000, revenue: 40000 },
+            'receivables': { hasProduct: false, balance: 0, revenue: 0 },
+            'fx-services': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Additional Products
+            'new-to-small-business-checking': { hasProduct: true, balance: 250000, revenue: 12000 },
+            'healthcare-professionals': { hasProduct: false, balance: 0, revenue: 0 },
+            'investments': { hasProduct: false, balance: 0, revenue: 0 },
+            'wealth-retirement-planning': { hasProduct: false, balance: 0, revenue: 0 },
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0 }
         },
         rankings: {
             risk: { rank: 95, percentile: 5 },
@@ -1413,6 +1518,37 @@ export const clients = {
             treasury: { accounts: 1, balance: 350000, revenue: 35000 },
             merchant: { accounts: 1, balance: 50000, revenue: 12000 },
             wealth: { accounts: 0, balance: 0, revenue: 0 }
+        },
+        productHoldings: {
+            // Business Deposit Products
+            'business-checking': { hasProduct: true, balance: 2800000, revenue: 95000 },
+            'debit-cards': { hasProduct: false, balance: 0, revenue: 0 },
+            'cds': { hasProduct: false, balance: 0, revenue: 0 },
+            'savings-money-market': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: false, balance: 0, revenue: 0 },
+            'loans-lines-credit': { hasProduct: true, balance: 1200000, revenue: 78000 },
+            'equipment-finance': { hasProduct: false, balance: 0, revenue: 0 },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'commercial-lending': { hasProduct: false, balance: 0, revenue: 0 },
+            'sba-loans': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: true, balance: 350000, revenue: 35000 },
+            'payables': { hasProduct: false, balance: 0, revenue: 0 },
+            'receivables': { hasProduct: false, balance: 0, revenue: 0 },
+            'fx-services': { hasProduct: false, balance: 0, revenue: 0 },
+            
+            // Additional Products
+            'new-to-small-business-checking': { hasProduct: false, balance: 0, revenue: 0 },
+            'healthcare-professionals': { hasProduct: true, balance: 180000, revenue: 8500 },
+            'investments': { hasProduct: false, balance: 0, revenue: 0 },
+            'wealth-retirement-planning': { hasProduct: false, balance: 0, revenue: 0 },
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0 }
         },
         rankings: {
             risk: { rank: 45, percentile: 55 },
@@ -2033,7 +2169,50 @@ export const clients = {
             'Steady growth in treasury management services',
             'Low risk profile with consistent cash flows'
         ],
-        lastContact: '2024-11-20'
+        lastContact: '2024-11-20',
+        productHoldings: {
+            // Business Deposit Products
+            'checking': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Logistics needs better cash mgmt
+            'debit-cards': { hasProduct: true, balance: 0, revenue: 15000, isRecommended: false },
+            'cds': { hasProduct: true, balance: 1200000, revenue: 35000, isRecommended: false },
+            'savings-money-market': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Logistics fuel/expense cards
+            'loans-lines-credit': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'securities-based-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not applicable
+            'real-estate-financing': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'ppp': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - PPP ended
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: true, balance: 1800000, revenue: 85000, isRecommended: false },
+            'commercial-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'equipment-finance': { hasProduct: true, balance: 2800000, revenue: 120000, isRecommended: false }, // Truck financing
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Multi-location cash needs
+            'payables': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Vendor payment automation
+            'receivables': { hasProduct: true, balance: 1200000, revenue: 55000, isRecommended: false },
+            'fraud-control': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - small subsidiary
+            'information-services': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'treasury-overview': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            
+            // Business Services & Support
+            'online-banking': { hasProduct: true, balance: 0, revenue: 8000, isRecommended: false },
+            'online-accounting': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - use parent system
+            'payroll': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - handled by parent
+            'business-payment-suite': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'overdraft-services': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Logistics cash flow needs
+            'merchant-solutions': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - B2B logistics
+            'new-to-small-business': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - established business
+            'healthcare-professionals': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - wrong industry
+            
+            // Wealth & Investment Services
+            'investments': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'wealth-retirement-planning': { hasProduct: true, balance: 850000, revenue: 28000, isRecommended: false },
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }
+        }
     },
     'client-009': {
         id: 'client-009',
@@ -2082,7 +2261,50 @@ export const clients = {
             'Rapid expansion requiring additional working capital',
             'Strong candidate for lending products expansion'
         ],
-        lastContact: '2024-11-18'
+        lastContact: '2024-11-18',
+        productHoldings: {
+            // Business Deposit Products
+            'checking': { hasProduct: true, balance: 3200000, revenue: 180000, isRecommended: false },
+            'debit-cards': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Subsidiary B has different needs
+            'cds': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'savings-money-market': { hasProduct: true, balance: 1800000, revenue: 90000, isRecommended: false },
+            
+            // Business Lending Products
+            'credit-cards': { hasProduct: true, balance: 280000, revenue: 25000, isRecommended: false },
+            'loans-lines-credit': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'securities-based-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Investment holding company
+            'real-estate-financing': { hasProduct: true, balance: 3200000, revenue: 180000, isRecommended: false },
+            'ppp': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - PPP ended
+            
+            // Commercial Lending Solutions
+            'asset-based-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'commercial-lending': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'commercial-real-estate': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'equipment-finance': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            
+            // Treasury & Cash Management
+            'liquidity-management': { hasProduct: true, balance: 1800000, revenue: 90000, isRecommended: false },
+            'payables': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'receivables': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false },
+            'fraud-control': { hasProduct: true, balance: 0, revenue: 15000, isRecommended: false },
+            'information-services': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'treasury-overview': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            
+            // Business Services & Support
+            'online-banking': { hasProduct: true, balance: 0, revenue: 10000, isRecommended: false },
+            'online-accounting': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - enterprise system
+            'payroll': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // International payroll needs
+            'business-payment-suite': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - not needed
+            'overdraft-services': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - well-capitalized
+            'merchant-solutions': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - holding company
+            'new-to-small-business': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - established business
+            'healthcare-professionals': { hasProduct: false, balance: 0, revenue: 0, isRecommended: false }, // Gray - wrong industry
+            
+            // Wealth & Investment Services
+            'investments': { hasProduct: true, balance: 650000, revenue: 22000, isRecommended: false },
+            'wealth-retirement-planning': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true }, // Executive team retirement planning
+            'private-client-banking': { hasProduct: false, balance: 0, revenue: 0, isRecommended: true } // High-net-worth executives
+        }
     },
     // Global Logistics Network Clients (rel-010)
     'client-010': {
