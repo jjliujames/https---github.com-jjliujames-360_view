@@ -4,11 +4,11 @@
         <template #header>
             <DetailViewHeader :title="relationshipData?.name || 'Relationship Profile'" :breadcrumb="breadcrumb"
                 @generate-report="relationshipAction('generate-report')">
-                <!-- Risk Alert Indicator -->
+                <!-- Action Items Indicator -->
                 <template #alerts>
-                    <AlertIndicator v-if="totalRiskFlags > 0" :critical-count="criticalRiskCount"
-                        :high-count="highRiskCount" :medium-count="mediumRiskCount" :low-count="lowRiskCount"
-                        alert-type="Risk" @click="showRiskDetails" />
+                    <AlertIndicator v-if="totalActionItems > 0" :critical-count="criticalActionCount"
+                        :high-count="highActionCount" :medium-count="mediumActionCount" :low-count="lowActionCount"
+                        alert-type="Action Items" @click="showActionItemsModal" />
                 </template>
 
                 <!-- Additional Action Buttons -->
@@ -672,6 +672,120 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Opportunities Summary -->
+                            <div class="mt-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Opportunities Summary</h3>
+                                <div class="grid grid-cols-3 gap-4 mb-6">
+                                    <div class="text-center p-4 bg-blue-50 rounded-lg">
+                                        <div class="text-2xl font-bold text-blue-600">{{ totalOpportunities }}</div>
+                                        <div class="text-sm text-gray-600">Total Opportunities</div>
+                                    </div>
+                                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                                        <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
+                                        <div class="text-sm text-gray-600">Potential Revenue</div>
+                                    </div>
+                                    <div class="text-center p-4 bg-purple-50 rounded-lg">
+                                        <div class="text-2xl font-bold text-purple-600">{{ highPriorityOpportunities }}</div>
+                                        <div class="text-sm text-gray-600">High Priority</div>
+                                    </div>
+                                </div>
+
+                                <!-- Opportunities by Client Table -->
+                                <div class="bg-white rounded-lg border border-gray-200">
+                                    <div class="px-4 py-3 border-b border-gray-200">
+                                        <h4 class="text-sm font-medium text-gray-900">Opportunities by Client</h4>
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunities</th>
+                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Potential Value</th>
+                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white divide-y divide-gray-200">
+                                                <template v-for="client in relationshipClients" :key="client.id">
+                                                    <tr class="hover:bg-gray-50">
+                                                        <td class="px-6 py-4 whitespace-nowrap">
+                                                            <button @click="navigateToClient(client.id)" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                                                                {{ client.name }}
+                                                            </button>
+                                                        </td>
+                                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                                                                {{ getClientOpportunityCount(client) }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                                            {{ formatCurrency(getClientOpportunityValue(client)) }}
+                                                        </td>
+                                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                            <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getClientPriorityClass(client)">
+                                                                {{ getClientPriority(client) }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                            <button @click="toggleClientRecommendations(client.id)" 
+                                                                class="text-sm text-td-green hover:text-green-600 font-medium">
+                                                                {{ expandedClient === client.id ? 'Hide' : 'View' }} Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <!-- Expanded Recommendations Row -->
+                                                    <tr v-if="expandedClient === client.id" :key="`${client.id}-expanded`">
+                                                        <td colspan="5" class="px-6 py-4 bg-gray-50">
+                                                            <div class="space-y-3">
+                                                                <h5 class="text-sm font-semibold text-gray-900 mb-3">🤖 AI Recommendations for {{ client.name }}</h5>
+                                                                <div v-for="rec in getClientRecommendations(client.id)" :key="rec.id" 
+                                                                    class="bg-white rounded-lg border border-gray-200 p-4">
+                                                                <div class="flex items-start justify-between">
+                                                                    <div class="flex-1">
+                                                                        <div class="flex items-center space-x-2 mb-2">
+                                                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                                                                {{ rec.confidence }}% confidence
+                                                                            </span>
+                                                                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                                                                :class="rec.priority === 'High' ? 'bg-red-100 text-red-800' : rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'">
+                                                                                {{ rec.priority }}
+                                                                            </span>
+                                                                            <span class="text-xs text-gray-500">{{ rec.product }}</span>
+                                                                        </div>
+                                                                        <p class="text-sm text-gray-900 mb-2">{{ rec.recommendation }}</p>
+                                                                        <p class="text-xs text-gray-600 mb-2">
+                                                                            <span class="font-medium">Reason:</span> {{ rec.reason }}
+                                                                        </p>
+                                                                        <div class="text-xs text-gray-500">
+                                                                            💰 {{ formatCurrency(rec.potential) }} potential revenue
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex space-x-2 ml-4">
+                                                                        <button @click="openMeetingModal(rec)"
+                                                                            class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                                                            Schedule
+                                                                        </button>
+                                                                        <button @click="openDeclineModal(rec)"
+                                                                            class="px-3 py-1.5 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                                                                            Decline
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div v-if="getClientRecommendations(client.id).length === 0" class="text-sm text-gray-500 italic">
+                                                                No recommendations available for this client.
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -781,16 +895,46 @@
                                         </div>
                                     </div>
 
+                                    <!-- Chart Type Toggle (for deposits and loans) -->
+                                    <div v-if="selectedTrendMetric === 'deposits' || selectedTrendMetric === 'loans'" class="mb-2 flex justify-end">
+                                        <div class="inline-flex rounded-md shadow-sm" role="group">
+                                            <button @click="chartViewType = 'client'"
+                                                :class="['px-3 py-1 text-sm font-medium', chartViewType === 'client' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50', 'rounded-l-md border border-gray-200']">
+                                                By Client
+                                            </button>
+                                            <button @click="chartViewType = 'product'"
+                                                :class="['px-3 py-1 text-sm font-medium', chartViewType === 'product' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50', 'rounded-r-md border-l-0 border border-gray-200']">
+                                                By Product
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <!-- Chart Area -->
                                     <div class="h-80">
-                                        <!-- Chart placeholder - will add actual chart component -->
-                                        <div class="bg-white h-full rounded-lg border border-gray-200 flex items-center justify-center text-gray-500">
-                                            <div class="text-center">
-                                                <div class="text-6xl mb-2">📊</div>
-                                                <div>{{ getTrendMetricTitle(selectedTrendMetric) }} Trend Chart</div>
-                                                <div class="text-sm text-gray-400 mt-1">{{ selectedTimePeriod === 'ytd' ? 'Year to Date' : selectedTimePeriod === '6m' ? 'Last 6 Months' : 'Last 12 Months' }}</div>
-                                            </div>
-                                        </div>
+                                        <!-- Deposits Chart -->
+                                        <BarChart v-if="selectedTrendMetric === 'deposits'" 
+                                            :data="getDepositsChartData" 
+                                            :options="depositChartOptions" />
+                                        
+                                        <!-- Loans Chart -->
+                                        <BarChart v-else-if="selectedTrendMetric === 'loans'" 
+                                            :data="getLoansChartData" 
+                                            :options="loanChartOptions" />
+                                        
+                                        <!-- Utilization Chart -->
+                                        <LineChart v-else-if="selectedTrendMetric === 'utilization'" 
+                                            :data="getUtilizationChartData" 
+                                            :options="utilizationChartOptions" />
+                                        
+                                        <!-- Revenue Chart -->
+                                        <BarChart v-else-if="selectedTrendMetric === 'revenue'" 
+                                            :data="getRevenueChartData" 
+                                            :options="revenueChartOptions" />
+                                        
+                                        <!-- Clients Chart -->
+                                        <BarChart v-else-if="selectedTrendMetric === 'clients'" 
+                                            :data="getClientsChartData" 
+                                            :options="clientsChartOptions" />
                                     </div>
 
                                     <!-- Chart Legend/Info -->
@@ -819,61 +963,6 @@
                     </div>
                 </div>
 
-                <!-- Opportunities Section -->
-                <div class="space-y-6 mt-8">
-                    <!-- Opportunities Summary Statistics -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Opportunities Summary</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-blue-600">{{ totalOpportunities }}</div>
-                                    <div class="text-sm text-gray-600">Total Opportunities</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
-                                    <div class="text-sm text-gray-600">Potential Revenue</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-purple-600">{{ highPriorityOpportunities }}</div>
-                                    <div class="text-sm text-gray-600">High Priority</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600">{{ avgConfidenceScore }}%</div>
-                                    <div class="text-sm text-gray-600">Avg Confidence</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Recommendations -->
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">🤖 AI Recommendations</h3>
-                        <div class="space-y-4">
-                            <div v-for="recommendation in aiRecommendations" :key="recommendation.id"
-                                class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center space-x-2 mb-2">
-                                            <h4 class="font-semibold text-blue-900">{{ recommendation.client }}</h4>
-                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-                                                {{ recommendation.confidence }}% confidence
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-blue-700 mb-2">{{ recommendation.recommendation }}</p>
-                                        <div class="flex items-center space-x-4 text-xs text-gray-600">
-                                            <span>💰 {{ formatCurrency(recommendation.potential) }} potential</span>
-                                            <span>🎯 {{ recommendation.priority }} priority</span>
-                                        </div>
-                                    </div>
-                                    <button class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                                        Act Now
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Risk Analysis Tab -->
@@ -1509,6 +1598,7 @@ import { useRouter } from 'vue-router'
 import { clients, relationships } from '../data/mockData.js'
 // Import chart components
 import BarChart from './charts/BarChart.vue'
+import LineChart from './charts/LineChart.vue'
 // Import new shared components
 import BaseDetailView from './shared/BaseDetailView.vue'
 import DetailViewHeader from './shared/DetailViewHeader.vue'
@@ -1539,6 +1629,10 @@ const opportunitiesPortfolioView = ref('card') // 'card' or 'table'
 const selectedTrendMetric = ref('deposits') // Default trend metric
 const showNewOnly = ref(false) // Show new data only filter
 const compareToTarget = ref(false) // Compare to target filter
+const currentRecommendationPage = ref(1) // Current page for recommendations
+const expandedClient = ref(null) // Track expanded client for AI recommendations
+const chartViewType = ref('client') // 'client' or 'product' for stacked bar charts
+const recommendationsPerPage = 5 // Number of recommendations per page
 
 // Johnson Holdings Group relationship data
 const relationshipData = ref({
@@ -1700,32 +1794,92 @@ const crossSellGaps = computed(() => {
     return gaps.slice(0, 3) // Show top 3 gaps
 })
 
-const aiRecommendations = computed(() => [
+const allRecommendations = computed(() => [
     {
         id: 1,
         client: 'Johnson Manufacturing LLC',
         recommendation: 'Expand lending facilities to support increased production capacity and working capital needs',
+        reason: 'Recent $15M equipment purchase and 35% YoY revenue growth indicates need for additional working capital',
         confidence: 94,
         potential: 450000,
-        priority: 'High'
+        priority: 'High',
+        product: 'Commercial Lending'
     },
     {
         id: 2,
         client: 'Johnson Holdings Group - Subsidiary A',
         recommendation: 'Treasury Management solutions to optimize cash flow across multiple manufacturing locations',
+        reason: 'High transaction volume across 3 locations with manual reconciliation processes',
         confidence: 89,
         potential: 320000,
-        priority: 'Medium'
+        priority: 'Medium',
+        product: 'Treasury Management'
     },
     {
         id: 3,
         client: 'Johnson Holdings Group - Subsidiary B',
         recommendation: 'Supply chain financing to support rapid expansion and Detroit operations',
+        reason: 'New Detroit facility requires vendor financing solutions for 15+ suppliers',
         confidence: 86,
         potential: 280000,
-        priority: 'Medium'
+        priority: 'Medium',
+        product: 'Trade Finance'
+    },
+    {
+        id: 4,
+        client: 'Johnson Manufacturing LLC',
+        recommendation: 'FX hedging solutions for international supplier payments',
+        reason: '40% of suppliers are international with $8M monthly FX exposure',
+        confidence: 91,
+        potential: 180000,
+        priority: 'High',
+        product: 'FX Services'
+    },
+    {
+        id: 5,
+        client: 'Johnson Holdings Group - Subsidiary A',
+        recommendation: 'Equipment financing for technology upgrade initiative',
+        reason: 'Planned $10M technology upgrade in Q2 2025',
+        confidence: 82,
+        potential: 150000,
+        priority: 'Low',
+        product: 'Equipment Finance'
+    },
+    {
+        id: 6,
+        client: 'Johnson Holdings Group - Subsidiary B',
+        recommendation: 'Payroll services integration with existing treasury platform',
+        reason: '500+ employees across locations with complex payroll requirements',
+        confidence: 78,
+        potential: 120000,
+        priority: 'Low',
+        product: 'Payroll Services'
+    },
+    {
+        id: 7,
+        client: 'Johnson Manufacturing LLC',
+        recommendation: 'Directors & Officers liability insurance for board expansion',
+        reason: 'Adding 3 independent board members in 2025',
+        confidence: 85,
+        potential: 95000,
+        priority: 'Medium',
+        product: 'Insurance Services'
     }
 ])
+
+// Old aiRecommendations for backward compatibility
+const aiRecommendations = computed(() => allRecommendations.value.slice(0, 3))
+
+// Paginated recommendations
+const paginatedRecommendations = computed(() => {
+    const start = (currentRecommendationPage.value - 1) * recommendationsPerPage
+    const end = start + recommendationsPerPage
+    return allRecommendations.value.slice(start, end)
+})
+
+const totalRecommendationPages = computed(() => 
+    Math.ceil(allRecommendations.value.length / recommendationsPerPage)
+)
 
 const pendingLoans = computed(() => [
     { id: 1, client: 'Johnson Manufacturing LLC', amount: 15000000 },
@@ -1821,6 +1975,16 @@ const avgConfidenceScore = computed(() => {
     const total = aiRecommendations.value.reduce((sum, rec) => sum + rec.confidence, 0)
     return Math.round(total / aiRecommendations.value.length)
 })
+
+// Action Items computed properties
+const totalActionItems = computed(() => {
+    return totalPendingRiskReviews.value + allRecommendations.value.filter(r => r.priority === 'High').length + 3 // +3 for scheduled meetings
+})
+
+const criticalActionCount = computed(() => totalPendingRiskReviews.value)
+const highActionCount = computed(() => allRecommendations.value.filter(r => r.priority === 'High').length)
+const mediumActionCount = computed(() => allRecommendations.value.filter(r => r.priority === 'Medium').length)
+const lowActionCount = computed(() => allRecommendations.value.filter(r => r.priority === 'Low').length)
 
 // Product Portfolio Aggregation Functions
 const aggregateProductData = computed(() => {
@@ -2089,6 +2253,239 @@ const riskTrendByCompanyTimeSeriesData = computed(() => ({
     }))
 }))
 
+// Chart Data Computed Properties
+const getDepositsChartData = computed(() => {
+    const labels = getTimeLabels.value
+    
+    if (chartViewType.value === 'product') {
+        // Product breakdown view
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Checking',
+                    data: labels.map(() => Math.floor(Math.random() * 5000000) + 10000000),
+                    backgroundColor: '#3B82F6',
+                    stack: 'deposits'
+                },
+                {
+                    label: 'Savings',
+                    data: labels.map(() => Math.floor(Math.random() * 3000000) + 5000000),
+                    backgroundColor: '#10B981',
+                    stack: 'deposits'
+                },
+                {
+                    label: 'Money Market',
+                    data: labels.map(() => Math.floor(Math.random() * 2000000) + 3000000),
+                    backgroundColor: '#F59E0B',
+                    stack: 'deposits'
+                },
+                {
+                    label: 'CDs',
+                    data: labels.map(() => Math.floor(Math.random() * 1000000) + 2000000),
+                    backgroundColor: '#8B5CF6',
+                    stack: 'deposits'
+                }
+            ]
+        }
+    } else {
+        // Client breakdown view
+        return {
+            labels,
+            datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
+                label: client.name,
+                data: labels.map(() => client.deposits * (0.9 + Math.random() * 0.2)),
+                backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index],
+                stack: 'deposits'
+            }))
+        }
+    }
+})
+
+const getLoansChartData = computed(() => {
+    const labels = getTimeLabels.value
+    
+    if (chartViewType.value === 'product') {
+        // Product breakdown view
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Term Loans',
+                    data: labels.map(() => Math.floor(Math.random() * 8000000) + 15000000),
+                    backgroundColor: '#3B82F6',
+                    stack: 'loans'
+                },
+                {
+                    label: 'Lines of Credit',
+                    data: labels.map(() => Math.floor(Math.random() * 5000000) + 10000000),
+                    backgroundColor: '#10B981',
+                    stack: 'loans'
+                },
+                {
+                    label: 'Real Estate',
+                    data: labels.map(() => Math.floor(Math.random() * 10000000) + 20000000),
+                    backgroundColor: '#F59E0B',
+                    stack: 'loans'
+                },
+                {
+                    label: 'Equipment Finance',
+                    data: labels.map(() => Math.floor(Math.random() * 3000000) + 5000000),
+                    backgroundColor: '#8B5CF6',
+                    stack: 'loans'
+                }
+            ]
+        }
+    } else {
+        // Client breakdown view
+        return {
+            labels,
+            datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
+                label: client.name,
+                data: labels.map(() => client.loans * (0.9 + Math.random() * 0.2)),
+                backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index],
+                stack: 'loans'
+            }))
+        }
+    }
+})
+
+const getUtilizationChartData = computed(() => {
+    const labels = getTimeLabels.value
+    
+    return {
+        labels,
+        datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
+            label: client.name,
+            data: labels.map(() => 50 + Math.random() * 40), // Utilization % between 50-90%
+            borderColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index],
+            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index] + '20',
+            tension: 0.4,
+            fill: false
+        }))
+    }
+})
+
+const getRevenueChartData = computed(() => {
+    const labels = getTimeLabels.value
+    
+    return {
+        labels,
+        datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
+            label: client.name,
+            data: labels.map(() => client.revenue * (0.8 + Math.random() * 0.4) / 12),
+            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index],
+            stack: 'revenue'
+        }))
+    }
+})
+
+const getClientsChartData = computed(() => {
+    const labels = getTimeLabels.value
+    const baseCount = relationshipClients.value.length
+    
+    return {
+        labels,
+        datasets: [{
+            label: 'Total Clients',
+            data: labels.map((_, index) => baseCount + Math.floor(Math.random() * 3) - 1),
+            backgroundColor: '#3B82F6',
+            borderColor: '#3B82F6',
+            borderWidth: 2
+        }]
+    }
+})
+
+// Chart Options
+const depositChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        x: { stacked: true },
+        y: {
+            stacked: true,
+            ticks: {
+                callback: function(value) {
+                    return '$' + (value / 1000000).toFixed(1) + 'M'
+                }
+            }
+        }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    return context.dataset.label + ': $' + (context.parsed.y / 1000000).toFixed(2) + 'M'
+                }
+            }
+        }
+    }
+}
+
+const loanChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        x: { stacked: true },
+        y: {
+            stacked: true,
+            ticks: {
+                callback: function(value) {
+                    return '$' + (value / 1000000).toFixed(1) + 'M'
+                }
+            }
+        }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    return context.dataset.label + ': $' + (context.parsed.y / 1000000).toFixed(2) + 'M'
+                }
+            }
+        }
+    }
+}
+
+const utilizationChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+                callback: function(value) {
+                    return value + '%'
+                }
+            }
+        }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%'
+                }
+            }
+        }
+    }
+}
+
+const revenueChartOptions = depositChartOptions
+const clientsChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 1
+            }
+        }
+    }
+}
+
 // Methods
 const getTierBadgeClass = (tier) => {
     switch (tier?.toLowerCase()) {
@@ -2283,6 +2680,52 @@ const getMetricChangeClass = (metric) => {
 
 const closeAlertsModal = () => {
     showAlertsModal.value = false
+}
+
+// New methods for recommendations
+const openMeetingModal = (recommendation) => {
+    console.log('Opening meeting modal for:', recommendation)
+    // TODO: Implement meeting scheduling modal
+    alert(`Schedule meeting with ${recommendation.client}\nRecommendation: ${recommendation.recommendation}`)
+}
+
+const openDeclineModal = (recommendation) => {
+    console.log('Opening decline modal for:', recommendation)
+    // TODO: Implement decline reason modal
+    const reason = prompt(`Please provide a reason for declining this recommendation:\n${recommendation.recommendation}`)
+    if (reason) {
+        console.log('Declined with reason:', reason)
+    }
+}
+
+const showActionItemsModal = () => {
+    // Show action items modal
+    showAlertsModal.value = true
+    activeAlertTab.value = 'actions'
+}
+
+// Navigate to client detail view
+const navigateToClient = (clientId) => {
+    router.push(`/client/${clientId}`)
+}
+
+// Toggle client recommendations expansion
+const toggleClientRecommendations = (clientId) => {
+    expandedClient.value = expandedClient.value === clientId ? null : clientId
+}
+
+// Get recommendations for a specific client
+const getClientRecommendations = (clientId) => {
+    if (!clientId || !relationshipClients.value || !allRecommendations.value) {
+        return []
+    }
+    
+    const client = relationshipClients.value.find(c => c.id === clientId)
+    if (!client || !client.name) {
+        return []
+    }
+    
+    return allRecommendations.value.filter(rec => rec.client === client.name) || []
 }
 
 const reviewAlert = (alert) => {
