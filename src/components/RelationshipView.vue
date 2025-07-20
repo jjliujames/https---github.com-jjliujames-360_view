@@ -231,29 +231,34 @@
                         <KPICard :value="totalClients" label="Total Clients" color="blue"
                             :percentile="clientsPercentile" format-type="number" />
 
-                        <KPICard :value="aggregateDeposits" label="Aggregate Deposits" color="green"
+                        <KPICard :value="aggregateDeposits" label="Total Deposits" color="green"
                             :percentile="depositsPercentile" format-type="currency" />
 
-                        <KPICard :value="aggregateLoans" label="Loan Commitments" color="orange"
+                        <KPICard :value="aggregateLoans" label="Loan Commitment" color="orange"
                             :percentile="loansPercentile" format-type="currency" />
 
-                        <KPICard :value="loanUtilization" label="Loan Utilization" color="purple"
+                        <KPICard :value="loanUtilization" label="Loan Utilization %" color="purple"
                             :percentile="utilizationPercentile" format-type="percentage" />
 
-                        <KPICard :value="annualRevenue" label="Annual Revenue" color="cyan"
+                        <KPICard :value="annualRevenue" label="Total Revenue" color="cyan"
                             :percentile="revenuePercentile" format-type="currency" />
 
-                        <KPICard :value="crossSellIndex" label="Cross-Sell Index" color="indigo" format-type="text">
+                        <KPICard :value="totalRiskFlags" label="Total Risk Flags" color="red"
+                            :percentile="riskFlagsPercentile" format-type="number" />
+
+                        <KPICard :value="totalPendingRiskReviews" label="Pending Risk Reviews" color="amber"
+                            format-type="number">
                             <template #additional-info>
-                                <div class="text-xs text-indigo-500 font-medium mt-1">Target: ≥ 3.0</div>
+                                <div v-if="totalPendingRiskReviews > 0" class="text-xs text-amber-600 font-medium mt-1">Action Required</div>
                             </template>
                         </KPICard>
 
-                        <KPICard :value="relationshipProfitabilityRank" label="Profitability Rank" color="pink"
-                            format-type="text" />
-
-                        <KPICard :value="totalRiskFlags" label="Risk Flags" color="red"
-                            :percentile="riskFlagsPercentile" format-type="number" />
+                        <KPICard :value="relationshipHealthScore" label="Relationship Health" color="teal"
+                            format-type="score" :show-score="true">
+                            <template #additional-info>
+                                <div class="text-xs text-teal-600 font-medium mt-1">/10</div>
+                            </template>
+                        </KPICard>
                     </div>
                 </div>
             </div>
@@ -262,17 +267,13 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="border-b border-gray-200">
                     <nav class="flex space-x-8 px-6" aria-label="Tabs">
-                        <button @click="activeTab = 'clients'"
-                            :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'clients' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-                            Clients & Portfolio
+                        <button @click="activeTab = 'portfolio'"
+                            :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'portfolio' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
+                            Portfolio & Opportunities ({{ totalOpportunities }})
                         </button>
                         <button @click="activeTab = 'risk'"
                             :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'risk' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                             Risk Review ({{ totalPendingRiskReviews }})
-                        </button>
-                        <button @click="activeTab = 'opportunities'"
-                            :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'opportunities' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-                            Opportunities ({{ totalOpportunities }})
                         </button>
                         <button @click="activeTab = 'loans'"
                             :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'loans' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
@@ -283,8 +284,8 @@
 
                 <!-- Tab Content -->
                 <div class="p-6">
-                    <!-- Clients & Portfolio Tab -->
-                    <div v-if="activeTab === 'clients'">
+                    <!-- Portfolio & Opportunities Tab -->
+                    <div v-if="activeTab === 'portfolio'">
                         <div class="space-y-6">
                             <!-- Client Table -->
                             <div>
@@ -674,10 +675,204 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Charts Section -->
-                <div class="space-y-6">
+            <!-- Trend Analysis Section - Only in Portfolio Tab -->
+            <div v-if="activeTab === 'portfolio'" class="mt-8">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-6">📈 Portfolio Trends & Analysis</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                            <!-- Left Side - Metric Selector -->
+                            <div class="lg:col-span-1">
+                                <div class="space-y-2">
+                                    <!-- Time Period Selector -->
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Time Period</h4>
+                                        <div class="space-y-1">
+                                            <button @click="selectedTimePeriod = 'ytd'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedTimePeriod === 'ytd' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                Year to Date
+                                            </button>
+                                            <button @click="selectedTimePeriod = '6m'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedTimePeriod === '6m' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                Last 6 Months
+                                            </button>
+                                            <button @click="selectedTimePeriod = '12m'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedTimePeriod === '12m' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                Last 12 Months
+                                            </button>
+                                        </div>
+                                    </div>
 
+                                    <!-- Metric Selector -->
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Select Metric</h4>
+                                        <div class="space-y-1">
+                                            <button @click="selectedTrendMetric = 'deposits'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'deposits' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>💰 Total Deposits</span>
+                                                <span v-if="selectedTrendMetric === 'deposits'" class="text-blue-500">→</span>
+                                            </button>
+                                            <button @click="selectedTrendMetric = 'loans'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'loans' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>📊 Loan Commitment</span>
+                                                <span v-if="selectedTrendMetric === 'loans'" class="text-blue-500">→</span>
+                                            </button>
+                                            <button @click="selectedTrendMetric = 'utilization'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'utilization' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>📈 Loan Utilization %</span>
+                                                <span v-if="selectedTrendMetric === 'utilization'" class="text-blue-500">→</span>
+                                            </button>
+                                            <button @click="selectedTrendMetric = 'revenue'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'revenue' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>💵 Revenue</span>
+                                                <span v-if="selectedTrendMetric === 'revenue'" class="text-blue-500">→</span>
+                                            </button>
+                                            <button @click="selectedTrendMetric = 'clients'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'clients' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>👥 Number of Clients</span>
+                                                <span v-if="selectedTrendMetric === 'clients'" class="text-blue-500">→</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional Options -->
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <label class="flex items-center space-x-2 text-sm text-gray-700">
+                                            <input type="checkbox" v-model="showNewOnly" class="rounded border-gray-300">
+                                            <span>Show New Only</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm text-gray-700 mt-2">
+                                            <input type="checkbox" v-model="compareToTarget" class="rounded border-gray-300">
+                                            <span>Compare to Target</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side - Chart Display -->
+                            <div class="lg:col-span-3">
+                                <div class="bg-gray-50 rounded-lg p-6 h-full">
+                                    <!-- Chart Header -->
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-900">
+                                                {{ getTrendMetricTitle(selectedTrendMetric) }}
+                                            </h4>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                {{ getTrendMetricSubtitle(selectedTrendMetric, selectedTimePeriod) }}
+                                            </p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="text-right">
+                                                <div class="text-2xl font-bold text-gray-900">
+                                                    {{ getCurrentMetricValue(selectedTrendMetric) }}
+                                                </div>
+                                                <div class="text-sm text-gray-600">Current</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-lg font-semibold" :class="getMetricChangeClass(selectedTrendMetric)">
+                                                    {{ getMetricChange(selectedTrendMetric) }}
+                                                </div>
+                                                <div class="text-sm text-gray-600">vs Prior</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chart Area -->
+                                    <div class="h-80">
+                                        <!-- Chart placeholder - will add actual chart component -->
+                                        <div class="bg-white h-full rounded-lg border border-gray-200 flex items-center justify-center text-gray-500">
+                                            <div class="text-center">
+                                                <div class="text-6xl mb-2">📊</div>
+                                                <div>{{ getTrendMetricTitle(selectedTrendMetric) }} Trend Chart</div>
+                                                <div class="text-sm text-gray-400 mt-1">{{ selectedTimePeriod === 'ytd' ? 'Year to Date' : selectedTimePeriod === '6m' ? 'Last 6 Months' : 'Last 12 Months' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chart Legend/Info -->
+                                    <div class="mt-4 flex items-center justify-between text-sm text-gray-600">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                                <span>Actual</span>
+                                            </div>
+                                            <div v-if="compareToTarget" class="flex items-center space-x-2">
+                                                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                                <span>Target</span>
+                                            </div>
+                                            <div v-if="showNewOnly" class="flex items-center space-x-2">
+                                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                                <span>New</span>
+                                            </div>
+                                        </div>
+                                        <button class="text-blue-600 hover:text-blue-700 font-medium">
+                                            Export Data →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opportunities Section -->
+                <div class="space-y-6 mt-8">
+                    <!-- Opportunities Summary Statistics -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Opportunities Summary</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-blue-600">{{ totalOpportunities }}</div>
+                                    <div class="text-sm text-gray-600">Total Opportunities</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
+                                    <div class="text-sm text-gray-600">Potential Revenue</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-purple-600">{{ highPriorityOpportunities }}</div>
+                                    <div class="text-sm text-gray-600">High Priority</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600">{{ avgConfidenceScore }}%</div>
+                                    <div class="text-sm text-gray-600">Avg Confidence</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Recommendations -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🤖 AI Recommendations</h3>
+                        <div class="space-y-4">
+                            <div v-for="recommendation in aiRecommendations" :key="recommendation.id"
+                                class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <h4 class="font-semibold text-blue-900">{{ recommendation.client }}</h4>
+                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                                {{ recommendation.confidence }}% confidence
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-blue-700 mb-2">{{ recommendation.recommendation }}</p>
+                                        <div class="flex items-center space-x-4 text-xs text-gray-600">
+                                            <span>💰 {{ formatCurrency(recommendation.potential) }} potential</span>
+                                            <span>🎯 {{ recommendation.priority }} priority</span>
+                                        </div>
+                                    </div>
+                                    <button class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                        Act Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -705,6 +900,150 @@
                                 <div class="text-center">
                                     <div class="text-2xl font-bold text-green-600">3</div>
                                     <div class="text-sm text-gray-600">Closed w/o UTR</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Flag Categories -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚩 Risk Flag Categories</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Non-Transactional Flags -->
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                                        <span class="mr-2">📄</span> Non-Transactional Flag
+                                    </h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700">UTR Filed</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0 }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700">High Risk Industry</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount || 0 }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700">CTR-exemption</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount || 0 }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- High Risk Transactions -->
+                                <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                                        <span class="mr-2">🚨</span> High Risk Transactions
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Cannabis-Related Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ cannabisRelatedTrxCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Casino Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">High Cash Deposit</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ highCashDepositCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Cashier Check Purchase</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ cashierCheckPurchaseCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Crypto Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">High Cash Withdrawals</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ highCashWithdrawalsCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Luxury Goods Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ luxuryGoodsTrxCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-2 mt-2">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">Third Party Check Deposit</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ thirdPartyCheckDepositCount || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pending Review Queue -->
+                            <div class="mt-6">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">⏳ Pending Risk Reviews</h4>
+                                <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-medium text-amber-900">{{ totalPendingRiskReviews }} reviews pending action</span>
+                                        <button class="text-sm text-amber-700 hover:text-amber-900 font-medium">
+                                            View All →
+                                        </button>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div v-for="n in 3" :key="n" class="flex items-center justify-between p-2 bg-white rounded border border-amber-200">
+                                            <div class="flex items-center space-x-3">
+                                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                                <span class="text-sm text-gray-700">Client {{ n }}</span>
+                                                <span class="text-xs text-gray-500">High Risk Transaction</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-xs text-amber-600">{{ 5 - n }} days pending</span>
+                                                <button class="text-xs px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700">
+                                                    Review
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -867,232 +1206,6 @@
                                             <BarChart v-if="riskTrendByCompanyTimeSeriesData"
                                                 :data="riskTrendByCompanyTimeSeriesData" />
                                         </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Opportunities Tab -->
-            <div v-if="activeTab === 'opportunities'">
-                <div class="space-y-6">
-                    <!-- Opportunities Summary Statistics -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Opportunities Summary
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-blue-600">{{ totalOpportunities
-                                    }}</div>
-                                    <div class="text-sm text-gray-600">Total Opportunities</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-green-600">{{
-                                        formatCurrency(totalOpportunityValue) }}</div>
-                                    <div class="text-sm text-gray-600">Potential Revenue</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-purple-600">{{
-                                        highPriorityOpportunities }}</div>
-                                    <div class="text-sm text-gray-600">High Priority</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600">{{
-                                        avgConfidenceScore }}%</div>
-                                    <div class="text-sm text-gray-600">Avg Confidence</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Recommendations -->
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">🤖 AI Recommendations</h3>
-                        <div class="space-y-4">
-                            <div v-for="recommendation in aiRecommendations" :key="recommendation.id"
-                                class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center space-x-2 mb-2">
-                                            <h4 class="font-semibold text-blue-900">{{
-                                                recommendation.client }}</h4>
-                                            <span
-                                                class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-                                                {{ recommendation.confidence }}% confidence
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-blue-700 mb-2">{{
-                                            recommendation.recommendation }}</p>
-                                        <div class="flex items-center space-x-4 text-xs text-gray-600">
-                                            <span>💰 {{ formatCurrency(recommendation.potential) }}
-                                                potential</span>
-                                            <span>🎯 {{ recommendation.priority }} priority</span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        class="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                                        Act Now
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Opportunities Portfolio Summary -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-lg font-medium text-gray-900">🚀 Opportunities
-                                        Portfolio Summary</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Client opportunity breakdown
-                                        with drill-down capability</p>
-                                </div>
-                                <div class="flex bg-gray-100 rounded-lg p-1">
-                                    <button @click="opportunitiesPortfolioView = 'card'"
-                                        :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', opportunitiesPortfolioView === 'card' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
-                                        Card View
-                                    </button>
-                                    <button @click="opportunitiesPortfolioView = 'table'"
-                                        :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', opportunitiesPortfolioView === 'table' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
-                                        Table View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <!-- Opportunities Card View -->
-                            <div v-if="opportunitiesPortfolioView === 'card'"
-                                class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div v-for="client in relationshipClients" :key="client.id"
-                                    class="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                                    @click="drillDownToClientOpportunities(client)">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="font-medium text-gray-900">{{ client.name }}</h4>
-                                        <span
-                                            class="px-2 py-1 text-xs rounded-full font-medium bg-blue-100 text-blue-800">
-                                            {{ getClientOpportunityCount(client) }} opps
-                                        </span>
-                                    </div>
-                                    <div class="space-y-1 text-sm text-gray-600">
-                                        <div class="flex justify-between">
-                                            <span>Product Gaps:</span>
-                                            <span class="font-medium text-orange-600">{{
-                                                getClientProductGaps(client) }}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Potential Value:</span>
-                                            <span class="font-medium text-green-600">{{
-                                                formatCurrency(getClientOpportunityValue(client))
-                                            }}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Next Action:</span>
-                                            <span class="font-medium text-blue-600">{{
-                                                getClientNextAction(client) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Opportunities Table View -->
-                            <div v-if="opportunitiesPortfolioView === 'table'" class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Client</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Opportunities</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Product Gaps</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Potential Value</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Priority</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <tr v-for="client in relationshipClients" :key="client.id"
-                                            class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-8 w-8">
-                                                        <div
-                                                            class="h-8 w-8 rounded-full bg-blue-300 flex items-center justify-center">
-                                                            <span class="text-xs font-medium text-blue-800">{{
-                                                                client.name.charAt(0) }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900">
-                                                            {{ client.name }}</div>
-                                                        <div class="text-xs text-gray-500">{{
-                                                            client.industry }}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span
-                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                                                    {{ getClientOpportunityCount(client) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span class="font-medium text-orange-600">{{
-                                                    getClientProductGaps(client) }}</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span class="font-medium text-green-600">{{
-                                                    formatCurrency(getClientOpportunityValue(client))
-                                                }}</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                                    :class="getClientPriorityClass(client)">
-                                                    {{ getClientPriority(client) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                                <button @click="drillDownToClientOpportunities(client)"
-                                                    class="text-td-green hover:text-green-600 font-medium">
-                                                    View Opportunities
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cross-Sell Gap Matrix -->
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Cross-Sell Gap Analysis
-                        </h3>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div v-for="gap in crossSellGaps" :key="gap.product"
-                                    class="bg-white rounded-lg p-4 border border-gray-200">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="font-medium text-gray-900">{{ gap.product }}</h4>
-                                        <span class="text-sm font-medium text-red-600">{{
-                                            gap.missingCount }} missing</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 mb-2">{{ gap.potentialRevenue }}
-                                    </div>
-                                    <div class="text-xs text-gray-500">{{ gap.clients.join(', ') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1415,7 +1528,7 @@ const props = defineProps({
 const router = useRouter()
 
 // Reactive state
-const activeTab = ref('clients')
+const activeTab = ref('portfolio')
 const showRiskModal = ref(false)
 const showAlertsModal = ref(false)
 const activeAlertTab = ref('delinquency')
@@ -1423,6 +1536,9 @@ const selectedClientTab = ref('client-001') // Default to first client
 const selectedTimePeriod = ref('12m') // Default to 12 months
 const riskPortfolioView = ref('card') // 'card' or 'table'
 const opportunitiesPortfolioView = ref('card') // 'card' or 'table'
+const selectedTrendMetric = ref('deposits') // Default trend metric
+const showNewOnly = ref(false) // Show new data only filter
+const compareToTarget = ref(false) // Compare to target filter
 
 // Johnson Holdings Group relationship data
 const relationshipData = ref({
@@ -1680,6 +1796,22 @@ const totalPendingRiskReviews = computed(() => {
         return hasRiskFlags && needsReview
     }).length || 10 // Default to 10 if no data
 })
+
+// Risk Flag Categories - Non-Transactional
+const utrFiledCount = computed(() => Math.floor(totalRiskFlags.value * 0.15))
+const highRiskIndustryCount = computed(() => Math.floor(totalRiskFlags.value * 0.2))
+const ctrExemptionCount = computed(() => Math.floor(totalRiskFlags.value * 0.1))
+
+// Risk Flag Categories - High Risk Transactions
+const cannabisRelatedTrxCount = computed(() => Math.floor(totalRiskFlags.value * 0.05))
+const casinoTrxCount = computed(() => Math.floor(totalRiskFlags.value * 0.03))
+const highCashDepositCount = computed(() => Math.floor(totalRiskFlags.value * 0.18))
+const hrjTrxCount = computed(() => Math.floor(totalRiskFlags.value * 0.12))
+const cashierCheckPurchaseCount = computed(() => Math.floor(totalRiskFlags.value * 0.08))
+const cryptoTrxCount = computed(() => Math.floor(totalRiskFlags.value * 0.15))
+const highCashWithdrawalsCount = computed(() => Math.floor(totalRiskFlags.value * 0.1))
+const luxuryGoodsTrxCount = computed(() => Math.floor(totalRiskFlags.value * 0.07))
+const thirdPartyCheckDepositCount = computed(() => Math.floor(totalRiskFlags.value * 0.09))
 
 // Opportunities computed properties
 const totalOpportunities = computed(() => relationshipClients.value.reduce((sum, client) => sum + getClientOpportunityCount(client), 0))
@@ -2092,6 +2224,61 @@ const showRiskDetails = () => {
     // Show alerts modal instead of switching to risk tab
     showAlertsModal.value = true
     activeAlertTab.value = 'delinquency'
+}
+
+// Trend Analysis Helper Methods
+const getTrendMetricTitle = (metric) => {
+    const titles = {
+        deposits: 'Total Deposits',
+        loans: 'Loan Commitment',
+        utilization: 'Loan Utilization %',
+        revenue: 'Total Revenue',
+        clients: 'Number of Clients'
+    }
+    return titles[metric] || metric
+}
+
+const getTrendMetricSubtitle = (metric, period) => {
+    const periodText = period === 'ytd' ? 'Year to Date' : period === '6m' ? 'Last 6 Months' : 'Last 12 Months'
+    const subtitles = {
+        deposits: `Deposit balance trend - ${periodText}`,
+        loans: `Total loan commitments - ${periodText}`,
+        utilization: `Loan utilization percentage - ${periodText}`,
+        revenue: `Revenue performance - ${periodText}`,
+        clients: `Client count changes - ${periodText}`
+    }
+    return subtitles[metric] || `${metric} - ${periodText}`
+}
+
+const getCurrentMetricValue = (metric) => {
+    const values = {
+        deposits: formatCurrency(aggregateDeposits.value),
+        loans: formatCurrency(aggregateLoans.value),
+        utilization: `${loanUtilization.value}%`,
+        revenue: formatCurrency(annualRevenue.value),
+        clients: totalClients.value.toString()
+    }
+    return values[metric] || '0'
+}
+
+const getMetricChange = (metric) => {
+    // Mock change values - replace with actual calculations
+    const changes = {
+        deposits: '+12.5%',
+        loans: '+8.3%',
+        utilization: '+2.1%',
+        revenue: '+15.2%',
+        clients: '+5'
+    }
+    return changes[metric] || '+0%'
+}
+
+const getMetricChangeClass = (metric) => {
+    // Determine if change is positive or negative
+    const change = getMetricChange(metric)
+    if (change.startsWith('+')) return 'text-green-600'
+    if (change.startsWith('-')) return 'text-red-600'
+    return 'text-gray-600'
 }
 
 const closeAlertsModal = () => {
