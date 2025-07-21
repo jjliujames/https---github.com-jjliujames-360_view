@@ -275,9 +275,9 @@
                             :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'risk' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
                             Risk Review ({{ totalPendingRiskReviews }})
                         </button>
-                        <button @click="activeTab = 'loans'"
-                            :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'loans' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
-                            Loan Applications
+                        <button @click="activeTab = 'history'"
+                            :class="['whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium', activeTab === 'history' ? 'border-td-green text-td-green' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']">
+                            Activity History ({{ totalCompletedActions }})
                         </button>
                     </nav>
                 </div>
@@ -1299,56 +1299,152 @@
                 </div>
             </div>
 
-            <!-- Loan Applications Tab -->
-            <div v-if="activeTab === 'loans'">
+            <!-- Activity History Tab -->
+            <div v-if="activeTab === 'history'">
                 <div class="space-y-6">
-                    <!-- Loan Status Board -->
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">📋 Loan Application Status
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                <h4 class="font-medium text-yellow-900 mb-2">Pending</h4>
-                                <div class="space-y-2">
-                                    <div v-for="loan in pendingLoans" :key="loan.id"
-                                        class="bg-white rounded p-2 text-sm">
-                                        <div class="font-medium text-gray-900">{{ loan.client }}</div>
-                                        <div class="text-gray-600">{{ formatCurrency(loan.amount) }}
+                    <!-- Filter Controls -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🕐 Activity History Filters</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                    <select v-model="selectedDateRange" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                        <option value="7d">Last 7 days</option>
+                                        <option value="30d">Last 30 days</option>
+                                        <option value="90d">Last 90 days</option>
+                                        <option value="ytd">Year to date</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Action Type</label>
+                                    <select v-model="selectedActionType" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                        <option value="all">All Actions</option>
+                                        <option value="scheduled">Scheduled Meetings</option>
+                                        <option value="declined">Declined Recommendations</option>
+                                        <option value="risk-reviewed">Risk Reviews</option>
+                                        <option value="resolved">Resolved Items</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
+                                    <select v-model="selectedClientFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                        <option value="all">All Clients</option>
+                                        <option v-for="client in relationshipClients" :key="client.id" :value="client.id">
+                                            {{ client.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button @click="exportActivityHistory" 
+                                        class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+                                        Export Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Summary Stats -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Activity Summary</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600">{{ completedMeetingsCount }}</div>
+                                    <div class="text-sm text-gray-600">Meetings Completed</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-blue-600">{{ scheduledMeetingsCount }}</div>
+                                    <div class="text-sm text-gray-600">Meetings Scheduled</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600">{{ declinedRecommendationsCount }}</div>
+                                    <div class="text-sm text-gray-600">Recommendations Declined</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-purple-600">{{ resolvedRiskItemsCount }}</div>
+                                    <div class="text-sm text-gray-600">Risk Items Resolved</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Recommendations Section -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">✅ Completed Recommendations</h3>
+                            <div class="space-y-4">
+                                <div v-for="item in filteredCompletedRecommendations" :key="item.id" 
+                                    class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-2">
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full" 
+                                                    :class="getActionStatusClass(item.status)">
+                                                    {{ item.status }}
+                                                </span>
+                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName }}</span>
+                                                <span class="text-xs text-gray-500">{{ formatDate(item.completedDate) }}</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mb-2">{{ item.recommendation }}</p>
+                                            <div class="text-xs text-gray-500">
+                                                <span class="font-medium">Product:</span> {{ item.product }} | 
+                                                <span class="font-medium">Potential:</span> {{ formatCurrency(item.potential) }}
+                                                <span v-if="item.outcome" class="ml-2">| <span class="font-medium">Outcome:</span> {{ item.outcome }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <button @click="viewItemDetails(item)" 
+                                                class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+                                <div v-if="filteredCompletedRecommendations.length === 0" 
+                                    class="text-center py-8 text-gray-500">
+                                    No completed recommendations found for the selected filters.
+                                </div>
                             </div>
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h4 class="font-medium text-blue-900 mb-2">Underwriting</h4>
-                                <div class="space-y-2">
-                                    <div v-for="loan in underwritingLoans" :key="loan.id"
-                                        class="bg-white rounded p-2 text-sm">
-                                        <div class="font-medium text-gray-900">{{ loan.client }}</div>
-                                        <div class="text-gray-600">{{ formatCurrency(loan.amount) }}
+                        </div>
+                    </div>
+
+                    <!-- Reviewed Risk Items Section -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🛡️ Reviewed Risk Items</h3>
+                            <div class="space-y-4">
+                                <div v-for="item in filteredReviewedRiskItems" :key="item.id" 
+                                    class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-2">
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full" 
+                                                    :class="getRiskStatusClass(item.resolution)">
+                                                    {{ item.resolution }}
+                                                </span>
+                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName }}</span>
+                                                <span class="text-xs text-gray-500">{{ formatDate(item.reviewedDate) }}</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mb-2">{{ item.riskDescription }}</p>
+                                            <div class="text-xs text-gray-500">
+                                                <span class="font-medium">Type:</span> {{ item.riskType }} | 
+                                                <span class="font-medium">Severity:</span> {{ item.severity }}
+                                                <span v-if="item.notes" class="ml-2">| <span class="font-medium">Notes:</span> {{ item.notes }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <button @click="viewRiskDetails(item)" 
+                                                class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <h4 class="font-medium text-green-900 mb-2">Approved</h4>
-                                <div class="space-y-2">
-                                    <div v-for="loan in approvedLoans" :key="loan.id"
-                                        class="bg-white rounded p-2 text-sm">
-                                        <div class="font-medium text-gray-900">{{ loan.client }}</div>
-                                        <div class="text-gray-600">{{ formatCurrency(loan.amount) }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                                <h4 class="font-medium text-purple-900 mb-2">Funded</h4>
-                                <div class="space-y-2">
-                                    <div v-for="loan in fundedLoans" :key="loan.id"
-                                        class="bg-white rounded p-2 text-sm">
-                                        <div class="font-medium text-gray-900">{{ loan.client }}</div>
-                                        <div class="text-gray-600">{{ formatCurrency(loan.amount) }}
-                                        </div>
-                                    </div>
+                                <div v-if="filteredReviewedRiskItems.length === 0" 
+                                    class="text-center py-8 text-gray-500">
+                                    No reviewed risk items found for the selected filters.
                                 </div>
                             </div>
                         </div>
@@ -1634,6 +1730,11 @@ const expandedClient = ref(null) // Track expanded client for AI recommendations
 const chartViewType = ref('client') // 'client' or 'product' for stacked bar charts
 const recommendationsPerPage = 5 // Number of recommendations per page
 
+// Activity History filters
+const selectedDateRange = ref('30d')
+const selectedActionType = ref('all')
+const selectedClientFilter = ref('all')
+
 // Johnson Holdings Group relationship data
 const relationshipData = ref({
     id: 'rel-001',
@@ -1881,22 +1982,108 @@ const totalRecommendationPages = computed(() =>
     Math.ceil(allRecommendations.value.length / recommendationsPerPage)
 )
 
-const pendingLoans = computed(() => [
-    { id: 1, client: 'Johnson Manufacturing LLC', amount: 15000000 },
-    { id: 2, client: 'Johnson Holdings Group - Subsidiary A', amount: 8000000 }
+
+// Activity History Data
+const completedActions = computed(() => [
+    {
+        id: 1,
+        type: 'recommendation',
+        status: 'Meeting Completed',
+        clientName: 'Johnson Manufacturing LLC',
+        clientId: 'client-001',
+        recommendation: 'Expand lending facilities to support increased production capacity',
+        product: 'Commercial Lending',
+        potential: 450000,
+        completedDate: '2024-12-15',
+        outcome: 'Meeting held - client interested, proposal sent'
+    },
+    {
+        id: 2,
+        type: 'recommendation',
+        status: 'Scheduled',
+        clientName: 'Johnson Holdings Group - Subsidiary A',
+        clientId: 'client-002',
+        recommendation: 'Treasury Management solutions to optimize cash flow',
+        product: 'Treasury Management',
+        potential: 320000,
+        completedDate: '2024-12-10',
+        outcome: 'Meeting scheduled for next week'
+    },
+    {
+        id: 3,
+        type: 'recommendation',
+        status: 'Declined',
+        clientName: 'Johnson Holdings Group - Subsidiary B',
+        clientId: 'client-003',
+        recommendation: 'Supply chain financing for rapid expansion',
+        product: 'Trade Finance',
+        potential: 280000,
+        completedDate: '2024-12-08',
+        outcome: 'Client not interested at this time'
+    },
+    {
+        id: 4,
+        type: 'risk',
+        resolution: 'Resolved',
+        clientName: 'Johnson Manufacturing LLC',
+        clientId: 'client-001',
+        riskDescription: 'High transaction volume flagged for review',
+        riskType: 'Transaction Pattern',
+        severity: 'Medium',
+        reviewedDate: '2024-12-12',
+        notes: 'Verified legitimate business activity'
+    },
+    {
+        id: 5,
+        type: 'risk',
+        resolution: 'UTR Filed',
+        clientName: 'Johnson Holdings Group - Subsidiary A',
+        clientId: 'client-002',
+        riskDescription: 'Suspicious wire transfer pattern detected',
+        riskType: 'AML Alert',
+        severity: 'High',
+        reviewedDate: '2024-12-05',
+        notes: 'Filed UTR with FinCEN'
+    }
 ])
 
-const underwritingLoans = computed(() => [
-    { id: 3, client: 'Johnson Holdings Group - Subsidiary B', amount: 12000000 }
-])
+// Activity History Computed Properties
+const totalCompletedActions = computed(() => completedActions.value.length)
 
-const approvedLoans = computed(() => [
-    { id: 4, client: 'Johnson Manufacturing LLC', amount: 5000000 }
-])
+const filteredCompletedRecommendations = computed(() => {
+    return completedActions.value
+        .filter(action => action.type === 'recommendation')
+        .filter(action => selectedClientFilter.value === 'all' || action.clientId === selectedClientFilter.value)
+        .filter(action => selectedActionType.value === 'all' || 
+            (selectedActionType.value === 'scheduled' && action.status === 'Scheduled') ||
+            (selectedActionType.value === 'declined' && action.status === 'Declined') ||
+            (selectedActionType.value === 'resolved' && action.status === 'Meeting Completed'))
+        .filter(action => isWithinDateRange(action.completedDate, selectedDateRange.value))
+})
 
-const fundedLoans = computed(() => [
-    { id: 5, client: 'Johnson Holdings Group - Subsidiary A', amount: 3000000 }
-])
+const filteredReviewedRiskItems = computed(() => {
+    return completedActions.value
+        .filter(action => action.type === 'risk')
+        .filter(action => selectedClientFilter.value === 'all' || action.clientId === selectedClientFilter.value)
+        .filter(action => selectedActionType.value === 'all' || selectedActionType.value === 'risk-reviewed')
+        .filter(action => isWithinDateRange(action.reviewedDate, selectedDateRange.value))
+})
+
+const completedMeetingsCount = computed(() => 
+    completedActions.value.filter(action => action.status === 'Meeting Completed').length
+)
+
+const scheduledMeetingsCount = computed(() => 
+    completedActions.value.filter(action => action.status === 'Scheduled').length
+)
+
+const declinedRecommendationsCount = computed(() => 
+    completedActions.value.filter(action => action.status === 'Declined').length
+)
+
+const resolvedRiskItemsCount = computed(() => 
+    completedActions.value.filter(action => action.type === 'risk').length
+)
 
 const hasCriticalRisks = computed(() => totalRiskFlags.value > 5)
 const riskIndicatorClass = computed(() => {
@@ -2726,6 +2913,74 @@ const getClientRecommendations = (clientId) => {
     }
     
     return allRecommendations.value.filter(rec => rec.client === client.name) || []
+}
+
+// Activity History Methods
+const isWithinDateRange = (date, range) => {
+    const targetDate = new Date(date)
+    const now = new Date()
+    
+    switch (range) {
+        case '7d':
+            return (now - targetDate) <= (7 * 24 * 60 * 60 * 1000)
+        case '30d':
+            return (now - targetDate) <= (30 * 24 * 60 * 60 * 1000)
+        case '90d':
+            return (now - targetDate) <= (90 * 24 * 60 * 60 * 1000)
+        case 'ytd':
+            return targetDate.getFullYear() === now.getFullYear()
+        default:
+            return true
+    }
+}
+
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    })
+}
+
+const getActionStatusClass = (status) => {
+    switch (status) {
+        case 'Meeting Completed':
+            return 'bg-green-100 text-green-800'
+        case 'Scheduled':
+            return 'bg-blue-100 text-blue-800'
+        case 'Declined':
+            return 'bg-red-100 text-red-800'
+        default:
+            return 'bg-gray-100 text-gray-800'
+    }
+}
+
+const getRiskStatusClass = (resolution) => {
+    switch (resolution) {
+        case 'Resolved':
+            return 'bg-green-100 text-green-800'
+        case 'UTR Filed':
+            return 'bg-yellow-100 text-yellow-800'
+        case 'Under Review':
+            return 'bg-orange-100 text-orange-800'
+        default:
+            return 'bg-gray-100 text-gray-800'
+    }
+}
+
+const viewItemDetails = (item) => {
+    console.log('Viewing recommendation details:', item)
+    // Implementation for viewing item details
+}
+
+const viewRiskDetails = (item) => {
+    console.log('Viewing risk details:', item)
+    // Implementation for viewing risk details
+}
+
+const exportActivityHistory = () => {
+    console.log('Exporting activity history report')
+    // Implementation for exporting activity history
 }
 
 const reviewAlert = (alert) => {
