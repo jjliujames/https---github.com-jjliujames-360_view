@@ -954,6 +954,10 @@
                                         <!-- Clients Chart -->
                                         <BarChart v-else-if="selectedTrendMetric === 'clients'"
                                             :data="getClientsChartData" :options="clientsChartOptions" />
+
+                                        <!-- Transactions Chart -->
+                                        <BarChart v-else-if="selectedTrendMetric === 'transactions'"
+                                            :data="getTransactionsChartData" :options="transactionsChartOptions" />
                                     </div>
 
                                     <!-- Chart Legend/Info -->
@@ -1259,6 +1263,16 @@
                                                     }}</span>
                                                 </div>
                                             </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">Third Party Check Deposit</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        thirdPartyCheckDepositCount
+                                                        || 0 }}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="space-y-3">
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1299,18 +1313,6 @@
                                                         luxuryGoodsTrxCount || 0
                                                     }}</span>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-3 mt-2">
-                                        <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                            @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                            <span class="text-xs text-gray-700">Third Party Check Deposit</span>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{
-                                                    thirdPartyCheckDepositCount
-                                                    || 0 }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2684,7 +2686,7 @@ const crossSellIndex = computed(() => {
     return (totalProducts / (relationshipClients.value.length * 7)).toFixed(1) // 7 possible products
 })
 
-const totalRiskFlags = computed(() => relationshipClients.value.reduce((sum, client) => sum + client.riskFlags, 0))
+const totalRiskFlags = computed(() => 8)
 const coveragePercentage = computed(() => {
     const avgCoverage = relationshipClients.value.reduce((sum, client) => sum + client.coverage, 0) / relationshipClients.value.length
     return Math.round(avgCoverage)
@@ -3534,6 +3536,179 @@ const clientsChartOptions = {
     }
 }
 
+// Transaction Chart Data
+const getTransactionsChartData = computed(() => {
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    
+    if (transactionViewType.value === 'by-type') {
+        // Inflow transaction types (positive values)
+        const cashDeposits = [45, 42, 48, 52, 38, 65, 58, 72, 45, 52, 48, 68]
+        const checkDeposits = [125, 138, 142, 165, 125, 175, 168, 182, 155, 162, 158, 188]
+        const achIn = [85, 92, 88, 95, 78, 108, 98, 112, 88, 95, 92, 118]
+        const wireIn = [320, 285, 340, 380, 295, 420, 385, 445, 325, 365, 358, 425]
+        
+        // Outflow transaction types (negative values)
+        const cashWithdrawals = [-25, -28, -32, -35, -22, -38, -32, -42, -28, -32, -28, -38]
+        const checkPayments = [-185, -195, -212, -225, -178, -245, -228, -265, -198, -215, -205, -248]
+        const achOut = [-145, -152, -168, -175, -138, -188, -172, -195, -155, -168, -162, -188]
+        const wireOut = [-280, -295, -315, -335, -265, -365, -342, -385, -305, -325, -315, -368]
+
+        return {
+            labels,
+            datasets: [
+                // Inflows (positive)
+                {
+                    label: 'Cash Deposits',
+                    data: cashDeposits,
+                    backgroundColor: '#10b981', // Green
+                    borderColor: '#059669',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'Check Deposits',
+                    data: checkDeposits,
+                    backgroundColor: '#3b82f6', // Blue
+                    borderColor: '#2563eb',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'ACH In',
+                    data: achIn,
+                    backgroundColor: '#8b5cf6', // Purple
+                    borderColor: '#7c3aed',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'Wire In',
+                    data: wireIn,
+                    backgroundColor: '#06b6d4', // Cyan
+                    borderColor: '#0891b2',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                // Outflows (negative)
+                {
+                    label: 'Cash Withdrawals',
+                    data: cashWithdrawals,
+                    backgroundColor: '#ef4444', // Red
+                    borderColor: '#dc2626',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'Check Payments',
+                    data: checkPayments,
+                    backgroundColor: '#f97316', // Orange
+                    borderColor: '#ea580c',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'ACH Out',
+                    data: achOut,
+                    backgroundColor: '#ec4899', // Pink
+                    borderColor: '#db2777',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'Wire Out',
+                    data: wireOut,
+                    backgroundColor: '#6b7280', // Gray
+                    borderColor: '#4b5563',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                }
+            ]
+        }
+    } else {
+        // By Client view
+        const johnsonManufacturing = [450, 485, 520, 565, 425, 625, 580, 685, 495, 545, 525, 658]
+        const johnsonHoldingsA = [285, 315, 340, 375, 265, 415, 385, 445, 325, 365, 348, 425]
+        const johnsonHoldingsB = [185, 205, 225, 245, 175, 275, 255, 295, 215, 235, 228, 278]
+
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Johnson Manufacturing LLC',
+                    data: johnsonManufacturing,
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#2563eb',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Johnson Holdings Group - Subsidiary A',
+                    data: johnsonHoldingsA,
+                    backgroundColor: '#10b981',
+                    borderColor: '#059669',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Johnson Holdings Group - Subsidiary B',
+                    data: johnsonHoldingsB,
+                    backgroundColor: '#f59e0b',
+                    borderColor: '#d97706',
+                    borderWidth: 1
+                }
+            ]
+        }
+    }
+})
+
+const transactionsChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: false,
+            ticks: {
+                callback: function(value) {
+                    return (value >= 0 ? '$' : '-$') + Math.abs(value) + 'M'
+                }
+            },
+            grid: {
+                color: function(context) {
+                    if (context.tick.value === 0) {
+                        return '#374151' // Darker line at zero
+                    }
+                    return '#e5e7eb' // Light gray for other lines
+                }
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            position: 'bottom',
+            labels: {
+                usePointStyle: true,
+                padding: 15,
+                generateLabels: function(chart) {
+                    const datasets = chart.data.datasets
+                    return datasets.map((dataset, i) => ({
+                        text: dataset.label,
+                        fillStyle: dataset.backgroundColor,
+                        strokeStyle: dataset.borderColor,
+                        pointStyle: 'circle'
+                    }))
+                }
+            }
+        },
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    const value = context.parsed.y
+                    const prefix = value >= 0 ? '+$' : '-$'
+                    return context.dataset.label + ': ' + prefix + Math.abs(value) + 'M'
+                }
+            }
+        }
+    }
+}
+
 const modalChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -3701,7 +3876,8 @@ const getTrendMetricTitle = (metric) => {
         loans: 'Loan Commitment',
         utilization: 'Loan Utilization %',
         revenue: 'Total Revenue',
-        clients: 'Number of Clients'
+        clients: 'Number of Clients',
+        transactions: 'Monthly Transactions'
     }
     return titles[metric] || metric
 }
@@ -3713,7 +3889,8 @@ const getTrendMetricSubtitle = (metric, period) => {
         loans: `Total loan commitments - ${periodText}`,
         utilization: `Loan utilization percentage - ${periodText}`,
         revenue: `Revenue performance - ${periodText}`,
-        clients: `Client count changes - ${periodText}`
+        clients: `Client count changes - ${periodText}`,
+        transactions: `Transaction volume inflow/outflow - ${periodText}`
     }
     return subtitles[metric] || `${metric} - ${periodText}`
 }
@@ -3724,7 +3901,8 @@ const getCurrentMetricValue = (metric) => {
         loans: formatCurrency(aggregateLoans.value),
         utilization: `${loanUtilization.value}%`,
         revenue: formatCurrency(annualRevenue.value),
-        clients: totalClients.value.toString()
+        clients: totalClients.value.toString(),
+        transactions: '$920M'
     }
     return values[metric] || '0'
 }
@@ -3736,7 +3914,8 @@ const getMetricChange = (metric) => {
         loans: '+8.3%',
         utilization: '+2.1%',
         revenue: '+15.2%',
-        clients: '+5'
+        clients: '+5',
+        transactions: '+8.7%'
     }
     return changes[metric] || '+0%'
 }
