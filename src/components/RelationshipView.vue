@@ -209,6 +209,9 @@
                         <KPICard :value="aggregateDeposits" label="Total Deposits" color="green"
                             :percentile="depositsPercentile" format-type="currency" />
 
+                        <KPICard :value="totalInflow" label="Total Inflow" color="emerald"
+                            :percentile="inflowPercentile" format-type="currency" />
+
                         <KPICard :value="aggregateLoans" label="Loan Commitment" color="orange"
                             :percentile="loansPercentile" format-type="currency" />
 
@@ -229,10 +232,10 @@
                             </template>
                         </KPICard>
 
-                        <KPICard :value="relationshipHealthScore" label="Relationship Health" color="teal"
+                        <KPICard :value="relationshipComplexityScore" label="Relationship Intelligence" color="red"
                             format-type="score" :show-score="true">
                             <template #additional-info>
-                                <div class="text-xs text-teal-600 font-medium mt-1">/10</div>
+                                <div class="text-xs text-red-600 font-medium mt-1">Complexity Score</div>
                             </template>
                         </KPICard>
                     </div>
@@ -851,6 +854,12 @@
                                                 <span v-if="selectedTrendMetric === 'clients'"
                                                     class="text-blue-500">→</span>
                                             </button>
+                                            <button @click="selectedTrendMetric = 'transactions'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'transactions' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                <span>💳 Monthly Transactions</span>
+                                                <span v-if="selectedTrendMetric === 'transactions'"
+                                                    class="text-blue-500">→</span>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -866,6 +875,21 @@
                                                 class="rounded border-gray-300">
                                             <span>Compare to Target</span>
                                         </label>
+                                    </div>
+
+                                    <!-- Transaction Chart Options (when transactions selected) -->
+                                    <div v-if="selectedTrendMetric === 'transactions'" class="mt-4 pt-4 border-t border-gray-200">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction View</h4>
+                                        <div class="space-y-1">
+                                            <button @click="transactionViewType = 'by-type'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', transactionViewType === 'by-type' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                By Transaction Type
+                                            </button>
+                                            <button @click="transactionViewType = 'by-client'"
+                                                :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', transactionViewType === 'by-client' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                By Client
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1910,6 +1934,7 @@ const compareToTarget = ref(false) // Compare to target filter
 const currentRecommendationPage = ref(1) // Current page for recommendations
 const expandedClient = ref(null) // Track expanded client for AI recommendations
 const chartViewType = ref('client') // 'client' or 'product' for stacked bar charts
+const transactionViewType = ref('by-type') // 'by-type' or 'by-client' for transaction charts
 const recommendationsPerPage = 5 // Number of recommendations per page
 
 // Enhanced Risk Review Dashboard state
@@ -1985,6 +2010,39 @@ const loanUtilization = computed(() => {
     return totalCommitments > 0 ? ((aggregateLoans.value / totalCommitments) * 100).toFixed(1) : 0
 })
 const annualRevenue = computed(() => relationshipClients.value.reduce((sum, client) => sum + client.revenue, 0))
+
+// New computed properties
+const totalInflow = computed(() => {
+    // Calculate total inflow as sum of deposits plus estimated transaction flow
+    const deposits = aggregateDeposits.value
+    const estimatedTransactionFlow = deposits * 0.15 // Assume 15% transaction flow relative to deposits
+    return deposits + estimatedTransactionFlow
+})
+
+const relationshipComplexityScore = computed(() => {
+    // High complexity score (red) indicates hidden relationships or complex structure
+    // Score from 1-10, where 10 is highest complexity (most concerning)
+    
+    let complexityScore = 5; // Base score
+    
+    // Increase complexity for multiple clients in relationship
+    if (totalClients.value > 3) complexityScore += 2;
+    
+    // Increase complexity for high-value relationships (potential for hidden connections)
+    if (aggregateDeposits.value > 50000000) complexityScore += 1;
+    
+    // Increase complexity if high loan-to-deposit ratio (unusual structure)
+    const loanToDepositRatio = aggregateDeposits.value > 0 ? aggregateLoans.value / aggregateDeposits.value : 0;
+    if (loanToDepositRatio > 2) complexityScore += 2;
+    
+    // Random factor to simulate hidden relationships detection
+    if (Math.random() > 0.7) complexityScore += 2; // 30% chance of hidden complexity
+    
+    return Math.min(10, complexityScore);
+})
+
+const inflowPercentile = computed(() => Math.floor(Math.random() * 40) + 60) // 60-99th percentile
+
 const crossSellIndex = computed(() => {
     const totalProducts = relationshipClients.value.reduce((sum, client) => {
         return sum + Object.values(client.products).filter(Boolean).length

@@ -165,7 +165,7 @@
           <!-- Summary KPIs Row -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-4">
-              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
                 <div class="text-center">
                   <div class="text-xl font-bold text-blue-600">{{ totalAccounts }}</div>
                   <div class="text-xs text-gray-600">Total Accounts</div>
@@ -175,6 +175,12 @@
                   <div class="text-xs text-gray-600">Total Deposit Balance</div>
                   <div class="text-xs text-green-500 font-medium">{{ depositsPercentile }}{{
                     getOrdinalSuffix(depositsPercentile) }} percentile</div>
+              </div>
+                <div class="text-center">
+                  <div class="text-xl font-bold text-emerald-600">{{ formatCurrency(transactionSummary.totalInflows) }}</div>
+                  <div class="text-xs text-gray-600">Total Inflows</div>
+                  <div class="text-xs text-emerald-500 font-medium">{{ inflowsPercentile }}{{
+                    getOrdinalSuffix(inflowsPercentile) }} percentile</div>
               </div>
                 <div class="text-center">
                   <div class="text-xl font-bold text-orange-600">{{ formatCurrency(totalLoanAmount) }}</div>
@@ -927,20 +933,20 @@
                 <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
                 <div class="text-center p-3 bg-green-50 rounded-lg">
                   <p class="text-green-600 font-medium">Total Inflows</p>
-                  <p class="text-xl font-bold text-green-900">$2.8M</p>
+                  <p class="text-xl font-bold text-green-900">{{ formatCurrency(transactionSummary.totalInflows) }}</p>
                     <p class="text-xs text-green-500 font-medium">{{ inflowsPercentile }}{{
                       getOrdinalSuffix(inflowsPercentile) }} percentile</p>
                 </div>
                 <div class="text-center p-3 bg-red-50 rounded-lg">
                   <p class="text-red-600 font-medium">Total Outflows</p>
-                  <p class="text-xl font-bold text-red-900">$2.1M</p>
+                  <p class="text-xl font-bold text-red-900">{{ formatCurrency(transactionSummary.totalOutflows) }}</p>
                     <p class="text-xs text-red-500 font-medium">{{ outflowsPercentile }}{{
                       getOrdinalSuffix(outflowsPercentile) }} percentile</p>
                 </div>
                 <div class="text-center p-3 bg-blue-50 rounded-lg">
                   <p class="text-blue-600 font-medium">Net Flow</p>
-                  <p class="text-xl font-bold text-blue-900">$0.7M</p>
-                  <p class="text-xs text-blue-600">Positive trend</p>
+                  <p class="text-xl font-bold text-blue-900">{{ formatCurrency(transactionSummary.netAmount) }}</p>
+                  <p class="text-xs text-blue-600">{{ transactionSummary.netAmount > 0 ? 'Positive trend' : 'Negative trend' }}</p>
                 </div>
                 </div>
               </div>
