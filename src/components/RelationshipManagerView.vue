@@ -391,6 +391,7 @@
               <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Net New Commitments</th>
               <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Net New Deposits</th>
               <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">New Credit Relationships</th>
+              <th class="text-center py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Opportunities</th>
               <th class="text-center py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Risk Flags</th>
             </tr>
           </thead>
@@ -423,6 +424,12 @@
               <!-- New Credit Relationships -->
               <td class="text-right py-3 px-4">
                 <div class="text-gray-900 font-medium text-sm">{{ relationship.newCreditRelationship }}</div>
+              </td>
+
+              <!-- Opportunities -->
+              <td class="text-center py-3 px-4">
+                <div class="text-gray-900 font-bold text-sm">{{ relationship.opportunities }}</div>
+                <div class="text-xs text-green-600 font-medium">{{ formatCurrency(relationship.totalPotentialValue) }}</div>
               </td>
 
               <!-- Risk Flags -->
@@ -495,6 +502,12 @@
                 <div v-else class="text-xs font-medium mt-1 text-yellow-600">
                   -30% YoY
                 </div>
+              </td>
+              
+              <!-- Opportunities Total -->
+              <td class="text-center py-4 px-4 text-gray-900">
+                <div class="font-bold text-sm">{{ totalOpportunities }}</div>
+                <div class="text-xs font-medium text-green-600 mt-1">{{ formatCurrency(totalPotentialValue) }}</div>
               </td>
               
               <!-- Risk Flags Total -->
@@ -2593,7 +2606,9 @@ const relationships = computed(() => [
     leadCount: 3,
     leadValue: 2400000,
     stage: 'Defend',
-    newCreditRelationship: 0  // Existing credit relationship
+    newCreditRelationship: 0,  // Existing credit relationship
+    opportunities: 5,
+    totalPotentialValue: 2850000
   },
   {
     id: 'rel-002',
@@ -2612,7 +2627,9 @@ const relationships = computed(() => [
     leadCount: 5,
     leadValue: 1800000,
     stage: 'Build',
-    newCreditRelationship: 0  // Existing credit relationship
+    newCreditRelationship: 0,  // Existing credit relationship
+    opportunities: 7,
+    totalPotentialValue: 3450000
   },
   {
     id: 'rel-003',
@@ -2631,7 +2648,9 @@ const relationships = computed(() => [
     leadCount: 2,
     leadValue: 950000,
     stage: 'Watch',
-    newCreditRelationship: 0  // Existing credit relationship
+    newCreditRelationship: 0,  // Existing credit relationship
+    opportunities: 3,
+    totalPotentialValue: 1275000
   },
   {
     id: 'rel-004',
@@ -2650,7 +2669,9 @@ const relationships = computed(() => [
     leadCount: 4,
     leadValue: 3200000,
     stage: 'Build',
-    newCreditRelationship: 1  // NEW client with credit = 1 new credit relationship
+    newCreditRelationship: 1,  // NEW client with credit = 1 new credit relationship
+    opportunities: 8,
+    totalPotentialValue: 4850000
   },
   {
     id: 'rel-005',
@@ -2669,7 +2690,9 @@ const relationships = computed(() => [
     leadCount: 2,
     leadValue: 1500000,
     stage: 'Build',
-    newCreditRelationship: 1  // Existing client added credit = 1 new credit relationship
+    newCreditRelationship: 1,  // Existing client added credit = 1 new credit relationship
+    opportunities: 4,
+    totalPotentialValue: 1950000
   }
 ])
 
@@ -2704,6 +2727,8 @@ const totalDeposits = computed(() => relationships.value.reduce((sum, rel) => su
 const depositsDelta = computed(() => relationships.value.reduce((sum, rel) => sum + rel.depositsDelta, 0))
 const totalLoanCommitments = computed(() => relationships.value.reduce((sum, rel) => sum + rel.loans, 0))
 const loanDelta = computed(() => relationships.value.reduce((sum, rel) => sum + rel.loansDelta, 0))
+const totalOpportunities = computed(() => relationships.value.reduce((sum, rel) => sum + rel.opportunities, 0))
+const totalPotentialValue = computed(() => relationships.value.reduce((sum, rel) => sum + rel.totalPotentialValue, 0))
 const loanUtilization = computed(() => {
   const totalUsed = relationships.value.reduce((sum, rel) => sum + rel.loans, 0)
   const totalCommitted = totalUsed * 1.4 // Assuming 40% headroom
@@ -2998,14 +3023,15 @@ const exportData = () => {
 
 const exportSummaryData = () => {
   // Create CSV data for relationship summary table
-  const headers = ['Relationship', 'Revenue FYTD', 'Deposits', 'Loans', 'Risk Score', 'Performance Score', 'Risk Flags']
+  const headers = ['Relationship', 'Revenue FYTD', 'Net New Commitments', 'Net New Deposits', 'New Credit Relationships', 'Opportunities', 'Total Potential Value', 'Risk Flags']
   const data = relationships.value.map(rel => [
     rel.name,
     formatCurrency(rel.revenue),
-    formatCurrency(rel.deposits),
-    formatCurrency(rel.loans),
-    `${rel.riskScore}/10`,
-    `${calculateRelationshipPerformance(rel)}%`,
+    formatCurrency(rel.netNewCommitments || rel.loans * 0.3),
+    formatCurrency(rel.netNewDeposits || rel.deposits * 0.2),
+    rel.newCreditRelationship.toString(),
+    rel.opportunities.toString(),
+    formatCurrency(rel.totalPotentialValue),
     rel.riskFlags ? rel.riskFlags.length.toString() : '0'
   ])
   
