@@ -16,7 +16,7 @@
             </div>
           </div>
           <div class="flex items-center">
-            <span class="text-sm text-emerald-600">AMCB One Commercial</span>
+            <span class="text-sm text-emerald-600 font-bold">Commercial One</span>
           </div>
         </div>
       </div>
