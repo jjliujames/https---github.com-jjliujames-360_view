@@ -37,7 +37,10 @@
                             <p class="text-xs text-gray-500 mt-1">Relationship ID: {{ relationshipData?.id || 'N/A' }}
                             </p>
                             <div class="mt-2">
-                                <RiskBadge :value="relationshipTier" type="tier" size="sm" />
+                                <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                    :class="getRelationshipTypeClass(relationshipTier)">
+                                    {{ relationshipTier }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -139,7 +142,7 @@
                                 <div>
                                     <div class="text-sm font-medium text-orange-900">{{ conductor.name }}</div>
                                     <div class="text-xs text-orange-600">{{ conductor.role }} • {{ conductor.entityCount
-                                        }} entities</div>
+                                    }} entities</div>
                                 </div>
                             </div>
                             <div v-if="consolidatedConductors.length > 2"
@@ -162,38 +165,10 @@
 
             <!-- Enhanced Complexity Assessment -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-4">
+                <div class="p-2">
                     <h3 class="text-sm font-medium text-gray-900 mb-3">🧠 Relationship Intelligence</h3>
 
-                    <!-- Complexity Score -->
-                    <div class="mb-4">
-                        <h4 class="text-xs font-medium text-gray-500 mb-2">Complexity Index</h4>
-                        <div class="flex items-center space-x-2">
-                            <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 h-2 rounded-full transition-all duration-500"
-                                    :style="{ width: (complexityIndex / 10 * 100) + '%' }"></div>
-                            </div>
-                            <RiskBadge :value="complexityIndex" type="score" size="sm" :show-score="true" />
-                        </div>
-                        <div class="text-xs text-gray-500 mt-1">
-                            Multi-factor: structure, ownership, geography, transactions
-                        </div>
-                    </div>
 
-                    <!-- Risk Heat Map -->
-                    <div class="mb-4">
-                        <h4 class="text-xs font-medium text-gray-500 mb-2">Risk Distribution</h4>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="text-center p-2 bg-red-50 rounded">
-                                <div class="text-lg font-bold text-red-600">{{ highRiskCount }}</div>
-                                <div class="text-xs text-red-600">High Risk</div>
-                            </div>
-                            <div class="text-center p-2 bg-yellow-50 rounded">
-                                <div class="text-lg font-bold text-yellow-600">{{ mediumRiskCount }}</div>
-                                <div class="text-xs text-yellow-600">Medium Risk</div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Compliance Burden -->
                     <div>
@@ -221,7 +196,7 @@
 
             <!-- Enhanced Executive Summary KPIs -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-4">
+                <div class="py-4 px-2">
                     <div class="text-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-900">📈 Relationship Performance Metrics</h3>
                         <p class="text-sm text-gray-500">Aggregated across {{ totalClients }} client entities with
@@ -249,7 +224,8 @@
                         <KPICard :value="totalPendingRiskReviews" label="Pending Risk Reviews" color="amber"
                             format-type="number">
                             <template #additional-info>
-                                <div v-if="totalPendingRiskReviews > 0" class="text-xs text-amber-600 font-medium mt-1">Action Required</div>
+                                <div v-if="totalPendingRiskReviews > 0" class="text-xs text-amber-600 font-medium mt-1">
+                                    Action Required</div>
                             </template>
                         </KPICard>
 
@@ -312,9 +288,6 @@
                                                     Product Penetration</th>
                                                 <th
                                                     class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    RCI</th>
-                                                <th
-                                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     Risk Flags</th>
                                                 <th
                                                     class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -358,11 +331,6 @@
                                                     <span class="font-medium"
                                                         :class="getCoverageColor(client.coverage)">
                                                         {{ client.coverage }}%
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                                    <span class="font-medium" :class="getComplexityColor(client.rci)">
-                                                        {{ client.rci }}
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -682,11 +650,14 @@
                                         <div class="text-sm text-gray-600">Total Opportunities</div>
                                     </div>
                                     <div class="text-center p-4 bg-green-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-green-600">{{ formatCurrency(totalOpportunityValue) }}</div>
+                                        <div class="text-2xl font-bold text-green-600">{{
+                                            formatCurrency(totalOpportunityValue) }}
+                                        </div>
                                         <div class="text-sm text-gray-600">Potential Revenue</div>
                                     </div>
                                     <div class="text-center p-4 bg-purple-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-purple-600">{{ highPriorityOpportunities }}</div>
+                                        <div class="text-2xl font-bold text-purple-600">{{ highPriorityOpportunities }}
+                                        </div>
                                         <div class="text-sm text-gray-600">High Priority</div>
                                     </div>
                                 </div>
@@ -700,86 +671,112 @@
                                         <table class="min-w-full divide-y divide-gray-200">
                                             <thead class="bg-gray-50">
                                                 <tr>
-                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunities</th>
-                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Potential Value</th>
-                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                                    <th
+                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Client</th>
+                                                    <th
+                                                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Opportunities</th>
+                                                    <th
+                                                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Potential Value</th>
+                                                    <th
+                                                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Priority</th>
+                                                    <th
+                                                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="bg-white divide-y divide-gray-200">
                                                 <template v-for="client in relationshipClients" :key="client.id">
                                                     <tr class="hover:bg-gray-50">
                                                         <td class="px-6 py-4 whitespace-nowrap">
-                                                            <button @click="navigateToClient(client.id)" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                                                            <button @click="navigateToClient(client.id)"
+                                                                class="text-sm font-medium text-blue-600 hover:text-blue-800">
                                                                 {{ client.name }}
                                                             </button>
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                                                            <span
+                                                                class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                                                                 {{ getClientOpportunityCount(client) }}
                                                             </span>
                                                         </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                                        <td
+                                                            class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                                                             {{ formatCurrency(getClientOpportunityValue(client)) }}
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                            <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getClientPriorityClass(client)">
+                                                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                                                :class="getClientPriorityClass(client)">
                                                                 {{ getClientPriority(client) }}
                                                             </span>
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                            <button @click="toggleClientRecommendations(client.id)" 
+                                                            <button @click="toggleClientRecommendations(client.id)"
                                                                 class="text-sm text-td-green hover:text-green-600 font-medium">
-                                                                {{ expandedClient === client.id ? 'Hide' : 'View' }} Details
+                                                                {{ expandedClient === client.id ? 'Hide' : 'View' }}
+                                                                Details
                                                             </button>
                                                         </td>
                                                     </tr>
                                                     <!-- Expanded Recommendations Row -->
-                                                    <tr v-if="expandedClient === client.id" :key="`${client.id}-expanded`">
+                                                    <tr v-if="expandedClient === client.id"
+                                                        :key="`${client.id}-expanded`">
                                                         <td colspan="5" class="px-6 py-4 bg-gray-50">
                                                             <div class="space-y-3">
-                                                                <h5 class="text-sm font-semibold text-gray-900 mb-3">🤖 AI Recommendations for {{ client.name }}</h5>
-                                                                <div v-for="rec in getClientRecommendations(client.id)" :key="rec.id" 
+                                                                <h5 class="text-sm font-semibold text-gray-900 mb-3">🤖
+                                                                    AI Recommendations for {{ client.name }}</h5>
+                                                                <div v-for="rec in getClientRecommendations(client.id)"
+                                                                    :key="rec.id"
                                                                     class="bg-white rounded-lg border border-gray-200 p-4">
-                                                                <div class="flex items-start justify-between">
-                                                                    <div class="flex-1">
-                                                                        <div class="flex items-center space-x-2 mb-2">
-                                                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
-                                                                                {{ rec.confidence }}% confidence
-                                                                            </span>
-                                                                            <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                                                                :class="rec.priority === 'High' ? 'bg-red-100 text-red-800' : rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'">
-                                                                                {{ rec.priority }}
-                                                                            </span>
-                                                                            <span class="text-xs text-gray-500">{{ rec.product }}</span>
+                                                                    <div class="flex items-start justify-between">
+                                                                        <div class="flex-1">
+                                                                            <div
+                                                                                class="flex items-center space-x-2 mb-2">
+                                                                                <span
+                                                                                    class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                                                                    {{ rec.confidence }}% confidence
+                                                                                </span>
+                                                                                <span
+                                                                                    class="px-2 py-1 text-xs font-medium rounded-full"
+                                                                                    :class="rec.priority === 'High' ? 'bg-red-100 text-red-800' : rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'">
+                                                                                    {{ rec.priority }}
+                                                                                </span>
+                                                                                <span class="text-xs text-gray-500">{{
+                                                                                    rec.product }}</span>
+                                                                            </div>
+                                                                            <p class="text-sm text-gray-900 mb-2">{{
+                                                                                rec.recommendation }}</p>
+                                                                            <p class="text-xs text-gray-600 mb-2">
+                                                                                <span class="font-medium">Reason:</span>
+                                                                                {{ rec.reason }}
+                                                                            </p>
+                                                                            <div class="text-xs text-gray-500">
+                                                                                💰 {{ formatCurrency(rec.potential) }}
+                                                                                potential revenue
+                                                                            </div>
                                                                         </div>
-                                                                        <p class="text-sm text-gray-900 mb-2">{{ rec.recommendation }}</p>
-                                                                        <p class="text-xs text-gray-600 mb-2">
-                                                                            <span class="font-medium">Reason:</span> {{ rec.reason }}
-                                                                        </p>
-                                                                        <div class="text-xs text-gray-500">
-                                                                            💰 {{ formatCurrency(rec.potential) }} potential revenue
+                                                                        <div class="flex space-x-2 ml-4">
+                                                                            <button @click="openMeetingModal(rec)"
+                                                                                class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                                                                Schedule
+                                                                            </button>
+                                                                            <button @click="openDeclineModal(rec)"
+                                                                                class="px-3 py-1.5 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                                                                                Decline
+                                                                            </button>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="flex space-x-2 ml-4">
-                                                                        <button @click="openMeetingModal(rec)"
-                                                                            class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                                                            Schedule
-                                                                        </button>
-                                                                        <button @click="openDeclineModal(rec)"
-                                                                            class="px-3 py-1.5 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-                                                                            Decline
-                                                                        </button>
                                                                     </div>
                                                                 </div>
+                                                                <div v-if="getClientRecommendations(client.id).length === 0"
+                                                                    class="text-sm text-gray-500 italic">
+                                                                    No recommendations available for this client.
+                                                                </div>
                                                             </div>
-                                                            <div v-if="getClientRecommendations(client.id).length === 0" class="text-sm text-gray-500 italic">
-                                                                No recommendations available for this client.
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
                                                 </template>
                                             </tbody>
                                         </table>
@@ -796,7 +793,7 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-6">📈 Portfolio Trends & Analysis</h3>
-                        
+
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                             <!-- Left Side - Metric Selector -->
                             <div class="lg:col-span-1">
@@ -827,27 +824,32 @@
                                             <button @click="selectedTrendMetric = 'deposits'"
                                                 :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'deposits' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
                                                 <span>💰 Total Deposits</span>
-                                                <span v-if="selectedTrendMetric === 'deposits'" class="text-blue-500">→</span>
+                                                <span v-if="selectedTrendMetric === 'deposits'"
+                                                    class="text-blue-500">→</span>
                                             </button>
                                             <button @click="selectedTrendMetric = 'loans'"
                                                 :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'loans' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
                                                 <span>📊 Loan Commitment</span>
-                                                <span v-if="selectedTrendMetric === 'loans'" class="text-blue-500">→</span>
+                                                <span v-if="selectedTrendMetric === 'loans'"
+                                                    class="text-blue-500">→</span>
                                             </button>
                                             <button @click="selectedTrendMetric = 'utilization'"
                                                 :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'utilization' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
                                                 <span>📈 Loan Utilization %</span>
-                                                <span v-if="selectedTrendMetric === 'utilization'" class="text-blue-500">→</span>
+                                                <span v-if="selectedTrendMetric === 'utilization'"
+                                                    class="text-blue-500">→</span>
                                             </button>
                                             <button @click="selectedTrendMetric = 'revenue'"
                                                 :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'revenue' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
                                                 <span>💵 Revenue</span>
-                                                <span v-if="selectedTrendMetric === 'revenue'" class="text-blue-500">→</span>
+                                                <span v-if="selectedTrendMetric === 'revenue'"
+                                                    class="text-blue-500">→</span>
                                             </button>
                                             <button @click="selectedTrendMetric = 'clients'"
                                                 :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedTrendMetric === 'clients' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100']">
                                                 <span>👥 Number of Clients</span>
-                                                <span v-if="selectedTrendMetric === 'clients'" class="text-blue-500">→</span>
+                                                <span v-if="selectedTrendMetric === 'clients'"
+                                                    class="text-blue-500">→</span>
                                             </button>
                                         </div>
                                     </div>
@@ -855,11 +857,13 @@
                                     <!-- Additional Options -->
                                     <div class="mt-4 pt-4 border-t border-gray-200">
                                         <label class="flex items-center space-x-2 text-sm text-gray-700">
-                                            <input type="checkbox" v-model="showNewOnly" class="rounded border-gray-300">
+                                            <input type="checkbox" v-model="showNewOnly"
+                                                class="rounded border-gray-300">
                                             <span>Show New Only</span>
                                         </label>
                                         <label class="flex items-center space-x-2 text-sm text-gray-700 mt-2">
-                                            <input type="checkbox" v-model="compareToTarget" class="rounded border-gray-300">
+                                            <input type="checkbox" v-model="compareToTarget"
+                                                class="rounded border-gray-300">
                                             <span>Compare to Target</span>
                                         </label>
                                     </div>
@@ -887,7 +891,8 @@
                                                 <div class="text-sm text-gray-600">Current</div>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-lg font-semibold" :class="getMetricChangeClass(selectedTrendMetric)">
+                                                <div class="text-lg font-semibold"
+                                                    :class="getMetricChangeClass(selectedTrendMetric)">
                                                     {{ getMetricChange(selectedTrendMetric) }}
                                                 </div>
                                                 <div class="text-sm text-gray-600">vs Prior</div>
@@ -896,7 +901,8 @@
                                     </div>
 
                                     <!-- Chart Type Toggle (for deposits and loans) -->
-                                    <div v-if="selectedTrendMetric === 'deposits' || selectedTrendMetric === 'loans'" class="mb-2 flex justify-end">
+                                    <div v-if="selectedTrendMetric === 'deposits' || selectedTrendMetric === 'loans'"
+                                        class="mb-2 flex justify-end">
                                         <div class="inline-flex rounded-md shadow-sm" role="group">
                                             <button @click="chartViewType = 'client'"
                                                 :class="['px-3 py-1 text-sm font-medium', chartViewType === 'client' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50', 'rounded-l-md border border-gray-200']">
@@ -912,29 +918,24 @@
                                     <!-- Chart Area -->
                                     <div class="h-80">
                                         <!-- Deposits Chart -->
-                                        <BarChart v-if="selectedTrendMetric === 'deposits'" 
-                                            :data="getDepositsChartData" 
+                                        <BarChart v-if="selectedTrendMetric === 'deposits'" :data="getDepositsChartData"
                                             :options="depositChartOptions" />
-                                        
+
                                         <!-- Loans Chart -->
-                                        <BarChart v-else-if="selectedTrendMetric === 'loans'" 
-                                            :data="getLoansChartData" 
+                                        <BarChart v-else-if="selectedTrendMetric === 'loans'" :data="getLoansChartData"
                                             :options="loanChartOptions" />
-                                        
+
                                         <!-- Utilization Chart -->
-                                        <LineChart v-else-if="selectedTrendMetric === 'utilization'" 
-                                            :data="getUtilizationChartData" 
-                                            :options="utilizationChartOptions" />
-                                        
+                                        <LineChart v-else-if="selectedTrendMetric === 'utilization'"
+                                            :data="getUtilizationChartData" :options="utilizationChartOptions" />
+
                                         <!-- Revenue Chart -->
-                                        <BarChart v-else-if="selectedTrendMetric === 'revenue'" 
-                                            :data="getRevenueChartData" 
-                                            :options="revenueChartOptions" />
-                                        
+                                        <BarChart v-else-if="selectedTrendMetric === 'revenue'"
+                                            :data="getRevenueChartData" :options="revenueChartOptions" />
+
                                         <!-- Clients Chart -->
-                                        <BarChart v-else-if="selectedTrendMetric === 'clients'" 
-                                            :data="getClientsChartData" 
-                                            :options="clientsChartOptions" />
+                                        <BarChart v-else-if="selectedTrendMetric === 'clients'"
+                                            :data="getClientsChartData" :options="clientsChartOptions" />
                                     </div>
 
                                     <!-- Chart Legend/Info -->
@@ -994,6 +995,165 @@
                         </div>
                     </div>
 
+                    <!-- Enhanced Risk Review Dashboard -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">🛡️ Enhanced Risk Review Dashboard
+                                    </h3>
+                                    <p class="text-sm text-gray-500 mt-1">Comprehensive risk management with interactive
+                                        workflow
+                                        and investigation tools</p>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <!-- Risk Review Controls -->
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="reviewMode = 'standard'"
+                                            :class="['px-3 py-1.5 text-xs font-medium rounded-md', reviewMode === 'standard' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']">
+                                            Standard Review
+                                        </button>
+                                        <button @click="reviewMode = 'bulk'"
+                                            :class="['px-3 py-1.5 text-xs font-medium rounded-md', reviewMode === 'bulk' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']">
+                                            Bulk Actions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+
+                            <!-- Risk Table View -->
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th v-if="reviewMode === 'bulk'"
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <input type="checkbox" @change="toggleAllClientsForReview"
+                                                    :checked="selectedClientsForReview.length === relationshipClients.length"
+                                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            </th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Client</th>
+                                            <th
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Risk Flags</th>
+                                            <th
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Risk Level</th>
+                                            <th
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Review Status</th>
+                                            <th
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Last Review</th>
+                                            <th
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        <tr v-for="client in relationshipClients" :key="client.id"
+                                            class="hover:bg-gray-50"
+                                            :class="{ 'bg-blue-50': selectedClientsForReview.includes(client.id) }">
+                                            <td v-if="reviewMode === 'bulk'" class="px-6 py-4 whitespace-nowrap">
+                                                <input type="checkbox" :value="client.id"
+                                                    v-model="selectedClientsForReview"
+                                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-8 w-8">
+                                                        <div
+                                                            class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                                            <span class="text-xs font-medium text-gray-700">{{
+                                                                client.name.charAt(0) }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <button @click="navigateToClient(client.id)"
+                                                            class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                                                            {{ client.name }}</button>
+                                                        <div class="text-xs text-gray-500">{{
+                                                            client.industry }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                <span v-if="client.riskFlags > 0"
+                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                                    {{ client.riskFlags }}
+                                                </span>
+                                                <span v-else
+                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                <RiskBadge :value="client.riskLevel || 'Low'" type="risk" size="sm" />
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                <span :class="getReviewStatusClass(client)"
+                                                    class="px-2 py-1 text-xs font-medium rounded-full">
+                                                    {{ getReviewStatus(client) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                                {{ getClientLastReview(client.id) }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                                <div class="flex items-center justify-center space-x-2">
+                                                    <button @click="openRiskInvestigationModal(client)"
+                                                        class="text-blue-600 hover:text-blue-800 font-medium text-xs px-2 py-1 bg-blue-50 rounded">
+                                                        Investigate
+                                                    </button>
+                                                    <button @click="drillDownToClientRisk(client)"
+                                                        class="text-td-green hover:text-green-600 font-medium text-xs px-2 py-1 bg-green-50 rounded">
+                                                        Review
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Bulk Actions Panel -->
+                            <div v-if="reviewMode === 'bulk' && selectedClientsForReview.length > 0"
+                                class="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-sm font-medium text-purple-900">
+                                            {{ selectedClientsForReview.length }} client(s) selected
+                                        </span>
+                                        <div class="flex items-center space-x-2">
+                                            <button @click="bulkAssignReviewer"
+                                                class="px-3 py-1.5 text-xs bg-purple-600 text-white rounded hover:bg-purple-700">
+                                                Assign Reviewer
+                                            </button>
+                                            <button @click="bulkMarkAsReviewed"
+                                                class="px-3 py-1.5 text-xs bg-green-600 text-white rounded hover:bg-green-700">
+                                                Mark as Reviewed
+                                            </button>
+                                            <button @click="bulkScheduleReview"
+                                                class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">
+                                                Schedule Review
+                                            </button>
+                                            <button @click="bulkExportReport"
+                                                class="px-3 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700">
+                                                Export Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button @click="selectedClientsForReview = []"
+                                        class="text-purple-600 hover:text-purple-800 text-sm">
+                                        Clear Selection
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Risk Flag Categories -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="p-4">
@@ -1009,21 +1169,25 @@
                                             <span class="text-sm text-gray-700">UTR Filed</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0 }}</span>
+                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0
+                                                    }}</span>
                                             </div>
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700">High Risk Industry</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount || 0 }}</span>
+                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount
+                                                    || 0
+                                                    }}</span>
                                             </div>
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700">CTR-exemption</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-green-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount || 0 }}</span>
+                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount ||
+                                                    0 }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1040,28 +1204,34 @@
                                                 <span class="text-sm text-gray-700">Cannabis-Related Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ cannabisRelatedTrxCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        cannabisRelatedTrxCount || 0
+                                                        }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">Casino Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount ||
+                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">High Cash Deposit</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ highCashDepositCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        highCashDepositCount || 0
+                                                        }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0
+                                                        }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1070,28 +1240,35 @@
                                                 <span class="text-sm text-gray-700">Cashier Check Purchase</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ cashierCheckPurchaseCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        cashierCheckPurchaseCount ||
+                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">Crypto Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount ||
+                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">High Cash Withdrawals</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ highCashWithdrawalsCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        highCashWithdrawalsCount || 0
+                                                        }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm text-gray-700">Luxury Goods Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ luxuryGoodsTrxCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        luxuryGoodsTrxCount || 0
+                                                        }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1100,7 +1277,9 @@
                                                 <span class="text-sm text-gray-700">Third Party Check Deposit</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ thirdPartyCheckDepositCount || 0 }}</span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        thirdPartyCheckDepositCount
+                                                        || 0 }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1113,13 +1292,16 @@
                                 <h4 class="text-sm font-semibold text-gray-700 mb-3">⏳ Pending Risk Reviews</h4>
                                 <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-medium text-amber-900">{{ totalPendingRiskReviews }} reviews pending action</span>
+                                        <span class="text-sm font-medium text-amber-900">{{ totalPendingRiskReviews }}
+                                            reviews
+                                            pending action</span>
                                         <button class="text-sm text-amber-700 hover:text-amber-900 font-medium">
                                             View All →
                                         </button>
                                     </div>
                                     <div class="space-y-2">
-                                        <div v-for="n in 3" :key="n" class="flex items-center justify-between p-2 bg-white rounded border border-amber-200">
+                                        <div v-for="n in 3" :key="n"
+                                            class="flex items-center justify-between p-2 bg-white rounded border border-amber-200">
                                             <div class="flex items-center space-x-3">
                                                 <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
                                                 <span class="text-sm text-gray-700">Client {{ n }}</span>
@@ -1127,7 +1309,8 @@
                                             </div>
                                             <div class="flex items-center space-x-2">
                                                 <span class="text-xs text-amber-600">{{ 5 - n }} days pending</span>
-                                                <button class="text-xs px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700">
+                                                <button
+                                                    class="text-xs px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700">
                                                     Review
                                                 </button>
                                             </div>
@@ -1139,163 +1322,6 @@
                     </div>
 
                     <!-- Risk Portfolio Summary -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-lg font-medium text-gray-900">⚠️ Risk Portfolio
-                                        Summary</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Client risk breakdown with
-                                        drill-down capability</p>
-                                </div>
-                                <div class="flex bg-gray-100 rounded-lg p-1">
-                                    <button @click="riskPortfolioView = 'card'"
-                                        :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', riskPortfolioView === 'card' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
-                                        Card View
-                                    </button>
-                                    <button @click="riskPortfolioView = 'table'"
-                                        :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', riskPortfolioView === 'table' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900']">
-                                        Table View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <!-- Risk Card View -->
-                            <div v-if="riskPortfolioView === 'card'" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div v-for="client in relationshipClients" :key="client.id"
-                                    class="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                                    @click="drillDownToClientRisk(client)">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="font-medium text-gray-900">{{ client.name }}</h4>
-                                        <span class="px-2 py-1 text-xs rounded-full font-medium"
-                                            :class="client.riskFlags > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'">
-                                            {{ client.riskFlags > 0 ? client.riskFlags + ' flags' :
-                                                'Clean' }}
-                                        </span>
-                                    </div>
-                                    <div class="space-y-1 text-sm text-gray-600">
-                                        <div class="flex justify-between">
-                                            <span>RCI Score:</span>
-                                            <span class="font-medium" :class="getComplexityColor(client.rci)">{{
-                                                client.rci
-                                                }}/10</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Coverage:</span>
-                                            <span class="font-medium" :class="getCoverageColor(client.coverage)">{{
-                                                client.coverage }}%</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Last Review:</span>
-                                            <span class="font-medium">{{ getClientLastReview(client.id)
-                                            }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Risk Table View -->
-                            <div v-if="riskPortfolioView === 'table'" class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Client</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Risk Flags</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                RCI Score</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Last Review</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Next Review</th>
-                                            <th
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <tr v-for="client in relationshipClients" :key="client.id"
-                                            class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-8 w-8">
-                                                        <div
-                                                            class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                                            <span class="text-xs font-medium text-gray-700">{{
-                                                                client.name.charAt(0) }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900">
-                                                            {{ client.name }}</div>
-                                                        <div class="text-xs text-gray-500">{{
-                                                            client.industry }}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span v-if="client.riskFlags > 0"
-                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                                                    {{ client.riskFlags }}
-                                                </span>
-                                                <span v-else
-                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span class="font-medium" :class="getComplexityColor(client.rci)">{{
-                                                    client.rci }}/10</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                                {{ getClientLastReview(client.id) }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                                {{ getClientNextReview(client.id) }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                                <button @click="drillDownToClientRisk(client)"
-                                                    class="text-td-green hover:text-green-600 font-medium">
-                                                    View Risk Details
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Loan Delinquency & Overdraft Trend -->
-                    <div>
-                        <!-- Time Period Selector -->
-                        <!-- <div class="flex justify-center mb-4">
-                                            <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1">
-                                                <button @click="selectedTimePeriod = 'ytd'"
-                                                    :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', selectedTimePeriod === 'ytd' ? 'bg-td-green text-white' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50']">
-                                                    YTD
-                                                </button>
-                                                <button @click="selectedTimePeriod = '6m'"
-                                                    :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', selectedTimePeriod === '6m' ? 'bg-td-green text-white' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50']">
-                                                    6 Months
-                                                </button>
-                                                <button @click="selectedTimePeriod = '12m'"
-                                                    :class="['px-4 py-2 text-sm font-medium rounded-md transition-colors', selectedTimePeriod === '12m' ? 'bg-td-green text-white' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50']">
-                                                    12 Months
-                                                </button>
-                                    </div>
-                                        </div> -->
-                        <!-- <h3 class="text-lg font-medium text-gray-900 mb-4">📈 Risk Trend by Client</h3>
-                                        <div class="h-80">
-                                            <BarChart v-if="riskTrendByCompanyTimeSeriesData"
-                                                :data="riskTrendByCompanyTimeSeriesData" />
-                                        </div> -->
-                    </div>
                 </div>
             </div>
 
@@ -1309,7 +1335,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                                    <select v-model="selectedDateRange" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                    <select v-model="selectedDateRange"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                         <option value="7d">Last 7 days</option>
                                         <option value="30d">Last 30 days</option>
                                         <option value="90d">Last 90 days</option>
@@ -1318,7 +1345,8 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Action Type</label>
-                                    <select v-model="selectedActionType" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                    <select v-model="selectedActionType"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                         <option value="all">All Actions</option>
                                         <option value="scheduled">Scheduled Meetings</option>
                                         <option value="declined">Declined Recommendations</option>
@@ -1328,15 +1356,17 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-                                    <select v-model="selectedClientFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                    <select v-model="selectedClientFilter"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                         <option value="all">All Clients</option>
-                                        <option v-for="client in relationshipClients" :key="client.id" :value="client.id">
+                                        <option v-for="client in relationshipClients" :key="client.id"
+                                            :value="client.id">
                                             {{ client.name }}
                                         </option>
                                     </select>
                                 </div>
                                 <div class="flex items-end">
-                                    <button @click="exportActivityHistory" 
+                                    <button @click="exportActivityHistory"
                                         class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
                                         Export Report
                                     </button>
@@ -1359,7 +1389,8 @@
                                     <div class="text-sm text-gray-600">Meetings Scheduled</div>
                                 </div>
                                 <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600">{{ declinedRecommendationsCount }}</div>
+                                    <div class="text-2xl font-bold text-orange-600">{{ declinedRecommendationsCount }}
+                                    </div>
                                     <div class="text-sm text-gray-600">Recommendations Declined</div>
                                 </div>
                                 <div class="text-center">
@@ -1375,34 +1406,39 @@
                         <div class="p-4">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">✅ Completed Recommendations</h3>
                             <div class="space-y-4">
-                                <div v-for="item in filteredCompletedRecommendations" :key="item.id" 
+                                <div v-for="item in filteredCompletedRecommendations" :key="item.id"
                                     class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1">
                                             <div class="flex items-center space-x-3 mb-2">
-                                                <span class="px-2 py-1 text-xs font-medium rounded-full" 
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full"
                                                     :class="getActionStatusClass(item.status)">
                                                     {{ item.status }}
                                                 </span>
-                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName }}</span>
-                                                <span class="text-xs text-gray-500">{{ formatDate(item.completedDate) }}</span>
+                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName
+                                                    }}</span>
+                                                <span class="text-xs text-gray-500">{{ formatDate(item.completedDate)
+                                                    }}</span>
                                             </div>
                                             <p class="text-sm text-gray-700 mb-2">{{ item.recommendation }}</p>
                                             <div class="text-xs text-gray-500">
-                                                <span class="font-medium">Product:</span> {{ item.product }} | 
-                                                <span class="font-medium">Potential:</span> {{ formatCurrency(item.potential) }}
-                                                <span v-if="item.outcome" class="ml-2">| <span class="font-medium">Outcome:</span> {{ item.outcome }}</span>
+                                                <span class="font-medium">Product:</span> {{ item.product }} |
+                                                <span class="font-medium">Potential:</span> {{
+                                                    formatCurrency(item.potential) }}
+                                                <span v-if="item.outcome" class="ml-2">| <span
+                                                        class="font-medium">Outcome:</span>
+                                                    {{ item.outcome }}</span>
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <button @click="viewItemDetails(item)" 
+                                            <button @click="viewItemDetails(item)"
                                                 class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                                                 View Details
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="filteredCompletedRecommendations.length === 0" 
+                                <div v-if="filteredCompletedRecommendations.length === 0"
                                     class="text-center py-8 text-gray-500">
                                     No completed recommendations found for the selected filters.
                                 </div>
@@ -1415,34 +1451,38 @@
                         <div class="p-4">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">🛡️ Reviewed Risk Items</h3>
                             <div class="space-y-4">
-                                <div v-for="item in filteredReviewedRiskItems" :key="item.id" 
+                                <div v-for="item in filteredReviewedRiskItems" :key="item.id"
                                     class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1">
                                             <div class="flex items-center space-x-3 mb-2">
-                                                <span class="px-2 py-1 text-xs font-medium rounded-full" 
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full"
                                                     :class="getRiskStatusClass(item.resolution)">
                                                     {{ item.resolution }}
                                                 </span>
-                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName }}</span>
-                                                <span class="text-xs text-gray-500">{{ formatDate(item.reviewedDate) }}</span>
+                                                <span class="text-sm font-medium text-gray-900">{{ item.clientName
+                                                    }}</span>
+                                                <span class="text-xs text-gray-500">{{ formatDate(item.reviewedDate)
+                                                    }}</span>
                                             </div>
                                             <p class="text-sm text-gray-700 mb-2">{{ item.riskDescription }}</p>
                                             <div class="text-xs text-gray-500">
-                                                <span class="font-medium">Type:</span> {{ item.riskType }} | 
+                                                <span class="font-medium">Type:</span> {{ item.riskType }} |
                                                 <span class="font-medium">Severity:</span> {{ item.severity }}
-                                                <span v-if="item.notes" class="ml-2">| <span class="font-medium">Notes:</span> {{ item.notes }}</span>
+                                                <span v-if="item.notes" class="ml-2">| <span
+                                                        class="font-medium">Notes:</span> {{
+                                                            item.notes }}</span>
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <button @click="viewRiskDetails(item)" 
+                                            <button @click="viewRiskDetails(item)"
                                                 class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                                                 View Details
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="filteredReviewedRiskItems.length === 0" 
+                                <div v-if="filteredReviewedRiskItems.length === 0"
                                     class="text-center py-8 text-gray-500">
                                     No reviewed risk items found for the selected filters.
                                 </div>
@@ -1559,7 +1599,7 @@
                                                 formatCurrency(alert.totalOutstanding) }}</span></span>
                                             <span><strong>Original Amount:</strong> {{
                                                 formatCurrency(alert.originalAmount)
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1612,7 +1652,7 @@
                                         <div class="flex justify-between text-sm">
                                             <span><strong>Overdraft Limit:</strong> {{
                                                 formatCurrency(alert.overdraftLimit)
-                                                }}</span>
+                                            }}</span>
                                             <span><strong>Fees Accumulated:</strong> <span class="text-yellow-600">{{
                                                 formatCurrency(alert.feesAccumulated) }}</span></span>
                                         </div>
@@ -1684,6 +1724,152 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Risk Investigation Modal -->
+            <div v-if="showRiskInvestigationModal"
+                class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-5xl shadow-lg rounded-md bg-white">
+                    <div class="mt-3">
+                        <!-- Modal Header -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                                    <span class="text-2xl mr-2">🔍</span>
+                                    Risk Investigation - {{ selectedRiskForInvestigation?.name }}
+                                </h3>
+                                <p class="text-sm text-gray-600 mt-1">Comprehensive risk analysis and investigation
+                                    tools</p>
+                            </div>
+                            <button @click="showRiskInvestigationModal = false"
+                                class="text-gray-400 hover:text-gray-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Investigation Content -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Risk Profile Summary -->
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <h4 class="text-lg font-medium text-gray-900 mb-4">🛡️ Risk Profile Summary</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-700">Risk Level:</span>
+                                        <RiskBadge :value="selectedRiskForInvestigation?.riskLevel || 'Medium'"
+                                            type="risk" size="sm" />
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-700">Active Risk Flags:</span>
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                            {{ selectedRiskForInvestigation?.riskFlags || 2 }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-700">Last Risk Review:</span>
+                                        <span class="text-sm text-gray-900">{{
+                                            getClientLastReview(selectedRiskForInvestigation?.id) }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-700">Industry:</span>
+                                        <span class="text-sm text-gray-900">{{ selectedRiskForInvestigation?.industry
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Investigation Actions -->
+                            <div class="bg-blue-50 rounded-lg p-4">
+                                <h4 class="text-lg font-medium text-gray-900 mb-4">🔧 Investigation Actions</h4>
+                                <div class="space-y-2">
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm bg-white border border-blue-200 rounded hover:bg-blue-50">
+                                        📊 Generate Risk Assessment Report
+                                    </button>
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm bg-white border border-blue-200 rounded hover:bg-blue-50">
+                                        📋 Review Transaction Patterns
+                                    </button>
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm bg-white border border-blue-200 rounded hover:bg-blue-50">
+                                        🔍 Deep Dive Analysis
+                                    </button>
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm bg-white border border-blue-200 rounded hover:bg-blue-50">
+                                        📝 Schedule Risk Review Meeting
+                                    </button>
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm bg-white border border-blue-200 rounded hover:bg-blue-50">
+                                        ⚠️ Escalate to Risk Management
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Flags Detail -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">🚩 Active Risk Flags</h4>
+                            <div class="space-y-3">
+                                <div
+                                    class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded">
+                                    <div>
+                                        <span class="text-sm font-medium text-red-900">High Risk Transaction
+                                            Pattern</span>
+                                        <p class="text-xs text-red-700 mt-1">Multiple large cash deposits detected in
+                                            the last 30 days</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-red-600">High Priority</span>
+                                        <button
+                                            class="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                            Investigate
+                                        </button>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded">
+                                    <div>
+                                        <span class="text-sm font-medium text-yellow-900">KYC Documentation</span>
+                                        <p class="text-xs text-yellow-700 mt-1">Beneficial ownership documentation
+                                            requires update</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-yellow-600">Medium Priority</span>
+                                        <button
+                                            class="text-xs px-2 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                                            Review
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Actions -->
+                        <div class="flex justify-between">
+                            <div class="flex space-x-3">
+                                <button @click="markClientAsReviewed"
+                                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                    Mark as Reviewed
+                                </button>
+                                <button @click="assignRiskReviewer"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                    Assign Reviewer
+                                </button>
+                                <button @click="generateRiskReport"
+                                    class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                                    Generate Report
+                                </button>
+                            </div>
+                            <button @click="showRiskInvestigationModal = false"
+                                class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
     </BaseDetailView>
 </template>
@@ -1715,13 +1901,9 @@ const router = useRouter()
 
 // Reactive state
 const activeTab = ref('portfolio')
-const showRiskModal = ref(false)
 const showAlertsModal = ref(false)
 const activeAlertTab = ref('delinquency')
-const selectedClientTab = ref('client-001') // Default to first client
 const selectedTimePeriod = ref('12m') // Default to 12 months
-const riskPortfolioView = ref('card') // 'card' or 'table'
-const opportunitiesPortfolioView = ref('card') // 'card' or 'table'
 const selectedTrendMetric = ref('deposits') // Default trend metric
 const showNewOnly = ref(false) // Show new data only filter
 const compareToTarget = ref(false) // Compare to target filter
@@ -1729,6 +1911,12 @@ const currentRecommendationPage = ref(1) // Current page for recommendations
 const expandedClient = ref(null) // Track expanded client for AI recommendations
 const chartViewType = ref('client') // 'client' or 'product' for stacked bar charts
 const recommendationsPerPage = 5 // Number of recommendations per page
+
+// Enhanced Risk Review Dashboard state
+const reviewMode = ref('standard') // 'standard' or 'bulk'
+const selectedClientsForReview = ref([]) // Array of selected client IDs for bulk actions
+const showRiskInvestigationModal = ref(false)
+const selectedRiskForInvestigation = ref(null)
 
 // Activity History filters
 const selectedDateRange = ref('30d')
@@ -1771,8 +1959,22 @@ const breadcrumb = computed(() => {
 })
 
 const relationshipTier = computed(() => {
-    const relationshipInfo = relationships['rm-001']?.find(rel => rel.id === 'rel-001')
-    return relationshipInfo?.tier || 'Platinum'
+    // Determine relationship type based on client portfolio composition
+    const totalDeposits = aggregateDeposits.value
+    const totalLoans = aggregateLoans.value
+
+    const hasDeposits = totalDeposits > 0
+    const hasLoans = totalLoans > 0
+
+    if (hasDeposits && hasLoans) {
+        return 'Credit and Deposit'
+    } else if (hasLoans) {
+        return 'Credit Only'
+    } else if (hasDeposits) {
+        return 'Deposit Only'
+    } else {
+        return 'Credit and Deposit' // Default fallback
+    }
 })
 
 const totalClients = computed(() => relationshipClients.value.length)
@@ -1791,16 +1993,6 @@ const crossSellIndex = computed(() => {
 })
 
 const totalRiskFlags = computed(() => relationshipClients.value.reduce((sum, client) => sum + client.riskFlags, 0))
-const aggregateRiskLevel = computed(() => {
-    const avgRisk = relationshipClients.value.reduce((sum, client) => sum + client.rci, 0) / relationshipClients.value.length
-    if (avgRisk >= 7) return 'High'
-    if (avgRisk >= 4) return 'Medium'
-    return 'Low'
-})
-const complexityIndex = computed(() => {
-    const avgComplexity = relationshipClients.value.reduce((sum, client) => sum + client.rci, 0) / relationshipClients.value.length
-    return avgComplexity.toFixed(1)
-})
 const coveragePercentage = computed(() => {
     const avgCoverage = relationshipClients.value.reduce((sum, client) => sum + client.coverage, 0) / relationshipClients.value.length
     return Math.round(avgCoverage)
@@ -1833,26 +2025,43 @@ const relationshipClients = computed(() => {
     // Get Johnson Holdings Group clients (rel-001)
     const johnsonClients = Object.values(clients).filter(client => client.relationshipId === 'rel-001')
 
-    return johnsonClients.map(client => ({
-        id: client.id,
-        name: client.name,
-        industry: client.industry,
-        deposits: client.productSummary?.deposit?.balance || client.portfolioValue * 0.6,
-        loans: client.productSummary?.lending?.balance || client.portfolioValue * 0.3,
-        revenue: client.annualRevenue,
-        coverage: client.productPenetration,
-        rci: client.riskScore,
-        riskFlags: client.riskFlags?.length || 0,
-        products: {
-            deposits: client.productSummary?.deposit?.accounts > 0,
-            loans: client.productSummary?.lending?.accounts > 0,
-            treasury: client.productSummary?.treasury?.accounts > 0,
-            fx: Math.random() > 0.5, // Mock FX data
-            trade: Math.random() > 0.7, // Mock trade data
-            investment: client.productSummary?.wealth?.accounts > 0,
-            insurance: Math.random() > 0.6 // Mock insurance data
+    return johnsonClients.map(client => {
+        const riskFlagCount = client.riskFlags?.length || 0
+
+        // Determine risk level based on risk flags (replacing RCI)
+        let riskLevel = 'Low'
+        if (riskFlagCount > 3) riskLevel = 'High'
+        else if (riskFlagCount > 1) riskLevel = 'Medium'
+
+        // Determine review status for enhanced tracking
+        let reviewStatus = 'Current'
+        if (riskFlagCount > 2) reviewStatus = 'Urgent Review Required'
+        else if (riskFlagCount > 0) reviewStatus = 'Review Pending'
+
+        return {
+            id: client.id,
+            name: client.name,
+            industry: client.industry,
+            deposits: client.productSummary?.deposit?.balance || client.portfolioValue * 0.6,
+            loans: client.productSummary?.lending?.balance || client.portfolioValue * 0.3,
+            revenue: client.annualRevenue,
+            coverage: client.productPenetration,
+            riskLevel: riskLevel, // New enhanced risk level
+            riskFlags: riskFlagCount,
+            reviewStatus: reviewStatus,
+            lastReviewDate: client.lastReview || '2024-11-15',
+            assignedReviewer: riskFlagCount > 2 ? 'Unassigned' : 'John Smith',
+            products: {
+                deposits: client.productSummary?.deposit?.accounts > 0,
+                loans: client.productSummary?.lending?.accounts > 0,
+                treasury: client.productSummary?.treasury?.accounts > 0,
+                fx: Math.random() > 0.5, // Mock FX data
+                trade: Math.random() > 0.7, // Mock trade data
+                investment: client.productSummary?.wealth?.accounts > 0,
+                insurance: Math.random() > 0.6 // Mock insurance data
+            }
         }
-    }))
+    })
 })
 
 const keyContacts = computed(() => {
@@ -1868,13 +2077,6 @@ const keyContacts = computed(() => {
     }))
 })
 
-const highRciClients = computed(() =>
-    relationshipClients.value.filter(client => client.rci > 7).map(client => ({
-        ...client,
-        mitigationStatus: 'In Progress',
-        lastReview: '2 weeks ago'
-    }))
-)
 
 const crossSellGaps = computed(() => {
     const gaps = []
@@ -1978,7 +2180,7 @@ const paginatedRecommendations = computed(() => {
     return allRecommendations.value.slice(start, end)
 })
 
-const totalRecommendationPages = computed(() => 
+const totalRecommendationPages = computed(() =>
     Math.ceil(allRecommendations.value.length / recommendationsPerPage)
 )
 
@@ -2054,7 +2256,7 @@ const filteredCompletedRecommendations = computed(() => {
     return completedActions.value
         .filter(action => action.type === 'recommendation')
         .filter(action => selectedClientFilter.value === 'all' || action.clientId === selectedClientFilter.value)
-        .filter(action => selectedActionType.value === 'all' || 
+        .filter(action => selectedActionType.value === 'all' ||
             (selectedActionType.value === 'scheduled' && action.status === 'Scheduled') ||
             (selectedActionType.value === 'declined' && action.status === 'Declined') ||
             (selectedActionType.value === 'resolved' && action.status === 'Meeting Completed'))
@@ -2069,62 +2271,29 @@ const filteredReviewedRiskItems = computed(() => {
         .filter(action => isWithinDateRange(action.reviewedDate, selectedDateRange.value))
 })
 
-const completedMeetingsCount = computed(() => 
+const completedMeetingsCount = computed(() =>
     completedActions.value.filter(action => action.status === 'Meeting Completed').length
 )
 
-const scheduledMeetingsCount = computed(() => 
+const scheduledMeetingsCount = computed(() =>
     completedActions.value.filter(action => action.status === 'Scheduled').length
 )
 
-const declinedRecommendationsCount = computed(() => 
+const declinedRecommendationsCount = computed(() =>
     completedActions.value.filter(action => action.status === 'Declined').length
 )
 
-const resolvedRiskItemsCount = computed(() => 
+const resolvedRiskItemsCount = computed(() =>
     completedActions.value.filter(action => action.type === 'risk').length
 )
 
-const hasCriticalRisks = computed(() => totalRiskFlags.value > 5)
-const riskIndicatorClass = computed(() => {
-    if (totalRiskFlags.value > 5) return 'bg-red-100 text-red-800 border border-red-200'
-    if (totalRiskFlags.value > 2) return 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-    return 'bg-green-100 text-green-800 border border-green-200'
-})
-const riskIndicatorIcon = computed(() => {
-    if (totalRiskFlags.value > 5) return '🚨'
-    if (totalRiskFlags.value > 2) return '⚠️'
-    return '✅'
-})
 
 // Chart data
-const balanceDistributionData = computed(() => ({
-    labels: ['Deposits', 'Loans', 'Investments', 'Cash Management'],
-    datasets: [{
-        label: 'Portfolio Balance',
-        data: [425000000, 185000000, 85000000, 45000000],
-        backgroundColor: ['#10B981', '#F59E0B', '#3B82F6', '#8B5CF6']
-    }]
-}))
 
-const riskTrendData = computed(() => ({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [{
-        label: 'Weighted Risk Score',
-        data: [6.2, 6.8, 7.1, 6.9, 7.2, 6.8],
-        borderColor: '#EF4444',
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-        tension: 0.4
-    }]
-}))
 
 
 
 // Risk Analysis computed properties
-const totalLoanDelinquency = computed(() => relationshipClients.value.reduce((sum, client) => sum + Math.floor(Math.random() * 3), 0))
-const totalOverdraftAlerts = computed(() => relationshipClients.value.reduce((sum, client) => sum + Math.floor(Math.random() * 5), 0))
-const totalReviewedRisk = computed(() => relationshipClients.value.filter(client => client.riskFlags > 0).length)
-const totalClosedWithoutUTR = computed(() => Math.floor(totalRiskFlags.value * 0.6))
 const totalPendingRiskReviews = computed(() => {
     // Calculate pending risk reviews based on clients that have risk flags and haven't been reviewed recently
     const now = new Date()
@@ -2443,7 +2612,7 @@ const riskTrendByCompanyTimeSeriesData = computed(() => ({
 // Chart Data Computed Properties
 const getDepositsChartData = computed(() => {
     const labels = getTimeLabels.value
-    
+
     if (chartViewType.value === 'product') {
         // Product breakdown view
         return {
@@ -2491,7 +2660,7 @@ const getDepositsChartData = computed(() => {
 
 const getLoansChartData = computed(() => {
     const labels = getTimeLabels.value
-    
+
     if (chartViewType.value === 'product') {
         // Product breakdown view
         return {
@@ -2539,7 +2708,7 @@ const getLoansChartData = computed(() => {
 
 const getUtilizationChartData = computed(() => {
     const labels = getTimeLabels.value
-    
+
     return {
         labels,
         datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
@@ -2555,7 +2724,7 @@ const getUtilizationChartData = computed(() => {
 
 const getRevenueChartData = computed(() => {
     const labels = getTimeLabels.value
-    
+
     return {
         labels,
         datasets: relationshipClients.value.slice(0, 5).map((client, index) => ({
@@ -2570,7 +2739,7 @@ const getRevenueChartData = computed(() => {
 const getClientsChartData = computed(() => {
     const labels = getTimeLabels.value
     const baseCount = relationshipClients.value.length
-    
+
     return {
         labels,
         datasets: [{
@@ -2592,7 +2761,7 @@ const depositChartOptions = {
         y: {
             stacked: true,
             ticks: {
-                callback: function(value) {
+                callback: function (value) {
                     return '$' + (value / 1000000).toFixed(1) + 'M'
                 }
             }
@@ -2601,7 +2770,7 @@ const depositChartOptions = {
     plugins: {
         tooltip: {
             callbacks: {
-                label: function(context) {
+                label: function (context) {
                     return context.dataset.label + ': $' + (context.parsed.y / 1000000).toFixed(2) + 'M'
                 }
             }
@@ -2617,7 +2786,7 @@ const loanChartOptions = {
         y: {
             stacked: true,
             ticks: {
-                callback: function(value) {
+                callback: function (value) {
                     return '$' + (value / 1000000).toFixed(1) + 'M'
                 }
             }
@@ -2626,7 +2795,7 @@ const loanChartOptions = {
     plugins: {
         tooltip: {
             callbacks: {
-                label: function(context) {
+                label: function (context) {
                     return context.dataset.label + ': $' + (context.parsed.y / 1000000).toFixed(2) + 'M'
                 }
             }
@@ -2642,7 +2811,7 @@ const utilizationChartOptions = {
             beginAtZero: true,
             max: 100,
             ticks: {
-                callback: function(value) {
+                callback: function (value) {
                     return value + '%'
                 }
             }
@@ -2651,7 +2820,7 @@ const utilizationChartOptions = {
     plugins: {
         tooltip: {
             callbacks: {
-                label: function(context) {
+                label: function (context) {
                     return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%'
                 }
             }
@@ -2692,11 +2861,6 @@ const getRiskLevelClass = (level) => {
     }
 }
 
-const getComplexityColor = (index) => {
-    if (index >= 7) return 'text-red-600'
-    if (index >= 5) return 'text-yellow-600'
-    return 'text-green-600'
-}
 
 const getCoverageColor = (percentage) => {
     if (percentage >= 80) return 'text-green-600'
@@ -2722,6 +2886,19 @@ const drillDownToClient = (client) => {
             regionId: props.regionId,
             rmId: props.rmId,
             clientId: client.id
+        }
+    })
+}
+
+const navigateToClient = (clientId) => {
+    router.push({
+        name: 'ClientDetail',
+        params: {
+            metroId: props.metroId,
+            marketId: props.marketId,
+            regionId: props.regionId,
+            rmId: props.rmId,
+            clientId: clientId
         }
     })
 }
@@ -2891,10 +3068,6 @@ const showActionItemsModal = () => {
     activeAlertTab.value = 'actions'
 }
 
-// Navigate to client detail view
-const navigateToClient = (clientId) => {
-    router.push(`/client/${clientId}`)
-}
 
 // Toggle client recommendations expansion
 const toggleClientRecommendations = (clientId) => {
@@ -2906,12 +3079,12 @@ const getClientRecommendations = (clientId) => {
     if (!clientId || !relationshipClients.value || !allRecommendations.value) {
         return []
     }
-    
+
     const client = relationshipClients.value.find(c => c.id === clientId)
     if (!client || !client.name) {
         return []
     }
-    
+
     return allRecommendations.value.filter(rec => rec.client === client.name) || []
 }
 
@@ -2919,7 +3092,7 @@ const getClientRecommendations = (clientId) => {
 const isWithinDateRange = (date, range) => {
     const targetDate = new Date(date)
     const now = new Date()
-    
+
     switch (range) {
         case '7d':
             return (now - targetDate) <= (7 * 24 * 60 * 60 * 1000)
@@ -3121,25 +3294,9 @@ const geographicFootprint = computed(() => {
 const relationshipHealthScore = computed(() => {
     const baseScore = 8.5
     const riskPenalty = Math.min(totalRiskFlags.value * 0.2, 2)
-    const complexityPenalty = Math.max((parseFloat(complexityIndex.value) - 5) * 0.1, 0)
-    return Math.max(baseScore - riskPenalty - complexityPenalty, 1).toFixed(1)
+    return Math.max(baseScore - riskPenalty, 1).toFixed(1)
 })
 
-const criticalRiskCount = computed(() => {
-    return relationshipClients.value.filter(client => client.rci >= 8).length
-})
-
-const highRiskCount = computed(() => {
-    return relationshipClients.value.filter(client => client.rci >= 6 && client.rci < 8).length
-})
-
-const mediumRiskCount = computed(() => {
-    return relationshipClients.value.filter(client => client.rci >= 4 && client.rci < 6).length
-})
-
-const lowRiskCount = computed(() => {
-    return relationshipClients.value.filter(client => client.rci < 4).length
-})
 
 const complianceBurdenScore = computed(() => {
     const factorCount = (
@@ -3183,11 +3340,76 @@ const getComplianceBurdenColor = (score) => {
 
 const getRelationshipTypeClass = (type) => {
     switch (type) {
-        case 'Deposit and Loan Relationship': return 'bg-green-100 text-green-800'
+        case 'Credit and Deposit': return 'bg-green-100 text-green-800'
         case 'Deposit Only': return 'bg-blue-100 text-blue-800'
-        case 'Loan Only': return 'bg-orange-100 text-orange-800'
+        case 'Credit Only': return 'bg-orange-100 text-orange-800'
         default: return 'bg-gray-100 text-gray-800'
     }
+}
+
+// Enhanced Risk Review Dashboard Functions
+const getReviewStatus = (client) => {
+    if (client.riskFlags > 3) return 'Urgent Review Required'
+    if (client.riskFlags > 1) return 'Review Pending'
+    return 'Up to Date'
+}
+
+const getReviewStatusClass = (client) => {
+    if (client.riskFlags > 3) return 'bg-red-100 text-red-800'
+    if (client.riskFlags > 1) return 'bg-yellow-100 text-yellow-800'
+    return 'bg-green-100 text-green-800'
+}
+
+const toggleAllClientsForReview = () => {
+    if (selectedClientsForReview.value.length === relationshipClients.value.length) {
+        selectedClientsForReview.value = []
+    } else {
+        selectedClientsForReview.value = relationshipClients.value.map(client => client.id)
+    }
+}
+
+const openRiskInvestigationModal = (client) => {
+    selectedRiskForInvestigation.value = client
+    showRiskInvestigationModal.value = true
+}
+
+// Bulk Action Functions
+const bulkAssignReviewer = () => {
+    console.log('Assigning reviewer to clients:', selectedClientsForReview.value)
+    // Implementation would open reviewer assignment modal
+}
+
+const bulkMarkAsReviewed = () => {
+    console.log('Marking clients as reviewed:', selectedClientsForReview.value)
+    // Implementation would update client review status
+    selectedClientsForReview.value = []
+}
+
+const bulkScheduleReview = () => {
+    console.log('Scheduling review for clients:', selectedClientsForReview.value)
+    // Implementation would open scheduling modal
+}
+
+const bulkExportReport = () => {
+    console.log('Exporting report for clients:', selectedClientsForReview.value)
+    // Implementation would generate and download report
+}
+
+// Risk Investigation Modal Functions
+const markClientAsReviewed = () => {
+    console.log('Marking client as reviewed:', selectedRiskForInvestigation.value?.id)
+    // Implementation would update client review status
+    showRiskInvestigationModal.value = false
+}
+
+const assignRiskReviewer = () => {
+    console.log('Assigning reviewer for client:', selectedRiskForInvestigation.value?.id)
+    // Implementation would open reviewer assignment interface
+}
+
+const generateRiskReport = () => {
+    console.log('Generating risk report for client:', selectedRiskForInvestigation.value?.id)
+    // Implementation would generate comprehensive risk report
 }
 </script>
 
