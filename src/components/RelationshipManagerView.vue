@@ -408,53 +408,21 @@
               <!-- Revenue FYTD -->
               <td class="text-right py-3 px-4">
                 <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.revenue) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs" 
-                     :class="getPerformanceClass(relationship.revenue, relationship.revenueTarget || relationship.revenue * 0.8)">
-                  {{ Math.round((relationship.revenue / (relationship.revenueTarget || relationship.revenue * 0.8)) * 100) }}% of target
-                </div>
-                <div v-else class="text-xs"
-                     :class="getGrowthClass(relationship.revenueGrowth || 5)">
-                  {{ relationship.revenueGrowth >= 0 ? '+' : '' }}{{ relationship.revenueGrowth || 5 }}% YoY
-                </div>
               </td>
 
               <!-- Net New Commitments -->
               <td class="text-right py-3 px-4">
                 <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewCommitments || relationship.loans * 0.3) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs" 
-                     :class="getPerformanceClass(relationship.netNewCommitments || relationship.loans * 0.3, relationship.commitmentsTarget || relationship.loans * 0.25)">
-                  {{ Math.round(((relationship.netNewCommitments || relationship.loans * 0.3) / (relationship.commitmentsTarget || relationship.loans * 0.25)) * 100) }}% of target
-                </div>
-                <div v-else class="text-xs"
-                     :class="getGrowthClass(relationship.commitmentsGrowth || 8)">
-                  {{ relationship.commitmentsGrowth >= 0 ? '+' : '' }}{{ relationship.commitmentsGrowth || 8 }}% YoY
-                </div>
               </td>
 
               <!-- Net New Deposits -->
               <td class="text-right py-3 px-4">
                 <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewDeposits || relationship.deposits * 0.2) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs"
-                     :class="getPerformanceClass(relationship.netNewDeposits || relationship.deposits * 0.2, relationship.newDepositsTarget || relationship.deposits * 0.15)">
-                  {{ Math.round(((relationship.netNewDeposits || relationship.deposits * 0.2) / (relationship.newDepositsTarget || relationship.deposits * 0.15)) * 100) }}% of target
-                </div>
-                <div v-else class="text-xs"
-                     :class="getGrowthClass(relationship.newDepositsGrowth || 12)">
-                  {{ relationship.newDepositsGrowth >= 0 ? '+' : '' }}{{ relationship.newDepositsGrowth || 12 }}% YoY
-                </div>
               </td>
 
               <!-- New Credit Relationships -->
               <td class="text-right py-3 px-4">
-                <div class="text-gray-900 font-medium">{{ relationship.newCreditRelationships || Math.floor(Math.random() * 3) + 1 }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs"
-                     :class="getPerformanceClass(relationship.newCreditRelationships || 2, relationship.creditRelTarget || 2)">
-                  {{ Math.round(((relationship.newCreditRelationships || 2) / (relationship.creditRelTarget || 2)) * 100) }}% of target
-                </div>
-                <div v-else class="text-xs"
-                     :class="getGrowthClass(relationship.creditRelGrowth || 50)">
-                  {{ relationship.creditRelGrowth >= 0 ? '+' : '' }}{{ relationship.creditRelGrowth || 50 }}% YoY
-                </div>
+                <div class="text-gray-900 font-medium">{{ relationship.newCreditRelationship }}</div>
               </td>
 
               <!-- Risk Flags -->
@@ -2624,7 +2592,8 @@ const relationships = computed(() => [
     pendingReviews: 2,
     leadCount: 3,
     leadValue: 2400000,
-    stage: 'Defend'
+    stage: 'Defend',
+    newCreditRelationship: 0  // Existing credit relationship
   },
   {
     id: 'rel-002',
@@ -2642,7 +2611,8 @@ const relationships = computed(() => [
     pendingReviews: 1,
     leadCount: 5,
     leadValue: 1800000,
-    stage: 'Build'
+    stage: 'Build',
+    newCreditRelationship: 0  // Existing credit relationship
   },
   {
     id: 'rel-003',
@@ -2660,7 +2630,46 @@ const relationships = computed(() => [
     pendingReviews: 4,
     leadCount: 2,
     leadValue: 950000,
-    stage: 'Watch'
+    stage: 'Watch',
+    newCreditRelationship: 0  // Existing credit relationship
+  },
+  {
+    id: 'rel-004',
+    name: 'NewTech Startup Inc',
+    industry: 'Technology',
+    deposits: 15000000,
+    depositsDelta: 15000000,  // All new deposits (new client)
+    loans: 8000000,
+    loansDelta: 8000000,      // All new loans (new credit relationship)
+    utilization: 45,
+    revenue: 180000,
+    revenueDelta: 180000,     // All new revenue
+    crossSellIndex: 1.8,
+    rci: 2.1,
+    pendingReviews: 1,
+    leadCount: 4,
+    leadValue: 3200000,
+    stage: 'Build',
+    newCreditRelationship: 1  // NEW client with credit = 1 new credit relationship
+  },
+  {
+    id: 'rel-005',
+    name: 'Established Services Corp',
+    industry: 'Professional Services',
+    deposits: 95000000,
+    depositsDelta: 5000000,   // Modest deposit growth (existing client)
+    loans: 12000000,
+    loansDelta: 12000000,     // All new loans (new credit relationship)
+    utilization: 30,
+    revenue: 850000,
+    revenueDelta: 120000,     // Revenue increase from new credit
+    crossSellIndex: 2.8,
+    rci: 5.2,
+    pendingReviews: 0,
+    leadCount: 2,
+    leadValue: 1500000,
+    stage: 'Build',
+    newCreditRelationship: 1  // Existing client added credit = 1 new credit relationship
   }
 ])
 
@@ -5017,28 +5026,28 @@ const getUtilizationColor = (utilization) => {
 // Performance Metrics Data
 const performanceMetrics = computed(() => ({
   netNewCommitments: {
-    actual: 185000000,
-    target: 150000000,
-    achieved: true,
-    achievementPercent: Math.round((185000000 / 150000000) * 100)
+    actual: loanDelta.value,
+    target: 30000000,
+    achieved: loanDelta.value >= 30000000,
+    achievementPercent: Math.round((loanDelta.value / 30000000) * 100)
   },
   netNewDeposits: {
-    actual: 125000000,
+    actual: depositsDelta.value,
     target: 100000000,
-    achieved: true,
-    achievementPercent: Math.round((125000000 / 100000000) * 100)
+    achieved: depositsDelta.value >= 100000000,
+    achievementPercent: Math.round((depositsDelta.value / 100000000) * 100)
   },
   netNewCreditRelationships: {
-    actual: 7,
+    actual: relationships.value.reduce((sum, rel) => sum + rel.newCreditRelationship, 0),
     target: 10,
-    achieved: false,
-    achievementPercent: Math.round((7 / 10) * 100)
+    achieved: relationships.value.reduce((sum, rel) => sum + rel.newCreditRelationship, 0) >= 10,
+    achievementPercent: Math.round((relationships.value.reduce((sum, rel) => sum + rel.newCreditRelationship, 0) / 10) * 100)
   },
   referrals: {
-    actual: 28,
+    actual: totalReferrals.value,
     target: 25,
-    achieved: true,
-    achievementPercent: Math.round((28 / 25) * 100)
+    achieved: totalReferrals.value >= 25,
+    achievementPercent: Math.round((totalReferrals.value / 25) * 100)
   },
   revenueFYTD: {
     actual: totalRevenue.value,
