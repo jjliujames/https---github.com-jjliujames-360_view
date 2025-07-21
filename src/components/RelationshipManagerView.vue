@@ -354,8 +354,8 @@
 
     <!-- Enhanced Summary Statistics Table -->
     <div class="px-8 py-6 bg-white border-b border-gray-200">
-      <div class="flex items-center justify-between mb-4">
-        <h4 class="text-lg font-semibold text-gray-900">📊 Relationships Summary</h4>
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="text-xl font-semibold text-gray-900">📊 Relationships Summary</h4>
         <div class="flex items-center space-x-4">
           <!-- Comparison Toggle -->
           <div class="flex items-center bg-gray-100 rounded-lg p-1">
@@ -381,59 +381,59 @@
         </div>
       </div>
 
-      <!-- Simplified KPI Summary Table -->
-      <div class="overflow-x-auto">
+      <!-- Enhanced KPI Summary Table -->
+      <div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
         <table class="w-full">
-          <thead>
+          <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr class="border-b border-gray-200">
-              <th class="text-left py-3 px-4 font-medium text-gray-900">Relationship</th>
-              <th class="text-right py-3 px-4 font-medium text-gray-900">Revenue FYTD</th>
-              <th class="text-right py-3 px-4 font-medium text-gray-900">Net New Commitments</th>
-              <th class="text-right py-3 px-4 font-medium text-gray-900">Net New Deposits</th>
-              <th class="text-right py-3 px-4 font-medium text-gray-900">New Credit Relationships</th>
-              <th class="text-center py-3 px-4 font-medium text-gray-900">Risk Flags</th>
+              <th class="text-left py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Relationship</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Revenue FYTD</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Net New Commitments</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Net New Deposits</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">New Credit Relationships</th>
+              <th class="text-center py-3 px-4 font-medium text-gray-900 text-xs uppercase tracking-wider">Risk Flags</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-gray-100 bg-white">
             <!-- Individual Relationships -->
             <tr v-for="relationship in sortedRelationships" :key="relationship.id" 
-                class="hover:bg-gray-50 cursor-pointer"
+                class="hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-sm"
                 @click="viewRelationshipDetail(relationship)">
               <!-- Relationship Name -->
               <td class="py-3 px-4">
-                <div class="font-medium text-gray-900">{{ relationship.name }}</div>
-                <div class="text-sm text-gray-500">{{ relationship.type }} • {{ relationship.industry }}</div>
+                <div class="font-medium text-gray-900 text-sm">{{ relationship.name }}</div>
+                <div class="text-xs text-gray-500 mt-1">{{ relationship.type }} • {{ relationship.industry }}</div>
               </td>
 
               <!-- Revenue FYTD -->
               <td class="text-right py-3 px-4">
-                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.revenue) }}</div>
+                <div class="text-gray-900 font-medium text-sm">{{ formatCurrency(relationship.revenue) }}</div>
               </td>
 
               <!-- Net New Commitments -->
               <td class="text-right py-3 px-4">
-                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewCommitments || relationship.loans * 0.3) }}</div>
+                <div class="text-gray-900 font-medium text-sm">{{ formatCurrency(relationship.netNewCommitments || relationship.loans * 0.3) }}</div>
               </td>
 
               <!-- Net New Deposits -->
               <td class="text-right py-3 px-4">
-                <div class="text-gray-900 font-medium">{{ formatCurrency(relationship.netNewDeposits || relationship.deposits * 0.2) }}</div>
+                <div class="text-gray-900 font-medium text-sm">{{ formatCurrency(relationship.netNewDeposits || relationship.deposits * 0.2) }}</div>
               </td>
 
               <!-- New Credit Relationships -->
               <td class="text-right py-3 px-4">
-                <div class="text-gray-900 font-medium">{{ relationship.newCreditRelationship }}</div>
+                <div class="text-gray-900 font-medium text-sm">{{ relationship.newCreditRelationship }}</div>
               </td>
 
               <!-- Risk Flags -->
               <td class="text-center py-3 px-4">
                 <div class="flex items-center justify-center">
                   <span v-if="relationship.riskFlags && relationship.riskFlags.length > 0" 
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                         :class="getRelationshipRiskClass(relationship.riskFlags)">
                     {{ relationship.riskFlags.length }}
                   </span>
-                  <span v-else class="text-green-600 text-sm">✓</span>
+                  <span v-else class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓</span>
                 </div>
                 <div v-if="relationship.pendingReviews > 0" class="text-xs text-orange-600 mt-1">
                   {{ relationship.pendingReviews }} pending
@@ -442,20 +442,20 @@
             </tr>
             
             <!-- Total Row -->
-            <tr class="border-t-2 border-gray-300 bg-gray-50 font-semibold">
+            <tr class="border-t-2 border-gray-300 bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold">
               <td class="py-4 px-4 text-gray-900">
-                <div class="font-bold">Portfolio Totals</div>
-                <div class="text-sm font-normal text-gray-600">{{ totalRelationships }} relationships</div>
+                <div class="font-bold text-base">Portfolio Totals</div>
+                <div class="text-xs font-medium text-gray-600 mt-1">{{ totalRelationships }} relationships</div>
               </td>
               
               <!-- Revenue FYTD Total -->
               <td class="text-right py-4 px-4 text-gray-900">
-                <div class="font-bold">{{ formatCurrency(totalRevenue) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                <div class="font-bold text-sm">{{ formatCurrency(totalRevenue) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-medium mt-1"
                      :class="getPerformanceClass(totalRevenue, 15000000)">
                   {{ Math.round((totalRevenue / 15000000) * 100) }}% of target
                 </div>
-                <div v-else class="text-xs font-normal"
+                <div v-else class="text-xs font-medium mt-1"
                      :class="getGrowthClass(revenueYoY)">
                   {{ revenueYoY >= 0 ? '+' : '' }}{{ revenueYoY }}% YoY
                 </div>
@@ -463,44 +463,44 @@
               
               <!-- Net New Commitments Total -->
               <td class="text-right py-4 px-4 text-gray-900">
-                <div class="font-bold">{{ formatCurrency(performanceMetrics.netNewCommitments.actual) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                <div class="font-bold text-sm">{{ formatCurrency(performanceMetrics.netNewCommitments.actual) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-medium mt-1"
                      :class="getPerformanceClass(performanceMetrics.netNewCommitments.actual, performanceMetrics.netNewCommitments.target)">
                   {{ performanceMetrics.netNewCommitments.achievementPercent }}% of target
                 </div>
-                <div v-else class="text-xs font-normal text-green-600">
+                <div v-else class="text-xs font-medium mt-1 text-green-600">
                   +23% YoY
                 </div>
               </td>
               
               <!-- Net New Deposits Total -->
               <td class="text-right py-4 px-4 text-gray-900">
-                <div class="font-bold">{{ formatCurrency(performanceMetrics.netNewDeposits.actual) }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                <div class="font-bold text-sm">{{ formatCurrency(performanceMetrics.netNewDeposits.actual) }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-medium mt-1"
                      :class="getPerformanceClass(performanceMetrics.netNewDeposits.actual, performanceMetrics.netNewDeposits.target)">
                   {{ performanceMetrics.netNewDeposits.achievementPercent }}% of target
                 </div>
-                <div v-else class="text-xs font-normal text-green-600">
+                <div v-else class="text-xs font-medium mt-1 text-green-600">
                   +25% YoY
                 </div>
               </td>
               
               <!-- New Credit Relationships Total -->
               <td class="text-right py-4 px-4 text-gray-900">
-                <div class="font-bold">{{ performanceMetrics.netNewCreditRelationships.actual }}</div>
-                <div v-if="comparisonMode === 'target'" class="text-xs font-normal"
+                <div class="font-bold text-sm">{{ performanceMetrics.netNewCreditRelationships.actual }}</div>
+                <div v-if="comparisonMode === 'target'" class="text-xs font-medium mt-1"
                      :class="getPerformanceClass(performanceMetrics.netNewCreditRelationships.actual, performanceMetrics.netNewCreditRelationships.target)">
                   {{ performanceMetrics.netNewCreditRelationships.achievementPercent }}% of target
                 </div>
-                <div v-else class="text-xs font-normal text-yellow-600">
+                <div v-else class="text-xs font-medium mt-1 text-yellow-600">
                   -30% YoY
                 </div>
               </td>
               
               <!-- Risk Flags Total -->
               <td class="text-center py-4 px-4 text-gray-900">
-                <div class="font-bold">{{ totalRiskFlags }}</div>
-                <div class="text-xs font-normal text-gray-600">{{ totalPendingReviews }} pending</div>
+                <div class="font-bold text-sm">{{ totalRiskFlags }}</div>
+                <div class="text-xs font-medium text-gray-600 mt-1">{{ totalPendingReviews }} pending</div>
               </td>
             </tr>
           </tbody>
@@ -2205,7 +2205,7 @@
           }}% of portfolio</div>
         </div>
         <div class="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-          <div class="text-2xl font-bold text-orange-600">{{ totalRiskFlags }}</div>
+          <div class="text-2xl font-bold text-orange-600">{{ riskReviewsPending }}</div>
           <div class="text-sm text-gray-600">Pending Review</div>
           <div class="text-xs text-orange-500 font-medium">{{ riskFlagsPercentile }}th percentile</div>
         </div>
@@ -3370,7 +3370,7 @@ const johnsonRiskMetrics = computed(() => ({
 // New risk analytics computed properties
 const reviewedWithAction = computed(() => 15)
 const reviewedWithoutAction = computed(() => 8)
-const totalRiskReviews = computed(() => totalRiskFlags.value + reviewedWithAction.value + reviewedWithoutAction.value)
+const totalRiskReviews = computed(() => riskReviewsPending.value + reviewedWithAction.value + reviewedWithoutAction.value)
 
 const riskReviewTrendData = computed(() => ({
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
