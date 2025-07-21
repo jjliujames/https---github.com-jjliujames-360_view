@@ -239,17 +239,6 @@
                 ]">
                   🚨 Risk Analysis
                 </button>
-                <button @click="activeTab = 'loans'" :class="[
-                  activeTab === 'loans'
-                    ? 'border-green-500 text-green-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                  'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-1'
-                ]">
-                  <span>📋 Loan Applications</span>
-                  <span v-if="pendingLoansCount > 0" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                    {{ pendingLoansCount }} Pending
-                  </span>
-                </button>
               </nav>
             </div>
           </div>
