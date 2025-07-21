@@ -180,20 +180,26 @@ Executive leadership requires comprehensive tools to compare performance across 
 
 ### 🛠️ **Technology Stack**
 - **Frontend**: Vue.js 3 with Composition API
-- **Styling**: Tailwind CSS for responsive design
-- **Charts**: Chart.js and D3.js for interactive visualizations
+- **Build Tool**: Vite 4.4.9 with Vue plugin and HMR
+- **Styling**: Tailwind CSS 3.3.3 for responsive design with TD Bank branding
+- **Charts**: Chart.js 4.5.0, D3.js 7.9.0, and ApexCharts 4.7.0 for interactive visualizations
+- **Routing**: Vue Router 4.2.4 with history mode for SPA navigation
+- **Database**: SQLite with comprehensive banking schema
 - **State Management**: Vue reactive system with computed properties
-- **Routing**: Vue Router for single-page application navigation
+- **Development**: PostCSS with Autoprefixer for cross-browser compatibility
 
 ### 🏗️ **Component Architecture**
-- **Shared Components** - Reusable UI elements (KPICard, RiskBadge, AlertIndicator)
+- **Shared Components** - Reusable UI elements (KPICard, RiskBadge, AlertIndicator, ProductDotIndicator)
 - **Layout Components** - Standardized page structures (BaseDetailView, DetailViewHeader)
 - **View Components** - Role-specific dashboards and detail views
-- **Chart Components** - Interactive data visualization components
+- **Chart Components** - Interactive data visualization components (LineChart, BarChart, DoughnutChart, Sparkline)
+- **Specialized Components** - AIChat for contextual assistance, KRIPanel for risk indicators
 
 ### 📊 **Data Integration Strategy**
-- **Mock Data Layer** - Comprehensive sample data for prototyping
+- **Mock Data Layer** - Comprehensive sample data for prototyping with realistic banking scenarios
 - **API Integration Points** - Ready for real-time data connection
+- **Hierarchical Data Structure** - Metro → Market → Region → RM → Relationship → Client → Account → Transaction
+- **Database Schema** - Complete SQLite schema with relationships, constraints, and indexes
 - **Caching Strategy** - Optimized performance for large datasets
 - **Security Framework** - Role-based access control and data privacy
 
@@ -202,22 +208,35 @@ Executive leadership requires comprehensive tools to compare performance across 
 ```
 src/
 ├── components/
-│   ├── shared/           # Reusable UI components
-│   │   ├── BaseDetailView.vue
-│   │   ├── DetailViewHeader.vue
-│   │   ├── KPICard.vue
-│   │   ├── AlertIndicator.vue
-│   │   ├── RiskBadge.vue
-│   │   └── MetroComparisonGrid.vue  # Metro comparison component
-│   ├── ExecutiveView.vue         # Executive dashboard with metro comparison
-│   ├── RelationshipManagerView.vue # RM portfolio view
-│   ├── RelationshipView.vue      # Client group analysis
-│   ├── ClientView.vue            # Client 360 profile
-│   ├── AccountView.vue           # Account details
-│   └── charts/                   # Data visualization components
-│       └── MetroPerformanceChart.vue # Metro comparison visualizations
-└── data/
-    └── mockData.js              # Comprehensive sample dataset with metro data
+│   ├── shared/              # Reusable UI components
+│   │   ├── BaseDetailView.vue        # Common layout structure
+│   │   ├── DetailViewHeader.vue      # Standardized header with breadcrumbs
+│   │   ├── KPICard.vue              # Interactive metric display
+│   │   ├── AlertIndicator.vue        # Risk and compliance alerts
+│   │   ├── RiskBadge.vue            # Risk level visualization
+│   │   └── ProductDotIndicator.vue   # Product penetration visualization
+│   ├── charts/              # Data visualization components
+│   │   ├── LineChart.vue            # Trend analysis with Chart.js
+│   │   ├── BarChart.vue             # Comparative data visualization
+│   │   ├── DoughnutChart.vue        # Distribution displays
+│   │   └── Sparkline.vue            # Compact trend indicators
+│   ├── ExecutiveView.vue            # Top-level portfolio dashboard
+│   ├── MetroView.vue               # Metropolitan area analysis
+│   ├── MarketView.vue              # Market-specific performance
+│   ├── RegionView.vue              # Regional performance oversight
+│   ├── RelationshipManagerView.vue  # RM portfolio management
+│   ├── RelationshipView.vue         # Business relationship analysis
+│   ├── ClientDetailView.vue         # Client 360-degree profile
+│   ├── AccountView.vue             # Account-level details
+│   ├── AIChat.vue                  # Contextual AI assistant
+│   └── KRIPanel.vue                # Key Risk Indicators dashboard
+├── data/
+│   ├── mockData.js                 # Comprehensive sample dataset
+│   └── schema.sql                  # Complete database schema
+├── router/
+│   └── index.js                    # Hierarchical routing configuration
+└── styles/
+    └── tailwind.css                # Custom Tailwind configuration
 ```
 
 ## Success Metrics
@@ -278,4 +297,175 @@ src/
 - **Audit Trail** - User action logging and data lineage
 - **Secure Authentication** - Role-based access and session management
 
+## Routing Configuration
+
+### **Hierarchical Navigation Routes**
+```javascript
+// Executive level
+/executive
+
+// Metro level drill-down
+/metro/:metroId
+
+// Market level within metro
+/metro/:metroId/market/:marketId
+
+// Regional level within market
+/metro/:metroId/market/:marketId/region/:regionId
+
+// Relationship Manager level
+/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId
+
+// Business Relationship level
+/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId
+
+// Client level
+/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId
+
+// Account level
+/metro/:metroId/market/:marketId/region/:regionId/rm/:rmId/relationship/:relationshipId/client/:clientId/account/:accountId
+
+// Direct client access shortcuts
+/client/:clientId
+```
+
+### **Route Features**
+- Props-based parameter passing for all hierarchy levels
+- Automatic scroll-to-top on route changes
+- Back button navigation support
+- Breadcrumb navigation with contextual links
+
+## Styling Guidelines
+
+### 🎨 **Design System**
+- **TD Bank Branding** - Primary green (#00A651) with professional gray palette
+- **Component Classes** - Standardized utility classes for consistency
+- **Responsive Design** - Mobile-first approach with touch-friendly interfaces
+- **Accessibility** - WCAG compliance considerations throughout
+
+### **Key CSS Classes**
+```css
+.card              /* Standard white cards with shadow and borders */
+.metric-card       /* Interactive metric displays with hover effects */
+.risk-flag         /* Risk level indicators with color coding */
+.breadcrumb        /* Navigation breadcrumb styling */
+.ai-suggestion     /* AI-powered insight styling */
+.kpi-grid          /* KPI dashboard grid layouts */
+```
+
+### **Color Scheme**
+- **Primary Brand**: TD Green (#00A651, #007A3D)
+- **Risk Indicators**: Red (high), Yellow (medium), Green (low)
+- **Status Colors**: Success green, Warning amber, Error red
+- **Neutral Palette**: Professional grays for text and backgrounds
+
+## Business Logic & Domain Concepts
+
+### 🏦 **Banking Domain Models**
+- **Portfolio Management** - Hierarchical client relationship structure with aggregated metrics
+- **Risk Assessment** - Multi-level risk scoring including credit, operational, and compliance risks
+- **Product Penetration** - Cross-sell opportunity identification across banking products
+- **Regulatory Compliance** - AML, KYC, and suspicious activity monitoring with automated flagging
+
+### 💼 **Business Intelligence Features**
+- **Opportunity Scoring** - AI-driven revenue potential analysis with prioritization
+- **Performance Benchmarking** - Metro, market, and peer comparison analytics
+- **Risk Monitoring** - Real-time compliance and risk indicator tracking with alerts
+- **Relationship Health** - Client relationship strength assessment with predictive analytics
+
+### 📈 **Financial Calculations**
+- **Portfolio Valuation** - Aggregated client portfolio values with growth trends
+- **Revenue Tracking** - Monthly and annual revenue analysis with variance reporting
+- **Risk Metrics** - Risk-adjusted return calculations and concentration analysis
+- **Transaction Analysis** - Pattern detection and anomaly identification for compliance
+
+## Data Privacy & Security
+
+### 🔒 **Compliance Requirements**
+- **Restricted Data Handling** - TIN (Tax Identification Numbers) removed as restricted information
+- **Role-Based Access** - User persona-specific data visibility controls
+- **Audit Trail** - User action logging and data lineage tracking
+- **Data Masking** - Sensitive information protection in non-production environments
+
+### **Security Best Practices**
+- Client information protection with appropriate access controls
+- Banking regulation adherence (SOX, Basel III, GDPR)
+- Secure authentication with role-based permissions
+- Session management and timeout controls
+
+## Development Guidelines
+
+### 🎯 **Code Standards**
+- **Vue 3 Composition API** - Modern reactive programming patterns
+- **Single File Components** - Template, script, and style organization
+- **TypeScript-Ready** - Structured for easy TypeScript adoption
+- **Performance Optimization** - Computed properties and efficient rendering
+
+### **Component Development**
+- **Reusability First** - Design components for maximum reuse across views
+- **Props Validation** - Proper prop typing and validation
+- **Event Handling** - Clear parent-child communication patterns
+- **Error Boundaries** - Graceful error handling and user feedback
+
+### **Data Patterns**
+- **Hierarchical Data Flow** - Route params → Props → Data fetching → Child components
+- **Computed Properties** - Derived data calculations for performance
+- **Reactive State** - Vue 3 reactivity for real-time updates
+- **Mock Data Integration** - Comprehensive sample data for development and testing
+
+## AI Integration
+
+### 🤖 **Contextual AI Assistant**
+- **AIChat Component** - Integrated across all views for contextual assistance
+- **Business Intelligence** - AI-powered insights and recommendations
+- **Opportunity Identification** - Automated revenue potential analysis
+- **Risk Pattern Detection** - Machine learning for compliance monitoring
+
+### **AI Features**
+- Context-aware suggestions based on current view and user role
+- Natural language queries for data exploration
+- Automated insight generation with actionable recommendations
+- Predictive analytics for relationship and portfolio management
+
+## Key Implementation Notes
+
+### ⚠️ **Important Development Considerations**
+- **Data Privacy Compliance** - TIN data has been removed from ClientDetailView as restricted information
+- **Terminology Standardization** - "Risk Analysis" has been updated to "Risk Assessment" across all components
+- **UI/UX Optimizations** - Font sizes, spacing, and layout have been optimized for professional banking interface
+- **KPI Dashboard Order** - RelationshipManagerView displays metrics in specific order: Revenue FYTD, Net New Deposits, Net New Commitments, New Credit Relationships, Referrals
+- **Risk Flag Modals** - Clickable risk flags provide detailed analysis borrowed from ClientDetailView implementation
+
+### 🔧 **Technical Debt & Optimization**
+- **Performance Monitoring** - Large dataset handling optimization needed for production scale
+- **Accessibility** - Enhanced WCAG compliance implementation across all components
+- **Testing Coverage** - Comprehensive unit and integration testing framework needed
+- **Error Handling** - Robust error boundaries and user feedback systems
+
+## Development Commands
+
+### 🛠️ **Common Development Tasks**
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Install dependencies
+npm install
+```
+
+### **File Structure Best Practices**
+- Keep components focused on single responsibilities
+- Use descriptive file names that match component purposes
+- Maintain consistent prop and event naming conventions
+- Follow Vue 3 Composition API patterns throughout
+- Implement proper component lifecycle management
+
 This platform represents a comprehensive approach to business intelligence in commercial banking, providing each user persona with the tools and insights they need to drive growth, manage risk, and optimize performance across the entire organization.
+
+This documentation provides comprehensive guidance for future Claude Code instances working on this Client 360 Business Intelligence Platform.

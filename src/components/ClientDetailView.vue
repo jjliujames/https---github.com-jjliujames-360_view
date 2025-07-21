@@ -48,7 +48,6 @@
               <div class="mb-4">
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">{{ clientData?.name || 'N/A' }}</h2>
-                  <p class="text-xs text-gray-500 mt-1">TIN: 12-3456789</p>
                   <span class="px-2 py-1 text-xs font-medium rounded-full" :class="getTierBadgeClass(clientTier)">
                     {{ clientTier }}
                   </span>
@@ -237,7 +236,7 @@
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
                   'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm'
                 ]">
-                  🚨 Risk Analysis
+                  🚨 Risk Assessment
                 </button>
               </nav>
             </div>
@@ -942,14 +941,14 @@
                 </div>
                 </div>
 
-          <!-- Risk Analysis Tab Content -->
+          <!-- Risk Assessment Tab Content -->
           <div v-show="activeTab === 'risk'">
-            <!-- Risk Analysis Section -->
+            <!-- Risk Assessment Section -->
             <div class="text-center mb-4">
-              <h2 class="text-xl font-bold text-gray-900">🚨 Risk Analysis</h2>
+              <h2 class="text-xl font-bold text-gray-900">🚨 Risk Assessment</h2>
                 </div>
 
-            <!-- Risk Analysis Content -->
+            <!-- Risk Assessment Content -->
             <!-- Risk Flag Distribution -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
               <div class="p-4 border-b border-gray-200">

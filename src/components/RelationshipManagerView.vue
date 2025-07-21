@@ -159,11 +159,6 @@
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                   clip-rule="evenodd"></path>
               </svg>
-              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd"></path>
-              </svg>
             </div>
           </div>
           <div class="text-sm text-gray-600">Revenue FYTD</div>
@@ -180,40 +175,6 @@
           </div>
         </div>
 
-        <!-- Net New Commitments -->
-        <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
-          <div class="flex items-center justify-center mb-2">
-            <div class="text-lg font-bold text-purple-600">{{
-              formatCurrency(performanceMetrics.netNewCommitments.actual) }}</div>
-            <div class="ml-2">
-              <svg v-if="performanceMetrics.netNewCommitments.achieved" class="w-5 h-5 text-green-500"
-                fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="text-sm text-gray-600">Net New Commitments</div>
-          <div class="text-xs text-gray-500 mt-1">Target: {{
-            formatCurrency(performanceMetrics.netNewCommitments.target) }}</div>
-          <div class="mt-2">
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-purple-500 h-2 rounded-full"
-                :style="`width: ${Math.min(100, performanceMetrics.netNewCommitments.achievementPercent)}%`"></div>
-            </div>
-            <div class="text-xs mt-1"
-              :class="performanceMetrics.netNewCommitments.achieved ? 'text-green-600' : 'text-orange-600'">
-              {{ performanceMetrics.netNewCommitments.achievementPercent }}% of target
-            </div>
-          </div>
-        </div>
-
         <!-- Net New Deposits -->
         <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
           <div class="flex items-center justify-center mb-2">
@@ -224,11 +185,6 @@
                 viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
               </svg>
             </div>
@@ -248,6 +204,35 @@
           </div>
         </div>
 
+        <!-- Net New Commitments -->
+        <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
+          <div class="flex items-center justify-center mb-2">
+            <div class="text-lg font-bold text-purple-600">{{
+              formatCurrency(performanceMetrics.netNewCommitments.actual) }}</div>
+            <div class="ml-2">
+              <svg v-if="performanceMetrics.netNewCommitments.achieved" class="w-5 h-5 text-green-500"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="text-sm text-gray-600">Net New Commitments</div>
+          <div class="text-xs text-gray-500 mt-1">Target: {{
+            formatCurrency(performanceMetrics.netNewCommitments.target) }}</div>
+          <div class="mt-2">
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-purple-500 h-2 rounded-full"
+                :style="`width: ${Math.min(100, performanceMetrics.netNewCommitments.achievementPercent)}%`"></div>
+            </div>
+            <div class="text-xs mt-1"
+              :class="performanceMetrics.netNewCommitments.achieved ? 'text-green-600' : 'text-orange-600'">
+              {{ performanceMetrics.netNewCommitments.achievementPercent }}% of target
+            </div>
+          </div>
+        </div>
+
         <!-- Net New Credit Relationships -->
         <div class="bg-white p-4 rounded-lg border border-purple-200 text-center">
           <div class="flex items-center justify-center mb-2">
@@ -258,11 +243,6 @@
                 fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
               </svg>
             </div>
@@ -292,11 +272,6 @@
                 viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
               </svg>
             </div>
