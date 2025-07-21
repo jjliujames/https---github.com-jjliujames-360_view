@@ -62,13 +62,6 @@
                             <p class="text-xs font-medium text-gray-500">Primary RM</p>
                             <p class="text-sm text-gray-900">{{ relationshipManager?.name || 'N/A' }}</p>
                         </div>
-                        <div>
-                            <p class="text-xs font-medium text-gray-500">Relationship Health</p>
-                            <div class="flex items-center space-x-2">
-                                <RiskBadge :value="relationshipHealthScore" type="score" size="sm" :show-score="true" />
-                                <span class="text-xs text-gray-500">/10</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -166,17 +159,21 @@
             <!-- Enhanced Complexity Assessment -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-2">
-                    <h3 class="text-sm font-medium text-gray-900 mb-3">🧠 Relationship Intelligence</h3>
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">🔗 Relationship Complexity Score</h3>
 
 
 
-                    <!-- Compliance Burden -->
-                    <div>
-                        <h4 class="text-xs font-medium text-gray-500 mb-2">Compliance Burden</h4>
-                        <div class="flex items-center space-x-2">
-                            <RiskBadge :value="complianceBurdenScore" type="status"
-                                :color="getComplianceBurdenColor(complianceBurdenScore)" size="sm" />
-                            <span class="text-xs text-gray-500">{{ complianceBurdenDescription }}</span>
+                    <!-- Hidden Relationships -->
+                    <div class="cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors" @click="showHiddenRelationshipsModal = true">
+                        <h4 class="text-xs font-medium text-gray-500 mb-2">Hidden Relationships</h4>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <RiskBadge value="High" type="status" color="red" size="sm" />
+                                <span class="text-xs text-gray-500">Client contains hidden relationships</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -232,12 +229,6 @@
                             </template>
                         </KPICard>
 
-                        <KPICard :value="relationshipComplexityScore" label="Relationship Intelligence" color="red"
-                            format-type="score" :show-score="true">
-                            <template #additional-info>
-                                <div class="text-xs text-red-600 font-medium mt-1">Complexity Score</div>
-                            </template>
-                        </KPICard>
                     </div>
                 </div>
             </div>
@@ -1896,6 +1887,197 @@
             </div>
         </template>
     </BaseDetailView>
+
+    <!-- Hidden Relationships Modal -->
+    <div v-if="showHiddenRelationshipsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="showHiddenRelationshipsModal = false">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900">🔍 Hidden Relationship Analysis</h2>
+                        <p class="text-sm text-gray-500 mt-1">Detecting undisclosed relationships across entities</p>
+                    </div>
+                    <button @click="showHiddenRelationshipsModal = false" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+                <!-- Warning Banner -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5 text-red-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-red-800">High Risk: Hidden Relationships Detected</h3>
+                            <p class="text-sm text-red-700 mt-1">Our AI system has identified potential undisclosed relationships that require immediate attention.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden Relationships Analysis -->
+                <div class="space-y-6">
+                    <!-- Relationship 1 -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-semibold text-gray-900">Suspicious Connection #1</h4>
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Critical Risk</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Within Relationship -->
+                            <div class="bg-white rounded-lg p-4 border border-green-200">
+                                <h5 class="text-sm font-medium text-green-800 mb-3 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Within Current Relationship
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="text-sm">
+                                        <span class="font-medium">Client:</span> Johnson Holdings Group
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Account:</span> *****4891 (Operating)
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Authorized Signer:</span> Michael R. Johnson
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden External -->
+                            <div class="bg-white rounded-lg p-4 border border-red-200">
+                                <h5 class="text-sm font-medium text-red-800 mb-3 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Hidden External Relationship
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="text-sm">
+                                        <span class="font-medium">Client:</span> MRJ Consulting LLC <span class="text-red-600">(Not in relationship)</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Account:</span> *****7832 (Business Checking)
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Owner:</span> Michael R. Johnson <span class="text-red-600">(Same individual)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-yellow-50 rounded-lg">
+                            <h6 class="text-sm font-medium text-yellow-800 mb-2">Risk Indicators</h6>
+                            <ul class="text-sm text-yellow-700 space-y-1">
+                                <li>• Same individual controlling entities outside declared relationship</li>
+                                <li>• Frequent transfers between accounts ($2.3M in last 6 months)</li>
+                                <li>• Undisclosed cross-guarantees detected in loan documentation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Relationship 2 -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-semibold text-gray-900">Suspicious Connection #2</h4>
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">Medium Risk</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Within Relationship -->
+                            <div class="bg-white rounded-lg p-4 border border-green-200">
+                                <h5 class="text-sm font-medium text-green-800 mb-3 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Within Current Relationship
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="text-sm">
+                                        <span class="font-medium">Client:</span> Johnson Manufacturing LLC
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Account:</span> *****2156 (Treasury Mgmt)
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Beneficial Owner:</span> Sarah L. Johnson (25%)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden External -->
+                            <div class="bg-white rounded-lg p-4 border border-orange-200">
+                                <h5 class="text-sm font-medium text-orange-800 mb-3 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Potential Hidden Relationship
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="text-sm">
+                                        <span class="font-medium">Client:</span> SLJ Properties Group <span class="text-orange-600">(External)</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Account:</span> *****9445 (Commercial Loan)
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium">Guarantor:</span> Sarah L. Johnson <span class="text-orange-600">(Potential match)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-orange-50 rounded-lg">
+                            <h6 class="text-sm font-medium text-orange-800 mb-2">Risk Indicators</h6>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li>• Similar name patterns suggest family relationship</li>
+                                <li>• Shared collateral across separate credit facilities</li>
+                                <li>• Requires enhanced due diligence to confirm connection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Required -->
+                <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-blue-800 mb-2">Recommended Actions</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Schedule immediate client meeting to discuss relationship structure</li>
+                        <li>• Update Know Your Customer (KYC) documentation</li>
+                        <li>• Review and adjust credit limits for relationship aggregation</li>
+                        <li>• Document findings in client risk profile</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-6 border-t border-gray-200 bg-gray-50">
+                <div class="flex items-center justify-between">
+                    <div class="text-xs text-gray-500">
+                        Analysis generated using AI-powered relationship mapping • Last updated: {{ new Date().toLocaleDateString() }}
+                    </div>
+                    <div class="flex space-x-3">
+                        <button @click="showHiddenRelationshipsModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Close
+                        </button>
+                        <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                            Flag for Investigation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -1926,6 +2108,7 @@ const router = useRouter()
 // Reactive state
 const activeTab = ref('portfolio')
 const showAlertsModal = ref(false)
+const showHiddenRelationshipsModal = ref(false)
 const activeAlertTab = ref('delinquency')
 const selectedTimePeriod = ref('12m') // Default to 12 months
 const selectedTrendMetric = ref('deposits') // Default trend metric
@@ -2019,27 +2202,6 @@ const totalInflow = computed(() => {
     return deposits + estimatedTransactionFlow
 })
 
-const relationshipComplexityScore = computed(() => {
-    // High complexity score (red) indicates hidden relationships or complex structure
-    // Score from 1-10, where 10 is highest complexity (most concerning)
-    
-    let complexityScore = 5; // Base score
-    
-    // Increase complexity for multiple clients in relationship
-    if (totalClients.value > 3) complexityScore += 2;
-    
-    // Increase complexity for high-value relationships (potential for hidden connections)
-    if (aggregateDeposits.value > 50000000) complexityScore += 1;
-    
-    // Increase complexity if high loan-to-deposit ratio (unusual structure)
-    const loanToDepositRatio = aggregateDeposits.value > 0 ? aggregateLoans.value / aggregateDeposits.value : 0;
-    if (loanToDepositRatio > 2) complexityScore += 2;
-    
-    // Random factor to simulate hidden relationships detection
-    if (Math.random() > 0.7) complexityScore += 2; // 30% chance of hidden complexity
-    
-    return Math.min(10, complexityScore);
-})
 
 const inflowPercentile = computed(() => Math.floor(Math.random() * 40) + 60) // 60-99th percentile
 
@@ -3349,11 +3511,6 @@ const geographicFootprint = computed(() => {
 })
 
 // Enhanced risk and intelligence metrics
-const relationshipHealthScore = computed(() => {
-    const baseScore = 8.5
-    const riskPenalty = Math.min(totalRiskFlags.value * 0.2, 2)
-    return Math.max(baseScore - riskPenalty, 1).toFixed(1)
-})
 
 
 const complianceBurdenScore = computed(() => {
