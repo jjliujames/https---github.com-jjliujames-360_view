@@ -991,6 +991,32 @@
             <!-- Risk Assessment Tab -->
             <div v-if="activeTab === 'risk'">
                 <div class="space-y-6">
+                    <!-- Risk Assessment Summary -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Assessment Summary
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-red-600">20</div>
+                                    <div class="text-sm text-gray-600">Risk Review Assigned</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600">10</div>
+                                    <div class="text-sm text-gray-600">Pending Risk Review </div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-yellow-600">7</div>
+                                    <div class="text-sm text-gray-600">Closed with UTR</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600">3</div>
+                                    <div class="text-sm text-gray-600">Closed w/o UTR</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Enhanced Risk Review Dashboard -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="p-6 border-b border-gray-200">
@@ -1068,8 +1094,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900">{{ client.name }}
-                                                        </div>
+                                                        <button @click="drillDownToClient(client)"
+                                                            class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline text-left">
+                                                            {{ client.name }}
+                                                        </button>
                                                         <div class="text-sm text-gray-500">{{ client.industry }}</div>
                                                     </div>
                                                 </div>
@@ -1132,27 +1160,178 @@
                         </div>
                     </div>
 
-                    <!-- Risk Assessment Summary -->
+                    <!-- Risk Flag Categories -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Assessment Summary
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-red-600">20</div>
-                                    <div class="text-sm text-gray-600">Risk Review Assigned</div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚩 Risk Flag Categories</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Non-Transactional Flags -->
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                                        <span class="mr-2">📄</span> Non-Transactional Flag
+                                    </h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
+                                            @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
+                                            <span class="text-sm text-gray-700">UTR Filed</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0
+                                                }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
+                                            @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
+                                            <span class="text-sm text-gray-700">High Risk Industry</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount
+                                                    || 0
+                                                }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
+                                            @click="openRiskFlagModal({ category: 'CTR-exemption', type: 'reported', riskLevel: 'low', hasData: true })">
+                                            <span class="text-sm text-gray-700">CTR-exemption</span>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
+                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount ||
+                                                    0 }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600">10</div>
-                                    <div class="text-sm text-gray-600">Pending Risk Review </div>
+
+                                <!-- High Risk Transactions -->
+                                <div class="bg-red-50 rounded-lg p-4 border border-red-200 md:col-span-2">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                                        <span class="mr-2">🚨</span> High Risk Transactions
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'transaction', riskLevel: 'medium', hasData: true })">
+                                                <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        cannabisRelatedTrxCount || 0
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Casino Trx', type: 'transaction', riskLevel: 'medium', hasData: true })">
+                                                <span class="text-xs text-gray-700">Casino Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount ||
+                                                        0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'High Cash Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">High Cash Deposit</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        highCashDepositCount || 0
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">Third Party Check Deposit</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        thirdPartyCheckDepositCount
+                                                        || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Cashier Check Purchase', type: 'transaction', riskLevel: 'medium', hasData: true })">
+                                                <span class="text-xs text-gray-700">Cashier Check Purchase</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        cashierCheckPurchaseCount ||
+                                                        0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">Crypto Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount ||
+                                                        0 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">High Cash Withdrawals</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        highCashWithdrawalsCount || 0
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
+                                                @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'transaction', riskLevel: 'high', hasData: true })">
+                                                <span class="text-xs text-gray-700">Luxury Goods Trx</span>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
+                                                    <span class="text-sm font-medium text-gray-900">{{
+                                                        luxuryGoodsTrxCount || 0
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-yellow-600">7</div>
-                                    <div class="text-sm text-gray-600">Closed with UTR</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-green-600">3</div>
-                                    <div class="text-sm text-gray-600">Closed w/o UTR</div>
+                            </div>
+
+                            <!-- Pending Review Queue -->
+                            <div class="mt-6">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">⏳ Pending Risk Reviews</h4>
+                                <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-medium text-amber-900">{{ totalPendingRiskReviews }}
+                                            reviews
+                                            pending action</span>
+                                        <button class="text-sm text-amber-700 hover:text-amber-900 font-medium">
+                                            View All →
+                                        </button>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div v-for="n in 3" :key="n"
+                                            class="flex items-center justify-between p-2 bg-white rounded border border-amber-200">
+                                            <div class="flex items-center space-x-3">
+                                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                                <span class="text-sm text-gray-700">Client {{ n }}</span>
+                                                <span class="text-xs text-gray-500">High Risk Transaction</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-xs text-amber-600">{{ 5 - n }} days pending</span>
+                                                <button
+                                                    class="text-xs px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700">
+                                                    Review
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1355,183 +1534,6 @@
                                             <button class="text-red-600 hover:text-red-700 font-medium">
                                                 Export Data →
                                             </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Risk Flag Categories -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚩 Risk Flag Categories</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <!-- Non-Transactional Flags -->
-                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                                        <span class="mr-2">📄</span> Non-Transactional Flag
-                                    </h4>
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
-                                            @click="openRiskFlagModal({ category: 'UTR Filed', type: 'reported', riskLevel: 'high', hasData: true })">
-                                            <span class="text-sm text-gray-700">UTR Filed</span>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0
-                                                }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
-                                            @click="openRiskFlagModal({ category: 'High Risk Industry', type: 'reported', riskLevel: 'medium', hasData: true })">
-                                            <span class="text-sm text-gray-700">High Risk Industry</span>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount
-                                                    || 0
-                                                }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
-                                            @click="openRiskFlagModal({ category: 'CTR-exemption', type: 'reported', riskLevel: 'low', hasData: true })">
-                                            <span class="text-sm text-gray-700">CTR-exemption</span>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount ||
-                                                    0 }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- High Risk Transactions -->
-                                <div class="bg-red-50 rounded-lg p-4 border border-red-200 md:col-span-2">
-                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                                        <span class="mr-2">🚨</span> High Risk Transactions
-                                    </h4>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div class="space-y-3">
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Cannabis-Related Trx', type: 'transaction', riskLevel: 'medium', hasData: true })">
-                                                <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        cannabisRelatedTrxCount || 0
-                                                    }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Casino Trx', type: 'transaction', riskLevel: 'medium', hasData: true })">
-                                                <span class="text-xs text-gray-700">Casino Trx</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount ||
-                                                        0 }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'High Cash Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">High Cash Deposit</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        highCashDepositCount || 0
-                                                    }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'HRJ Trx (ATM/Wire/Debit)', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0
-                                                    }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Third Party Check Deposit', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">Third Party Check Deposit</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        thirdPartyCheckDepositCount
-                                                        || 0 }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="space-y-3">
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Cashier Check Purchase', type: 'transaction', riskLevel: 'medium', hasData: true })">
-                                                <span class="text-xs text-gray-700">Cashier Check Purchase</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        cashierCheckPurchaseCount ||
-                                                        0 }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Crypto Trx', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">Crypto Trx</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount ||
-                                                        0 }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'High Cash Withdrawals', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">High Cash Withdrawals</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        highCashWithdrawalsCount || 0
-                                                    }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
-                                                @click="openRiskFlagModal({ category: 'Luxury Goods Trx', type: 'transaction', riskLevel: 'high', hasData: true })">
-                                                <span class="text-xs text-gray-700">Luxury Goods Trx</span>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        luxuryGoodsTrxCount || 0
-                                                    }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Pending Review Queue -->
-                            <div class="mt-6">
-                                <h4 class="text-sm font-semibold text-gray-700 mb-3">⏳ Pending Risk Reviews</h4>
-                                <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-medium text-amber-900">{{ totalPendingRiskReviews }}
-                                            reviews
-                                            pending action</span>
-                                        <button class="text-sm text-amber-700 hover:text-amber-900 font-medium">
-                                            View All →
-                                        </button>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <div v-for="n in 3" :key="n"
-                                            class="flex items-center justify-between p-2 bg-white rounded border border-amber-200">
-                                            <div class="flex items-center space-x-3">
-                                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
-                                                <span class="text-sm text-gray-700">Client {{ n }}</span>
-                                                <span class="text-xs text-gray-500">High Risk Transaction</span>
-                                            </div>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="text-xs text-amber-600">{{ 5 - n }} days pending</span>
-                                                <button
-                                                    class="text-xs px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700">
-                                                    Review
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
