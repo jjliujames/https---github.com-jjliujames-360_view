@@ -991,32 +991,6 @@
             <!-- Risk Assessment Tab -->
             <div v-if="activeTab === 'risk'">
                 <div class="space-y-6">
-                    <!-- Risk Summary Statistics -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Assessment Summary
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-red-600">20</div>
-                                    <div class="text-sm text-gray-600">Risk Review Assigned</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600">10</div>
-                                    <div class="text-sm text-gray-600">Pending Risk Review </div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-yellow-600">7</div>
-                                    <div class="text-sm text-gray-600">Closed with UTR</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-green-600">3</div>
-                                    <div class="text-sm text-gray-600">Closed w/o UTR</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Enhanced Risk Review Dashboard -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="p-6 border-b border-gray-200">
@@ -1087,90 +1061,302 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-8 w-8">
+                                                    <div class="flex-shrink-0 h-10 w-10">
                                                         <div
-                                                            class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                                            <span class="text-xs font-medium text-gray-700">{{
-                                                                client.name.charAt(0) }}</span>
+                                                            class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium text-gray-700">
+                                                            {{ client.name.charAt(0) }}
                                                         </div>
                                                     </div>
                                                     <div class="ml-4">
-                                                        <button @click="navigateToClient(client.id)"
-                                                            class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
-                                                            {{ client.name }}</button>
-                                                        <div class="text-xs text-gray-500">{{
-                                                            client.industry }}</div>
+                                                        <div class="text-sm font-medium text-gray-900">{{ client.name }}
+                                                        </div>
+                                                        <div class="text-sm text-gray-500">{{ client.industry }}</div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span v-if="client.riskFlags > 0"
-                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                                    :class="client.riskFlags > 3 ? 'bg-red-100 text-red-800' : client.riskFlags > 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">
                                                     {{ client.riskFlags }}
                                                 </span>
-                                                <span v-else
-                                                    class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">0</span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <RiskBadge :value="client.riskLevel || 'Low'" type="risk" size="sm" />
+                                                <span class="text-sm" :class="getRiskLevelClass(client.riskLevel)">{{
+                                                    client.riskLevel }}</span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <span :class="getReviewStatusClass(client)"
-                                                    class="px-2 py-1 text-xs font-medium rounded-full">
-                                                    {{ getReviewStatus(client) }}
-                                                </span>
+                                                <span class="text-sm text-gray-900">{{ getReviewStatus(client) }}</span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                                                {{ getClientLastReview(client.id) }}
+                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                                {{ client.lastReview || 'Never' }}
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                                <div class="flex items-center justify-center space-x-2">
-                                                    <button @click="openRiskInvestigationModal(client)"
-                                                        class="text-blue-600 hover:text-blue-800 font-medium text-xs px-2 py-1 bg-blue-50 rounded">
-                                                        Investigate
-                                                    </button>
-                                                    <button @click="drillDownToClientRisk(client)"
-                                                        class="text-td-green hover:text-green-600 font-medium text-xs px-2 py-1 bg-green-50 rounded">
-                                                        Review
-                                                    </button>
-                                                </div>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                                <button @click="startRiskInvestigation(client)"
+                                                    class="text-blue-600 hover:text-blue-900 mr-3">
+                                                    Investigate
+                                                </button>
+                                                <button @click="markAsReviewed(client)"
+                                                    class="text-green-600 hover:text-green-900">
+                                                    Mark Reviewed
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Bulk Actions Panel -->
+                            <!-- Bulk Actions Bar (when bulk mode is active) -->
                             <div v-if="reviewMode === 'bulk' && selectedClientsForReview.length > 0"
-                                class="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-4">
-                                        <span class="text-sm font-medium text-purple-900">
-                                            {{ selectedClientsForReview.length }} client(s) selected
-                                        </span>
-                                        <div class="flex items-center space-x-2">
-                                            <button @click="bulkAssignReviewer"
-                                                class="px-3 py-1.5 text-xs bg-purple-600 text-white rounded hover:bg-purple-700">
-                                                Assign Reviewer
-                                            </button>
-                                            <button @click="bulkMarkAsReviewed"
-                                                class="px-3 py-1.5 text-xs bg-green-600 text-white rounded hover:bg-green-700">
-                                                Mark as Reviewed
-                                            </button>
-                                            <button @click="bulkScheduleReview"
-                                                class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">
-                                                Schedule Review
-                                            </button>
-                                            <button @click="bulkExportReport"
-                                                class="px-3 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700">
-                                                Export Report
+                                    <span class="text-sm text-blue-700">
+                                        {{ selectedClientsForReview.length }} client(s) selected
+                                    </span>
+                                    <div class="space-x-2">
+                                        <button @click="bulkMarkAsReviewed"
+                                            class="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700">
+                                            Mark All as Reviewed
+                                        </button>
+                                        <button @click="bulkAssignForInvestigation"
+                                            class="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded hover:bg-blue-700">
+                                            Assign for Investigation
+                                        </button>
+                                        <button @click="selectedClientsForReview = []"
+                                            class="px-3 py-1.5 text-xs font-medium bg-gray-600 text-white rounded hover:bg-gray-700">
+                                            Clear Selection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Assessment Summary -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🚨 Risk Assessment Summary
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-red-600">20</div>
+                                    <div class="text-sm text-gray-600">Risk Review Assigned</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600">10</div>
+                                    <div class="text-sm text-gray-600">Pending Risk Review </div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-yellow-600">7</div>
+                                    <div class="text-sm text-gray-600">Closed with UTR</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600">3</div>
+                                    <div class="text-sm text-gray-600">Closed w/o UTR</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Trends & Analysis -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📈 Risk Trends & Analysis</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                                <!-- Left Side - Controls -->
+                                <div class="lg:col-span-1">
+                                    <div class="space-y-4">
+                                        <!-- Time Period Selection -->
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Time Period</h4>
+                                            <div class="space-y-1">
+                                                <button @click="selectedRiskTimePeriod = 'ytd'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedRiskTimePeriod === 'ytd' ? 'bg-red-100 text-red-700 border border-red-200 font-medium' : 'text-gray-700 hover:bg-gray-100']">
+                                                    Year to Date
+                                                </button>
+                                                <button @click="selectedRiskTimePeriod = '6m'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedRiskTimePeriod === '6m' ? 'bg-red-100 text-red-700 border border-red-200 font-medium' : 'text-gray-700 hover:bg-gray-100']">
+                                                    Last 6 Months
+                                                </button>
+                                                <button @click="selectedRiskTimePeriod = '12m'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedRiskTimePeriod === '12m' ? 'bg-red-100 text-red-700 border border-red-200 font-medium' : 'text-gray-700 hover:bg-gray-100']">
+                                                    Last 12 Months
+                                                </button>
+                                                <button @click="selectedRiskTimePeriod = '24m'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', selectedRiskTimePeriod === '24m' ? 'bg-red-100 text-red-700 border border-red-200 font-medium' : 'text-gray-700 hover:bg-gray-100']">
+                                                    Last 24 Months
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Risk Metric Selection -->
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Select Metric</h4>
+                                            <div class="space-y-1">
+                                                <button @click="selectedRiskMetric = 'high-risk-transactions'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedRiskMetric === 'high-risk-transactions' ? 'bg-red-50 text-red-700 border border-red-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                    <span>🚨 High Risk Transaction Volume</span>
+                                                    <span v-if="selectedRiskMetric === 'high-risk-transactions'"
+                                                        class="text-red-500">→</span>
+                                                </button>
+                                                <button @click="selectedRiskMetric = 'risk-flags-reviewed'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedRiskMetric === 'risk-flags-reviewed' ? 'bg-red-50 text-red-700 border border-red-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                    <span>✅ Risk Flags Reviewed</span>
+                                                    <span v-if="selectedRiskMetric === 'risk-flags-reviewed'"
+                                                        class="text-red-500">→</span>
+                                                </button>
+                                                <button @click="selectedRiskMetric = 'utr-filed'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedRiskMetric === 'utr-filed' ? 'bg-red-50 text-red-700 border border-red-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                    <span>📄 UTR Filed</span>
+                                                    <span v-if="selectedRiskMetric === 'utr-filed'"
+                                                        class="text-red-500">→</span>
+                                                </button>
+                                                <button @click="selectedRiskMetric = 'monthly-transactions'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between', selectedRiskMetric === 'monthly-transactions' ? 'bg-red-50 text-red-700 border border-red-200' : 'text-gray-700 hover:bg-gray-100']">
+                                                    <span>💳 Monthly Transactions</span>
+                                                    <span v-if="selectedRiskMetric === 'monthly-transactions'"
+                                                        class="text-red-500">→</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Options -->
+                                        <div class="pt-4 border-t border-gray-200">
+                                            <label class="flex items-center space-x-2 text-sm text-gray-700">
+                                                <input type="checkbox" v-model="showNewRiskFlagsOnly"
+                                                    class="rounded border-gray-300">
+                                                <span>Show New Flags Only</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm text-gray-700 mt-2">
+                                                <input type="checkbox" v-model="compareToIndustryAverage"
+                                                    class="rounded border-gray-300">
+                                                <span>Compare to Industry Average</span>
+                                            </label>
+                                        </div>
+
+                                        <!-- High Risk Transaction Options (when high-risk-transactions selected) -->
+                                        <div v-if="selectedRiskMetric === 'high-risk-transactions'"
+                                            class="pt-4 border-t border-gray-200">
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction View</h4>
+                                            <div class="space-y-1">
+                                                <button @click="riskTransactionViewType = 'by-type'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', riskTransactionViewType === 'by-type' ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                    By Transaction Type
+                                                </button>
+                                                <button @click="riskTransactionViewType = 'by-client'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', riskTransactionViewType === 'by-client' ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                    By Client
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Monthly Transactions Options (when monthly-transactions selected) -->
+                                        <div v-if="selectedRiskMetric === 'monthly-transactions'"
+                                            class="pt-4 border-t border-gray-200">
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction View</h4>
+                                            <div class="space-y-1">
+                                                <button @click="riskTransactionViewType = 'by-type'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', riskTransactionViewType === 'by-type' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                    By Transaction Type
+                                                </button>
+                                                <button @click="riskTransactionViewType = 'by-client'"
+                                                    :class="['w-full text-left px-3 py-2 text-sm rounded-md transition-colors', riskTransactionViewType === 'by-client' ? 'bg-td-green text-white' : 'text-gray-700 hover:bg-gray-100']">
+                                                    By Client
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Side - Chart Display -->
+                                <div class="lg:col-span-3">
+                                    <div class="bg-gray-50 rounded-lg p-6 h-full">
+                                        <!-- Chart Header -->
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-900">
+                                                    {{ getRiskMetricTitle(selectedRiskMetric) }}
+                                                </h4>
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    {{ getRiskMetricSubtitle(selectedRiskMetric, selectedRiskTimePeriod) }}
+                                                </p>
+                                            </div>
+                                            <div class="flex items-center space-x-4">
+                                                <div class="text-right">
+                                                    <div class="text-2xl font-bold text-gray-900">
+                                                        {{ getCurrentRiskMetricValue(selectedRiskMetric) }}
+                                                    </div>
+                                                    <div class="text-sm text-gray-600">Current</div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <div class="text-lg font-semibold"
+                                                        :class="getRiskMetricChangeClass(selectedRiskMetric)">
+                                                        {{ getRiskMetricChange(selectedRiskMetric) }}
+                                                    </div>
+                                                    <div class="text-sm text-gray-600">vs Prior</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Chart Type Toggle (for High Risk Transactions) -->
+                                        <div v-if="selectedRiskMetric === 'high-risk-transactions'"
+                                            class="mb-2 flex justify-end">
+                                            <div class="inline-flex rounded-md shadow-sm" role="group">
+                                                <button @click="riskTransactionViewType = 'by-type'"
+                                                    :class="['px-3 py-1 text-sm font-medium', riskTransactionViewType === 'by-type' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50', 'rounded-l-md border border-gray-200']">
+                                                    By Transaction Type
+                                                </button>
+                                                <button @click="riskTransactionViewType = 'by-client'"
+                                                    :class="['px-3 py-1 text-sm font-medium', riskTransactionViewType === 'by-client' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50', 'rounded-r-md border-l-0 border border-gray-200']">
+                                                    By Client
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Chart Area -->
+                                        <div class="h-80">
+                                            <!-- High Risk Transactions Chart -->
+                                            <BarChart v-if="selectedRiskMetric === 'high-risk-transactions'" :data="getHighRiskTransactionsChartData"
+                                                :options="highRiskTransactionsChartOptions" />
+
+                                            <!-- Risk Flags Reviewed Chart -->
+                                            <LineChart v-else-if="selectedRiskMetric === 'risk-flags-reviewed'"
+                                                :data="getRiskFlagsReviewedChartData" :options="riskFlagsReviewedChartOptions" />
+
+                                            <!-- UTR Filed Chart -->
+                                            <BarChart v-else-if="selectedRiskMetric === 'utr-filed'"
+                                                :data="getUTRFiledChartData" :options="utrFiledChartOptions" />
+                                            
+                                            <!-- Monthly Transactions Chart -->
+                                            <BarChart v-else-if="selectedRiskMetric === 'monthly-transactions'"
+                                                :data="getRiskTransactionsChartData" :options="riskTransactionsChartOptions" />
+                                        </div>
+
+                                        <!-- Chart Legend/Info -->
+                                        <div class="mt-4 flex items-center justify-between text-sm text-gray-600">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                                    <span>High Risk</span>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                                    <span>Medium Risk</span>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                                    <span>Low Risk</span>
+                                                </div>
+                                                <div v-if="compareToIndustryAverage" class="flex items-center space-x-2">
+                                                    <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                                    <span>Industry Average</span>
+                                                </div>
+                                            </div>
+                                            <button class="text-red-600 hover:text-red-700 font-medium">
+                                                Export Data →
                                             </button>
                                         </div>
                                     </div>
-                                    <button @click="selectedClientsForReview = []"
-                                        class="text-purple-600 hover:text-purple-800 text-sm">
-                                        Clear Selection
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -2594,6 +2780,13 @@ const chartViewType = ref('client') // 'client' or 'product' for stacked bar cha
 const transactionViewType = ref('by-type') // 'by-type' or 'by-client' for transaction charts
 const recommendationsPerPage = 5 // Number of recommendations per page
 
+// Risk Trends & Analysis reactive variables
+const selectedRiskTimePeriod = ref('12m') // Default to 12 months for risk trends
+const selectedRiskMetric = ref('high-risk-transactions') // Default risk metric
+const showNewRiskFlagsOnly = ref(false) // Show new risk flags only filter
+const compareToIndustryAverage = ref(false) // Compare to industry average filter
+const riskTransactionViewType = ref('by-type') // 'by-type' or 'by-client' for risk transaction charts
+
 // Enhanced Risk Review Dashboard state
 const reviewMode = ref('standard') // 'standard' or 'bulk'
 const selectedClientsForReview = ref([]) // Array of selected client IDs for bulk actions
@@ -3709,6 +3902,407 @@ const transactionsChartOptions = {
     }
 }
 
+// Risk Chart Data and Options
+const getHighRiskTransactionsChartData = computed(() => {
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    
+    if (riskTransactionViewType.value === 'by-type') {
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Cannabis-Related Trx',
+                    data: [2, 1, 3, 0, 1, 2, 4, 2, 1, 3, 2, 1],
+                    backgroundColor: '#ef4444',
+                    borderColor: '#dc2626',
+                    borderWidth: 1,
+                    stack: 'stack0'
+                },
+                {
+                    label: 'High Cash Deposits',
+                    data: [8, 12, 10, 15, 9, 18, 14, 20, 11, 16, 13, 17],
+                    backgroundColor: '#f59e0b',
+                    borderColor: '#d97706',
+                    borderWidth: 1,
+                    stack: 'stack0'
+                },
+                {
+                    label: 'Crypto Transactions',
+                    data: [5, 3, 7, 4, 8, 6, 9, 5, 7, 8, 6, 10],
+                    backgroundColor: '#8b5cf6',
+                    borderColor: '#7c3aed',
+                    borderWidth: 1,
+                    stack: 'stack0'
+                },
+                {
+                    label: 'HRJ Transactions',
+                    data: [3, 5, 2, 6, 4, 8, 5, 7, 4, 6, 5, 8],
+                    backgroundColor: '#06b6d4',
+                    borderColor: '#0891b2',
+                    borderWidth: 1,
+                    stack: 'stack0'
+                },
+                {
+                    label: 'Third Party Checks',
+                    data: [1, 2, 1, 3, 2, 4, 2, 3, 2, 4, 3, 5],
+                    backgroundColor: '#84cc16',
+                    borderColor: '#65a30d',
+                    borderWidth: 1,
+                    stack: 'stack0'
+                }
+            ]
+        }
+    } else {
+        // By Client view
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Johnson Manufacturing LLC',
+                    data: [12, 15, 18, 22, 16, 25, 20, 28, 19, 24, 21, 26],
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#2563eb',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Johnson Holdings Group - Sub A',
+                    data: [8, 10, 12, 14, 9, 16, 13, 18, 11, 15, 12, 17],
+                    backgroundColor: '#10b981',
+                    borderColor: '#059669',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Johnson Holdings Group - Sub B',
+                    data: [3, 4, 5, 6, 4, 7, 5, 8, 6, 7, 6, 9],
+                    backgroundColor: '#f59e0b',
+                    borderColor: '#d97706',
+                    borderWidth: 1
+                }
+            ]
+        }
+    }
+})
+
+const getUTRFiledChartData = computed(() => {
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    
+    // Cumulative UTR Filed data - high volume example
+    const monthlyUTR = [3, 2, 4, 1, 2, 3, 5, 4, 3, 2, 1, 4]
+    const cumulativeUTR = monthlyUTR.reduce((acc, current, index) => {
+        const cumSum = index === 0 ? current : acc[index - 1] + current
+        acc.push(cumSum)
+        return acc
+    }, [])
+    
+    // Regional average flat line at 1.2
+    const regionalMonthlyCumulative = [1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2]
+    
+    const datasets = [
+        {
+            label: 'Our Relationship - Cumulative UTR Filed',
+            data: cumulativeUTR,
+            backgroundColor: '#ef4444',
+            borderColor: '#dc2626',
+            borderWidth: 1,
+            type: 'bar',
+            order: 2
+        },
+        {
+            label: 'Regional Average',
+            data: regionalMonthlyCumulative,
+            backgroundColor: 'transparent',
+            borderColor: '#3b82f6',
+            borderWidth: 3,
+            borderDash: [8, 4],
+            type: 'line',
+            fill: false,
+            tension: 0,
+            pointRadius: 4,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            order: 1
+        }
+    ]
+    
+    return {
+        labels,
+        datasets
+    }
+})
+
+const getRiskTransactionsChartData = computed(() => {
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    
+    if (riskTransactionViewType.value === 'by-type') {
+        // Inflow transaction types (positive values)
+        const cashDeposits = [45, 42, 48, 52, 38, 65, 58, 72, 45, 52, 48, 68]
+        const checkDeposits = [125, 138, 142, 165, 125, 175, 168, 182, 155, 162, 158, 188]
+        const achIn = [85, 92, 88, 95, 78, 108, 98, 112, 88, 95, 92, 118]
+        const wireIn = [320, 285, 340, 380, 295, 420, 385, 445, 325, 365, 358, 425]
+        
+        // Outflow transaction types (negative values)
+        const cashWithdrawals = [-25, -28, -32, -35, -22, -38, -32, -42, -28, -32, -28, -38]
+        const checkPayments = [-185, -195, -212, -225, -178, -245, -228, -265, -198, -215, -205, -248]
+        const achOut = [-145, -152, -168, -175, -138, -188, -172, -195, -155, -168, -162, -188]
+        const wireOut = [-280, -295, -315, -335, -265, -365, -342, -385, -305, -325, -315, -368]
+        
+        return {
+            labels,
+            datasets: [
+                // Inflows (positive)
+                {
+                    label: 'Cash Deposits',
+                    data: cashDeposits,
+                    backgroundColor: '#10b981', // Green
+                    borderColor: '#059669',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'Check Deposits',
+                    data: checkDeposits,
+                    backgroundColor: '#3b82f6', // Blue
+                    borderColor: '#2563eb',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'ACH In',
+                    data: achIn,
+                    backgroundColor: '#8b5cf6', // Purple
+                    borderColor: '#7c3aed',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                {
+                    label: 'Wire In',
+                    data: wireIn,
+                    backgroundColor: '#06b6d4', // Cyan
+                    borderColor: '#0891b2',
+                    borderWidth: 1,
+                    stack: 'inflow'
+                },
+                // Outflows (negative)
+                {
+                    label: 'Cash Withdrawals',
+                    data: cashWithdrawals,
+                    backgroundColor: '#ef4444', // Red
+                    borderColor: '#dc2626',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'Check Payments',
+                    data: checkPayments,
+                    backgroundColor: '#f59e0b', // Amber
+                    borderColor: '#d97706',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'ACH Out',
+                    data: achOut,
+                    backgroundColor: '#ec4899', // Pink
+                    borderColor: '#db2777',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                },
+                {
+                    label: 'Wire Out',
+                    data: wireOut,
+                    backgroundColor: '#6b7280', // Gray
+                    borderColor: '#4b5563',
+                    borderWidth: 1,
+                    stack: 'outflow'
+                }
+            ]
+        }
+    } else {
+        // By client view - showing transaction volumes for different clients
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Smith Manufacturing',
+                    data: [450, 480, 520, 580, 420, 650, 590, 720, 480, 550, 520, 680],
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#2563eb',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Johnson Enterprises',
+                    data: [320, 340, 380, 420, 295, 465, 425, 495, 345, 395, 375, 465],
+                    backgroundColor: '#10b981',
+                    borderColor: '#059669',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Williams Corp',
+                    data: [280, 295, 315, 345, 265, 385, 352, 425, 295, 335, 325, 398],
+                    backgroundColor: '#f59e0b',
+                    borderColor: '#d97706',
+                    borderWidth: 1
+                }
+            ]
+        }
+    }
+})
+
+const getRiskFlagsReviewedChartData = computed(() => {
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return {
+        labels,
+        datasets: [
+            {
+                label: 'Flags Generated',
+                data: [25, 28, 32, 29, 35, 31, 38, 33, 30, 34, 36, 32],
+                borderColor: '#ef4444',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Flags Reviewed',
+                data: [22, 26, 30, 27, 32, 29, 35, 31, 28, 32, 34, 30],
+                borderColor: '#10b981',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Review Completion Rate',
+                data: [88, 93, 94, 93, 91, 94, 92, 94, 93, 94, 94, 94],
+                borderColor: '#3b82f6',
+                backgroundColor: 'transparent',
+                tension: 0.1,
+                yAxisID: 'y1',
+                type: 'line'
+            }
+        ]
+    }
+})
+
+
+// Risk Chart Options
+const highRiskTransactionsChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true,
+            stacked: true
+        },
+        x: {
+            stacked: true
+        }
+    },
+    plugins: {
+        legend: {
+            position: 'bottom'
+        }
+    }
+}
+
+const utrFiledChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Cumulative UTRs Filed'
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true,
+            position: 'bottom'
+        }
+    }
+}
+
+const riskTransactionsChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: false,
+            ticks: {
+                callback: function(value) {
+                    return (value >= 0 ? '$' : '-$') + Math.abs(value) + 'M'
+                }
+            },
+            grid: {
+                color: function(context) {
+                    if (context.tick.value === 0) {
+                        return '#374151' // Darker line at zero
+                    }
+                    return '#e5e7eb' // Light gray for other lines
+                }
+            },
+            title: {
+                display: true,
+                text: 'Transaction Volume ($M)'
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true,
+            position: 'bottom'
+        },
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    const value = context.parsed.y
+                    const label = context.dataset.label
+                    return label + ': ' + (value >= 0 ? '$' : '-$') + Math.abs(value) + 'M'
+                }
+            }
+        }
+    }
+}
+
+const riskFlagsReviewedChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Number of Flags'
+            }
+        },
+        y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            min: 80,
+            max: 100,
+            title: {
+                display: true,
+                text: 'Completion Rate (%)'
+            },
+            grid: {
+                drawOnChartArea: false,
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            position: 'bottom'
+        }
+    }
+}
+
+
 const modalChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -3926,6 +4520,67 @@ const getMetricChangeClass = (metric) => {
     if (change.startsWith('+')) return 'text-green-600'
     if (change.startsWith('-')) return 'text-red-600'
     return 'text-gray-600'
+}
+
+// Risk Trends Analysis Helper Methods
+const getRiskMetricTitle = (metric) => {
+    const titles = {
+        'high-risk-transactions': 'High Risk Transaction Volume',
+        'risk-flags-reviewed': 'Risk Flags Reviewed',
+        'utr-filed': 'Cumulative UTR Filed',
+        'monthly-transactions': 'Monthly Transactions'
+    }
+    return titles[metric] || metric
+}
+
+const getRiskMetricSubtitle = (metric, period) => {
+    const periodText = period === 'ytd' ? 'Year to Date' : period === '6m' ? 'Last 6 Months' : period === '12m' ? 'Last 12 Months' : 'Last 24 Months'
+    const subtitles = {
+        'high-risk-transactions': `High risk transaction trends by category - ${periodText}`,
+        'risk-flags-reviewed': `Review completion rate and efficiency - ${periodText}`,
+        'utr-filed': `Cumulative Unusual Transaction Reports filed vs regional average - ${periodText}`,
+        'monthly-transactions': `Transaction volume analysis by type and client - ${periodText}`
+    }
+    return subtitles[metric] || `${metric} - ${periodText}`
+}
+
+const getCurrentRiskMetricValue = (metric) => {
+    const values = {
+        'high-risk-transactions': '156',
+        'risk-flags-reviewed': '76',
+        'utr-filed': '34', // Cumulative total through December
+        'monthly-transactions': '$685M'
+    }
+    return values[metric] || '0'
+}
+
+const getRiskMetricChange = (metric) => {
+    // Mock risk trend change values
+    const changes = {
+        'high-risk-transactions': '+23.4%',
+        'risk-flags-reviewed': '+18.2%',
+        'utr-filed': '+33.3%',
+        'monthly-transactions': '+12.5%'
+    }
+    return changes[metric] || '+0%'
+}
+
+const getRiskMetricChangeClass = (metric) => {
+    // Determine if risk change is good or bad (different from regular metrics)
+    const change = getRiskMetricChange(metric)
+    switch(metric) {
+        case 'risk-flags-reviewed':
+            // For reviewed flags, increase is good
+            return change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+        case 'monthly-transactions':
+            // For transaction volume, increase is generally good (business growth)
+            return change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+        case 'high-risk-transactions':
+        case 'utr-filed':
+        default:
+            // For risk transactions and UTR filings, increase is generally bad (red)
+            return change.startsWith('+') ? 'text-red-600' : 'text-green-600'
+    }
 }
 
 const closeAlertsModal = () => {
