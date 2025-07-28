@@ -10,7 +10,7 @@
     
     <!-- Alert Text -->
     <span>
-      {{ totalAlerts }} {{ alertType }}{{ totalAlerts > 1 ? 's' : '' }}
+      {{ totalAlerts }} {{ getPluralizedAlertType }}
     </span>
     
     <!-- Critical Alert Pulse Indicator -->
@@ -105,6 +105,21 @@ const pulseColor = computed(() => {
     low: 'bg-blue-500'
   }
   return colorMap[highestSeverity.value] || 'bg-red-500'
+})
+
+const getPluralizedAlertType = computed(() => {
+  // If alertType already ends with 's' or is already plural, don't add another 's'
+  if (totalAlerts.value === 1) {
+    // For singular, remove 's' if it's already plural
+    return props.alertType.endsWith('s') && props.alertType !== 'Status' 
+      ? props.alertType.slice(0, -1) 
+      : props.alertType
+  } else {
+    // For plural, add 's' only if it doesn't already end with 's'
+    return props.alertType.endsWith('s') 
+      ? props.alertType 
+      : props.alertType + 's'
+  }
 })
 
 // Helper functions
