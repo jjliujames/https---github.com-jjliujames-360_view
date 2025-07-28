@@ -1176,8 +1176,6 @@
                                             <span class="text-sm text-gray-700">UTR Filed</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ utrFiledCount || 0
-                                                }}</span>
                                             </div>
                                         </div>
                                         <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
@@ -1185,9 +1183,6 @@
                                             <span class="text-sm text-gray-700">High Risk Industry</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ highRiskIndustryCount
-                                                    || 0
-                                                }}</span>
                                             </div>
                                         </div>
                                         <div class="flex items-center justify-between cursor-pointer hover:bg-blue-100 p-2 rounded transition-colors"
@@ -1195,8 +1190,6 @@
                                             <span class="text-sm text-gray-700">CTR-exemption</span>
                                             <div class="flex items-center space-x-2">
                                                 <span class="w-4 h-4 bg-green-500 rounded-full"></span>
-                                                <span class="text-sm font-medium text-gray-900">{{ ctrExemptionCount ||
-                                                    0 }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1214,9 +1207,6 @@
                                                 <span class="text-xs text-gray-700">Cannabis-Related Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        cannabisRelatedTrxCount || 0
-                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1224,8 +1214,6 @@
                                                 <span class="text-xs text-gray-700">Casino Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ casinoTrxCount ||
-                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1233,9 +1221,6 @@
                                                 <span class="text-xs text-gray-700">High Cash Deposit</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        highCashDepositCount || 0
-                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1243,8 +1228,6 @@
                                                 <span class="text-xs text-gray-700">HRJ Trx (ATM/Wire/Debit)</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ hrjTrxCount || 0
-                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1252,9 +1235,6 @@
                                                 <span class="text-xs text-gray-700">Third Party Check Deposit</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        thirdPartyCheckDepositCount
-                                                        || 0 }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1264,9 +1244,6 @@
                                                 <span class="text-xs text-gray-700">Cashier Check Purchase</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        cashierCheckPurchaseCount ||
-                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1274,8 +1251,6 @@
                                                 <span class="text-xs text-gray-700">Crypto Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{ cryptoTrxCount ||
-                                                        0 }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1283,9 +1258,6 @@
                                                 <span class="text-xs text-gray-700">High Cash Withdrawals</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        highCashWithdrawalsCount || 0
-                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center justify-between cursor-pointer hover:bg-red-100 p-2 rounded transition-colors"
@@ -1293,9 +1265,6 @@
                                                 <span class="text-xs text-gray-700">Luxury Goods Trx</span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                    <span class="text-sm font-medium text-gray-900">{{
-                                                        luxuryGoodsTrxCount || 0
-                                                    }}</span>
                                                 </div>
                                             </div>
                                         </div>
