@@ -960,6 +960,17 @@
                                             :data="getTransactionsChartData" :options="transactionsChartOptions" />
                                     </div>
 
+                                    <!-- View Details Button for Monthly Transactions -->
+                                    <div v-if="selectedTrendMetric === 'transactions'" class="mt-4 text-center">
+                                        <button @click="openTransactionDetailsModal('portfolio')" 
+                                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-td-green hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-td-green transition-colors">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            View Transaction Details
+                                        </button>
+                                    </div>
+
                                     <!-- Chart Legend/Info -->
                                     <div class="mt-4 flex items-center justify-between text-sm text-gray-600">
                                         <div class="flex items-center space-x-4">
@@ -1478,6 +1489,27 @@
                                             <!-- Monthly Transactions Chart -->
                                             <BarChart v-else-if="selectedRiskMetric === 'monthly-transactions'"
                                                 :data="getRiskTransactionsChartData" :options="riskTransactionsChartOptions" />
+                                        </div>
+
+                                        <!-- View Details Buttons -->
+                                        <div v-if="selectedRiskMetric === 'high-risk-transactions'" class="mt-4 text-center">
+                                            <button @click="openTransactionDetailsModal('high-risk')" 
+                                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                View High Risk Transaction Details
+                                            </button>
+                                        </div>
+
+                                        <div v-if="selectedRiskMetric === 'monthly-transactions'" class="mt-4 text-center">
+                                            <button @click="openTransactionDetailsModal('risk-monthly')" 
+                                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                View Monthly Transaction Details
+                                            </button>
                                         </div>
 
                                         <!-- Chart Legend/Info -->
@@ -2707,6 +2739,170 @@
             </div>
         </div>
     </div>
+
+    <!-- Transaction Details Modal -->
+    <div v-if="showTransactionDetailsModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click.self="closeTransactionDetailsModal">
+        <div class="bg-white rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden mx-4">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-green-50">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-6 h-6 rounded-full bg-td-green flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">📄 Transaction Details</h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium"
+                            :class="transactionModalType === 'high-risk' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'">
+                            {{ getTransactionModalTitle() }}
+                        </span>
+                    </div>
+                    <button @click="closeTransactionDetailsModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+                <div class="flex items-center justify-between mb-6">
+                    <h4 class="text-lg font-medium text-gray-900">Johnson Manufacturing LLC - Individual Transaction History</h4>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">From:</label>
+                            <input type="date" v-model="transactionFilters.dateFrom" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-td-green focus:border-td-green">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">To:</label>
+                            <input type="date" v-model="transactionFilters.dateTo" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-td-green focus:border-td-green">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Type:</label>
+                            <select v-model="transactionFilters.type" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-td-green focus:border-td-green">
+                                <option value="">All Types</option>
+                                <option value="Wire">Wire</option>
+                                <option value="Transfer">Transfer</option>
+                                <option value="ACH">ACH</option>
+                                <option value="Check">Check</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button @click="applyTransactionFilters" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                Apply Filters
+                            </button>
+                            <button @click="resetTransactionFilters" 
+                                class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="text-xs text-green-600 font-medium mb-1">Total Inflows</div>
+                        <div class="text-2xl font-bold text-green-700">$1.5M</div>
+                        <div class="text-xs text-green-600">51 transactions</div>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <div class="text-xs text-red-600 font-medium mb-1">Total Outflows</div>
+                        <div class="text-2xl font-bold text-red-700">$838.1K</div>
+                        <div class="text-xs text-red-600">49 transactions</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="text-xs text-blue-600 font-medium mb-1">Net Amount</div>
+                        <div class="text-2xl font-bold text-blue-700">$645.0K</div>
+                        <div class="text-xs text-blue-600">100 total transactions</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="text-xs text-gray-600 font-medium mb-1">Average Amount</div>
+                        <div class="text-2xl font-bold text-gray-700">$23.2K</div>
+                        <div class="text-xs text-gray-600">Per transaction</div>
+                    </div>
+                </div>
+
+                <!-- Transaction Table -->
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Account</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="transaction in getFilteredTransactions()" :key="transaction.id" class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ transaction.date }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                            :class="getTransactionTypeClass(transaction.type)">
+                                            {{ transaction.type }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">{{ transaction.description }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ transaction.account }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                                        :class="transaction.amount > 0 ? 'text-green-600' : 'text-red-600'">
+                                        {{ formatCurrency(Math.abs(transaction.amount)) }}
+                                        <span class="ml-1">{{ transaction.amount > 0 ? '↗' : '↘' }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                            :class="getStatusClass(transaction.status)">
+                                            {{ transaction.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <span v-if="transaction.risk" class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                                            {{ transaction.risk }}
+                                        </span>
+                                        <span v-else class="text-gray-400">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                <div class="flex justify-end space-x-3">
+                    <button @click="closeTransactionDetailsModal"
+                        class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                        Close
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Export to CSV
+                    </button>
+                    <button v-if="transactionModalType === 'high-risk'" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Flag for Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -2740,6 +2936,8 @@ const showAlertsModal = ref(false)
 const showHiddenRelationshipsModal = ref(false)
 const showRiskFlagModal = ref(false)
 const selectedRiskFlag = ref(null)
+const showTransactionDetailsModal = ref(false)
+const transactionModalType = ref('')
 const activeAlertTab = ref('delinquency')
 const selectedTimePeriod = ref('12m') // Default to 12 months
 const selectedTrendMetric = ref('deposits') // Default trend metric
@@ -2757,6 +2955,13 @@ const selectedRiskMetric = ref('high-risk-transactions') // Default risk metric
 const showNewRiskFlagsOnly = ref(false) // Show new risk flags only filter
 const compareToIndustryAverage = ref(false) // Compare to industry average filter
 const riskTransactionViewType = ref('by-type') // 'by-type' or 'by-client' for risk transaction charts
+
+// Transaction Details Modal state
+const transactionFilters = ref({
+    dateFrom: '2025-06-28',
+    dateTo: '2025-07-28',
+    type: ''
+})
 
 // Enhanced Risk Review Dashboard state
 const reviewMode = ref('standard') // 'standard' or 'bulk'
@@ -4928,6 +5133,140 @@ const openRiskFlagModal = (riskFlag) => {
 const closeRiskFlagModal = () => {
     showRiskFlagModal.value = false
     selectedRiskFlag.value = null
+}
+
+// Transaction Details Modal Functions
+const openTransactionDetailsModal = (type) => {
+    transactionModalType.value = type
+    showTransactionDetailsModal.value = true
+}
+
+const closeTransactionDetailsModal = () => {
+    showTransactionDetailsModal.value = false
+    transactionModalType.value = ''
+}
+
+const getTransactionModalTitle = () => {
+    switch (transactionModalType.value) {
+        case 'portfolio':
+            return 'Portfolio Transactions'
+        case 'high-risk':
+            return 'High Risk Transactions'
+        case 'risk-monthly':
+            return 'Risk Monthly Transactions'
+        default:
+            return 'Transaction Details'
+    }
+}
+
+const applyTransactionFilters = () => {
+    // Apply filters (functionality to be implemented)
+    console.log('Applying filters:', transactionFilters.value)
+}
+
+const resetTransactionFilters = () => {
+    transactionFilters.value = {
+        dateFrom: '2025-06-28',
+        dateTo: '2025-07-28',
+        type: ''
+    }
+}
+
+const getFilteredTransactions = () => {
+    // Mock transaction data based on the attached image
+    const mockTransactions = [
+        {
+            id: 1,
+            date: 'Jul 27, 2025',
+            type: 'Wire',
+            description: 'International Wire',
+            account: 'Money Market - ****9012',
+            amount: 39900,
+            status: 'Cleared',
+            risk: null
+        },
+        {
+            id: 2,
+            date: 'Jul 26, 2025',
+            type: 'Transfer',
+            description: 'Internal Transfer',
+            account: 'Checking - ****1234',
+            amount: -5300,
+            status: 'Pending',
+            risk: 'Crypto Activity'
+        },
+        {
+            id: 3,
+            date: 'Jul 26, 2025',
+            type: 'Ach',
+            description: 'ACH Credit',
+            account: 'Money Market - ****9012',
+            amount: 18000,
+            status: 'Completed',
+            risk: null
+        },
+        {
+            id: 4,
+            date: 'Jul 25, 2025',
+            type: 'Check',
+            description: 'Cashier Check',
+            account: 'Checking - ****1234',
+            amount: -29600,
+            status: 'Pending',
+            risk: 'Crypto Activity'
+        },
+        {
+            id: 5,
+            date: 'Jul 24, 2025',
+            type: 'Ach',
+            description: 'ACH Credit',
+            account: 'Savings - ****5678',
+            amount: 25300,
+            status: 'Cleared',
+            risk: null
+        },
+        {
+            id: 6,
+            date: 'Jul 24, 2025',
+            type: 'Wire',
+            description: 'Incoming Wire',
+            account: 'Checking - ****1234',
+            amount: -2300,
+            status: 'Cleared',
+            risk: null
+        }
+    ]
+
+    // Apply filters
+    let filtered = mockTransactions
+    
+    if (transactionFilters.value.type) {
+        filtered = filtered.filter(t => t.type === transactionFilters.value.type)
+    }
+
+    // Apply date filtering logic here if needed
+    
+    return filtered
+}
+
+const getTransactionTypeClass = (type) => {
+    const classes = {
+        'Wire': 'bg-purple-100 text-purple-800',
+        'Transfer': 'bg-blue-100 text-blue-800',
+        'Ach': 'bg-blue-100 text-blue-800',
+        'Check': 'bg-orange-100 text-orange-800'
+    }
+    return classes[type] || 'bg-gray-100 text-gray-800'
+}
+
+const getStatusClass = (status) => {
+    const classes = {
+        'Cleared': 'bg-green-100 text-green-800',
+        'Completed': 'bg-green-100 text-green-800',
+        'Pending': 'bg-yellow-100 text-yellow-800',
+        'Failed': 'bg-red-100 text-red-800'
+    }
+    return classes[status] || 'bg-gray-100 text-gray-800'
 }
 
 // Generate Risk Flag Data Function (borrowed from ClientDetailView)

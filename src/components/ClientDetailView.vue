@@ -1154,8 +1154,13 @@
                   <div class="bg-gray-50 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-4">
                       <h4 class="text-md font-medium text-gray-900">🚨 High Risk Transactions by Type (Monthly)</h4>
-                      <button @click="drillDownRiskTxn" class="text-xs text-blue-600 hover:text-blue-800">View Details
-                        →</button>
+                      <button @click="drillDownRiskTxn" 
+                        class="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        View Details
+                      </button>
                     </div>
                     <div class="h-80" ref="riskTransactionChart">
                       <BarChart :data="filteredRiskTransactionData" :options="riskTransactionChartOptions" />
@@ -4703,8 +4708,8 @@ const getUTRTrend = () => {
 }
 
 const drillDownRiskTxn = () => {
-  // Open detailed risk transaction view
-  console.log('Drilling down into risk transactions...')
+  // Open transaction details modal for high-risk transactions
+  showTransactionModal.value = true
 }
 
 const drillDownRiskFlags = () => {
